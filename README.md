@@ -1,318 +1,294 @@
-# 🌊 RIPPLE Community
 
-A comprehensive skill-sharing platform where users exchange skills, discover purpose, and create exponential community impact. Built with React Native Web, Node.js, Firebase, and AI integration.
+# RIPPLE Community Platform
 
-## 🚀 Features
+Create a comprehensive skill-sharing platform called "RIPPLE Community" — a neighborhood-based app where users exchange skills, discover purpose, and create exponential community impact.
 
-- **🔐 User Authentication**: Firebase Auth with Google, Email, and Apple Sign-In
-- **🤝 Real-Time Skill Matching**: AI-powered algorithms for connecting learners and teachers
-- **🧭 Tiered Progression System**: Stone Dropper → Wave Maker → Current Creator → Tide Turner
-- **🧑‍🏫 AI-Moderated Teaching Sessions**: Skill-specific templates for effective learning
-- **📊 Impact Tracking**: Visualize community contributions and personal growth
-- **💸 Micro-Transactions**: Seamless payment system ($0.99–$2.99 per exchange)
-- **🏘️ Community Features**: Local events, mentorship, and neighborhood challenges
-- **📱 Progressive Web App**: Works seamlessly across all devices
+## MCP Server Implementation
 
-## 🛠️ Technical Stack
+This repository contains a minimal, scalable **Multi-Component Platform (MCP) server** built with FastAPI as the backend foundation for the RIPPLE Community project. The server provides a modular structure designed for easy extension with additional components and services.
 
-| Layer | Technology |
-|-------|------------|
-| **Frontend** | React Native Web, Styled Components, React Router |
-| **Backend** | Node.js, Express.js, Firebase Admin SDK |
-| **Database** | Firebase Realtime Database (offline sync) |
-| **Authentication** | Firebase Auth (Google, Email, Apple) |
-| **Payments** | Stripe |
-| **AI** | OpenRouter API |
-| **Hosting** | PWA Deployment Ready |
-| **Styling** | Styled Components, Custom Design System |
+## Features
 
-## 🎨 Design System
+- **FastAPI-based REST API** with automatic OpenAPI documentation
+- **Modular architecture** designed for easy extension
+- **Type-safe Python code** with Pydantic models
+- **Comprehensive test suite** using pytest
+- **Docker containerization** for easy deployment
+- **Health check endpoints** for monitoring
+- **Production-ready configuration** with proper error handling
 
-- **Brand Colors**:
-  - Ripple Blue: `#007BFF`
-  - Growth Green: `#28A745`
-  - Energy Orange: `#FD7E14`
-- **Typography**:
-  - Headings: Montserrat
-  - Body: Open Sans
-- **Mobile-First**: Responsive design with WCAG 2.1 compliance
-
-## 📁 Project Structure
+## Project Structure
 
 ```
-RIPPLE/
-├── backend/                 # Node.js Express API
-│   ├── src/
-│   │   ├── controllers/     # Request handlers
-│   │   ├── middleware/      # Custom middleware
-│   │   ├── models/          # Data models
-│   │   ├── routes/          # API routes
-│   │   ├── services/        # Business logic
-│   │   ├── utils/           # Helper utilities
-│   │   └── config/          # Configuration files
-│   └── tests/               # Backend tests
-├── frontend/                # React Native Web App
-│   ├── src/
-│   │   ├── components/      # Reusable UI components
-│   │   ├── screens/         # Page components
-│   │   ├── contexts/        # React contexts
-│   │   ├── hooks/           # Custom React hooks
-│   │   ├── services/        # API services
-│   │   ├── utils/           # Helper utilities
-│   │   └── styles/          # Global styles
-│   └── public/              # Static assets
-├── docs/                    # Documentation
-├── assets/                  # Shared assets
-└── README.md               # This file
+├── src/
+│   ├── __init__.py
+│   ├── main.py          # FastAPI application and MCP server
+│   └── config.py        # Configuration management
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py      # Test fixtures and configuration
+│   └── test_main.py     # Test cases for API endpoints
+├── requirements.txt     # Python dependencies
+├── Dockerfile          # Docker container configuration
+├── pyproject.toml      # Pytest configuration
+├── .gitignore          # Git ignore patterns
+└── README.md           # This file
 ```
 
-## 🚀 Quick Start
+## API Endpoints
 
-### Prerequisites
+- **GET /** - Root endpoint returning service status
+- **GET /health** - Health check endpoint for monitoring
+- **GET /docs** - Interactive API documentation (Swagger UI)
+- **GET /redoc** - Alternative API documentation (ReDoc)
+- **GET /openapi.json** - OpenAPI schema
 
-- Node.js 18+ and npm 9+
-- Firebase project with Realtime Database enabled
-- Stripe account for payments (optional for development)
-- OpenRouter API key for AI features (optional for development)
+## Requirements
 
-### Installation
+- Python 3.11 or higher
+- pip (Python package manager)
+- Docker (optional, for containerization)
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/GooseyPrime/RIPPLE.git
-   cd RIPPLE
-   ```
+## Local Development Setup
 
-2. **Install dependencies**
-   ```bash
-   npm run install:all
-   ```
-
-3. **Environment Setup**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration values
-   ```
-
-4. **Start development servers**
-   ```bash
-   npm run dev
-   ```
-
-   This will start:
-   - Backend API: `http://localhost:3001`
-   - Frontend App: `http://localhost:3000`
-
-### Individual Development
-
-**Backend Only:**
-```bash
-cd backend
-npm install
-npm run dev
-```
-
-**Frontend Only:**
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-## 🔧 Configuration
-
-### Environment Variables
-
-Copy `.env.example` to `.env` and configure:
-
-```env
-# Firebase Configuration
-FIREBASE_API_KEY=your_firebase_api_key
-FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-FIREBASE_DATABASE_URL=https://your_project.firebaseio.com
-FIREBASE_PROJECT_ID=your_project_id
-
-# Stripe Configuration (Optional)
-STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_key
-STRIPE_SECRET_KEY=sk_test_your_stripe_secret
-
-# OpenRouter AI Configuration (Optional)
-OPENROUTER_API_KEY=your_openrouter_api_key
-
-# JWT Configuration
-JWT_SECRET=your_super_secret_jwt_key
-```
-
-### Firebase Setup
-
-1. Create a Firebase project at [Firebase Console](https://console.firebase.google.com/)
-2. Enable Authentication with Email/Password and Google providers
-3. Set up Realtime Database
-4. Download service account key for backend
-5. Configure Firebase config in frontend
-
-## 🧪 Testing
+### 1. Clone the Repository
 
 ```bash
-# Run all tests
-npm test
-
-# Frontend tests
-npm run test:frontend
-
-# Backend tests
-npm run test:backend
-
-# With coverage
-npm run test:coverage
+git clone https://github.com/GooseyPrime/RIPPLE.git
+cd RIPPLE
 ```
 
-## 🚀 Deployment
-
-### Build for Production
+### 2. Create Virtual Environment
 
 ```bash
-npm run build
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-### Deploy Frontend (PWA)
+### 3. Install Dependencies
 
-The frontend is configured as a Progressive Web App and can be deployed to:
-- Netlify
-- Vercel
-- Firebase Hosting
-- Any static hosting service
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
 
-### Deploy Backend
+### 4. Run the Server
 
-The backend can be deployed to:
-- Firebase Functions
-- Railway
-- Heroku
-- DigitalOcean
-- AWS/GCP/Azure
+```bash
+# Development mode with hot reload
+python src/main.py
 
-## 📊 Database Schema
+# Or using uvicorn directly
+uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+```
 
-### Users Collection
-```javascript
+The server will start on `http://localhost:8000`
+
+### 5. Access the API
+
+- **Root endpoint**: http://localhost:8000/
+- **Health check**: http://localhost:8000/health
+- **API documentation**: http://localhost:8000/docs
+- **Alternative docs**: http://localhost:8000/redoc
+
+## Testing
+
+### Run All Tests
+
+```bash
+pytest tests/ -v
+```
+
+### Run Specific Test Classes
+
+```bash
+# Test root endpoint
+pytest tests/test_main.py::TestRootEndpoint -v
+
+# Test health endpoint
+pytest tests/test_main.py::TestHealthEndpoint -v
+
+# Test API documentation
+pytest tests/test_main.py::TestAPIDocumentation -v
+```
+
+### Test Coverage
+
+```bash
+# Install coverage if not already installed
+pip install coverage
+
+# Run tests with coverage
+coverage run -m pytest tests/
+coverage report
+coverage html  # Generate HTML coverage report
+```
+
+## Docker Deployment
+
+### Build Docker Image
+
+```bash
+docker build -t ripple-mcp-server .
+```
+
+### Run Docker Container
+
+```bash
+# Run in foreground
+docker run -p 8000:8000 ripple-mcp-server
+
+# Run in background
+docker run -d -p 8000:8000 --name ripple-server ripple-mcp-server
+
+# View logs
+docker logs ripple-server
+
+# Stop container
+docker stop ripple-server
+```
+
+### Docker Compose (Optional)
+
+Create a `docker-compose.yml` file:
+
+```yaml
+version: '3.8'
+services:
+  ripple-server:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - LOG_LEVEL=info
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+```
+
+Run with Docker Compose:
+
+```bash
+docker-compose up -d
+```
+
+## Environment Variables
+
+The server supports the following environment variables for configuration:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `HOST` | `0.0.0.0` | Server host address |
+| `PORT` | `8000` | Server port |
+| `LOG_LEVEL` | `info` | Logging level (debug, info, warning, error) |
+| `ENVIRONMENT` | `development` | Environment (development, staging, production) |
+| `DATABASE_URL` | `None` | Database connection URL (for future use) |
+| `REDIS_URL` | `None` | Redis connection URL (for future use) |
+| `SECRET_KEY` | `None` | Secret key for JWT tokens (for future use) |
+
+Example:
+
+```bash
+export HOST=0.0.0.0
+export PORT=8080
+export LOG_LEVEL=debug
+export ENVIRONMENT=development
+python src/main.py
+```
+
+## API Response Format
+
+All endpoints return JSON responses with the following structure:
+
+```json
 {
-  uid: "user_id",
-  email: "user@example.com",
-  displayName: "John Doe",
-  skillsOffered: ["JavaScript", "React"],
-  skillsWanted: ["Python", "Machine Learning"],
-  tier: "Wave Maker",
-  exchangesCompleted: 15,
-  averageRating: 4.8,
-  totalHoursTaught: 45,
-  location: "San Francisco, CA",
-  availability: ["Monday 9-11 AM", "Wednesday 2-4 PM"],
-  purposeStory: "I love sharing knowledge...",
-  joinDate: "2024-01-15T10:30:00Z"
+    "status": "healthy",
+    "message": "RIPPLE Community MCP Server is running",
+    "timestamp": "2025-08-30T19:21:46.822343Z",
+    "version": "1.0.0"
 }
 ```
 
-### Exchanges Collection
-```javascript
-{
-  exchangeId: "exchange_id",
-  skill: "React Development",
-  teacherId: "teacher_uid",
-  learnerId: "learner_uid",
-  sessionTemplate: "technical",
-  status: "completed",
-  dateScheduled: "2024-01-20T14:00:00Z",
-  duration: 90,
-  paymentAmount: 1.99,
-  ratings: {
-    teacherRating: 5,
-    learnerRating: 4
-  },
-  feedback: "Great session!",
-  aiModerationNotes: "Session completed successfully"
-}
-```
+## Code Quality
 
-## 🤝 Contributing
+The codebase follows modern Python best practices:
+
+- **PEP 8** compliance for code style
+- **Type hints** for all functions and methods
+- **Pydantic models** for data validation
+- **Comprehensive docstrings** for all modules and functions
+- **Structured logging** for debugging and monitoring
+
+## Development Guidelines
+
+### Adding New Endpoints
+
+1. Add new route methods to the `MCPServer` class in `src/main.py`
+2. Create corresponding Pydantic models if needed
+3. Add comprehensive tests in `tests/test_main.py`
+4. Update this README with new endpoint documentation
+
+### Extending the Configuration
+
+1. Add new settings to the `Settings` class in `src/config.py`
+2. Update environment variable documentation in this README
+3. Add corresponding tests if the settings affect functionality
+
+## Monitoring and Health Checks
+
+The server provides health check endpoints suitable for:
+
+- **Load balancers** (ALB, HAProxy, etc.)
+- **Container orchestration** (Kubernetes, Docker Swarm)
+- **Monitoring systems** (Prometheus, DataDog, etc.)
+
+Health check endpoint: `GET /health`
+
+## Future Extensions
+
+The MCP (Multi-Component Platform) architecture is designed to support:
+
+- **User authentication and authorization**
+- **Skill management APIs**
+- **Community features**
+- **Real-time messaging**
+- **File upload and storage**
+- **Search and filtering**
+- **Analytics and reporting**
+
+## Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create a feature branch (`git checkout -b feature/new-feature`)
+3. Make your changes following the coding standards
+4. Add tests for new functionality
+5. Ensure all tests pass (`pytest tests/`)
+6. Update documentation as needed
+7. Commit your changes (`git commit -am 'Add new feature'`)
+8. Push to the branch (`git push origin feature/new-feature`)
+9. Create a Pull Request
 
-### Development Guidelines
-
-- Follow ESLint configuration
-- Write tests for new features
-- Update documentation
-- Use conventional commit messages
-- Ensure mobile responsiveness
-
-## 📝 API Documentation
-
-### Authentication Endpoints
-
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - User login
-- `GET /api/auth/profile` - Get user profile
-- `PUT /api/auth/profile` - Update user profile
-
-### Skills Endpoints
-
-- `GET /api/skills` - Get all skills
-- `GET /api/skills/:skillName` - Get skill details
-- `GET /api/skills/suggestions/autocomplete` - Skill suggestions
-
-### Users Endpoints
-
-- `GET /api/users` - Get users with filters
-- `GET /api/users/:id` - Get user by ID
-- `GET /api/users/search/skills` - Search users by skills
-
-## 🎯 Roadmap
-
-### Phase 1 (Current)
-- [x] Basic project structure
-- [x] Authentication system
-- [x] User management
-- [x] Skills browsing
-- [ ] Complete signup flow
-- [ ] Profile management
-
-### Phase 2
-- [ ] Skill matching algorithm
-- [ ] Payment integration
-- [ ] AI session moderation
-- [ ] Real-time messaging
-
-### Phase 3
-- [ ] Mobile app optimization
-- [ ] Advanced AI features
-- [ ] Community events
-- [ ] Analytics dashboard
-
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Support
+## Support
 
-- 📧 Email: support@ripplecommunity.com
-- 💬 Discord: [Join our community](https://discord.gg/ripple)
-- 📚 Documentation: [docs.ripplecommunity.com](https://docs.ripplecommunity.com)
+For questions, issues, or contributions, please:
 
-## 🙏 Acknowledgments
+1. Check the [Issues](https://github.com/GooseyPrime/RIPPLE/issues) page
+2. Create a new issue if needed
+3. Provide detailed information about your problem or suggestion
 
-- Firebase for real-time database and authentication
-- React Native Web for cross-platform development
-- Stripe for payment processing
-- OpenRouter for AI integration
-- The open-source community for amazing tools and libraries
+## Next Steps
 
----
-
-**Built with ❤️ by the RIPPLE Community Team**
-
-*Creating ripples of positive impact, one skill exchange at a time.* 🌊
+1. **Database Integration**: Add PostgreSQL or MongoDB support
+2. **Authentication**: Implement JWT-based authentication
+3. **API Versioning**: Add versioned API endpoints
+4. **Rate Limiting**: Implement request rate limiting
+5. **Caching**: Add Redis-based caching
+6. **Monitoring**: Integrate with monitoring solutions
+7. **CI/CD**: Set up automated testing and deployment pipelines
