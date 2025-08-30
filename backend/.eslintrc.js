@@ -2,6 +2,7 @@ module.exports = {
   env: {
     node: true,
     es2021: true,
+    jest: true,
   },
   extends: [
     'eslint:recommended',
@@ -14,5 +15,7 @@ module.exports = {
   rules: {
     'node/no-unsupported-features/es-syntax': 'off',
     'node/no-missing-import': 'off',
+    'no-process-exit': 'off',
+    'no-unused-vars': 'warn',
   },
 };

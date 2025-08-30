@@ -288,7 +288,7 @@ function LoginPage() {
         </Button>
 
         <SignupLink>
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link to="/signup">Sign up for free</Link>
         </SignupLink>
       </LoginCard>

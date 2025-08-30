@@ -133,7 +133,7 @@ function SkillsPage() {
         <ComingSoon>
           <h2>🔍 Advanced Skills Browser Coming Soon!</h2>
           <p>
-            We're building an advanced skills browser with search, filtering, 
+            We&apos;re building an advanced skills browser with search, filtering, 
             teacher profiles, and instant matching capabilities. 
             Connect with skilled community members effortlessly!
           </p>
