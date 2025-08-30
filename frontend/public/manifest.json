@@ -1,0 +1,9 @@
+{
+  "short_name": "RIPPLE",
+  "name": "RIPPLE Community",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#007BFF",
+  "background_color": "#ffffff"
+}

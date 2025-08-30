@@ -1,0 +1,94 @@
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import Layout from './Layout';
+import HomePage from '../screens/HomePage';
+import LoginPage from '../screens/LoginPage';
+import SignupPage from '../screens/SignupPage';
+import DashboardPage from '../screens/DashboardPage';
+import ProfilePage from '../screens/ProfilePage';
+import SkillsPage from '../screens/SkillsPage';
+import LoadingScreen from './LoadingScreen';
+
+// Protected Route Component
+function ProtectedRoute({ children }) {
+  const { currentUser, loading } = useAuth();
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
+  if (!currentUser) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+}
+
+// Public Route (redirect to dashboard if authenticated)
+function PublicRoute({ children }) {
+  const { currentUser, loading } = useAuth();
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
+  if (currentUser) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+}
+
+function AppRouter() {
+  return (
+    <Routes>
+      {/* Public routes */}
+      <Route path="/" element={<Layout />}>
+        <Route index element={<HomePage />} />
+        <Route path="skills" element={<SkillsPage />} />
+        
+        {/* Authentication routes */}
+        <Route 
+          path="login" 
+          element={
+            <PublicRoute>
+              <LoginPage />
+            </PublicRoute>
+          } 
+        />
+        <Route 
+          path="signup" 
+          element={
+            <PublicRoute>
+              <SignupPage />
+            </PublicRoute>
+          } 
+        />
+
+        {/* Protected routes */}
+        <Route 
+          path="dashboard" 
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="profile" 
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          } 
+        />
+
+        {/* Catch-all route */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Route>
+    </Routes>
+  );
+}
+
+export default AppRouter;
