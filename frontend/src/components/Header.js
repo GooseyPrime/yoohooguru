@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { Menu, X, User, LogOut, Settings } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import Button from './Button';
 
 const HeaderContainer = styled.header`
@@ -11,10 +12,11 @@ const HeaderContainer = styled.header`
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.95);
+  background: ${props => props.theme.colors.navBg};
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--gray-200);
+  border-bottom: 1px solid ${props => props.theme.colors.border};
   padding: 1rem 0;
+  transition: all var(--transition-normal);
 `;
 
 const HeaderContent = styled.div`
@@ -57,17 +59,17 @@ const Nav = styled.nav`
     top: 100%;
     left: 0;
     right: 0;
-    background: white;
+    background: ${props => props.theme.colors.surface};
     flex-direction: column;
     padding: 1rem;
-    border-bottom: 1px solid var(--gray-200);
+    border-bottom: 1px solid ${props => props.theme.colors.border};
     box-shadow: var(--shadow-lg);
     gap: 1rem;
   }
 `;
 
 const NavLink = styled(Link)`
-  color: var(--gray-700);
+  color: ${props => props.theme.colors.textSecondary};
   text-decoration: none;
   font-weight: var(--font-medium);
   padding: 0.5rem 1rem;
@@ -75,13 +77,13 @@ const NavLink = styled(Link)`
   transition: all var(--transition-fast);
 
   &:hover {
-    color: var(--primary);
-    background: var(--gray-100);
+    color: ${props => props.theme.colors.primary};
+    background: ${props => props.theme.colors.surfaceSecondary};
     text-decoration: none;
   }
 
   &.active {
-    color: var(--primary);
+    color: ${props => props.theme.colors.primary};
     background: rgba(0, 123, 255, 0.1);
   }
 `;
@@ -99,16 +101,16 @@ const UserButton = styled.button`
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   background: none;
-  border: 1px solid var(--gray-300);
+  border: 1px solid ${props => props.theme.colors.border};
   border-radius: var(--radius-md);
-  color: var(--gray-700);
+  color: ${props => props.theme.colors.textSecondary};
   font-weight: var(--font-medium);
   cursor: pointer;
   transition: all var(--transition-fast);
 
   &:hover {
-    border-color: var(--primary);
-    color: var(--primary);
+    border-color: ${props => props.theme.colors.primary};
+    color: ${props => props.theme.colors.primary};
   }
 `;
 
@@ -117,8 +119,8 @@ const Dropdown = styled.div`
   top: 100%;
   right: 0;
   margin-top: 0.5rem;
-  background: white;
-  border: 1px solid var(--gray-200);
+  background: ${props => props.theme.colors.surface};
+  border: 1px solid ${props => props.theme.colors.border};
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   padding: 0.5rem 0;
@@ -132,7 +134,7 @@ const DropdownItem = styled.button`
   padding: 0.75rem 1rem;
   background: none;
   border: none;
-  color: var(--gray-700);
+  color: ${props => props.theme.colors.textSecondary};
   font-weight: var(--font-medium);
   cursor: pointer;
   display: flex;
@@ -141,7 +143,7 @@ const DropdownItem = styled.button`
   transition: background var(--transition-fast);
 
   &:hover {
-    background: var(--gray-100);
+    background: ${props => props.theme.colors.surfaceSecondary};
   }
 `;
 
@@ -149,7 +151,7 @@ const MobileMenuButton = styled.button`
   display: none;
   background: none;
   border: none;
-  color: var(--gray-700);
+  color: ${props => props.theme.colors.textSecondary};
   cursor: pointer;
   padding: 0.5rem;
 
@@ -160,6 +162,7 @@ const MobileMenuButton = styled.button`
 
 function Header() {
   const { currentUser, userProfile, logout } = useAuth();
+  const { theme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -178,18 +181,19 @@ function Header() {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <HeaderContainer>
+    <HeaderContainer theme={theme}>
       <HeaderContent>
         <Logo to="/">
           <RippleIcon>🌊</RippleIcon>
           RIPPLE
         </Logo>
 
-        <Nav isOpen={isMenuOpen}>
+        <Nav isOpen={isMenuOpen} theme={theme}>
           <NavLink 
             to="/" 
             className={isActive('/') ? 'active' : ''}
             onClick={() => setIsMenuOpen(false)}
+            theme={theme}
           >
             Home
           </NavLink>
@@ -197,6 +201,7 @@ function Header() {
             to="/skills" 
             className={isActive('/skills') ? 'active' : ''}
             onClick={() => setIsMenuOpen(false)}
+            theme={theme}
           >
             Skills
           </NavLink>
@@ -205,6 +210,7 @@ function Header() {
               to="/dashboard" 
               className={isActive('/dashboard') ? 'active' : ''}
               onClick={() => setIsMenuOpen(false)}
+              theme={theme}
             >
               Dashboard
             </NavLink>
@@ -216,21 +222,22 @@ function Header() {
             <>
               <UserButton 
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                theme={theme}
               >
                 <User size={18} />
                 {userProfile?.displayName || 'User'}
               </UserButton>
               
               {isUserMenuOpen && (
-                <Dropdown>
+                <Dropdown theme={theme}>
                   <DropdownItem onClick={() => {
                     navigate('/profile');
                     setIsUserMenuOpen(false);
-                  }}>
+                  }} theme={theme}>
                     <Settings size={16} />
                     Profile
                   </DropdownItem>
-                  <DropdownItem onClick={handleLogout}>
+                  <DropdownItem onClick={handleLogout} theme={theme}>
                     <LogOut size={16} />
                     Sign Out
                   </DropdownItem>
@@ -258,6 +265,7 @@ function Header() {
 
           <MobileMenuButton 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            theme={theme}
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </MobileMenuButton>

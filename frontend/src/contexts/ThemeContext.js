@@ -11,7 +11,7 @@ export function useTheme() {
 }
 
 export function ThemeProvider({ children }) {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true); // Default to dark mode
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -26,10 +26,16 @@ export function ThemeProvider({ children }) {
       warning: '#FFC107',
       error: '#DC3545',
       info: '#17A2B8',
-      background: darkMode ? '#1a1a1a' : '#F8F9FA',
-      surface: darkMode ? '#2d2d2d' : '#FFFFFF',
+      background: darkMode ? '#0f0f23' : '#F8F9FA',
+      surface: darkMode ? '#1a1a35' : '#FFFFFF',
+      surfaceSecondary: darkMode ? '#242447' : '#F1F3F4',
       text: darkMode ? '#FFFFFF' : '#212529',
-      textSecondary: darkMode ? '#B0B0B0' : '#6C757D',
+      textSecondary: darkMode ? '#B8B8CC' : '#6C757D',
+      textMuted: darkMode ? '#8A8A9E' : '#9CA3AF',
+      border: darkMode ? '#2A2A4A' : '#DEE2E6',
+      cardBg: darkMode ? '#1e1e3a' : '#FFFFFF',
+      inputBg: darkMode ? '#252548' : '#FFFFFF',
+      navBg: darkMode ? 'rgba(15, 15, 35, 0.95)' : 'rgba(248, 249, 250, 0.95)',
     },
     spacing: {
       xs: '0.25rem',

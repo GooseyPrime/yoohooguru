@@ -1,6 +1,8 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { GenerateSW } = require('workbox-webpack-plugin');
+const webpack = require('webpack');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 module.exports = (env, argv) => {
   const isDevelopment = argv.mode === 'development';
@@ -50,6 +52,20 @@ module.exports = (env, argv) => {
       ],
     },
     plugins: [
+      new webpack.DefinePlugin({
+        'process.env': JSON.stringify({
+          NODE_ENV: process.env.NODE_ENV || 'development',
+          REACT_APP_API_URL: process.env.REACT_APP_API_URL,
+          REACT_APP_ENVIRONMENT: process.env.REACT_APP_ENVIRONMENT,
+          REACT_APP_FIREBASE_API_KEY: process.env.REACT_APP_FIREBASE_API_KEY,
+          REACT_APP_FIREBASE_AUTH_DOMAIN: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+          REACT_APP_FIREBASE_DATABASE_URL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+          REACT_APP_FIREBASE_PROJECT_ID: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+          REACT_APP_FIREBASE_STORAGE_BUCKET: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+          REACT_APP_FIREBASE_MESSAGING_SENDER_ID: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+          REACT_APP_FIREBASE_APP_ID: process.env.REACT_APP_FIREBASE_APP_ID,
+        }),
+      }),
       new HtmlWebpackPlugin({
         template: './public/index.html',
         inject: true,
