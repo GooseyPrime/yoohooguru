@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import Button from '../components/Button';
-import toast from 'react-hot-toast';
 
 const LoginContainer = styled.div`
   min-height: calc(100vh - 140px);
