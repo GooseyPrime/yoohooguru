@@ -8,6 +8,8 @@ import SignupPage from '../screens/SignupPage';
 import DashboardPage from '../screens/DashboardPage';
 import ProfilePage from '../screens/ProfilePage';
 import SkillsPage from '../screens/SkillsPage';
+import PrivacyPolicyPage from '../screens/PrivacyPolicyPage';
+import TermsAndConditionsPage from '../screens/TermsAndConditionsPage';
 import LoadingScreen from './LoadingScreen';
 
 // Protected Route Component
@@ -47,6 +49,12 @@ function AppRouter() {
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="skills" element={<SkillsPage />} />
+        
+        {/* Legal pages - supporting both new and existing URLs */}
+        <Route path="privacy_policy" element={<PrivacyPolicyPage />} />
+        <Route path="privacy" element={<PrivacyPolicyPage />} />
+        <Route path="terms_and_conditions" element={<TermsAndConditionsPage />} />
+        <Route path="terms" element={<TermsAndConditionsPage />} />
         
         {/* Authentication routes */}
         <Route 
