@@ -1,6 +1,6 @@
 # Railway Deployment - Ready ✅
 
-The RIPPLE Community repository is now fully prepared for Railway deployment.
+The yoohoo.guru repository is now fully prepared for Railway deployment.
 
 ## Quick Deployment
 

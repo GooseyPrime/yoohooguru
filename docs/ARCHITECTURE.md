@@ -1,8 +1,8 @@
-# 🌊 RIPPLE Community Architecture
+# 🎯 yoohoo.guru Architecture
 
 ## Overview
 
-RIPPLE Community is designed as a scalable, modern web application built with a microservices-inspired architecture that can grow with the community's needs.
+yoohoo.guru is designed as a scalable, modern web application built with a microservices-inspired architecture that can grow with the community's needs.
 
 ## System Architecture
 
@@ -341,4 +341,4 @@ GitHub → CI/CD Pipeline → Production Environment → CDN → Users
 - External service monitoring
 - Automated failover procedures
 
-This architecture provides a solid foundation for RIPPLE Community while maintaining flexibility for future growth and feature additions.
+This architecture provides a solid foundation for yoohoo.guru while maintaining flexibility for future growth and feature additions.

@@ -2,7 +2,7 @@
 """
 MCP Server Status Verification Script
 
-This script verifies that the RIPPLE Community MCP server is active and responding correctly.
+This script verifies that the yoohoo.guru MCP server is active and responding correctly.
 Run this script to confirm the server status and validate all endpoints.
 """
 
@@ -58,7 +58,7 @@ def verify_mcp_status(base_url: str = "http://localhost:8000") -> bool:
     Returns:
         bool: True if all checks pass, False otherwise
     """
-    print(colored_output("🌊 RIPPLE Community MCP Server Status Check", 'blue'))
+    print(colored_output("🎯 yoohoo.guru MCP Server Status Check", 'blue'))
     print(f"Testing server at: {base_url}")
     print("-" * 60)
     
@@ -89,7 +89,7 @@ def verify_mcp_status(base_url: str = "http://localhost:8000") -> bool:
                         
                         # Verify expected response format
                         if endpoint == '/' and status == 'healthy':
-                            expected_message = "RIPPLE Community MCP Server is running"
+                            expected_message = "yoohoo.guru MCP Server is running"
                             if message == expected_message:
                                 print(f"   {colored_output('✓ Response matches expected format', 'green')}")
                             else:
@@ -122,7 +122,7 @@ def verify_mcp_status(base_url: str = "http://localhost:8000") -> bool:
 if __name__ == "__main__":
     import argparse
     
-    parser = argparse.ArgumentParser(description="Verify RIPPLE Community MCP Server status")
+    parser = argparse.ArgumentParser(description="Verify yoohoo.guru MCP Server status")
     parser.add_argument("--url", default="http://localhost:8000", 
                        help="Base URL of the MCP server (default: http://localhost:8000)")
     parser.add_argument("--json", action="store_true",

@@ -1,6 +1,6 @@
-# Contributing to RIPPLE Community
+# Contributing to yoohoo.guru
 
-Thank you for your interest in contributing to RIPPLE Community! This document provides guidelines and instructions for contributing to our skill-sharing platform.
+Thank you for your interest in contributing to yoohoo.guru! This document provides guidelines and instructions for contributing to our skill-sharing platform.
 
 ## 🤝 Code of Conduct
 
