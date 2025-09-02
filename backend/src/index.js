@@ -7,6 +7,7 @@ const helmet = require('helmet');
 const compression = require('compression');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const cookieParser = require('cookie-parser');
 
 const { initializeFirebase } = require('./config/firebase');
 const { logger } = require('./utils/logger');
@@ -17,6 +18,8 @@ const skillRoutes = require('./routes/skills');
 const exchangeRoutes = require('./routes/exchanges');
 const paymentRoutes = require('./routes/payments');
 const aiRoutes = require('./routes/ai');
+const adminRoutes = require('./routes/admin');
+const featureFlagRoutes = require('./routes/featureFlags');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -45,6 +48,7 @@ app.use('/api/', limiter);
 
 // General middleware
 app.use(compression());
+app.use(cookieParser());
 app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -66,6 +70,8 @@ app.use('/api/skills', skillRoutes);
 app.use('/api/exchanges', exchangeRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/feature-flags', featureFlagRoutes);
 
 // Welcome route
 app.get('/', (req, res) => {
