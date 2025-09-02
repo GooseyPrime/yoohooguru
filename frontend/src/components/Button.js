@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useTheme } from '../contexts/ThemeContext';
 
 const StyledButton = styled.button`
   display: inline-flex;
@@ -114,11 +115,11 @@ const StyledButton = styled.button`
       case 'ghost':
         return `
           background: transparent;
-          color: var(--gray-700);
+          color: ${props => props.theme.colors.textSecondary};
           
           &:hover:not(:disabled) {
-            background: var(--gray-100);
-            color: var(--gray-900);
+            background: ${props => props.theme.colors.surfaceSecondary};
+            color: ${props => props.theme.colors.text};
           }
         `;
         
@@ -156,11 +157,11 @@ const StyledButton = styled.button`
         
       default:
         return `
-          background: var(--gray-200);
-          color: var(--gray-800);
+          background: ${props => props.theme.colors.surfaceSecondary};
+          color: ${props => props.theme.colors.text};
           
           &:hover:not(:disabled) {
-            background: var(--gray-300);
+            background: ${props => props.theme.colors.border};
             transform: translateY(-1px);
             box-shadow: var(--shadow-md);
           }
@@ -210,6 +211,8 @@ function Button({
   className,
   ...props
 }) {
+  const { theme } = useTheme();
+  
   return (
     <StyledButton
       variant={variant}
@@ -220,6 +223,7 @@ function Button({
       onClick={onClick}
       type={type}
       className={className}
+      theme={theme}
       {...props}
     >
       {loading && <LoadingSpinner />}
