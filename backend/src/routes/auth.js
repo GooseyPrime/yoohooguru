@@ -59,7 +59,14 @@ router.post('/register', validateRegistration, async (req, res) => {
       purposeStory: '',
       joinDate: new Date().toISOString(),
       isActive: true,
-      lastLoginAt: new Date().toISOString()
+      lastLoginAt: new Date().toISOString(),
+      liability: {
+        termsAccepted: true,
+        termsAcceptedAt: new Date().toISOString(),
+        lastWaiverAccepted: null,
+        lastWaiverId: null,
+        totalWaivers: 0
+      }
     };
 
     await db.ref(`users/${userRecord.uid}`).set(userProfile);

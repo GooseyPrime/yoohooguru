@@ -20,6 +20,7 @@ const paymentRoutes = require('./routes/payments');
 const aiRoutes = require('./routes/ai');
 const adminRoutes = require('./routes/admin');
 const featureFlagRoutes = require('./routes/featureFlags');
+const liabilityRoutes = require('./routes/liability');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -72,6 +73,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/feature-flags', featureFlagRoutes);
+app.use('/api/liability', liabilityRoutes);
 
 // Welcome route
 app.get('/', (req, res) => {
