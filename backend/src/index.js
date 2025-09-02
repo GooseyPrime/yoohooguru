@@ -73,6 +73,14 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/feature-flags', featureFlagRoutes);
 
+// Onboarding routes
+const onboardingRoutes = require('./routes/onboarding');
+app.use('/api/onboarding', onboardingRoutes);
+
+// Documents routes
+const documentsRoutes = require('./routes/documents');
+app.use('/api/documents', documentsRoutes);
+
 // Welcome route
 app.get('/', (req, res) => {
   res.json({

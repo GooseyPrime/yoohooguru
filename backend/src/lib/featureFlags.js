@@ -28,7 +28,13 @@ const featureFlags = {
   aiRecommendations: process.env.NODE_ENV === 'development',
   mobileApp: false,
   darkMode: false,
-  internationalSupport: false
+  internationalSupport: false,
+
+  // onboarding features (append new flags only)
+  oddJobs: true,                 // new section enabled
+  oddJobsHourly: false,          // Coming Soon
+  oddJobsMaterials: false,       // Coming Soon
+  backgroundChecks: false,       // Coming Soon
 };
 
 /**
