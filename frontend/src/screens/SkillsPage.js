@@ -103,9 +103,9 @@ const Tab = styled.button`
   padding: 1rem 2rem;
   font-size: var(--text-base);
   font-weight: var(--font-medium);
-  color: ${props => props.active ? props.theme.colors.primary : props.theme.colors.textSecondary};
+  color: ${props => props.$active ? props.theme.colors.primary : props.theme.colors.textSecondary};
   cursor: pointer;
-  border-bottom: 2px solid ${props => props.active ? props.theme.colors.primary : 'transparent'};
+  border-bottom: 2px solid ${props => props.$active ? props.theme.colors.primary : 'transparent'};
   transition: all var(--transition-fast);
   
   &:hover {
@@ -354,21 +354,21 @@ function SkillsPage() {
 
         <TabsContainer theme={theme}>
           <Tab 
-            active={activeTab === 'browse'} 
+            $active={activeTab === 'browse'} 
             theme={theme}
             onClick={() => setActiveTab('browse')}
           >
             Browse Skills
           </Tab>
           <Tab 
-            active={activeTab === 'sessions'} 
+            $active={activeTab === 'sessions'} 
             theme={theme}
             onClick={() => setActiveTab('sessions')}
           >
             Session Templates
           </Tab>
           <Tab 
-            active={activeTab === 'ai-coach'} 
+            $active={activeTab === 'ai-coach'} 
             theme={theme}
             onClick={() => setActiveTab('ai-coach')}
           >

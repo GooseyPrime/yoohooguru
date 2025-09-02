@@ -54,7 +54,7 @@ const Nav = styled.nav`
   gap: 2rem;
 
   @media (max-width: 768px) {
-    display: ${props => props.isOpen ? 'flex' : 'none'};
+    display: ${props => props.$isOpen ? 'flex' : 'none'};
     position: absolute;
     top: 100%;
     left: 0;
@@ -188,7 +188,7 @@ function Header() {
           RIPPLE
         </Logo>
 
-        <Nav isOpen={isMenuOpen} theme={theme}>
+        <Nav $isOpen={isMenuOpen} theme={theme}>
           <NavLink 
             to="/" 
             className={isActive('/') ? 'active' : ''}
