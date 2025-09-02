@@ -25,7 +25,7 @@ class TestRootEndpoint:
         
         data = response.json()
         assert data["status"] == "healthy"
-        assert data["message"] == "RIPPLE Community MCP Server is running"
+        assert data["message"] == "yoohoo.guru MCP Server is running"
         assert data["version"] == "1.0.0"
         assert "timestamp" in data
         

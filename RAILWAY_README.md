@@ -1,6 +1,6 @@
 # 🚂 Railway Deployment - Quick Start
 
-Deploy RIPPLE Community backend to Railway in 3 commands:
+Deploy yoohoo.guru backend to Railway in 3 commands:
 
 ```bash
 npm install -g @railway/cli

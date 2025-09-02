@@ -216,7 +216,7 @@ function HomePage() {
       </HeroSection>
 
       <FeaturesSection>
-        <SectionTitle>How RIPPLE Works</SectionTitle>
+        <SectionTitle>How yoohoo.guru Works</SectionTitle>
         <FeaturesGrid>
           {features.map((feature, index) => (
             <FeatureCard key={index}>
@@ -255,7 +255,7 @@ function HomePage() {
             size="lg"
             onClick={() => navigate('/signup')}
           >
-            Join RIPPLE Community
+            Join yoohoo.guru
             <ArrowRight size={20} />
           </Button>
         </div>

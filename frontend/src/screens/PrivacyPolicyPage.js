@@ -95,11 +95,11 @@ function PrivacyPolicyPage() {
         <Section>
           <h2>1. Introduction</h2>
           <p>
-            Welcome to RIPPLE Community (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;). This Privacy Policy explains how we collect, use, 
+            Welcome to yoohoo.guru (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;). This Privacy Policy explains how we collect, use, 
             disclose, and safeguard your information when you use our neighborhood-based skill-sharing platform.
           </p>
           <p>
-            At RIPPLE, we believe in creating positive community impact through skill sharing while respecting your 
+            At yoohoo.guru, we believe in creating positive community impact through skill sharing while respecting your 
             privacy and maintaining the security of your personal information.
           </p>
         </Section>
@@ -205,8 +205,8 @@ function PrivacyPolicyPage() {
         <ContactInfo>
           <h3>Contact Us</h3>
           <p>If you have any questions about this Privacy Policy, please contact us:</p>
-          <p><strong>Email:</strong> privacy@ripple-community.com</p>
-          <p><strong>Address:</strong> RIPPLE Community, Privacy Department</p>
+          <p><strong>Email:</strong> privacy@yoohoo.guru</p>
+          <p><strong>Address:</strong> yoohoo.guru, Privacy Department</p>
         </ContactInfo>
       </Content>
     </Container>
