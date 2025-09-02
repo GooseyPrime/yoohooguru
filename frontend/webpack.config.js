@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { GenerateSW } = require('workbox-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
@@ -66,6 +67,17 @@ module.exports = (env, argv) => {
           REACT_APP_FIREBASE_APP_ID: process.env.REACT_APP_FIREBASE_APP_ID,
         }),
       }),
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: 'public',
+            to: '',
+            globOptions: {
+              ignore: ['**/index.html'], // Exclude index.html as it's handled by HtmlWebpackPlugin
+            },
+          },
+        ],
+      }),
       new HtmlWebpackPlugin({
         template: './public/index.html',
         inject: true,
@@ -116,9 +128,15 @@ module.exports = (env, argv) => {
           ]),
     ],
     devServer: {
-      static: {
-        directory: path.join(__dirname, 'dist'),
-      },
+      static: [
+        {
+          directory: path.join(__dirname, 'dist'),
+        },
+        {
+          directory: path.join(__dirname, 'public'),
+          publicPath: '/',
+        },
+      ],
       port: 3000,
       hot: true,
       historyApiFallback: true,

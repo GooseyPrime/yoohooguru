@@ -25,7 +25,7 @@ const StyledButton = styled.button`
 
   /* Size variants */
   ${props => {
-    switch (props.size) {
+    switch (props.$size) {
       case 'xs':
         return `
           padding: 0.25rem 0.5rem;
@@ -61,7 +61,7 @@ const StyledButton = styled.button`
 
   /* Variant styles */
   ${props => {
-    switch (props.variant) {
+    switch (props.$variant) {
       case 'primary':
         return `
           background: var(--primary);
@@ -174,12 +174,12 @@ const StyledButton = styled.button`
   }}
 
   /* Full width */
-  ${props => props.fullWidth && `
+  ${props => props.$fullWidth && `
     width: 100%;
   `}
 
   /* Loading state */
-  ${props => props.loading && `
+  ${props => props.$loading && `
     pointer-events: none;
   `}
 `;
@@ -215,10 +215,10 @@ function Button({
   
   return (
     <StyledButton
-      variant={variant}
-      size={size}
-      fullWidth={fullWidth}
-      loading={loading}
+      $variant={variant}
+      $size={size}
+      $fullWidth={fullWidth}
+      $loading={loading}
       disabled={disabled || loading}
       onClick={onClick}
       type={type}

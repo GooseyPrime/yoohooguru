@@ -24,10 +24,32 @@ const firebaseConfig = {
   appId: process.env.REACT_APP_FIREBASE_APP_ID
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const database = getDatabase(app);
+// Check if Firebase is properly configured
+const isFirebaseConfigured = () => {
+  return firebaseConfig.apiKey && 
+         firebaseConfig.apiKey !== 'your_firebase_api_key_here' &&
+         firebaseConfig.projectId && 
+         firebaseConfig.projectId !== 'your_project_id';
+};
+
+// Initialize Firebase only if properly configured
+let app, auth, database;
+
+if (isFirebaseConfigured()) {
+  try {
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    database = getDatabase(app);
+  } catch (error) {
+    console.warn('Firebase initialization failed:', error.message);
+    console.warn('Firebase features will be disabled. Please check your configuration.');
+  }
+} else {
+  console.warn('Firebase is not properly configured. Using placeholder values.');
+  console.warn('Please update your environment variables with valid Firebase configuration.');
+}
+
+export { auth, database };
 
 const AuthContext = createContext();
 
@@ -46,6 +68,11 @@ export function AuthProvider({ children }) {
 
   // Sign up with email and password
   const signup = async (email, password, userData = {}) => {
+    if (!auth) {
+      toast.error('Authentication is not available. Please check Firebase configuration.');
+      throw new Error('Firebase Auth not initialized');
+    }
+    
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
       
@@ -79,6 +106,11 @@ export function AuthProvider({ children }) {
 
   // Login with email and password
   const login = async (email, password) => {
+    if (!auth) {
+      toast.error('Authentication is not available. Please check Firebase configuration.');
+      throw new Error('Firebase Auth not initialized');
+    }
+    
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
       toast.success('Welcome back!');
@@ -91,6 +123,11 @@ export function AuthProvider({ children }) {
 
   // Login with Google
   const loginWithGoogle = async () => {
+    if (!auth) {
+      toast.error('Authentication is not available. Please check Firebase configuration.');
+      throw new Error('Firebase Auth not initialized');
+    }
+    
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
@@ -104,6 +141,11 @@ export function AuthProvider({ children }) {
 
   // Logout
   const logout = async () => {
+    if (!auth) {
+      toast.error('Authentication is not available. Please check Firebase configuration.');
+      throw new Error('Firebase Auth not initialized');
+    }
+    
     try {
       await signOut(auth);
       setUserProfile(null);
@@ -116,6 +158,11 @@ export function AuthProvider({ children }) {
 
   // Reset password
   const resetPassword = async (email) => {
+    if (!auth) {
+      toast.error('Authentication is not available. Please check Firebase configuration.');
+      throw new Error('Firebase Auth not initialized');
+    }
+    
     try {
       await sendPasswordResetEmail(auth, email);
       toast.success('Password reset email sent!');
@@ -175,6 +222,11 @@ export function AuthProvider({ children }) {
 
   // Listen for auth state changes
   useEffect(() => {
+    if (!auth) {
+      setLoading(false);
+      return;
+    }
+    
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       
