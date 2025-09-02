@@ -141,25 +141,102 @@ For backend deployment, you'll need a Firebase service account:
 
 ### Railway Deployment
 
+Railway is the recommended deployment platform for RIPPLE Community backend. The repository is pre-configured for Railway deployment.
+
+#### Quick Deployment
+
 1. **Install Railway CLI**
    ```bash
    npm install -g @railway/cli
    railway login
    ```
 
-2. **Deploy**
+2. **Deploy from Repository Root**
    ```bash
-   cd backend
-   railway deploy
+   # Deploy the entire project (backend will be deployed)
+   railway up .
    ```
 
-3. **Environment Variables**
-   Set in Railway dashboard or via CLI:
+   Or deploy backend specifically:
    ```bash
+   cd backend
+   railway up
+   ```
+
+#### Detailed Setup
+
+1. **Project Configuration**
+   
+   The repository includes `railway.json` and `Procfile` for automated deployment:
+   
+   ```json
+   {
+     "build": {
+       "builder": "NIXPACKS",
+       "buildCommand": "npm run build:backend"
+     },
+     "deploy": {
+       "startCommand": "npm start",
+       "healthcheckPath": "/health"
+     }
+   }
+   ```
+
+2. **Environment Variables**
+   
+   Set required environment variables in Railway dashboard or via CLI:
+   
+   ```bash
+   # Core Configuration
    railway variables set NODE_ENV=production
    railway variables set PORT=3001
-   # ... other variables
+   
+   # Firebase Configuration
+   railway variables set FIREBASE_PROJECT_ID=your_project_id
+   railway variables set FIREBASE_API_KEY=your_api_key
+   railway variables set FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+   
+   # JWT and Security
+   railway variables set JWT_SECRET=your_super_secret_jwt_key
+   
+   # API Keys
+   railway variables set OPENROUTER_API_KEY=your_openrouter_key
+   railway variables set STRIPE_SECRET_KEY=sk_live_your_stripe_key
+   
+   # Rate Limiting
+   railway variables set RATE_LIMIT_WINDOW_MS=900000
+   railway variables set RATE_LIMIT_MAX_REQUESTS=100
    ```
+
+3. **Custom Domain (Optional)**
+   ```bash
+   railway domain add yourdomain.com
+   ```
+
+4. **Monitoring**
+   Railway provides built-in monitoring. Access logs via:
+   ```bash
+   railway logs
+   ```
+
+#### Deployment Commands Reference
+
+| Command | Description |
+|---------|-------------|
+| `railway up .` | Deploy from repository root |
+| `railway up` | Deploy from current directory |
+| `railway deploy` | Deploy with existing configuration |
+| `railway logs` | View deployment logs |
+| `railway status` | Check deployment status |
+| `railway variables` | Manage environment variables |
+| `railway domain` | Manage custom domains |
+
+#### Troubleshooting Railway Deployment
+
+- **Build Failures**: Check that all dependencies are in `package.json`
+- **Environment Variables**: Ensure all required vars are set in Railway
+- **Port Issues**: Railway automatically assigns PORT, don't hardcode it
+- **Health Checks**: Endpoint `/health` must return 200 status
 
 ### Heroku Deployment
 
