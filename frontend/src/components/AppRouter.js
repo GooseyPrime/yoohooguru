@@ -13,6 +13,7 @@ import TermsAndConditionsPage from '../screens/TermsAndConditionsPage';
 import AdminLoginPage from '../screens/AdminLoginPage';
 import AdminDashboardPage from '../screens/AdminDashboardPage';
 import LoadingScreen from './LoadingScreen';
+import LiabilityEnhancementDemo from './LiabilityEnhancementDemo';
 
 // Protected Route Component
 function ProtectedRoute({ children }) {
@@ -51,6 +52,7 @@ function AppRouter() {
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="skills" element={<SkillsPage />} />
+        <Route path="liability-demo" element={<LiabilityEnhancementDemo />} />
         
         {/* Legal pages - supporting both new and existing URLs */}
         <Route path="privacy_policy" element={<PrivacyPolicyPage />} />
