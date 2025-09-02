@@ -2,6 +2,7 @@ const express = require('express');
 const { getDatabase } = require('../config/firebase');
 const { optionalAuth } = require('../middleware/auth');
 const { logger } = require('../utils/logger');
+const { categorizeSkill, getSkillCategories } = require('../utils/skillCategorization');
 
 const router = express.Router();
 
@@ -197,42 +198,5 @@ router.get('/suggestions/autocomplete', async (req, res) => {
     });
   }
 });
-
-// Helper function to categorize skills
-function categorizeSkill(skill) {
-  const skillLower = skill.toLowerCase();
-  
-  const categories = {
-    'Creative': ['art', 'design', 'music', 'photography', 'writing', 'painting', 'drawing', 'pottery', 'craft', 'creative'],
-    'Technical': ['programming', 'coding', 'web', 'software', 'computer', 'tech', 'development', 'data', 'ai', 'machine learning'],
-    'Language': ['english', 'spanish', 'french', 'german', 'chinese', 'japanese', 'language', 'translation'],
-    'Business': ['marketing', 'sales', 'finance', 'accounting', 'management', 'business', 'entrepreneurship'],
-    'Health & Fitness': ['yoga', 'fitness', 'meditation', 'nutrition', 'cooking', 'exercise', 'health', 'wellness'],
-    'Practical': ['repair', 'maintenance', 'carpentry', 'plumbing', 'electrical', 'gardening', 'cleaning', 'organizing'],
-    'Academic': ['math', 'science', 'physics', 'chemistry', 'biology', 'history', 'geography', 'tutoring', 'teaching']
-  };
-
-  for (const [category, keywords] of Object.entries(categories)) {
-    if (keywords.some(keyword => skillLower.includes(keyword))) {
-      return category;
-    }
-  }
-
-  return 'Other';
-}
-
-// Helper function to get all skill categories
-function getSkillCategories() {
-  return [
-    'Creative',
-    'Technical', 
-    'Language',
-    'Business',
-    'Health & Fitness',
-    'Practical',
-    'Academic',
-    'Other'
-  ];
-}
 
 module.exports = router;

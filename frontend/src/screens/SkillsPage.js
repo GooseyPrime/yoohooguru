@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useTheme } from '../contexts/ThemeContext';
 import { Search, Calendar, Users, Star, Clock, ChevronRight } from 'lucide-react';
 import Button from '../components/Button';
+import { getSkillCategoriesForDisplay } from '../lib/skillCategorization';
 
 const Container = styled.div`
   min-height: calc(100vh - 140px);
@@ -251,78 +252,30 @@ const ComingSoon = styled.div`
   }
 `;
 
+const RiskBadge = styled.div`
+  background: ${props => props.risk === 'high' ? 'linear-gradient(135deg, #ff6b6b, #ee5a52)' : 'linear-gradient(135deg, #ffa726, #ff9800)'};
+  color: white;
+  font-size: var(--text-xs);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-weight: var(--font-medium);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+`;
+
 function SkillsPage() {
   const { theme } = useTheme();
   const [activeTab, setActiveTab] = useState('browse');
   const [searchTerm, setSearchTerm] = useState('');
 
-  const skillCategories = [
-    {
-      name: 'Creative Skills',
-      icon: '🎨',
-      skills: ['Graphic Design', 'Photography', 'Music Production', 'Writing', 'Painting', 'Digital Art'],
-      sessionTemplates: [
-        { name: '1-on-1 Design Critique', duration: '60 min', participants: '2', difficulty: 'Beginner' },
-        { name: 'Portfolio Review Session', duration: '90 min', participants: '2-3', difficulty: 'Intermediate' },
-        { name: 'Creative Workshop', duration: '120 min', participants: '3-6', difficulty: 'All Levels' }
-      ]
-    },
-    {
-      name: 'Technical Skills',
-      icon: '💻',
-      skills: ['Web Development', 'Data Science', 'Mobile App Development', 'AI/ML', 'Cybersecurity', 'DevOps'],
-      sessionTemplates: [
-        { name: 'Code Review & Mentoring', duration: '45 min', participants: '2', difficulty: 'Intermediate' },
-        { name: 'Pair Programming Session', duration: '120 min', participants: '2', difficulty: 'All Levels' },
-        { name: 'Technical Interview Prep', duration: '60 min', participants: '2', difficulty: 'Advanced' }
-      ]
-    },
-    {
-      name: 'Language Skills',
-      icon: '🌍',
-      skills: ['Spanish', 'French', 'Mandarin', 'Japanese', 'German', 'Sign Language'],
-      sessionTemplates: [
-        { name: 'Conversation Practice', duration: '30 min', participants: '2', difficulty: 'Beginner' },
-        { name: 'Grammar Deep Dive', duration: '45 min', participants: '2-3', difficulty: 'Intermediate' },
-        { name: 'Cultural Immersion Chat', duration: '60 min', participants: '2-4', difficulty: 'All Levels' }
-      ]
-    },
-    {
-      name: 'Business Skills',
-      icon: '📈',
-      skills: ['Marketing', 'Sales', 'Project Management', 'Finance', 'Entrepreneurship', 'Leadership'],
-      sessionTemplates: [
-        { name: 'Business Plan Review', duration: '90 min', participants: '2-3', difficulty: 'Intermediate' },
-        { name: 'Pitch Practice Session', duration: '60 min', participants: '2-4', difficulty: 'All Levels' },
-        { name: 'Strategy Workshop', duration: '120 min', participants: '3-6', difficulty: 'Advanced' }
-      ]
-    },
-    {
-      name: 'Health & Wellness',
-      icon: '🧘',
-      skills: ['Yoga', 'Fitness Training', 'Meditation', 'Nutrition', 'Mental Health', 'Mindfulness'],
-      sessionTemplates: [
-        { name: 'Personal Training Session', duration: '60 min', participants: '1-2', difficulty: 'All Levels' },
-        { name: 'Wellness Consultation', duration: '45 min', participants: '2', difficulty: 'Beginner' },
-        { name: 'Group Meditation', duration: '30 min', participants: '4-8', difficulty: 'All Levels' }
-      ]
-    },
-    {
-      name: 'Practical Skills',
-      icon: '🔧',
-      skills: ['Cooking', 'Gardening', 'Home Repair', 'Auto Maintenance', 'Crafting', 'DIY Projects'],
-      sessionTemplates: [
-        { name: 'Hands-on Tutorial', duration: '90 min', participants: '2-3', difficulty: 'Beginner' },
-        { name: 'Repair Workshop', duration: '120 min', participants: '2-4', difficulty: 'Intermediate' },
-        { name: 'Master Class', duration: '180 min', participants: '4-6', difficulty: 'Advanced' }
-      ]
-    }
-  ];
+  // Get categories from shared utility instead of hardcoded list
+  const skillCategories = getSkillCategoriesForDisplay();
 
   const filteredCategories = searchTerm 
     ? skillCategories.filter(category => 
         category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        category.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
+        category.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm.toLowerCase()))
       )
     : skillCategories;
 
@@ -382,10 +335,15 @@ function SkillsPage() {
               <h3>
                 <span className="category-icon">{category.icon}</span>
                 {category.name}
+                {category.requiresWaiver && (
+                  <RiskBadge risk={category.riskLevel}>
+                    {category.riskIndicator} High Risk
+                  </RiskBadge>
+                )}
               </h3>
               
               <SkillsList theme={theme}>
-                {category.skills.map((skill, skillIndex) => (
+                {category.keywords.slice(0, 6).map((skill, skillIndex) => (
                   <li key={skillIndex}>{skill}</li>
                 ))}
               </SkillsList>
@@ -402,6 +360,15 @@ function SkillsPage() {
                 }}>
                   <Calendar size={16} />
                   Available Session Templates
+                  {category.requiresWaiver && (
+                    <span style={{
+                      fontSize: 'var(--text-xs)',
+                      color: '#ff6b6b',
+                      fontWeight: 'var(--font-medium)'
+                    }}>
+                      ⚠️ Waiver Required
+                    </span>
+                  )}
                 </div>
                 
                 {category.sessionTemplates.map((template, templateIndex) => (
