@@ -1,8 +1,8 @@
 """
-RIPPLE Community MCP Server
+yoohoo.guru MCP Server
 
 A minimal, scalable Multi-Component Platform (MCP) server built with FastAPI
-as the backend foundation for the RIPPLE Community skill-sharing platform.
+as the backend foundation for the yoohoo.guru skill-sharing platform.
 """
 
 from datetime import datetime, timezone
@@ -23,7 +23,7 @@ class StatusResponse(BaseModel):
 
 class MCPServer:
     """
-    Multi-Component Platform Server for RIPPLE Community.
+    Multi-Component Platform Server for yoohoo.guru.
     
     This class provides a modular structure for the FastAPI application,
     designed for easy extension with additional components and services.
@@ -53,7 +53,7 @@ class MCPServer:
             """
             return StatusResponse(
                 status="healthy",
-                message="RIPPLE Community MCP Server is running",
+                message="yoohoo.guru MCP Server is running",
                 timestamp=datetime.now(timezone.utc),
                 version="1.0.0"
             )

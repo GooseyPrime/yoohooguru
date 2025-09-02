@@ -1,6 +1,6 @@
 # Deployment Guide
 
-This guide covers deploying RIPPLE Community to various hosting platforms.
+This guide covers deploying yoohoo.guru to various hosting platforms.
 
 ## Prerequisites
 
@@ -141,7 +141,7 @@ For backend deployment, you'll need a Firebase service account:
 
 ### Railway Deployment
 
-Railway is the recommended deployment platform for RIPPLE Community backend. The repository is pre-configured for Railway deployment.
+Railway is the recommended deployment platform for yoohoo.guru backend. The repository is pre-configured for Railway deployment.
 
 #### Quick Deployment
 

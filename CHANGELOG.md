@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to RIPPLE Community will be documented in this file.
+All notable changes to yoohoo.guru will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -179,7 +179,7 @@ RIPPLE/
 - Comprehensive error handling and logging
 - Development environment documentation
 
-This initial release establishes RIPPLE Community as a production-ready, scalable platform for skill sharing with a solid foundation for future feature development and community growth.
+This initial release establishes yoohoo.guru as a production-ready, scalable platform for skill sharing with a solid foundation for future feature development and community growth.
 
 ---
 
