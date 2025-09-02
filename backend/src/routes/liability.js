@@ -70,7 +70,7 @@ router.post('/waiver', authenticateUser, validateWaiverAcceptance, async (req, r
     await db.ref(`users/${req.user.uid}/liability`).update({
       lastWaiverAccepted: new Date().toISOString(),
       lastWaiverId: waiverId,
-      totalWaivers: (await db.ref(`users/${req.user.uid}/liability/totalWaivers`).once('value')).val() + 1 || 1
+      totalWaivers: ((await db.ref(`users/${req.user.uid}/liability/totalWaivers`).once('value')).val() || 0) + 1
     });
 
     logger.info(`Liability waiver accepted by user ${req.user.uid} for ${skillCategory} (${riskLevel} risk)`);
