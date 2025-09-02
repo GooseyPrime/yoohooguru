@@ -32,7 +32,7 @@ const ModalHeader = styled.div`
   padding: 1.5rem;
   border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   display: flex;
-  justify-content: between;
+  justify-content: space-between;
   align-items: center;
 
   h2 {
