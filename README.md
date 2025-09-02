@@ -141,6 +141,42 @@ coverage report
 coverage html  # Generate HTML coverage report
 ```
 
+## Railway Deployment
+
+### Quick Deploy to Railway
+
+The easiest way to deploy RIPPLE Community backend to production:
+
+```bash
+# Install Railway CLI
+npm install -g @railway/cli
+
+# Login to Railway
+railway login
+
+# Deploy from repository root
+railway up .
+```
+
+The repository is pre-configured for Railway with:
+- `railway.json` - Deployment configuration
+- `Procfile` - Process specification
+- Health checks at `/health` endpoint
+
+### Environment Variables for Railway
+
+Set these in your Railway dashboard:
+
+```bash
+railway variables set NODE_ENV=production
+railway variables set FIREBASE_PROJECT_ID=your_project_id
+railway variables set FIREBASE_API_KEY=your_api_key
+railway variables set JWT_SECRET=your_secret_key
+# ... other variables from .env.example
+```
+
+For detailed Railway deployment instructions, see [Railway Deployment Guide](docs/RAILWAY_DEPLOYMENT.md).
+
 ## Docker Deployment
 
 ### Build Docker Image
