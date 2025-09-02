@@ -10,6 +10,8 @@ import ProfilePage from '../screens/ProfilePage';
 import SkillsPage from '../screens/SkillsPage';
 import PrivacyPolicyPage from '../screens/PrivacyPolicyPage';
 import TermsAndConditionsPage from '../screens/TermsAndConditionsPage';
+import AdminLoginPage from '../screens/AdminLoginPage';
+import AdminDashboardPage from '../screens/AdminDashboardPage';
 import LoadingScreen from './LoadingScreen';
 
 // Protected Route Component
@@ -91,6 +93,10 @@ function AppRouter() {
             </ProtectedRoute>
           } 
         />
+
+        {/* Admin routes (outside of Layout) */}
+        <Route path="admin/login" element={<AdminLoginPage />} />
+        <Route path="admin" element={<AdminDashboardPage />} />
 
         {/* Catch-all route */}
         <Route path="*" element={<Navigate to="/" replace />} />
