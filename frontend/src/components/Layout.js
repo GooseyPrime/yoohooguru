@@ -1,7 +1,8 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
+import RouteTransition from './motion/RouteTransition';
 import styled from 'styled-components';
 
 const LayoutContainer = styled.div`
@@ -16,11 +17,15 @@ const MainContent = styled.main`
 `;
 
 function Layout() {
+  const { key } = useLocation();
+  
   return (
     <LayoutContainer>
       <Header />
       <MainContent>
-        <Outlet />
+        <RouteTransition locationKey={key}>
+          <Outlet />
+        </RouteTransition>
       </MainContent>
       <Footer />
     </LayoutContainer>

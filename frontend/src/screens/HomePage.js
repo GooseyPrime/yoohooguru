@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { ArrowRight, Users, BookOpen, TrendingUp, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
+import { FadeIn } from '../components/motion/FadeIn';
 
 const HeroSection = styled.section`
   background: linear-gradient(135deg, var(--primary) 0%, var(--growth-green) 100%);
@@ -219,13 +220,15 @@ function HomePage() {
         <SectionTitle>How yoohoo.guru Works</SectionTitle>
         <FeaturesGrid>
           {features.map((feature, index) => (
-            <FeatureCard key={index}>
-              <div className="icon">
-                {feature.icon}
-              </div>
-              <h3>{feature.title}</h3>
-              <p>{feature.description}</p>
-            </FeatureCard>
+            <FadeIn key={index} delay={index * 0.06}>
+              <FeatureCard>
+                <div className="icon">
+                  {feature.icon}
+                </div>
+                <h3>{feature.title}</h3>
+                <p>{feature.description}</p>
+              </FeatureCard>
+            </FadeIn>
           ))}
         </FeaturesGrid>
       </FeaturesSection>
@@ -236,10 +239,12 @@ function HomePage() {
         </SectionTitle>
         <StatsGrid>
           {stats.map((stat, index) => (
-            <StatCard key={index}>
-              <h3>{stat.number}</h3>
-              <p>{stat.label}</p>
-            </StatCard>
+            <FadeIn key={index} delay={index * 0.08}>
+              <StatCard>
+                <h3>{stat.number}</h3>
+                <p>{stat.label}</p>
+              </StatCard>
+            </FadeIn>
           ))}
         </StatsGrid>
       </StatsSection>

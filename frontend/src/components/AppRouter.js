@@ -14,6 +14,7 @@ import AdminLoginPage from '../screens/AdminLoginPage';
 import AdminDashboardPage from '../screens/AdminDashboardPage';
 import LoadingScreen from './LoadingScreen';
 import LiabilityEnhancementDemo from './LiabilityEnhancementDemo';
+import ComponentShowcase from '../screens/ComponentShowcase';
 
 // Onboarding screens
 import OnboardingStart from '../screens/onboarding/OnboardingStart';
@@ -68,6 +69,7 @@ function AppRouter() {
         <Route path="privacy" element={<PrivacyPolicyPage />} />
         <Route path="terms_and_conditions" element={<TermsAndConditionsPage />} />
         <Route path="terms" element={<TermsAndConditionsPage />} />
+        <Route path="showcase" element={<ComponentShowcase />} />
         
         {/* Authentication routes */}
         <Route 

@@ -91,16 +91,28 @@ const GlobalStyles = createGlobalStyle`
     --radius-2xl: 1.5rem;
     --radius-full: 9999px;
     
+    /* Component-specific radius aliases */
+    --r-sm: var(--radius-sm);
+    --r-md: var(--radius-md);
+    --r-lg: var(--radius-lg);
+    
     /* Shadows for Dark Theme */
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
     --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+    --shadow-card: var(--shadow-md);
     
     /* Transitions */
     --transition-fast: 150ms ease-in-out;
     --transition-normal: 250ms ease-in-out;
     --transition-slow: 350ms ease-in-out;
+    --t-fast: var(--transition-fast);
+    
+    /* Component-specific color aliases */
+    --muted: var(--text-muted);
+    --err: var(--error);
+    --elev: var(--surface-secondary);
   }
 
   * {
