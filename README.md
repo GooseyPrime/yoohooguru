@@ -71,8 +71,8 @@ All endpoints are functional, tests pass (7/7), and the server is ready for deve
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/GooseyPrime/RIPPLE.git
-cd RIPPLE
+git clone https://github.com/GooseyPrime/yoohooguru.git
+cd yoohooguru
 ```
 
 ### 2. Create Virtual Environment
@@ -182,23 +182,23 @@ For detailed Railway deployment instructions, see [Railway Deployment Guide](doc
 ### Build Docker Image
 
 ```bash
-docker build -t ripple-mcp-server .
+docker build -t yoohooguru-mcp-server .
 ```
 
 ### Run Docker Container
 
 ```bash
 # Run in foreground
-docker run -p 8000:8000 ripple-mcp-server
+docker run -p 8000:8000 yoohooguru-mcp-server
 
 # Run in background
-docker run -d -p 8000:8000 --name ripple-server ripple-mcp-server
+docker run -d -p 8000:8000 --name yoohooguru-server yoohooguru-mcp-server
 
 # View logs
-docker logs ripple-server
+docker logs yoohooguru-server
 
 # Stop container
-docker stop ripple-server
+docker stop yoohooguru-server
 ```
 
 ### Docker Compose (Optional)
@@ -208,7 +208,7 @@ Create a `docker-compose.yml` file:
 ```yaml
 version: '3.8'
 services:
-  ripple-server:
+  yoohooguru-server:
     build: .
     ports:
       - "8000:8000"
@@ -413,7 +413,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For questions, issues, or contributions, please:
 
-1. Check the [Issues](https://github.com/GooseyPrime/RIPPLE/issues) page
+1. Check the [Issues](https://github.com/GooseyPrime/yoohooguru/issues) page
 2. Create a new issue if needed
 3. Provide detailed information about your problem or suggestion
 

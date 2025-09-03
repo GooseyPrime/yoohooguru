@@ -1,5 +1,5 @@
 name: Bug Report
-description: Report a bug or issue with RIPPLE Community
+description: Report a bug or issue with yoohoo.guru
 title: "[Bug]: "
 labels: ["bug", "triage"]
 
@@ -17,7 +17,7 @@ body:
       options:
         - label: I have searched existing issues to ensure this bug hasn't been reported already
           required: true
-        - label: I am using the latest version of RIPPLE Community
+        - label: I am using the latest version of yoohoo.guru
           required: true
         - label: I have read the contributing guidelines
           required: true

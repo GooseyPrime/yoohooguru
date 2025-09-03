@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 
 const HeroSection = styled.section`
-  background: linear-gradient(135deg, var(--ripple-blue) 0%, var(--growth-green) 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--growth-green) 100%);
   color: white;
   padding: 6rem 0 4rem;
   text-align: center;
@@ -190,7 +190,7 @@ function HomePage() {
     <>
       <HeroSection>
         <HeroContent>
-          <h1>Create Ripples of Impact in Your Community</h1>
+          <h1>Create Waves of Impact in Your Community</h1>
           <p>
             Exchange skills, discover purpose, and build meaningful connections 
             with neighbors who share your passion for growth and learning.

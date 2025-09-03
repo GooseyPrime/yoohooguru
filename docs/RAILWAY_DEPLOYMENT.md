@@ -1,6 +1,6 @@
-# Railway Deployment Guide for RIPPLE Community
+# Railway Deployment Guide for yoohoo.guru
 
-This guide provides step-by-step instructions for deploying RIPPLE Community to Railway.
+This guide provides step-by-step instructions for deploying yoohoo.guru to Railway.
 
 ## Prerequisites
 
@@ -27,8 +27,8 @@ This will open your browser for authentication.
 ### 3. Deploy from Repository Root
 
 ```bash
-# Navigate to your RIPPLE repository
-cd /path/to/RIPPLE
+# Navigate to your yoohoo.guru repository
+cd /path/to/yoohooguru
 
 # Deploy the backend service
 railway up .
@@ -232,4 +232,4 @@ railway environment create production
 railway deploy --environment production
 ```
 
-This completes the Railway deployment setup for RIPPLE Community. The backend will be accessible at the Railway-provided URL and ready to serve API requests.
+This completes the Railway deployment setup for yoohoo.guru. The backend will be accessible at the Railway-provided URL and ready to serve API requests.

@@ -31,7 +31,7 @@ initializeFirebase();
 app.use(helmet());
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://ripplecommunity.com', 'https://www.ripplecommunity.com']
+    ? ['https://yoohoo.guru', 'https://www.yoohoo.guru']
     : ['http://localhost:3000', 'http://127.0.0.1:3000'],
   credentials: true
 }));
@@ -84,7 +84,7 @@ app.use('/api/documents', documentsRoutes);
 // Welcome route
 app.get('/', (req, res) => {
   res.json({
-    message: '🌊 Welcome to RIPPLE Community API',
+    message: '🎯 Welcome to yoohoo.guru API',
     version: '1.0.0',
     description: 'Skill-sharing platform backend',
     documentation: '/api/docs',
@@ -116,7 +116,7 @@ process.on('SIGINT', () => {
 
 // Start server
 app.listen(PORT, () => {
-  logger.info(`🌊 RIPPLE Backend server running on port ${PORT}`);
+  logger.info(`🎯 yoohoo.guru Backend server running on port ${PORT}`);
   logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
   logger.info(`Health check: http://localhost:${PORT}/health`);
 });

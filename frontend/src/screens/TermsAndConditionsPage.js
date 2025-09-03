@@ -166,7 +166,7 @@ function TermsAndConditionsPage() {
           <ul>
             <li>Accurately represent your skills and availability</li>
             <li>Fulfill commitments made to other community members</li>
-            <li>Respect others&rsquo; time and expertise</li>
+            <li>Respect others&apos; time and expertise</li>
             <li>Provide feedback and ratings honestly</li>
             <li>Report any issues or conflicts promptly</li>
           </ul>
@@ -196,7 +196,7 @@ function TermsAndConditionsPage() {
 
           <h3>Platform Content</h3>
           <p>
-            yoohoo.guru&rsquo;s platform, including design, features, and proprietary content, is protected by 
+            yoohoo.guru&apos;s platform, including design, features, and proprietary content, is protected by 
             intellectual property laws and remains our property.
           </p>
         </Section>
