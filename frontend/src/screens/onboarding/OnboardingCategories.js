@@ -14,9 +14,7 @@ export default function OnboardingCategories() {
     });
     
     // Load existing selections
-    api('/onboarding/status').then(({data})=>{
-      setPicks(data.picks || {});
-    }).catch(()=>{});
+    }).catch(error => { alert('Error loading onboarding status: ' + error.message); });
     
     // Load categories - we'll use a simple hardcoded list for MVP since seedCategories creates them
     // In production, you'd fetch from /api/categories endpoint
