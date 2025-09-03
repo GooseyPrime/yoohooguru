@@ -9,6 +9,12 @@ export default function OnboardingCategories() {
   const [picks, setPicks] = useState({});
 
   useEffect(() => {
+    // Load categories from Firebase (using the seeded data)
+    // For now, we'll use hardcoded categories below
+    
+    // Load existing selections
+    // For now, we'll start with empty selections
+    
     // Load categories - we'll use a simple hardcoded list for MVP since seedCategories creates them
     // In production, you'd fetch from /api/categories endpoint
     setCats([

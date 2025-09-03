@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { ArrowRight, Users, BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
+import { setLastHub } from '../lib/prefs';
 
 const HeroSection = styled.section`
   padding: 72px 0 24px; 
@@ -97,6 +98,7 @@ const Tile = styled.div`
     margin-bottom: 1.5rem;
   }
 `;
+
 
 function HomePage() {
   const navigate = useNavigate();

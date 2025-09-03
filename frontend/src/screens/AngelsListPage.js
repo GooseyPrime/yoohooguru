@@ -91,7 +91,6 @@ const CategoryCard = styled.div`
     border-color: #2E3540;
     box-shadow: ${({ theme }) => theme.shadow.card};
   }
-`;
 
 const CategoryHeader = styled.div`
   display: flex;
@@ -300,5 +299,3 @@ function AngelsListPage() {
     </PageContainer>
   );
 }
-
-export default AngelsListPage;

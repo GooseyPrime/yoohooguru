@@ -24,6 +24,7 @@ import OnboardingRequirements from '../screens/onboarding/OnboardingRequirements
 import OnboardingDocuments from '../screens/onboarding/OnboardingDocuments';
 import OnboardingPayout from '../screens/onboarding/OnboardingPayout';
 import OnboardingReview from '../screens/onboarding/OnboardingReview';
+import AngelsListPage from '../screens/AngelsListPage';
 
 // Protected Route Component
 function ProtectedRoute({ children }) {
@@ -61,6 +62,7 @@ function AppRouter() {
       {/* Public routes */}
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
+        {/* SkillShare (public label) – technical route remains /skills */}
         <Route path="skills" element={<SkillsPage />} />
         <Route path="angels-list" element={<AngelsListPage />} />
         <Route path="liability-demo" element={<LiabilityEnhancementDemo />} />
