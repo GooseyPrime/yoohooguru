@@ -14,6 +14,15 @@ import AdminLoginPage from '../screens/AdminLoginPage';
 import AdminDashboardPage from '../screens/AdminDashboardPage';
 import LoadingScreen from './LoadingScreen';
 
+// Onboarding screens
+import OnboardingStart from '../screens/onboarding/OnboardingStart';
+import OnboardingProfile from '../screens/onboarding/OnboardingProfile';
+import OnboardingCategories from '../screens/onboarding/OnboardingCategories';
+import OnboardingRequirements from '../screens/onboarding/OnboardingRequirements';
+import OnboardingDocuments from '../screens/onboarding/OnboardingDocuments';
+import OnboardingPayout from '../screens/onboarding/OnboardingPayout';
+import OnboardingReview from '../screens/onboarding/OnboardingReview';
+
 // Protected Route Component
 function ProtectedRoute({ children }) {
   const { currentUser, loading } = useAuth();
@@ -90,6 +99,64 @@ function AppRouter() {
           element={
             <ProtectedRoute>
               <ProfilePage />
+            </ProtectedRoute>
+          } 
+        />
+
+        {/* Onboarding routes */}
+        <Route 
+          path="onboarding" 
+          element={
+            <ProtectedRoute>
+              <OnboardingStart />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="onboarding/profile" 
+          element={
+            <ProtectedRoute>
+              <OnboardingProfile />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="onboarding/categories" 
+          element={
+            <ProtectedRoute>
+              <OnboardingCategories />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="onboarding/requirements" 
+          element={
+            <ProtectedRoute>
+              <OnboardingRequirements />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="onboarding/documents" 
+          element={
+            <ProtectedRoute>
+              <OnboardingDocuments />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="onboarding/payout" 
+          element={
+            <ProtectedRoute>
+              <OnboardingPayout />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="onboarding/review" 
+          element={
+            <ProtectedRoute>
+              <OnboardingReview />
             </ProtectedRoute>
           } 
         />

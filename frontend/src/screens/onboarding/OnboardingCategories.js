@@ -1,94 +1,74 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import { useTheme } from '../../contexts/ThemeContext';
 
-const Container = styled.div`
-  min-height: 100vh;
-  background: ${props => props.theme.colors.background};
-  padding: 2rem;
-`;
+import React, { useEffect, useState } from 'react';
+import { api } from '../../lib/api';
+import ComingSoon from '../../components/ComingSoon';
+import Button from '../../components/Button';
 
-const Content = styled.div`
-  max-width: 800px;
-  margin: 0 auto;
-  text-align: center;
-`;
+export default function OnboardingCategories() {
+  const [cats, setCats] = useState([]);
+  const [picks, setPicks] = useState({});
 
-const Title = styled.h1`
-  color: ${props => props.theme.colors.text};
-  margin-bottom: 1rem;
-`;
+  useEffect(() => {
+    // Load categories from Firebase (using the seeded data)
+    }).catch((error) => {
+      console.error('Failed to load feature flags:', error);
+    });
+    
+    // Load existing selections
+    }).catch(error => { alert('Error loading onboarding status: ' + error.message); });
+    
+    // Load categories - we'll use a simple hardcoded list for MVP since seedCategories creates them
+    // In production, you'd fetch from /api/categories endpoint
+    setCats([
+      { slug: 'tutoring', name: 'Tutoring & Lessons', class: 'E' },
+      { slug: 'music', name: 'Music Lessons', class: 'E' },
+      { slug: 'fitness', name: 'Personal Training', class: 'E' },
+      { slug: 'handyman', name: 'Handyman (basic)', class: 'B' },
+      { slug: 'cleaning', name: 'Cleaning (non-bio)', class: 'F' },
+      { slug: 'yard-farm', name: 'Yard & Farm (non-mechanical)', class: 'B' },
+      { slug: 'moving-help', name: 'Moving Help (no truck)', class: 'A' },
+      { slug: 'errands', name: 'Errands & Organizing', class: 'A' },
+      { slug: 'electrical', name: 'Electrical (licensed)', class: 'C', comingSoon: true },
+      { slug: 'plumbing', name: 'Plumbing (licensed)', class: 'C', comingSoon: true },
+      { slug: 'hvac', name: 'HVAC (licensed)', class: 'C', comingSoon: true },
+      { slug: 'tree-work', name: 'Tree Work (higher risk)', class: 'C', comingSoon: true },
+      { slug: 'transport', name: 'Transport/Hauling (provider vehicle)', class: 'D', comingSoon: true },
+    ]);
+  }, []);
 
-function OnboardingCategories() {
-  const { theme } = useTheme();
-  const navigate = useNavigate();
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const toggle = (slug) => setPicks(prev => ({ ...prev, [slug]: prev[slug] ? undefined : { selectedAt: Date.now() } }));
 
-  const categories = [
-    { id: 'tech', name: 'Technology', icon: '💻' },
-    { id: 'art', name: 'Arts & Crafts', icon: '🎨' },
-    { id: 'music', name: 'Music', icon: '🎵' },
-    { id: 'fitness', name: 'Fitness', icon: '💪' },
-    { id: 'cooking', name: 'Cooking', icon: '👨‍🍳' },
-    { id: 'language', name: 'Languages', icon: '🗣️' }
-  ];
-
-  const handleCategorySelect = (categoryId) => {
-    setSelectedCategories(prev => 
-      prev.includes(categoryId) 
-        ? prev.filter(id => id !== categoryId)
-        : [...prev, categoryId]
-    );
-  };
-
-  const handleContinue = () => {
-    navigate('/onboarding/payout');
+  const save = async () => {
+    try {
+      const chosen = Object.keys(picks).filter(k => !!picks[k]);
+      await api('/onboarding/categories', { method:'POST', body: JSON.stringify({ categories: chosen })});
+      window.location.href = '/onboarding/requirements';
+    } catch (error) {
+      alert('Error saving categories: ' + error.message);
+    }
   };
 
   return (
-    <Container theme={theme}>
-      <Content>
-        <Title theme={theme}>Select Your Interests</Title>
-        <p>Choose categories that match your skills or learning interests.</p>
-        
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', margin: '2rem 0' }}>
-          {categories.map(category => (
-            <div
-              key={category.id}
-              onClick={() => handleCategorySelect(category.id)}
-              style={{
-                padding: '1rem',
-                border: selectedCategories.includes(category.id) ? '2px solid var(--primary)' : '1px solid var(--border)',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                background: selectedCategories.includes(category.id) ? 'var(--primary-light)' : 'var(--surface)'
-              }}
-            >
-              <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{category.icon}</div>
-              <div>{category.name}</div>
-            </div>
-          ))}
-        </div>
-
-        <button
-          onClick={handleContinue}
-          disabled={selectedCategories.length === 0}
-          style={{
-            padding: '1rem 2rem',
-            background: selectedCategories.length > 0 ? 'var(--primary)' : 'var(--gray-400)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: selectedCategories.length > 0 ? 'pointer' : 'not-allowed',
-            fontSize: '1rem'
-          }}
-        >
-          Continue
-        </button>
-      </Content>
-    </Container>
+    <div style={{maxWidth: '720px', margin: '0 auto', padding: '2rem'}}>
+      <h2>Choose what you offer</h2>
+      <p>Select all that apply. Items marked <ComingSoon /> are not yet open for booking.</p>
+      <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '12px'}}>
+        {cats.map(c => (
+          <label key={c.slug} style={{border: '1px solid #e5e7eb', borderRadius: '12px', padding: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px'}}>
+            <input 
+              type="checkbox" 
+              checked={!!picks[c.slug]} 
+              onChange={() => toggle(c.slug)} 
+            />
+            <span style={{flex: 1}}>
+              {c.name} {c.comingSoon && <ComingSoon />}
+            </span>
+          </label>
+        ))}
+      </div>
+      <Button onClick={save} variant="primary" style={{marginTop: '16px'}}>
+        Continue
+      </Button>
+    </div>
   );
 }
-
-export default OnboardingCategories;

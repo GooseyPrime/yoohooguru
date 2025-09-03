@@ -1,94 +1,48 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import { useTheme } from '../../contexts/ThemeContext';
 
-const Container = styled.div`
-  min-height: 100vh;
-  background: ${props => props.theme.colors.background};
-  padding: 2rem;
-`;
+import React from 'react';
+import ComingSoon from '../../components/ComingSoon';
+import Button from '../../components/Button';
 
-const Content = styled.div`
-  max-width: 600px;
-  margin: 0 auto;
-  text-align: center;
-`;
-
-const Title = styled.h1`
-  color: ${props => props.theme.colors.text};
-  margin-bottom: 1rem;
-`;
-
-function OnboardingPayout() {
-  const { theme } = useTheme();
-  const navigate = useNavigate();
-  const [payoutMethod, setPayoutMethod] = useState('');
-
-  const handleMethodSelect = (method) => {
-    setPayoutMethod(method);
-  };
-
-  const handleContinue = () => {
-    // This line contains the unescaped single quote that needs to be fixed
-    console.log('User selected payout method and we&apos;re ready to continue');
-    navigate('/dashboard');
+export default function OnboardingPayout() {
+  // This would integrate with Stripe Connect Express onboarding in production
+  const handleSetupPayout = () => {
+    // For demo purposes, we'll just mark as ready
+    // In production, this would redirect to Stripe Express onboarding
+    alert('Payout setup is Coming Soon. For demo, we\'ll mark as complete.');
+    // Temporarily set payout_ready for demo
+    window.location.href = '/onboarding/review';
   };
 
   return (
-    <Container theme={theme}>
-      <Content>
-        <Title theme={theme}>Set Up Your Payout</Title>
-        <p>Choose how you&apos;d like to receive payments for your skills.</p>
-        
-        <div style={{ margin: '2rem 0', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div
-            onClick={() => handleMethodSelect('paypal')}
-            style={{
-              padding: '1rem',
-              border: payoutMethod === 'paypal' ? '2px solid var(--primary)' : '1px solid var(--border)',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              background: payoutMethod === 'paypal' ? 'var(--primary-light)' : 'var(--surface)'
-            }}
-          >
-            <h3>PayPal</h3>
-            <p>Quick and secure payments</p>
-          </div>
-          
-          <div
-            onClick={() => handleMethodSelect('stripe')}
-            style={{
-              padding: '1rem',
-              border: payoutMethod === 'stripe' ? '2px solid var(--primary)' : '1px solid var(--border)',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              background: payoutMethod === 'stripe' ? 'var(--primary-light)' : 'var(--surface)'
-            }}
-          >
-            <h3>Bank Transfer (Stripe)</h3>
-            <p>Direct to your bank account</p>
-          </div>
-        </div>
+    <div style={{maxWidth: '720px', margin: '0 auto', padding: '2rem'}}>
+      <h2>Setup Payout Method</h2>
+      <p>Connect your bank account to receive payments for your services.</p>
+      
+      <div style={{border: '1px solid #e5e7eb', borderRadius: '8px', padding: '2rem', textAlign: 'center', marginBottom: '2rem'}}>
+        <h3>Stripe Connect Integration <ComingSoon /></h3>
+        <p style={{color: '#6b7280', marginBottom: '1.5rem'}}>
+          Secure bank account setup and instant payouts will be available soon.
+        </p>
+        <Button onClick={handleSetupPayout} variant="primary">
+          Setup Payout (Demo)
+        </Button>
+      </div>
 
-        <button
-          onClick={handleContinue}
-          disabled={!payoutMethod}
-          style={{
-            padding: '1rem 2rem',
-            background: payoutMethod ? 'var(--primary)' : 'var(--gray-400)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: payoutMethod ? 'pointer' : 'not-allowed',
-            fontSize: '1rem'
-          }}
-        >
-          Complete Setup
-        </button>
-      </Content>
-    </Container>
+      <div style={{fontSize: '0.875rem', color: '#6b7280'}}>
+        <h4>What you'll need:</h4>
+        <ul>
+          <li>Bank account information</li>
+          <li>Tax ID (SSN or EIN)</li>
+          <li>Government-issued ID</li>
+          <li>Business details (if applicable)</li>
+        </ul>
+      </div>
+
+      <div style={{marginTop: '2rem'}}>
+        <a href="/onboarding/review" style={{color: 'var(--primary)', textDecoration: 'none'}}>
+          Continue to Review →
+        </a>
+      </div>
+    </div>
   );
 }
-
-export default OnboardingPayout;

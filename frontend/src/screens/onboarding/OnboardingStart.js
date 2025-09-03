@@ -1,76 +1,44 @@
-import React from 'react';
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import { useTheme } from '../../contexts/ThemeContext';
 
-const Container = styled.div`
-  min-height: 100vh;
-  background: ${props => props.theme.colors.background};
-  padding: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+import React, { useEffect, useState } from 'react';
+import Button from '../../components/Button';
+import { api } from '../../lib/api';
+import ComingSoon from '../../components/ComingSoon';
 
-const Content = styled.div`
-  max-width: 500px;
-  text-align: center;
-`;
+export default function OnboardingStart() {
+  const [status, setStatus] = useState();
 
-const Title = styled.h1`
-  color: ${props => props.theme.colors.text};
-  margin-bottom: 1rem;
-  font-size: 2.5rem;
-`;
+  useEffect(() => {
+    api('/onboarding/status').then(r => setStatus(r.data.step)).catch(()=>{});
+  }, []);
 
-const Subtitle = styled.p`
-  color: ${props => props.theme.colors.textSecondary};
-  margin-bottom: 2rem;
-`;
+  const row = (label, ok, href) => (
+    <div key={label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', border: '1px solid #e5e7eb', borderRadius: '8px', marginBottom: '0.5rem' }}>
+      <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <span style={{ color: ok ? '#10b981' : '#6b7280', fontSize: '1.25rem' }}>{ok ? '✓' : '○'}</span>
+        {label}
+      </span>
+      <a href={href} style={{ textDecoration: 'none', color: 'var(--primary)' }}>
+        {ok ? 'Review' : 'Complete'} →
+      </a>
+    </div>
+  );
 
-function OnboardingStart() {
-  const { theme } = useTheme();
-  const navigate = useNavigate();
-
-  const handleGetStarted = () => {
-    // This line contains the unescaped single quote that needs to be fixed
-    console.log('Welcome to our community! Let&apos;s get you set up');
-    navigate('/onboarding/categories');
-  };
+  if (!status) return <div style={{padding: '2rem'}}>Loading…</div>;
 
   return (
-    <Container theme={theme}>
-      <Content>
-        <Title theme={theme}>Welcome to YooHoo Guru! 🌊</Title>
-        <Subtitle theme={theme}>
-          Join our skill-sharing community where knowledge flows like water, 
-          connecting people and creating ripples of positive change.
-        </Subtitle>
-        
-        <div style={{ margin: '2rem 0' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🚀</div>
-          <h3>Ready to start your journey?</h3>
-          <p>Let&apos;s set up your profile and discover amazing skills to learn and share.</p>
-        </div>
+    <div style={{maxWidth: '680px', margin: '0 auto', padding: '2rem'}}>
+      <h1>Become a Guru</h1>
+      <p>Let's set up your YooHoo Guru profile and get you earning.</p>
 
-        <button
-          onClick={handleGetStarted}
-          style={{
-            padding: '1rem 2rem',
-            background: 'var(--primary)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontSize: '1.1rem',
-            fontWeight: '600'
-          }}
-        >
-          Get Started
-        </button>
-      </Content>
-    </Container>
+      {row('Profile', status.profileComplete, '/onboarding/profile')}
+      {row('Categories', status.categoriesComplete, '/onboarding/categories')}
+      {row('Requirements', status.requirementsComplete, '/onboarding/requirements')}
+      {row('Payout', status.payoutConnected, '/onboarding/payout')}
+      <hr />
+      {status.reviewReady ? <a href="/onboarding/review">Review & publish →</a> : <span>Complete previous steps</span>}
+      <div style={{marginTop: '16px'}}>
+        <small>Background checks <ComingSoon /></small>
+      </div>
+    </div>
   );
 }
-
-export default OnboardingStart;
