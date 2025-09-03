@@ -235,7 +235,7 @@ function LiabilityEnhancementDemo() {
 
       <h2>Available Skill Exchanges</h2>
       <p style={{ color: 'var(--gray-600)', marginBottom: '1.5rem' }}>
-        Click "Join Exchange" to see the liability waiver process in action. Notice how different risk levels require different protections.
+        Click &quot;Join Exchange&quot; to see the liability waiver process in action. Notice how different risk levels require different protections.
       </p>
 
       {demoSkills.map(skill => (
