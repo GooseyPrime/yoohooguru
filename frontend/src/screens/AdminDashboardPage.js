@@ -137,6 +137,7 @@ function AdminDashboardPage() {
   const [dashboardData, setDashboardData] = useState(null);
   const [featureFlags, setFeatureFlags] = useState({});
   const [loading, setLoading] = useState(true);
+  const [pendingDocuments, setPendingDocuments] = useState([]);
   const navigate = useNavigate();
 
   const tabs = [
@@ -145,7 +146,8 @@ function AdminDashboardPage() {
     { id: 'listings', label: 'Listings' },
     { id: 'sessions', label: 'Sessions' },
     { id: 'reports', label: 'Reports' },
-    { id: 'flags', label: 'Feature Flags' }
+    { id: 'flags', label: 'Feature Flags' },
+    { id: 'documents', label: 'Documents' }
   ];
 
   useEffect(() => {
@@ -184,6 +186,44 @@ function AdminDashboardPage() {
       console.error('Error loading feature flags:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadPendingDocuments = async () => {
+    try {
+      const response = await fetch('/api/documents/pending', {
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setPendingDocuments(data.data.pending || []);
+      }
+    } catch (error) {
+      console.error('Error loading pending documents:', error);
+    }
+  };
+
+  const handleDocumentAction = async (uid, docId, status, reason = '') => {
+    try {
+      const response = await fetch(`/api/documents/${uid}/${docId}/status`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({ status, reason })
+      });
+      
+      if (response.ok) {
+        // Reload pending documents after action
+        loadPendingDocuments();
+      } else {
+        alert('Failed to update document status');
+      }
+    } catch (error) {
+      console.error('Error updating document:', error);
+      alert('Error updating document status');
     }
   };
 
@@ -297,6 +337,97 @@ function AdminDashboardPage() {
                 </FeatureFlagItem>
               ))}
             </FeatureFlagList>
+          </div>
+        );
+      
+      case 'documents':
+        return (
+          <div>
+            <h2 style={{ color: 'var(--text)', marginBottom: '1rem' }}>
+              Document Review
+            </h2>
+            <div style={{ marginBottom: '1rem' }}>
+              <button 
+                onClick={loadPendingDocuments}
+                style={{
+                  background: 'var(--primary)',
+                  color: 'white',
+                  border: 'none',
+                  padding: '0.5rem 1rem',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                Refresh Pending Documents
+              </button>
+            </div>
+            {pendingDocuments.length === 0 ? (
+              <PlaceholderText>No pending documents for review</PlaceholderText>
+            ) : (
+              <div style={{ display: 'grid', gap: '1rem' }}>
+                {pendingDocuments.map((doc) => (
+                  <div 
+                    key={`${doc.uid}-${doc.id}`}
+                    style={{
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '8px',
+                      padding: '1rem',
+                      background: 'white'
+                    }}
+                  >
+                    <div style={{ marginBottom: '0.5rem' }}>
+                      <strong>Type:</strong> {doc.type}
+                      {doc.category && <span> ({doc.category})</span>}
+                    </div>
+                    <div style={{ marginBottom: '0.5rem' }}>
+                      <strong>Provider:</strong> {doc.provider || 'Not specified'}
+                    </div>
+                    <div style={{ marginBottom: '0.5rem' }}>
+                      <strong>Number:</strong> {doc.number || 'Not specified'}
+                    </div>
+                    {doc.file_url && (
+                      <div style={{ marginBottom: '0.5rem' }}>
+                        <strong>File:</strong> <a href={doc.file_url} target="_blank" rel="noopener noreferrer">View Document</a>
+                      </div>
+                    )}
+                    <div style={{ marginBottom: '1rem' }}>
+                      <strong>User ID:</strong> {doc.uid}
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <button
+                        onClick={() => handleDocumentAction(doc.uid, doc.id, 'approved')}
+                        style={{
+                          background: '#10b981',
+                          color: 'white',
+                          border: 'none',
+                          padding: '0.5rem 1rem',
+                          borderRadius: '4px',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => {
+                          const reason = prompt('Reason for rejection (optional):');
+                          handleDocumentAction(doc.uid, doc.id, 'rejected', reason);
+                        }}
+                        style={{
+                          background: '#dc2626',
+                          color: 'white',
+                          border: 'none',
+                          padding: '0.5rem 1rem',
+                          borderRadius: '4px',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         );
       

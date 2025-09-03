@@ -24,8 +24,8 @@ By participating in this project, you agree to abide by our Code of Conduct:
 
 1. **Fork and Clone**
    ```bash
-   git clone https://github.com/your-username/RIPPLE.git
-   cd RIPPLE
+   git clone https://github.com/your-username/yoohooguru.git
+   cd yoohooguru
    ```
 
 2. **Install Dependencies**
@@ -126,7 +126,7 @@ npm run test:watch
 ## 🏗️ Project Structure
 
 ```
-RIPPLE/
+yoohooguru/
 ├── backend/                 # Node.js API
 │   ├── src/
 │   │   ├── controllers/     # Request handlers
@@ -291,9 +291,9 @@ When working with AI features:
 
 ## 📞 Contact
 
-- **Project Lead**: [GitHub Issues](https://github.com/GooseyPrime/RIPPLE/issues)
+- **Project Lead**: [GitHub Issues](https://github.com/GooseyPrime/yoohooguru/issues)
 - **Community**: Discord (coming soon)
-- **Email**: support@ripplecommunity.com
+- **Email**: support@yoohoo.guru
 
 ## 🙏 Recognition
 
@@ -304,4 +304,4 @@ Contributors will be:
 - Invited to contributor events
 - Given community recognition
 
-Thank you for helping make RIPPLE Community better! 🌊
+Thank you for helping make yoohoo.guru better! 🎯

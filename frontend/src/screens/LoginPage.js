@@ -203,9 +203,9 @@ function LoginPage() {
   return (
     <LoginContainer>
       <LoginCard>
-        <Logo>🌊</Logo>
+        <Logo>🎯</Logo>
         <Title>Welcome Back</Title>
-        <Subtitle>Sign in to your RIPPLE account</Subtitle>
+        <Subtitle>Sign in to your yoohoo.guru account</Subtitle>
 
         <Form onSubmit={handleSubmit(onSubmit)}>
           <InputGroup>

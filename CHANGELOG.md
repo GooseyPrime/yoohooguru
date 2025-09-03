@@ -119,7 +119,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Project Structure
 ```
-RIPPLE/
+yoohooguru/
 ├── backend/                 # Node.js Express API
 │   ├── src/
 │   │   ├── controllers/     # Request handlers

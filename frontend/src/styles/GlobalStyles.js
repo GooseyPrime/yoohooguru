@@ -3,12 +3,12 @@ import { createGlobalStyle } from 'styled-components';
 const GlobalStyles = createGlobalStyle`
   :root {
     /* Brand Colors */
-    --ripple-blue: #007BFF;
+    --yoohoo-blue: #007BFF;
     --growth-green: #28A745;
     --energy-orange: #FD7E14;
     
     /* Semantic Colors */
-    --primary: var(--ripple-blue);
+    --primary: var(--yoohoo-blue);
     --secondary: var(--growth-green);
     --accent: var(--energy-orange);
     --success: #28A745;
@@ -168,7 +168,7 @@ const GlobalStyles = createGlobalStyle`
     to { opacity: 1; transform: translateY(0); }
   }
 
-  @keyframes ripple {
+  @keyframes pulse {
     0% {
       transform: scale(1);
       box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);

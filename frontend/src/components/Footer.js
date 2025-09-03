@@ -103,7 +103,7 @@ function Footer() {
               discover purpose, and create exponential community impact.
             </p>
             <p>
-              Join thousands of learners and teachers creating ripples of positive change
+              Join thousands of learners and teachers creating waves of positive change
               in their communities.
             </p>
           </FooterSection>

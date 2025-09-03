@@ -6,7 +6,7 @@ const fadeIn = keyframes`
   to { opacity: 1; }
 `;
 
-const ripple = keyframes`
+const pulse = keyframes`
   0% {
     transform: scale(1);
     box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
@@ -26,7 +26,7 @@ const LoadingContainer = styled.div`
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--ripple-blue) 0%, var(--growth-green) 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--growth-green) 100%);
   color: white;
   font-family: var(--font-heading);
   animation: ${fadeIn} 0.5s ease-in-out;
@@ -36,7 +36,7 @@ const LoadingContent = styled.div`
   text-align: center;
 `;
 
-const RippleLogo = styled.div`
+const YoohooLogo = styled.div`
   width: 80px;
   height: 80px;
   border-radius: 50%;
@@ -47,7 +47,7 @@ const RippleLogo = styled.div`
   justify-content: center;
   font-size: 24px;
   font-weight: bold;
-  animation: ${ripple} 2s infinite;
+  animation: ${pulse} 2s infinite;
 `;
 
 const LoadingText = styled.div`
@@ -66,8 +66,8 @@ function LoadingScreen({ message = 'Loading your skill-sharing platform...' }) {
   return (
     <LoadingContainer>
       <LoadingContent>
-        <RippleLogo>🌊</RippleLogo>
-        <LoadingText>RIPPLE Community</LoadingText>
+        <YoohooLogo>🎯</YoohooLogo>
+        <LoadingText>yoohoo.guru</LoadingText>
         <LoadingSubtitle>{message}</LoadingSubtitle>
       </LoadingContent>
     </LoadingContainer>

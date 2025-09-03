@@ -276,12 +276,12 @@ Railway is the recommended deployment platform for yoohoo.guru backend. The repo
 1. **Create App Spec**
    Create `.do/app.yaml`:
    ```yaml
-   name: ripple-backend
+   name: yoohooguru-backend
    services:
    - name: api
      source_dir: /backend
      github:
-       repo: your-username/RIPPLE
+       repo: your-username/yoohooguru
        branch: main
      run_command: node src/index.js
      environment_slug: node-js
@@ -425,7 +425,7 @@ Railway is the recommended deployment platform for yoohoo.guru backend. The repo
 
 ### Nginx Configuration
 
-Create `/etc/nginx/sites-available/ripple`:
+Create `/etc/nginx/sites-available/yoohooguru`:
 ```nginx
 server {
     listen 80;
@@ -442,7 +442,7 @@ server {
 
     # Frontend
     location / {
-        root /var/www/ripple/frontend/dist;
+        root /var/www/yoohooguru/frontend/dist;
         try_files $uri $uri/ /index.html;
     }
 
@@ -638,4 +638,4 @@ openssl s_client -connect your-domain.com:443
 6. **Test mobile responsiveness**
 7. **Verify PWA functionality**
 
-This deployment guide ensures RIPPLE Community is properly deployed with security, performance, and reliability best practices.
+This deployment guide ensures yoohoo.guru is properly deployed with security, performance, and reliability best practices.
