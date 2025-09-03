@@ -1,7 +1,7 @@
 {
-  "name": "ripple-frontend",
+  "name": "yoohoo-guru-frontend",
   "version": "1.0.0",
-  "description": "Frontend for RIPPLE Community skill-sharing platform",
+  "description": "Frontend for yoohoo.guru skill-sharing platform",
   "main": "index.js",
   "scripts": {
     "dev": "webpack serve --mode development",

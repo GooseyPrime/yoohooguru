@@ -43,9 +43,9 @@ const Logo = styled(Link)`
   }
 `;
 
-const RippleIcon = styled.span`
+const YoohooIcon = styled.span`
   font-size: 1.8rem;
-  animation: ripple 3s infinite;
+  animation: pulse 3s infinite;
 `;
 
 const Nav = styled.nav`
@@ -184,8 +184,8 @@ function Header() {
     <HeaderContainer theme={theme}>
       <HeaderContent>
         <Logo to="/">
-          <RippleIcon>🌊</RippleIcon>
-          RIPPLE
+          <YoohooIcon>🎯</YoohooIcon>
+          yoohoo.guru
         </Logo>
 
         <Nav $isOpen={isMenuOpen} theme={theme}>
