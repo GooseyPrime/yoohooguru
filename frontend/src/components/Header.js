@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { Menu, X, User, LogOut, Settings } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import Button from './Button';
-import { setLastHub } from '../lib/prefs';
 
 const HeaderContainer = styled.header`
   position: sticky; 
