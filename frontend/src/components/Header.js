@@ -204,7 +204,7 @@ function Header() {
             onClick={() => { setIsMenuOpen(false); setLastHub('angels'); }}
             theme={theme}
           >
-            Angel's List
+            Angel&apos;s List
           </NavLink>
           <NavLink 
             to="/marketplace" 
