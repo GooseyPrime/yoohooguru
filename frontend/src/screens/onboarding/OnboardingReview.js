@@ -4,11 +4,18 @@ import Button from '../../components/Button';
 
 export default function OnboardingReview() {
   const [data, setData] = useState();
+  const [error, setError] = useState(null);
 
   useEffect(()=> {
-    api('/onboarding/status').then(r => setData(r.data)).catch(()=>{});
+    api('/onboarding/status')
+      .then(r => setData(r.data))
+      .catch((err) => {
+        console.error('Failed to load onboarding status:', err);
+        setError('Failed to load onboarding status. Please try again later.');
+      });
   }, []);
 
+  if (error) return <div style={{padding: '2rem', color: '#dc2626'}}>{error}</div>;
   if (!data) return <div style={{padding: '2rem'}}>Loading…</div>;
 
   const publish = async () => {
