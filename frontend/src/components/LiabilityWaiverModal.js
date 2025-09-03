@@ -1,13 +1,7 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { X, AlertTriangle, Shield } from 'lucide-react';
-import { 
-  getSkillRiskLevel, 
-  requiresLiabilityWaiver, 
-  getCategoryMetadata,
-  categorizeSkill,
-  RISK_LEVELS 
-} from '../lib/skillCategorization';
+import LiabilityWaiver from './LiabilityWaiver';
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -15,272 +9,225 @@ const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   z-index: 1000;
+  padding: 1rem;
 `;
 
 const ModalContent = styled.div`
   background: white;
   border-radius: var(--radius-xl);
-  padding: 2rem;
-  max-width: 600px;
-  width: 90%;
-  max-height: 80vh;
+  max-width: 800px;
+  max-height: 90vh;
   overflow-y: auto;
-  position: relative;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
 `;
 
-const CloseButton = styled.button`
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: var(--radius-md);
-  
-  &:hover {
-    background: var(--light-gray);
-  }
-`;
-
-const Header = styled.div`
-  text-align: center;
-  margin-bottom: 2rem;
-  
-  h2 {
-    color: var(--gray-900);
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-  }
-  
-  p {
-    color: var(--gray-600);
-  }
-`;
-
-const RiskSection = styled.div`
-  background: ${props => props.riskLevel === RISK_LEVELS.HIGH ? '#fef2f2' : '#fff7ed'};
-  border: 2px solid ${props => props.riskLevel === RISK_LEVELS.HIGH ? '#fecaca' : '#fed7aa'};
-  border-radius: var(--radius-lg);
+const ModalHeader = styled.div`
+  background: var(--primary);
+  color: white;
   padding: 1.5rem;
-  margin-bottom: 2rem;
-  
-  h3 {
-    color: ${props => props.riskLevel === RISK_LEVELS.HIGH ? '#dc2626' : '#ea580c'};
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    margin: 0;
+    font-size: var(--text-xl);
   }
-  
+
+  button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: var(--text-2xl);
+    cursor: pointer;
+    padding: 0;
+    margin-left: auto;
+  }
+`;
+
+const ModalBody = styled.div`
+  padding: 0;
+`;
+
+const PreWaiverInfo = styled.div`
+  padding: 1.5rem;
+  background: var(--light-blue);
+  border-bottom: 1px solid var(--gray-200);
+
+  h3 {
+    color: var(--primary-dark);
+    margin-bottom: 0.75rem;
+  }
+
   p {
     color: var(--gray-700);
     line-height: 1.6;
+    margin-bottom: 0.5rem;
   }
-`;
 
-const WaiverText = styled.div`
-  background: var(--light-gray);
-  padding: 1.5rem;
-  border-radius: var(--radius-lg);
-  margin-bottom: 2rem;
-  font-size: var(--text-sm);
-  line-height: 1.6;
-  color: var(--gray-700);
-  max-height: 200px;
-  overflow-y: auto;
-`;
-
-const ConsentSection = styled.div`
-  margin-bottom: 2rem;
-  
-  label {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    cursor: pointer;
-    line-height: 1.6;
-    
-    input[type="checkbox"] {
-      margin-top: 0.25rem;
-      transform: scale(1.2);
-    }
-  }
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
-  
-  button {
-    padding: 0.75rem 1.5rem;
+  .skill-info {
+    background: white;
+    padding: 1rem;
     border-radius: var(--radius-md);
-    font-weight: var(--font-medium);
-    cursor: pointer;
-    
-    &.cancel {
-      background: var(--light-gray);
-      border: 1px solid var(--gray-300);
-      color: var(--gray-700);
-      
-      &:hover {
-        background: var(--gray-200);
-      }
+    margin: 1rem 0;
+    border-left: 4px solid var(--primary);
+
+    .skill-name {
+      font-weight: var(--font-semibold);
+      color: var(--primary-dark);
     }
-    
-    &.accept {
-      background: var(--primary);
-      border: 1px solid var(--primary);
+
+    .risk-badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-full);
+      font-size: var(--text-sm);
+      font-weight: var(--font-medium);
+      margin-left: 0.5rem;
+    }
+
+    .risk-high {
+      background: var(--danger-red);
       color: white;
-      
-      &:hover {
-        background: var(--primary-dark);
-      }
-      
-      &:disabled {
-        background: var(--gray-300);
-        border-color: var(--gray-300);
-        cursor: not-allowed;
-      }
+    }
+
+    .risk-medium {
+      background: var(--warning-yellow);
+      color: var(--gray-900);
+    }
+
+    .risk-low {
+      background: var(--success-green);
+      color: white;
     }
   }
 `;
 
-/**
- * LiabilityWaiverModal Component
- * 
- * This component uses the shared skillCategorization utility to:
- * - Determine if a waiver is required based on skill risk level
- * - Display appropriate risk warnings
- * - Present category-specific waiver text
- * 
- * This prevents the duplication issue mentioned in the GitHub issue
- * by centralizing risk assessment logic.
- */
 function LiabilityWaiverModal({ 
   isOpen, 
   onClose, 
-  onAccept, 
-  skillName,
-  sessionType = 'skill exchange' 
+  skillExchange, 
+  onWaiverAccepted 
 }) {
-  const [hasAgreed, setHasAgreed] = useState(false);
-  
-  if (!isOpen || !skillName) return null;
-  
-  // Use shared categorization logic to assess risk
-  const category = categorizeSkill(skillName);
-  const riskLevel = getSkillRiskLevel(skillName);
-  const categoryMetadata = getCategoryMetadata(category);
-  const requiresWaiver = requiresLiabilityWaiver(skillName);
-  
-  // If skill doesn't require waiver, auto-accept
-  if (!requiresWaiver) {
-    onAccept();
-    return null;
-  }
-  
-  const handleAccept = () => {
-    if (hasAgreed) {
-      onAccept();
+  const [waiverData, setWaiverData] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (isOpen && skillExchange) {
+      // Determine risk level based on skill category
+      const riskLevel = getRiskLevel(skillExchange.skillCategory);
+      setWaiverData({
+        skillCategory: skillExchange.skillCategory,
+        riskLevel,
+        activityDescription: skillExchange.description || skillExchange.skillName
+      });
+    }
+  }, [isOpen, skillExchange]);
+
+  const getRiskLevel = (category) => {
+    const normalizedCategory = category.toLowerCase().replace(/\s+/g, '-');
+    const highRisk = ['physical-training', 'construction', 'automotive', 'outdoor-activities', 'sports', 'fitness', 'martial-arts'];
+    const mediumRisk = ['cooking', 'arts-crafts', 'home-repair', 'gardening', 'woodworking', 'electrical'];
+    
+    if (highRisk.some(risk => normalizedCategory.includes(risk))) return 'high';
+    if (mediumRisk.some(risk => normalizedCategory.includes(risk))) return 'medium';
+    return 'low';
+  };
+
+  const handleWaiverAccept = async (acceptanceData) => {
+    setIsSubmitting(true);
+    
+    try {
+      // In a real implementation, this would call the API
+      const response = await fetch('/api/liability/waiver', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({
+          ...acceptanceData,
+          exchangeId: skillExchange.id
+        })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        onWaiverAccepted(result.data);
+        onClose();
+      } else {
+        throw new Error('Failed to submit waiver');
+      }
+    } catch (error) {
+      console.error('Waiver submission error:', error);
+      alert('Failed to submit liability waiver. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
-  
+
+  const handleWaiverDecline = () => {
+    onClose();
+  };
+
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  if (!isOpen || !waiverData) return null;
+
   return (
-    <ModalOverlay onClick={onClose}>
-      <ModalContent onClick={e => e.stopPropagation()}>
-        <CloseButton onClick={onClose}>
-          <X size={20} />
-        </CloseButton>
+    <ModalOverlay onClick={handleOverlayClick}>
+      <ModalContent>
+        <ModalHeader>
+          <h2>Safety First: Liability Waiver Required</h2>
+          <button onClick={onClose} aria-label="Close modal">×</button>
+        </ModalHeader>
         
-        <Header>
-          <h2>
-            <Shield size={24} color="#dc2626" />
-            Liability Waiver Required
-          </h2>
-          <p>
-            This {sessionType} involves {skillName} ({category}) which has been 
-            classified as a {riskLevel} risk activity.
-          </p>
-        </Header>
-        
-        <RiskSection riskLevel={riskLevel}>
-          <h3>
-            <AlertTriangle size={20} />
-            Risk Assessment: {riskLevel.toUpperCase()} RISK
-          </h3>
-          <p>{categoryMetadata?.description}</p>
-          {riskLevel === RISK_LEVELS.HIGH && (
+        <ModalBody>
+          <PreWaiverInfo>
+            <h3>📋 Before We Begin</h3>
             <p>
-              <strong>High Risk Activities</strong> may involve physical exertion, 
-              use of tools or equipment, or potential for injury. Participants should 
-              be in good physical condition and aware of potential risks.
+              To ensure everyone's safety and set clear expectations, we require all participants 
+              to acknowledge the risks involved in skill-sharing activities.
             </p>
-          )}
-        </RiskSection>
-        
-        <WaiverText>
-          <h4>Liability Waiver and Release</h4>
-          <p>
-            I acknowledge that participation in {skillName} activities carries inherent risks 
-            including but not limited to physical injury, property damage, or other harm. 
-            I understand that yoohoo.guru does not provide insurance coverage for activities 
-            and that I participate entirely at my own risk.
-          </p>
-          <p>
-            I hereby release, waive, discharge, and covenant not to sue yoohoo.guru, 
-            its officers, employees, agents, and affiliates from any and all liability, 
-            claims, demands, actions, and causes of action whatsoever arising out of 
-            or related to any loss, damage, or injury that may be sustained by me 
-            while participating in this {sessionType}.
-          </p>
-          <p>
-            I understand that this waiver is binding and that I have read and 
-            understood its terms. I am participating voluntarily and am of legal age 
-            to sign this agreement.
-          </p>
-          <p>
-            <strong>Category-Specific Risks for {category}:</strong><br />
-            {categoryMetadata?.description}
-          </p>
-        </WaiverText>
-        
-        <ConsentSection>
-          <label>
-            <input
-              type="checkbox"
-              checked={hasAgreed}
-              onChange={(e) => setHasAgreed(e.target.checked)}
-            />
-            <span>
-              I have read, understood, and agree to the terms of this liability waiver. 
-              I understand the risks associated with {skillName} and voluntarily 
-              assume all risks of participation.
-            </span>
-          </label>
-        </ConsentSection>
-        
-        <ButtonGroup>
-          <button className="cancel" onClick={onClose}>
-            Cancel
-          </button>
-          <button 
-            className="accept" 
-            disabled={!hasAgreed}
-            onClick={handleAccept}
-          >
-            Accept Waiver & Continue
-          </button>
-        </ButtonGroup>
+            
+            <div className="skill-info">
+              <div className="skill-name">
+                {skillExchange.skillName || skillExchange.title}
+                <span className={`risk-badge risk-${waiverData.riskLevel}`}>
+                  {waiverData.riskLevel.toUpperCase()} RISK
+                </span>
+              </div>
+              <p style={{ margin: '0.5rem 0 0 0', fontSize: 'var(--text-sm)', color: 'var(--gray-600)' }}>
+                {waiverData.activityDescription}
+              </p>
+            </div>
+
+            <p>
+              <strong>Please read the waiver carefully and provide your consent to participate.</strong>
+            </p>
+          </PreWaiverInfo>
+
+          <LiabilityWaiver
+            skillCategory={waiverData.skillCategory}
+            riskLevel={waiverData.riskLevel}
+            activityDescription={waiverData.activityDescription}
+            onAccept={handleWaiverAccept}
+            onDecline={handleWaiverDecline}
+            isVisible={true}
+            isSubmitting={isSubmitting}
+          />
+        </ModalBody>
       </ModalContent>
     </ModalOverlay>
   );

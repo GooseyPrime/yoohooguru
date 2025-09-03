@@ -250,16 +250,89 @@ function TermsAndConditionsPage() {
             temporarily suspend service for maintenance or updates.
           </p>
 
-          <h3>User Interactions</h3>
+          <h3>User Interactions and Skill-Sharing Activities</h3>
           <p>
-            yoohoo.guru is not responsible for the quality, safety, or legality of skills offered, 
-            the truth of user profiles, or the performance of skill exchanges.
+
+            RIPPLE Community is not responsible for the quality, safety, or legality of skills offered, 
+            the truth of user profiles, or the performance of skill exchanges. Users participate in 
+            skill-sharing activities at their own risk and responsibility.
+          </p>
+
+          <HighlightBox>
+            <p>
+              <strong>Important:</strong> Skill-sharing activities may involve inherent risks including but not 
+              limited to physical injury, property damage, financial loss, or personal harm. Users must 
+              exercise their own judgment and take appropriate precautions.
+            </p>
+          </HighlightBox>
+
+          <h3>Assumption of Risk</h3>
+          <p>
+            By using our platform and participating in skill exchanges, you expressly acknowledge and agree that:
+          </p>
+          <ul>
+            <li>You understand the risks associated with skill-sharing activities</li>
+            <li>You voluntarily assume all risks of injury, damage, or loss</li>
+            <li>You are responsible for your own safety and well-being</li>
+            <li>You will exercise proper caution and follow safety guidelines</li>
+            <li>You have adequate insurance coverage for your activities</li>
+          </ul>
+
+          <h3>Release of Claims</h3>
+          <p>
+            You hereby release, waive, discharge, and hold harmless RIPPLE Community, its officers, 
+            directors, employees, agents, and affiliates from any and all liability, claims, demands, 
+            actions, or causes of action arising out of or related to:
+          </p>
+          <ul>
+            <li>Your participation in skill-sharing activities</li>
+            <li>Interactions with other users</li>
+            <li>Any injury, damage, or loss during skill exchanges</li>
+            <li>The conduct or actions of other platform users</li>
+            <li>Equipment, tools, or materials used during skill exchanges</li>
+          </ul>
+
+          <h3>Indemnification</h3>
+          <p>
+            You agree to indemnify, defend, and hold harmless RIPPLE Community from and against any 
+            and all claims, liabilities, damages, losses, costs, expenses, or fees (including reasonable 
+            attorney fees) arising from or relating to:
+          </p>
+          <ul>
+            <li>Your use of the platform or participation in skill exchanges</li>
+            <li>Your violation of these Terms or applicable laws</li>
+            <li>Your infringement of any third-party rights</li>
+            <li>Any injury or damage caused by your actions or negligence</li>
+          </ul>
+
+          <h3>Property Damage Disclaimer</h3>
+          <p>
+            RIPPLE Community is not responsible for any damage to personal property, real estate, 
+            or belongings that may occur during skill exchanges. Users are responsible for ensuring 
+            appropriate insurance coverage and taking necessary precautions to protect their property.
           </p>
 
           <h3>Limitation of Liability</h3>
           <p>
-            To the maximum extent permitted by law, yoohoo.guru shall not be liable for any indirect, 
-            incidental, or consequential damages arising from your use of the platform.
+
+            To the maximum extent permitted by law, RIPPLE Community's total liability to you for 
+            all damages, losses, and causes of action (whether in contract, tort, or otherwise) 
+            shall not exceed the amount you have paid to RIPPLE Community in the twelve (12) months 
+            preceding the claim. In no event shall RIPPLE Community be liable for:
+          </p>
+          <ul>
+            <li>Indirect, incidental, special, consequential, or punitive damages</li>
+            <li>Loss of profits, revenues, data, or business opportunities</li>
+            <li>Personal injury or property damage arising from skill exchanges</li>
+            <li>Actions or omissions of other users</li>
+            <li>Force majeure events beyond our reasonable control</li>
+          </ul>
+
+          <h3>No Warranty</h3>
+          <p>
+            The platform and all services are provided "as is" and "as available" without warranties 
+            of any kind, either express or implied, including but not limited to warranties of 
+            merchantability, fitness for a particular purpose, or non-infringement.
           </p>
         </Section>
 
