@@ -315,7 +315,7 @@ function TermsAndConditionsPage() {
           <h3>Limitation of Liability</h3>
           <p>
 
-            To the maximum extent permitted by law, RIPPLE Community's total liability to you for 
+            To the maximum extent permitted by law, RIPPLE Community&apos;s total liability to you for 
             all damages, losses, and causes of action (whether in contract, tort, or otherwise) 
             shall not exceed the amount you have paid to RIPPLE Community in the twelve (12) months 
             preceding the claim. In no event shall RIPPLE Community be liable for:
@@ -330,7 +330,7 @@ function TermsAndConditionsPage() {
 
           <h3>No Warranty</h3>
           <p>
-            The platform and all services are provided "as is" and "as available" without warranties 
+            The platform and all services are provided &quot;as is&quot; and &quot;as available&quot; without warranties 
             of any kind, either express or implied, including but not limited to warranties of 
             merchantability, fitness for a particular purpose, or non-infringement.
           </p>

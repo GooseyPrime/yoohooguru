@@ -29,7 +29,7 @@ export default function OnboardingPayout() {
       </div>
 
       <div style={{fontSize: '0.875rem', color: '#6b7280'}}>
-        <h4>What you'll need:</h4>
+        <h4>What you&apos;ll need:</h4>
         <ul>
           <li>Bank account information</li>
           <li>Tax ID (SSN or EIN)</li>
