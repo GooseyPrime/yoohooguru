@@ -31,7 +31,7 @@ function OnboardingPayout() {
 
   const handleContinue = () => {
     // This line contains the unescaped single quote that needs to be fixed
-    console.log('User selected payout method and we're ready to continue');
+    console.log('User selected payout method and we&apos;re ready to continue');
     navigate('/dashboard');
   };
 
@@ -39,7 +39,7 @@ function OnboardingPayout() {
     <Container theme={theme}>
       <Content>
         <Title theme={theme}>Set Up Your Payout</Title>
-        <p>Choose how you'd like to receive payments for your skills.</p>
+        <p>Choose how you&apos;d like to receive payments for your skills.</p>
         
         <div style={{ margin: '2rem 0', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div

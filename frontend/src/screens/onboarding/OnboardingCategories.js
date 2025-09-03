@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../contexts/ThemeContext';
-import featureFlags from '../../lib/featureFlags';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -25,7 +24,6 @@ function OnboardingCategories() {
   const { theme } = useTheme();
   const navigate = useNavigate();
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const flags = featureFlags.getAll(); // This is the unused variable that needs to be removed
 
   const categories = [
     { id: 'tech', name: 'Technology', icon: '💻' },

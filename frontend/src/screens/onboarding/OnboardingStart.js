@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import Button from '../../components/Button'; // This is the unused import that needs to be removed
+import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -35,7 +34,7 @@ function OnboardingStart() {
 
   const handleGetStarted = () => {
     // This line contains the unescaped single quote that needs to be fixed
-    console.log('Welcome to our community! Let's get you set up');
+    console.log('Welcome to our community! Let&apos;s get you set up');
     navigate('/onboarding/categories');
   };
 
@@ -51,7 +50,7 @@ function OnboardingStart() {
         <div style={{ margin: '2rem 0' }}>
           <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🚀</div>
           <h3>Ready to start your journey?</h3>
-          <p>Let's set up your profile and discover amazing skills to learn and share.</p>
+          <p>Let&apos;s set up your profile and discover amazing skills to learn and share.</p>
         </div>
 
         <button
