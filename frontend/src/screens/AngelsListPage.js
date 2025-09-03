@@ -1,111 +1,81 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useTheme } from '../contexts/ThemeContext';
+import Button from '../components/Button';
 
-const PageContainer = styled.div`
-  min-height: 100vh;
+const Container = styled.div`
+  min-height: calc(100vh - 140px);
   padding: 2rem 1rem;
-  background: ${props => props.theme.colors.background};
 `;
 
-const ContentWrapper = styled.div`
-  max-width: 1200px;
+const Content = styled.div`
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 2rem 0;
-`;
-
-const HeaderSection = styled.div`
-  text-align: center;
-  margin-bottom: 3rem;
-`;
-
-const Title = styled.h1`
-  color: ${props => props.theme.colors.text};
-  font-size: 3rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-`;
-
-const Description = styled.p`
-  color: ${props => props.theme.colors.textSecondary};
-  font-size: 1.25rem;
-  max-width: 600px;
-  margin: 0 auto;
-  line-height: 1.6;
-`;
-
-const GridContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  margin-top: 3rem;
-`;
-
-const Card = styled.div`
-  background: ${props => props.theme.colors.cardBg};
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 2rem;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid ${props => props.theme.colors.border};
-  transition: all var(--transition-fast);
+`;
+
+const CategoryGrid = styled.div`
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin-top: 2rem;
+`;
+
+const CategoryCard = styled.div`
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 
   &:hover {
-    box-shadow: var(--shadow-md);
     transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: var(--gray-900);
+  }
+
+  p {
+    color: var(--gray-600);
+    margin-bottom: 1rem;
+    font-size: var(--text-sm);
   }
 `;
 
-const CardTitle = styled.h3`
-  color: ${props => props.theme.colors.text};
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-`;
-
-const CardDescription = styled.p`
-  color: ${props => props.theme.colors.textSecondary};
-  line-height: 1.6;
-`;
-
-function AngelsListPage() {
-  const { theme } = useTheme();
+export default function AngelsListPage() {
+  const categories = [
+    'Cleaning',
+    'Yard & Garden', 
+    'Assembly',
+    'Pet Care',
+    'Moving Help',
+    'Rentals'
+  ];
 
   return (
-    <PageContainer theme={theme}>
-      <ContentWrapper>
-        <HeaderSection>
-          <Title theme={theme}>
-            <h1>Angel&apos;s List</h1>
-          </Title>
-          <Description theme={theme}>
-            Discover inspiring community members who are making a difference through skill sharing and mentorship.
-          </Description>
-        </HeaderSection>
-
-        <GridContainer>
-          <Card theme={theme}>
-            <CardTitle theme={theme}>Community Leaders</CardTitle>
-            <CardDescription theme={theme}>
-              Meet the amazing individuals who are leading by example and inspiring others to share their skills.
-            </CardDescription>
-          </Card>
-
-          <Card theme={theme}>
-            <CardTitle theme={theme}>Top Mentors</CardTitle>
-            <CardDescription theme={theme}>
-              Connect with experienced professionals who are dedicated to helping others grow and succeed.
-            </CardDescription>
-          </Card>
-
-          <Card theme={theme}>
-            <CardTitle theme={theme}>Skill Champions</CardTitle>
-            <CardDescription theme={theme}>
-              Discover members who excel in various skills and are passionate about teaching others.
-            </CardDescription>
-          </Card>
-        </GridContainer>
-      </ContentWrapper>
-    </PageContainer>
+    <Container>
+      <Content>
+        <h1>Angel's List</h1>
+        <p className="text-muted">
+          Browse local help, rentals, and odd jobs. Booking will prompt sign‑in.
+        </p>
+        <CategoryGrid>
+          {categories.map(category => (
+            <CategoryCard key={category}>
+              <h3>{category}</h3>
+              <p>Popular near you</p>
+              <Button variant="ghost" size="sm">
+                View {category}
+              </Button>
+            </CategoryCard>
+          ))}
+        </CategoryGrid>
+      </Content>
+    </Container>
   );
 }
-
-export default AngelsListPage;

@@ -5,6 +5,7 @@ import { Menu, X, User, LogOut, Settings } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import Button from './Button';
+import { setLastHub } from '../lib/prefs';
 
 const HeaderContainer = styled.header`
   position: fixed;
@@ -198,12 +199,20 @@ function Header() {
             Home
           </NavLink>
           <NavLink 
-            to="/skills" 
-            className={isActive('/skills') ? 'active' : ''}
-            onClick={() => setIsMenuOpen(false)}
+            to="/angels-list" 
+            className={isActive('/angels-list') ? 'active' : ''}
+            onClick={() => { setIsMenuOpen(false); setLastHub('angels'); }}
             theme={theme}
           >
-            Angel&apos;s List
+            Angel's List
+          </NavLink>
+          <NavLink 
+            to="/marketplace" 
+            className={(isActive('/marketplace') || isActive('/skills')) ? 'active' : ''}
+            onClick={() => { setIsMenuOpen(false); setLastHub('skillshare'); }}
+            theme={theme}
+          >
+            SkillShare
           </NavLink>
           {currentUser && (
             <NavLink 
