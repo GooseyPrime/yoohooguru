@@ -9,9 +9,9 @@ export default function OnboardingCategories() {
 
   useEffect(() => {
     // Load categories from Firebase (using the seeded data)
-    fetch('/api/feature-flags').then(r=>r.json()).then(({flags})=>{
-      // Optional: hide ComingSoon items if desired
-    }).catch(()=>{});
+    }).catch((error) => {
+      console.error('Failed to load feature flags:', error);
+    });
     
     // Load existing selections
     api('/onboarding/status').then(({data})=>{
