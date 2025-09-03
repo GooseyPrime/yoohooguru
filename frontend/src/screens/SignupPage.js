@@ -26,7 +26,7 @@ const Description = styled.p`
 `;
 
 const ComingSoon = styled.div`
-  background: linear-gradient(135deg, var(--ripple-blue) 0%, var(--growth-green) 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--growth-green) 100%);
   color: white;
   padding: 3rem 2rem;
   border-radius: var(--radius-xl);
