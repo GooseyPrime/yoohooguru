@@ -10,12 +10,10 @@ export default function OnboardingCategories() {
 
   useEffect(() => {
     // Load categories from Firebase (using the seeded data)
-    }).catch((error) => {
-      console.error('Failed to load feature flags:', error);
-    });
+    // For now, we'll use hardcoded categories below
     
     // Load existing selections
-    }).catch(error => { alert('Error loading onboarding status: ' + error.message); });
+    // For now, we'll start with empty selections
     
     // Load categories - we'll use a simple hardcoded list for MVP since seedCategories creates them
     // In production, you'd fetch from /api/categories endpoint
