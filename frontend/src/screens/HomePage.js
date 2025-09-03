@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { ArrowRight, Users, BookOpen, TrendingUp, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
+import { setLastHub } from '../lib/prefs';
 
 const HeroSection = styled.section`
   background: linear-gradient(135deg, var(--primary) 0%, var(--growth-green) 100%);
@@ -153,6 +154,42 @@ const CTASection = styled.section`
   text-align: center;
 `;
 
+const WelcomeTiles = styled.div`
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+`;
+
+const WelcomeTile = styled.div`
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--gray-900);
+    font-size: var(--text-xl);
+  }
+
+  p {
+    color: var(--gray-600);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+`;
+
 function HomePage() {
   const navigate = useNavigate();
 
@@ -199,21 +236,39 @@ function HomePage() {
             <Button 
               variant="secondary" 
               size="lg"
-              onClick={() => navigate('/signup')}
+              onClick={() => navigate('/login')}
             >
-              Start Your Journey
-              <ArrowRight size={20} />
-            </Button>
-            <Button 
-              variant="outline" 
-              size="lg"
-              onClick={() => navigate('/skills')}
-            >
-              Browse Skills
+              Sign In
             </Button>
           </HeroButtons>
         </HeroContent>
       </HeroSection>
+
+      {/* Two big CTAs (Angel's List / SkillShare) */}
+      <WelcomeTiles>
+        <WelcomeTile>
+          <h3>Angel's List</h3>
+          <p>Find help, rentals, and odd jobs near you.</p>
+          <Button 
+            variant="primary" 
+            size="md" 
+            onClick={() => { setLastHub('angels'); navigate('/angels-list'); }}
+          >
+            Explore Angel's List →
+          </Button>
+        </WelcomeTile>
+        <WelcomeTile>
+          <h3>SkillShare (led by Coach Guru)</h3>
+          <p>Swap skills or book a session with a Guru.</p>
+          <Button 
+            variant="primary" 
+            size="md" 
+            onClick={() => { setLastHub('skillshare'); navigate('/marketplace'); }}
+          >
+            Enter SkillShare →
+          </Button>
+        </WelcomeTile>
+      </WelcomeTiles>
 
       <FeaturesSection>
         <SectionTitle>How yoohoo.guru Works</SectionTitle>
