@@ -8,6 +8,7 @@ import SignupPage from '../screens/SignupPage';
 import DashboardPage from '../screens/DashboardPage';
 import ProfilePage from '../screens/ProfilePage';
 import SkillsPage from '../screens/SkillsPage';
+import AngelsListPage from '../screens/AngelsListPage';
 import PrivacyPolicyPage from '../screens/PrivacyPolicyPage';
 import TermsAndConditionsPage from '../screens/TermsAndConditionsPage';
 import AdminLoginPage from '../screens/AdminLoginPage';
@@ -61,6 +62,7 @@ function AppRouter() {
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="skills" element={<SkillsPage />} />
+        <Route path="angels-list" element={<AngelsListPage />} />
         <Route path="liability-demo" element={<LiabilityEnhancementDemo />} />
         
         {/* Legal pages - supporting both new and existing URLs */}
