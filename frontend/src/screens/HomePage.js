@@ -133,17 +133,14 @@ function HomePage() {
       </HeroSection>
 
       <WelcomeTiles>
-        <Tile>
-          <div className="icon">
-            <Users size={24} />
-          </div>
-          <h3>Angel's List</h3>
-          <p>Local help, rentals, and odd jobs. Clean, simple booking.</p>
+        <WelcomeTile>
+          <h3>Angel&apos;s List</h3>
+          <p>Find help, rentals, and odd jobs near you.</p>
           <Button 
             variant="ghost" 
             onClick={() => navigate('/angels-list')}
           >
-            Browse Angels
+            Explore Angel&apos;s List →
           </Button>
         </Tile>
         

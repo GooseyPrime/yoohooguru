@@ -217,69 +217,17 @@ function AngelsListPage() {
   });
 
   return (
-    <PageContainer>
-      <Header>
-        <Title>Angel's List</Title>
-        <Subtitle>Local help, rentals, and odd jobs. Clean, simple booking.</Subtitle>
-      </Header>
-
-      <FilterBar>
-        <SearchInput
-          type="text"
-          placeholder="Search services..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <FilterSelect
-          value={selectedCity}
-          onChange={(e) => setSelectedCity(e.target.value)}
-        >
-          <option value="all">All Cities</option>
-          <option value="Denver">Denver</option>
-          <option value="Boulder">Boulder</option>
-        </FilterSelect>
-        <FilterSelect
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-        >
-          <option value="all">All Categories</option>
-          <option value="home">Home Services</option>
-          <option value="moving">Moving</option>
-          <option value="cleaning">Cleaning</option>
-          <option value="outdoor">Outdoor</option>
-          <option value="pets">Pet Care</option>
-          <option value="errands">Errands</option>
-        </FilterSelect>
-      </FilterBar>
-
-      <CategoriesGrid>
-        {filteredCategories.map(category => (
-          <CategoryCard key={category.id}>
-            <CategoryHeader>
-              <CategoryTitle>{category.title}</CategoryTitle>
-              <CategoryBadge>{category.providers} Angels</CategoryBadge>
-            </CategoryHeader>
-            
-            <CategoryDescription>
-              {category.description}
-            </CategoryDescription>
-            
-            <CategoryMeta>
-              <MetaItem>
-                <MapPin size={14} />
-                {category.city}
-              </MetaItem>
-              <MetaItem>
-                <DollarSign size={14} />
-                {category.avgPrice}
-              </MetaItem>
-              <MetaItem>
-                <Star size={14} />
-                {category.rating}
-              </MetaItem>
-            </CategoryMeta>
-            
-            <CategoryActions>
+    <Container>
+      <Content>
+        <h1>Angel&apos;s List</h1>
+        <p className="text-muted">
+          Browse local help, rentals, and odd jobs. Booking will prompt sign‑in.
+        </p>
+        <CategoryGrid>
+          {categories.map(category => (
+            <CategoryCard key={category}>
+              <h3>{category}</h3>
+              <p>Popular near you</p>
               <Button variant="ghost" size="sm">
                 View Angels
               </Button>
