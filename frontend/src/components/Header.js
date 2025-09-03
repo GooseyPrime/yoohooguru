@@ -3,21 +3,17 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { Menu, X, User, LogOut, Settings } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { useTheme } from '../contexts/ThemeContext';
 import Button from './Button';
 import { setLastHub } from '../lib/prefs';
 
 const HeaderContainer = styled.header`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  background: ${props => props.theme.colors.navBg};
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid ${props => props.theme.colors.border};
+  position: sticky; 
+  top: 0; 
+  z-index: 50;
+  backdrop-filter: saturate(140%) blur(10px);
+  background: rgba(11,13,16,.55);
+  border-bottom: 1px solid var(--border);
   padding: 1rem 0;
-  transition: all var(--transition-normal);
 `;
 
 const HeaderContent = styled.div`
@@ -33,10 +29,10 @@ const Logo = styled(Link)`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-family: var(--font-heading);
+  font-family: ${({ theme }) => theme.fonts.sans};
   font-size: 1.5rem;
-  font-weight: var(--font-bold);
-  color: var(--primary);
+  font-weight: 700;
+  color: var(--pri);
   text-decoration: none;
   
   &:hover {
@@ -60,32 +56,32 @@ const Nav = styled.nav`
     top: 100%;
     left: 0;
     right: 0;
-    background: ${props => props.theme.colors.surface};
+    background: var(--surface);
     flex-direction: column;
     padding: 1rem;
-    border-bottom: 1px solid ${props => props.theme.colors.border};
-    box-shadow: var(--shadow-lg);
+    border-bottom: 1px solid var(--border);
+    box-shadow: ${({ theme }) => theme.shadow.card};
     gap: 1rem;
   }
 `;
 
 const NavLink = styled(Link)`
-  color: ${props => props.theme.colors.textSecondary};
+  padding: 0.5rem 0.75rem; 
+  border-radius: var(--r-sm);
+  color: var(--muted);
   text-decoration: none;
-  font-weight: var(--font-medium);
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-md);
-  transition: all var(--transition-fast);
+  font-weight: 500;
+  transition: all var(--t-fast) ${({ theme }) => theme.motion.in};
 
-  &:hover {
-    color: ${props => props.theme.colors.primary};
-    background: ${props => props.theme.colors.surfaceSecondary};
-    text-decoration: none;
+  &:hover { 
+    color: var(--text); 
+    background: rgba(255,255,255,.03); 
   }
-
-  &.active {
-    color: ${props => props.theme.colors.primary};
-    background: rgba(0, 123, 255, 0.1);
+  
+  &.active { 
+    color: var(--text); 
+    background: rgba(124,140,255,.10); 
+    border: 1px solid rgba(124,140,255,.35); 
   }
 `;
 
@@ -102,16 +98,15 @@ const UserButton = styled.button`
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   background: none;
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: var(--radius-md);
-  color: ${props => props.theme.colors.textSecondary};
-  font-weight: var(--font-medium);
+  border: none;
+  color: var(--muted);
+  font-weight: 500;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  border-radius: var(--r-sm);
+  transition: background var(--t-fast) ${({ theme }) => theme.motion.in};
 
   &:hover {
-    border-color: ${props => props.theme.colors.primary};
-    color: ${props => props.theme.colors.primary};
+    background: rgba(255,255,255,.03);
   }
 `;
 
@@ -120,31 +115,29 @@ const Dropdown = styled.div`
   top: 100%;
   right: 0;
   margin-top: 0.5rem;
-  background: ${props => props.theme.colors.surface};
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  padding: 0.5rem 0;
-  min-width: 200px;
-  z-index: 1001;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: ${({ theme }) => theme.shadow.card};
+  min-width: 160px;
+  overflow: hidden;
 `;
 
 const DropdownItem = styled.button`
-  width: 100%;
-  text-align: left;
-  padding: 0.75rem 1rem;
-  background: none;
-  border: none;
-  color: ${props => props.theme.colors.textSecondary};
-  font-weight: var(--font-medium);
-  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  transition: background var(--transition-fast);
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--t-fast) ${({ theme }) => theme.motion.in};
 
   &:hover {
-    background: ${props => props.theme.colors.surfaceSecondary};
+    background: rgba(255,255,255,.03);
   }
 `;
 
@@ -152,7 +145,7 @@ const MobileMenuButton = styled.button`
   display: none;
   background: none;
   border: none;
-  color: ${props => props.theme.colors.textSecondary};
+  color: var(--muted);
   cursor: pointer;
   padding: 0.5rem;
 
@@ -163,7 +156,6 @@ const MobileMenuButton = styled.button`
 
 function Header() {
   const { currentUser, userProfile, logout } = useAuth();
-  const { theme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -182,35 +174,32 @@ function Header() {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <HeaderContainer theme={theme}>
+    <HeaderContainer>
       <HeaderContent>
         <Logo to="/">
           <YoohooIcon>🎯</YoohooIcon>
           yoohoo.guru
         </Logo>
 
-        <Nav $isOpen={isMenuOpen} theme={theme}>
+        <Nav $isOpen={isMenuOpen}>
           <NavLink 
             to="/" 
             className={isActive('/') ? 'active' : ''}
             onClick={() => setIsMenuOpen(false)}
-            theme={theme}
           >
             Home
           </NavLink>
           <NavLink 
             to="/angels-list" 
             className={isActive('/angels-list') ? 'active' : ''}
-            onClick={() => { setIsMenuOpen(false); setLastHub('angels'); }}
-            theme={theme}
+            onClick={() => setIsMenuOpen(false)}
           >
-            Angel's List
+            Angel&apos;s List
           </NavLink>
           <NavLink 
-            to="/marketplace" 
-            className={(isActive('/marketplace') || isActive('/skills')) ? 'active' : ''}
-            onClick={() => { setIsMenuOpen(false); setLastHub('skillshare'); }}
-            theme={theme}
+            to="/skills" 
+            className={isActive('/skills') ? 'active' : ''}
+            onClick={() => setIsMenuOpen(false)}
           >
             SkillShare
           </NavLink>
@@ -219,7 +208,6 @@ function Header() {
               to="/dashboard" 
               className={isActive('/dashboard') ? 'active' : ''}
               onClick={() => setIsMenuOpen(false)}
-              theme={theme}
             >
               Dashboard
             </NavLink>
@@ -231,22 +219,21 @@ function Header() {
             <>
               <UserButton 
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                theme={theme}
               >
                 <User size={18} />
                 {userProfile?.displayName || 'User'}
               </UserButton>
               
               {isUserMenuOpen && (
-                <Dropdown theme={theme}>
+                <Dropdown>
                   <DropdownItem onClick={() => {
                     navigate('/profile');
                     setIsUserMenuOpen(false);
-                  }} theme={theme}>
+                  }}>
                     <Settings size={16} />
                     Profile
                   </DropdownItem>
-                  <DropdownItem onClick={handleLogout} theme={theme}>
+                  <DropdownItem onClick={handleLogout}>
                     <LogOut size={16} />
                     Sign Out
                   </DropdownItem>
@@ -274,7 +261,6 @@ function Header() {
 
           <MobileMenuButton 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            theme={theme}
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </MobileMenuButton>
