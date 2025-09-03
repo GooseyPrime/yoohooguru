@@ -194,7 +194,7 @@ function Header() {
             className={isActive('/angels-list') ? 'active' : ''}
             onClick={() => setIsMenuOpen(false)}
           >
-            Angel's List
+            Angel&apos;s List
           </NavLink>
           <NavLink 
             to="/skills" 
