@@ -1,28 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ArrowRight, Users, BookOpen, TrendingUp, Star } from 'lucide-react';
+import { ArrowRight, Users, BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import { setLastHub } from '../lib/prefs';
 
 const HeroSection = styled.section`
-  background: linear-gradient(135deg, var(--primary) 0%, var(--growth-green) 100%);
-  color: white;
-  padding: 6rem 0 4rem;
+  padding: 72px 0 24px; 
   text-align: center;
+  background: radial-gradient(1200px 600px at 50% -10%, rgba(124,140,255,.12), transparent),
+              linear-gradient(180deg, rgba(255,255,255,.02), transparent);
   position: relative;
   overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
-    opacity: 0.3;
-  }
 `;
 
 const HeroContent = styled.div`
@@ -33,17 +22,18 @@ const HeroContent = styled.div`
   z-index: 1;
 
   h1 {
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    font-weight: var(--font-bold);
+    font-size: clamp(2.625rem, 5vw, 3.5rem);
+    font-weight: 700;
     margin-bottom: 1.5rem;
     line-height: 1.2;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    letter-spacing: -0.025em;
+    color: var(--text);
   }
 
   p {
-    font-size: var(--text-xl);
+    font-size: clamp(1rem, 2vw, 1.125rem);
     margin-bottom: 2rem;
-    opacity: 0.9;
+    color: var(--muted);
     line-height: 1.6;
   }
 `;
@@ -60,262 +50,117 @@ const HeroButtons = styled.div`
   }
 `;
 
-const FeaturesSection = styled.section`
-  padding: 6rem 0;
-  background: white;
+const WelcomeTiles = styled.div`
+  max-width: 1100px; 
+  margin: 24px auto; 
+  padding: 0 16px;
+  display: grid; 
+  gap: 20px; 
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 `;
 
-const SectionTitle = styled.h2`
-  text-align: center;
-  font-size: var(--text-3xl);
-  margin-bottom: 3rem;
-  color: var(--gray-900);
-`;
-
-const FeaturesGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-`;
-
-const FeatureCard = styled.div`
-  text-align: center;
-  padding: 2rem;
-  border-radius: var(--radius-xl);
-  background: var(--light-gray);
-  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
+const Tile = styled.div`
+  background: var(--surface); 
+  border: 1px solid var(--border); 
+  border-radius: var(--r-lg);
+  padding: 20px; 
+  box-shadow: ${({ theme }) => theme.shadow.card};
+  transition: transform var(--t-med) ${({ theme }) => theme.motion.in}, 
+              border-color var(--t-fast) ${({ theme }) => theme.motion.in};
+  
+  &:hover { 
+    transform: translateY(-2px); 
+    border-color: #2E3540; 
   }
 
   .icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: var(--primary);
-    color: white;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--r-md);
+    background: rgba(124,140,255,.10);
+    color: var(--pri);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 1.5rem;
-  }
-
-  h3 {
-    font-size: var(--text-xl);
     margin-bottom: 1rem;
-    color: var(--gray-900);
-  }
-
-  p {
-    color: var(--gray-600);
-    line-height: 1.6;
-  }
-`;
-
-const StatsSection = styled.section`
-  background: var(--gray-900);
-  color: white;
-  padding: 4rem 0;
-`;
-
-const StatsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-  text-align: center;
-`;
-
-const StatCard = styled.div`
-  h3 {
-    font-size: var(--text-4xl);
-    font-weight: var(--font-bold);
-    color: var(--primary);
-    margin-bottom: 0.5rem;
-  }
-
-  p {
-    color: var(--gray-300);
-    font-size: var(--text-lg);
-  }
-`;
-
-const CTASection = styled.section`
-  background: linear-gradient(135deg, var(--growth-green) 0%, var(--energy-orange) 100%);
-  color: white;
-  padding: 4rem 0;
-  text-align: center;
-`;
-
-const WelcomeTiles = styled.div`
-  max-width: 1100px;
-  margin: 2rem auto;
-  padding: 0 1rem;
-  display: grid;
-  gap: 1.25rem;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-`;
-
-const WelcomeTile = styled.div`
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 1.5rem;
-  text-align: center;
-  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
   }
 
   h3 {
-    margin-top: 0;
-    margin-bottom: 1rem;
-    color: var(--gray-900);
-    font-size: var(--text-xl);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--text);
   }
 
   p {
-    color: var(--gray-600);
+    color: var(--muted);
+    line-height: 1.5;
     margin-bottom: 1.5rem;
-    line-height: 1.6;
   }
 `;
+
 
 function HomePage() {
   const navigate = useNavigate();
-
-  const features = [
-    {
-      icon: <Users size={24} />,
-      title: 'Connect with Community',
-      description: 'Find skilled neighbors and share your expertise in a trusted local network.'
-    },
-    {
-      icon: <BookOpen size={24} />,
-      title: 'Learn & Teach',
-      description: 'Exchange skills through AI-moderated sessions designed for effective learning.'
-    },
-    {
-      icon: <TrendingUp size={24} />,
-      title: 'Grow Together',
-      description: 'Progress through tiers and create exponential impact in your community.'
-    },
-    {
-      icon: <Star size={24} />,
-      title: 'Quality Assured',
-      description: 'AI-powered matching and session templates ensure meaningful exchanges.'
-    }
-  ];
-
-  const stats = [
-    { number: '10,000+', label: 'Active Members' },
-    { number: '500+', label: 'Skills Available' },
-    { number: '25,000+', label: 'Sessions Completed' },
-    { number: '98%', label: 'Satisfaction Rate' }
-  ];
 
   return (
     <>
       <HeroSection>
         <HeroContent>
-          <h1>Create Waves of Impact in Your Community</h1>
+          <h1>Find help or share your skills — the Handy‑Yeti way.</h1>
           <p>
-            Exchange skills, discover purpose, and build meaningful connections 
-            with neighbors who share your passion for growth and learning.
+            Local connections, meaningful exchanges, and community impact through 
+            our trusted skill-sharing platform.
           </p>
           <HeroButtons>
             <Button 
-              variant="secondary" 
+              variant="primary" 
               size="lg"
-              onClick={() => navigate('/login')}
+              onClick={() => navigate('/signup')}
             >
-              Sign In
+              Start Your Journey
+              <ArrowRight size={20} />
+            </Button>
+            <Button 
+              variant="outline" 
+              size="lg"
+              onClick={() => navigate('/angels-list')}
+            >
+              Browse Services
             </Button>
           </HeroButtons>
         </HeroContent>
       </HeroSection>
 
-      {/* Two big CTAs (Angel&apos;s List / SkillShare) */}
       <WelcomeTiles>
-        <WelcomeTile>
-          <h3>Angel&apos;s List</h3>
-          <p>Find help, rentals, and odd jobs near you.</p>
+        <Tile>
+          <div className="icon">
+            <Users size={24} />
+          </div>
+          <h3>Angel's List</h3>
+          <p>Local help, rentals, and odd jobs. Clean, simple booking.</p>
           <Button 
-            variant="primary" 
-            size="md" 
-            onClick={() => { setLastHub('angels'); navigate('/angels-list'); }}
+            variant="ghost" 
+            onClick={() => navigate('/angels-list')}
           >
-            Explore Angel&apos;s List →
+            Browse Angels
           </Button>
-        </WelcomeTile>
-        <WelcomeTile>
+        </Tile>
+        
+        <Tile>
+          <div className="icon">
+            <BookOpen size={24} />
+          </div>
           <h3>SkillShare (led by Coach Guru)</h3>
-          <p>Swap skills or book a session with a Guru.</p>
+          <p>Learn or teach. Book a Guru or swap skills.</p>
           <Button 
-            variant="primary" 
-            size="md" 
-            onClick={() => { setLastHub('skillshare'); navigate('/marketplace'); }}
+            variant="ghost" 
+            onClick={() => navigate('/skills')}
           >
-            Enter SkillShare →
+            Explore Skills
           </Button>
-        </WelcomeTile>
+        </Tile>
       </WelcomeTiles>
-
-      <FeaturesSection>
-        <SectionTitle>How yoohoo.guru Works</SectionTitle>
-        <FeaturesGrid>
-          {features.map((feature, index) => (
-            <FeatureCard key={index}>
-              <div className="icon">
-                {feature.icon}
-              </div>
-              <h3>{feature.title}</h3>
-              <p>{feature.description}</p>
-            </FeatureCard>
-          ))}
-        </FeaturesGrid>
-      </FeaturesSection>
-
-      <StatsSection>
-        <SectionTitle style={{ color: 'white' }}>
-          Building Communities, One Skill at a Time
-        </SectionTitle>
-        <StatsGrid>
-          {stats.map((stat, index) => (
-            <StatCard key={index}>
-              <h3>{stat.number}</h3>
-              <p>{stat.label}</p>
-            </StatCard>
-          ))}
-        </StatsGrid>
-      </StatsSection>
-
-      <CTASection>
-        <div style={{ maxWidth: '600px', margin: '0 auto', padding: '0 1rem' }}>
-          <h2 style={{ marginBottom: '1rem' }}>Ready to Make Your Impact?</h2>
-          <h3>Angel&apos;s List</h3>
-          <p style={{ marginBottom: '2rem', opacity: 0.9 }}>
-            Join thousands of community members creating positive change through skill sharing.
-          </p>
-          <Button 
-            variant="primary" 
-            size="lg"
-            onClick={() => navigate('/signup')}
-          >
-            Explore Angel&apos;s List →
-            <ArrowRight size={20} />
-          </Button>
-        </div>
-      </CTASection>
     </>
   );
 }
