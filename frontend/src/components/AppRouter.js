@@ -8,6 +8,7 @@ import SignupPage from '../screens/SignupPage';
 import DashboardPage from '../screens/DashboardPage';
 import ProfilePage from '../screens/ProfilePage';
 import SkillsPage from '../screens/SkillsPage';
+import AngelsListPage from '../screens/AngelsListPage';
 import PrivacyPolicyPage from '../screens/PrivacyPolicyPage';
 import TermsAndConditionsPage from '../screens/TermsAndConditionsPage';
 import AdminLoginPage from '../screens/AdminLoginPage';
@@ -63,9 +64,6 @@ function AppRouter() {
         <Route index element={<HomePage />} />
         {/* SkillShare (public label) – technical route remains /skills */}
         <Route path="skills" element={<SkillsPage />} />
-        {/* Alias for public marketing label */}
-        <Route path="marketplace" element={<SkillsPage />} />
-        {/* Angel's List hub */}
         <Route path="angels-list" element={<AngelsListPage />} />
         <Route path="liability-demo" element={<LiabilityEnhancementDemo />} />
         

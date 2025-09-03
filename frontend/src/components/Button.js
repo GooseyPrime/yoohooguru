@@ -1,187 +1,114 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useTheme } from '../contexts/ThemeContext';
 
-const StyledButton = styled.button`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+const Base = styled.button`
+  display: inline-flex; 
+  align-items: center; 
   gap: 0.5rem;
-  border: none;
-  border-radius: var(--radius-md);
-  font-family: var(--font-primary);
-  font-weight: var(--font-medium);
-  text-decoration: none;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  outline: none;
-  position: relative;
-  overflow: hidden;
+  padding: 0.625rem 0.95rem; 
+  border-radius: var(--r-md);
+  border: 1px solid transparent; 
+  background: transparent; 
+  color: var(--text);
+  cursor: pointer; 
+  font-family: ${({ theme }) => theme.fonts.sans};
+  font-weight: 500;
+  font-size: 1rem;
+  transition: transform var(--t-fast) ${({ theme }) => theme.motion.in},
+    background var(--t-fast) ${({ theme }) => theme.motion.in}, 
+    border-color var(--t-fast) ${({ theme }) => theme.motion.in},
+    color var(--t-fast) ${({ theme }) => theme.motion.in};
+  will-change: transform;
+  
+  &:active { 
+    transform: translateY(1px); 
+  }
+  
+  &:focus-visible { 
+    outline: 2px solid var(--pri); 
+    outline-offset: 2px; 
+    border-radius: calc(var(--r-md) + 2px); 
+  }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+    transform: none !important;
   }
 
   /* Size variants */
   ${props => {
     switch (props.$size) {
-      case 'xs':
-        return `
-          padding: 0.25rem 0.5rem;
-          font-size: var(--text-xs);
-          min-height: 24px;
-        `;
       case 'sm':
         return `
           padding: 0.375rem 0.75rem;
-          font-size: var(--text-sm);
+          font-size: 0.875rem;
           min-height: 32px;
         `;
       case 'lg':
         return `
           padding: 0.75rem 1.5rem;
-          font-size: var(--text-lg);
+          font-size: 1.125rem;
           min-height: 48px;
         `;
       case 'xl':
         return `
           padding: 1rem 2rem;
-          font-size: var(--text-xl);
+          font-size: 1.25rem;
           min-height: 56px;
         `;
       default: // md
         return `
-          padding: 0.5rem 1rem;
-          font-size: var(--text-base);
+          padding: 0.625rem 0.95rem;
+          font-size: 1rem;
           min-height: 40px;
         `;
     }
   }}
 
-  /* Variant styles */
-  ${props => {
-    switch (props.$variant) {
-      case 'primary':
-        return `
-          background: var(--primary);
-          color: white;
-          
-          &:hover:not(:disabled) {
-            background: #0056b3;
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-          }
-          
-          &:active {
-            transform: translateY(0);
-          }
-        `;
-        
-      case 'secondary':
-        return `
-          background: var(--secondary);
-          color: white;
-          
-          &:hover:not(:disabled) {
-            background: #1e7e34;
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-          }
-          
-          &:active {
-            transform: translateY(0);
-          }
-        `;
-        
-      case 'outline':
-        return `
-          background: transparent;
-          color: var(--primary);
-          border: 1px solid var(--primary);
-          
-          &:hover:not(:disabled) {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-          }
-          
-          &:active {
-            transform: translateY(0);
-          }
-        `;
-        
-      case 'ghost':
-        return `
-          background: transparent;
-          color: ${props => props.theme.colors.textSecondary};
-          
-          &:hover:not(:disabled) {
-            background: ${props => props.theme.colors.surfaceSecondary};
-            color: ${props => props.theme.colors.text};
-          }
-        `;
-        
-      case 'danger':
-        return `
-          background: var(--error);
-          color: white;
-          
-          &:hover:not(:disabled) {
-            background: #c82333;
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-          }
-          
-          &:active {
-            transform: translateY(0);
-          }
-        `;
-        
-      case 'success':
-        return `
-          background: var(--success);
-          color: white;
-          
-          &:hover:not(:disabled) {
-            background: #218838;
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-          }
-          
-          &:active {
-            transform: translateY(0);
-          }
-        `;
-        
-      default:
-        return `
-          background: ${props => props.theme.colors.surfaceSecondary};
-          color: ${props => props.theme.colors.text};
-          
-          &:hover:not(:disabled) {
-            background: ${props => props.theme.colors.border};
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-          }
-          
-          &:active {
-            transform: translateY(0);
-          }
-        `;
-    }
-  }}
-
   /* Full width */
-  ${props => props.$fullWidth && `
-    width: 100%;
-  `}
+  ${props => props.$fullWidth && `width: 100%;`}
+`;
 
-  /* Loading state */
-  ${props => props.$loading && `
-    pointer-events: none;
-  `}
+export const Primary = styled(Base)`
+  background: linear-gradient(180deg, rgba(124,140,255,.16), rgba(124,140,255,.06));
+  border-color: rgba(124,140,255,.45);
+  color: #DDE2FF;
+  
+  &:hover:not(:disabled) { 
+    background: linear-gradient(180deg, rgba(124,140,255,.24), rgba(124,140,255,.10)); 
+  }
+`;
+
+export const Ghost = styled(Base)`
+  border-color: var(--border);
+  background: var(--surface);
+  
+  &:hover:not(:disabled) { 
+    border-color: #2E3540; 
+  }
+`;
+
+export const Secondary = styled(Base)`
+  background: var(--succ);
+  color: var(--bg);
+  border-color: var(--succ);
+  
+  &:hover:not(:disabled) {
+    background: #1FA876;
+    border-color: #1FA876;
+  }
+`;
+
+export const Outline = styled(Base)`
+  background: transparent;
+  color: var(--pri);
+  border-color: var(--pri);
+  
+  &:hover:not(:disabled) {
+    background: rgba(124,140,255,.10);
+    color: #DDE2FF;
+  }
 `;
 
 const LoadingSpinner = styled.div`
@@ -193,15 +120,13 @@ const LoadingSpinner = styled.div`
   animation: spin 1s linear infinite;
 
   @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
+    to { transform: rotate(360deg); }
   }
 `;
 
 function Button({
   children,
-  variant = 'default',
+  variant = 'ghost',
   size = 'md',
   fullWidth = false,
   loading = false,
@@ -211,11 +136,16 @@ function Button({
   className,
   ...props
 }) {
-  const { theme } = useTheme();
+  
+  const ButtonComponent = {
+    primary: Primary,
+    secondary: Secondary,
+    outline: Outline,
+    ghost: Ghost,
+  }[variant] || Ghost;
   
   return (
-    <StyledButton
-      $variant={variant}
+    <ButtonComponent
       $size={size}
       $fullWidth={fullWidth}
       $loading={loading}
@@ -223,12 +153,11 @@ function Button({
       onClick={onClick}
       type={type}
       className={className}
-      theme={theme}
       {...props}
     >
       {loading && <LoadingSpinner />}
       {children}
-    </StyledButton>
+    </ButtonComponent>
   );
 }
 
