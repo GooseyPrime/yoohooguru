@@ -24,7 +24,6 @@ import OnboardingRequirements from '../screens/onboarding/OnboardingRequirements
 import OnboardingDocuments from '../screens/onboarding/OnboardingDocuments';
 import OnboardingPayout from '../screens/onboarding/OnboardingPayout';
 import OnboardingReview from '../screens/onboarding/OnboardingReview';
-import AngelsListPage from '../screens/AngelsListPage';
 
 // Protected Route Component
 function ProtectedRoute({ children }) {
