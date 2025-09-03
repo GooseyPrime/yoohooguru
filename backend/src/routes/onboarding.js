@@ -22,7 +22,7 @@ router.get('/status', authenticateUser, async (req, res) => {
     const docs    = docsSnap.val()    || {};
 
     const step = {
-      profileComplete: Boolean(profile.displayName && profile.city && profile.zip && profile.bio && profile.photoUrl),
+      profileComplete: Boolean(profile.displayName && profile.city && profile.zip && profile.bio),
       categoriesComplete: Object.keys(picks).length > 0,
       requirementsComplete: true, // will be set false if missing required docs
       payoutConnected: Boolean(profile.stripe_account_id || profile.payout_ready),
