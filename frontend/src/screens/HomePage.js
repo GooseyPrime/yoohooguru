@@ -244,17 +244,17 @@ function HomePage() {
         </HeroContent>
       </HeroSection>
 
-      {/* Two big CTAs (Angel's List / SkillShare) */}
+      {/* Two big CTAs (Angel&apos;s List / SkillShare) */}
       <WelcomeTiles>
         <WelcomeTile>
-          <h3>Angel's List</h3>
+          <h3>Angel&apos;s List</h3>
           <p>Find help, rentals, and odd jobs near you.</p>
           <Button 
             variant="primary" 
             size="md" 
             onClick={() => { setLastHub('angels'); navigate('/angels-list'); }}
           >
-            Explore Angel's List →
+            Explore Angel&apos;s List →
           </Button>
         </WelcomeTile>
         <WelcomeTile>

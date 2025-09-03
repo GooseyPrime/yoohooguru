@@ -60,7 +60,7 @@ export default function AngelsListPage() {
   return (
     <Container>
       <Content>
-        <h1>Angel's List</h1>
+        <h1>Angel&apos;s List</h1>
         <p className="text-muted">
           Browse local help, rentals, and odd jobs. Booking will prompt sign‑in.
         </p>
