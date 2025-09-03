@@ -203,7 +203,7 @@ function Header() {
             onClick={() => setIsMenuOpen(false)}
             theme={theme}
           >
-            Skills
+            Angel&apos;s List
           </NavLink>
           {currentUser && (
             <NavLink 

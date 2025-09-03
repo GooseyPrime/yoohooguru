@@ -247,6 +247,7 @@ function HomePage() {
       <CTASection>
         <div style={{ maxWidth: '600px', margin: '0 auto', padding: '0 1rem' }}>
           <h2 style={{ marginBottom: '1rem' }}>Ready to Make Your Impact?</h2>
+          <h3>Angel&apos;s List</h3>
           <p style={{ marginBottom: '2rem', opacity: 0.9 }}>
             Join thousands of community members creating positive change through skill sharing.
           </p>
@@ -255,7 +256,7 @@ function HomePage() {
             size="lg"
             onClick={() => navigate('/signup')}
           >
-            Join yoohoo.guru
+            Explore Angel&apos;s List →
             <ArrowRight size={20} />
           </Button>
         </div>
