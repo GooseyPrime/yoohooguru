@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import Logo from './Logo';
 
 const FooterContainer = styled.footer`
   background: var(--surface);
@@ -99,7 +100,7 @@ function Footer() {
       <FooterContent>
         <FooterGrid>
           <FooterSection>
-            <h3>{process.env.REACT_APP_DISPLAY_NAME || 'yoohoo.guru'}</h3>
+            <Logo showIcon={true} showText={true} size="normal" to="/" />
             <p>
               A neighborhood-based skill-sharing platform where users exchange skills,
               discover purpose, and create exponential community impact.
@@ -114,7 +115,8 @@ function Footer() {
             <h3>Quick Links</h3>
             <FooterLinks>
               <li><a href="/skills">Browse Skills</a></li>
-              <li><a href="/angels-list">Angel's List</a></li>
+              <li><a href="/angels-list">Angel&apos;s List</a></li>
+              <li><a href="/dashboard">Dashboard</a></li>
               <li><a href="/about">About Us</a></li>
               <li><a href="/how-it-works">How It Works</a></li>
               <li><a href="/pricing">Pricing</a></li>

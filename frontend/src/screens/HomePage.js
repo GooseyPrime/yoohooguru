@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { ArrowRight, BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
+import HeroArt from '../components/HeroArt';
 
 const HeroSection = styled.section`
   padding: 72px 0 24px; 
@@ -106,6 +107,7 @@ function HomePage() {
     <>
       <HeroSection>
         <HeroContent>
+          <HeroArt src="/assets/images/yoohooguruyetiman.png" alt="yoohoo.guru community skill-sharing platform" />
           <h1>Find help or share your skills — the Handy‑Yeti way.</h1>
           <p>
             Local connections, meaningful exchanges, and community impact through 

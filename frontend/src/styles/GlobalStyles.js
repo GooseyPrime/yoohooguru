@@ -1,6 +1,43 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`
+  /* Local Font Face Declarations for yoohoo.guru Branding */
+  @font-face {
+    font-family: 'Amatic SC';
+    src: url('/fonts/AmaticSC-Regular.woff2') format('woff2'),
+         url('/fonts/AmaticSC-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Amatic SC';
+    src: url('/fonts/AmaticSC-Bold.woff2') format('woff2'),
+         url('/fonts/AmaticSC-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Sakkal Majalla';
+    src: url('/fonts/SakkalMajalla-Regular.woff2') format('woff2'),
+         url('/fonts/SakkalMajalla-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Sakkal Majalla';
+    src: url('/fonts/SakkalMajalla-Bold.woff2') format('woff2'),
+         url('/fonts/SakkalMajalla-Bold.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+  }
+
   :root {
     /* Brand Colors */
     --yoohoo-blue: #007BFF;
