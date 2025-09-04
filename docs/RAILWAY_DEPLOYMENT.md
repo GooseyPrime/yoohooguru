@@ -44,10 +44,22 @@ The deployment will:
 
 Set these required environment variables in your Railway project:
 
+**📋 For complete variable documentation, see [Environment Variables Guide](./ENVIRONMENT_VARIABLES.md)**
+
 ### Core Configuration
 ```bash
 railway variables set NODE_ENV=production
 railway variables set PORT=3001  # Railway will override this
+
+# App Branding (customize for your deployment)
+railway variables set APP_BRAND_NAME=yoohoo.guru
+railway variables set APP_DISPLAY_NAME=yoohoo.guru
+railway variables set APP_LEGAL_EMAIL=legal@yoohoo.guru
+railway variables set APP_PRIVACY_EMAIL=privacy@yoohoo.guru
+railway variables set APP_SUPPORT_EMAIL=support@yoohoo.guru
+
+# CORS Origins (update with your Railway domain)
+railway variables set CORS_ORIGIN_PRODUCTION=https://your-app.railway.app,https://your-custom-domain.com
 ```
 
 ### Firebase Configuration
