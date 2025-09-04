@@ -108,7 +108,7 @@ function TermsAndConditionsPage() {
         <Section>
           <h2>1. Acceptance of Terms</h2>
           <p>
-            Welcome to yoohoo.guru! These Terms and Conditions (&quot;Terms&quot;) govern your use of our neighborhood-based 
+            Welcome to {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}! These Terms and Conditions (&quot;Terms&quot;) govern your use of our neighborhood-based 
             skill-sharing platform. By accessing or using our services, you agree to be bound by these Terms.
           </p>
           <HighlightBox>
@@ -121,7 +121,7 @@ function TermsAndConditionsPage() {
         <Section>
           <h2>2. Description of Service</h2>
           <p>
-            yoohoo.guru is a platform that enables users to share skills, discover purpose, and create positive 
+            {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'} is a platform that enables users to share skills, discover purpose, and create positive 
             community impact through neighborhood-based connections. Our services include:
           </p>
           <ul>
@@ -158,7 +158,7 @@ function TermsAndConditionsPage() {
           <h2>4. Skill Sharing and Exchanges</h2>
           <h3>User-to-User Transactions</h3>
           <p>
-            Skill exchanges occur directly between community members. yoohoo.guru facilitates connections but 
+            Skill exchanges occur directly between community members. {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'} facilitates connections but 
             is not a party to any agreements between users.
           </p>
 
@@ -190,13 +190,13 @@ function TermsAndConditionsPage() {
           <h2>6. Content and Intellectual Property</h2>
           <h3>Your Content</h3>
           <p>
-            You retain ownership of content you post, but grant yoohoo.guru a license to use, display, and 
+            You retain ownership of content you post, but grant {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'} a license to use, display, and 
             distribute your content on the platform for the purpose of providing our services.
           </p>
 
           <h3>Platform Content</h3>
           <p>
-            yoohoo.guru&apos;s platform, including design, features, and proprietary content, is protected by 
+            {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}&apos;s platform, including design, features, and proprietary content, is protected by 
             intellectual property laws and remains our property.
           </p>
         </Section>
@@ -340,7 +340,7 @@ function TermsAndConditionsPage() {
           <h2>11. Dispute Resolution</h2>
           <p>
             We encourage users to resolve disputes directly. If you have a dispute with another user or with 
-            yoohoo.guru, please contact us first to seek resolution.
+            {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}, please contact us first to seek resolution.
           </p>
         </Section>
 
@@ -356,16 +356,16 @@ function TermsAndConditionsPage() {
           <h2>13. Governing Law</h2>
           <p>
             These Terms are governed by applicable local laws. Any disputes will be resolved in accordance 
-            with the jurisdiction where yoohoo.guru is based.
+            with the jurisdiction where {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'} is based.
           </p>
         </Section>
 
         <ContactInfo>
           <h3>Contact Us</h3>
           <p>If you have any questions about these Terms and Conditions, please contact us:</p>
-          <p><strong>Email:</strong> legal@yoohoo.guru</p>
-          <p><strong>Support:</strong> support@yoohoo.guru</p>
-          <p><strong>Address:</strong> yoohoo.guru, Legal Department</p>
+          <p><strong>Email:</strong> {process.env.REACT_APP_LEGAL_EMAIL || 'legal@yoohoo.guru'}</p>
+          <p><strong>Support:</strong> {process.env.REACT_APP_SUPPORT_EMAIL || 'support@yoohoo.guru'}</p>
+          <p><strong>Address:</strong> {process.env.REACT_APP_CONTACT_ADDRESS || 'yoohoo.guru, Legal Department'}</p>
         </ContactInfo>
       </Content>
     </Container>

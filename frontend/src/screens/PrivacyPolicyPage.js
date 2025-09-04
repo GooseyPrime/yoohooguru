@@ -95,11 +95,11 @@ function PrivacyPolicyPage() {
         <Section>
           <h2>1. Introduction</h2>
           <p>
-            Welcome to yoohoo.guru (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;). This Privacy Policy explains how we collect, use, 
+            Welcome to {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'} (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;). This Privacy Policy explains how we collect, use, 
             disclose, and safeguard your information when you use our neighborhood-based skill-sharing platform.
           </p>
           <p>
-            At yoohoo.guru, we believe in creating positive community impact through skill sharing while respecting your 
+            At {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}, we believe in creating positive community impact through skill sharing while respecting your 
             privacy and maintaining the security of your personal information.
           </p>
         </Section>
@@ -205,8 +205,8 @@ function PrivacyPolicyPage() {
         <ContactInfo>
           <h3>Contact Us</h3>
           <p>If you have any questions about this Privacy Policy, please contact us:</p>
-          <p><strong>Email:</strong> privacy@yoohoo.guru</p>
-          <p><strong>Address:</strong> yoohoo.guru, Privacy Department</p>
+          <p><strong>Email:</strong> {process.env.REACT_APP_PRIVACY_EMAIL || 'privacy@yoohoo.guru'}</p>
+          <p><strong>Address:</strong> {process.env.REACT_APP_CONTACT_ADDRESS || 'yoohoo.guru, Privacy Department'}</p>
         </ContactInfo>
       </Content>
     </Container>

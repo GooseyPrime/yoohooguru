@@ -67,7 +67,7 @@ function LoadingScreen({ message = 'Loading your skill-sharing platform...' }) {
     <LoadingContainer>
       <LoadingContent>
         <YoohooLogo>🎯</YoohooLogo>
-        <LoadingText>yoohoo.guru</LoadingText>
+        <LoadingText>{process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}</LoadingText>
         <LoadingSubtitle>{message}</LoadingSubtitle>
       </LoadingContent>
     </LoadingContainer>

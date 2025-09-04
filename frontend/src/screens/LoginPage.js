@@ -205,7 +205,7 @@ function LoginPage() {
       <LoginCard>
         <Logo>🎯</Logo>
         <Title>Welcome Back</Title>
-        <Subtitle>Sign in to your yoohoo.guru account</Subtitle>
+        <Subtitle>Sign in to your {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'} account</Subtitle>
 
         <Form onSubmit={handleSubmit(onSubmit)}>
           <InputGroup>

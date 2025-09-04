@@ -47,7 +47,7 @@ function SignupPage() {
   return (
     <Container>
       <Content>
-        <Title>Join yoohoo.guru</Title>
+        <Title>Join {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}</Title>
         <Description>
           Create your account to start sharing skills and building meaningful connections.
         </Description>
@@ -56,7 +56,7 @@ function SignupPage() {
           <h2>🚧 Coming Soon!</h2>
           <p>
             The signup page is currently being built. Check back soon to create your account
-            and start your skill-sharing journey with yoohoo.guru.
+            and start your skill-sharing journey with {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}.
           </p>
         </ComingSoon>
       </Content>

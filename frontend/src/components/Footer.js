@@ -97,7 +97,7 @@ function Footer() {
       <FooterContent>
         <FooterGrid>
           <FooterSection>
-            <h3>🎯 yoohoo.guru</h3>
+            <h3>🎯 {process.env.REACT_APP_DISPLAY_NAME || 'yoohoo.guru'}</h3>
             <p>
               A neighborhood-based skill-sharing platform where users exchange skills,
               discover purpose, and create exponential community impact.
@@ -143,7 +143,7 @@ function Footer() {
         </FooterGrid>
 
         <FooterBottom>
-          <p>&copy; 2024 yoohoo.guru. All rights reserved.</p>
+          <p>&copy; 2024 {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}. All rights reserved.</p>
           <SocialLinks>
             <a href="#" aria-label="Twitter">🐦</a>
             <a href="#" aria-label="Facebook">📘</a>

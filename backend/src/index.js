@@ -11,6 +11,7 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 
 const { initializeFirebase } = require('./config/firebase');
+const { getConfig, getCorsOrigins, validateConfig } = require('./config/appConfig');
 const { logger } = require('./utils/logger');
 const errorHandler = require('./middleware/errorHandler');
 const authRoutes = require('./routes/auth');
@@ -24,25 +25,29 @@ const featureFlagRoutes = require('./routes/featureFlags');
 const liabilityRoutes = require('./routes/liability');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+
+// Load and validate configuration
+const config = getConfig();
+validateConfig(config);
+
+const PORT = config.port;
 
 // Initialize Firebase
 initializeFirebase();
 
 // Security middleware
 app.use(helmet());
+
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://yoohoo.guru', 'https://www.yoohoo.guru']
-    : ['http://localhost:3000', 'http://127.0.0.1:3000'],
+  origin: getCorsOrigins(config),
   credentials: true
 }));
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100,
-  message: 'Too many requests from this IP, please try again later.',
+  windowMs: config.rateLimitWindowMs,
+  max: config.rateLimitMaxRequests,
+  message: config.rateLimitMessage,
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -52,8 +57,8 @@ app.use('/api/', limiter);
 app.use(compression());
 app.use(cookieParser());
 app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: config.expressJsonLimit }));
+app.use(express.urlencoded({ extended: true, limit: config.expressUrlLimit }));
 
 // Serve static files from frontend build
 const frontendDistPath = path.join(__dirname, '../../frontend/dist');
@@ -65,7 +70,8 @@ app.get('/health', (req, res) => {
     status: 'OK',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: config.nodeEnv,
+    version: config.apiVersion
   });
 });
 
@@ -91,9 +97,9 @@ app.use('/api/documents', documentsRoutes);
 // API status endpoint (moved from root to avoid conflicts)
 app.get('/api', (req, res) => {
   res.json({
-    message: '🎯 Welcome to yoohoo.guru API',
-    version: '1.0.0',
-    description: 'Skill-sharing platform backend',
+    message: config.apiWelcomeMessage,
+    version: config.apiVersion,
+    description: config.apiDescription,
     documentation: '/api/docs',
     health: '/health'
   });
@@ -129,8 +135,8 @@ process.on('SIGINT', () => {
 
 // Start server
 app.listen(PORT, () => {
-  logger.info(`🎯 yoohoo.guru Backend server running on port ${PORT}`);
-  logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  logger.info(`🎯 ${config.appBrandName} Backend server running on port ${PORT}`);
+  logger.info(`Environment: ${config.nodeEnv}`);
   logger.info(`Health check: http://localhost:${PORT}/health`);
 });
 
