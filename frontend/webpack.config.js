@@ -160,6 +160,31 @@ module.exports = (env, argv) => {
           },
         },
       },
+      // Optimize build performance
+      ...(isDevelopment
+        ? {}
+        : {
+            usedExports: true,
+            sideEffects: false,
+          }),
     },
+    // Add caching for better build performance
+    cache: {
+      type: 'filesystem',
+      cacheDirectory: path.resolve(__dirname, '.webpack-cache'),
+      buildDependencies: {
+        config: [__filename],
+      },
+    },
+    // Improve performance in production builds
+    ...(isDevelopment
+      ? {}
+      : {
+          performance: {
+            maxAssetSize: 500000,
+            maxEntrypointSize: 500000,
+            hints: 'warning',
+          },
+        }),
   };
 };
