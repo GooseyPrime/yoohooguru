@@ -90,7 +90,7 @@ The repository includes pre-configured Railway deployment files:
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
     "builder": "NIXPACKS",
-    "buildCommand": "npm run build:backend"
+    "buildCommand": "npm run build"
   },
   "deploy": {
     "startCommand": "npm start",
@@ -101,6 +101,8 @@ The repository includes pre-configured Railway deployment files:
   }
 }
 ```
+
+**Important**: The build command uses `npm run build` (not `npm run build:backend`) because this is a monorepo where the backend serves the frontend static files. Both components must be built during deployment.
 
 ### `Procfile`
 ```

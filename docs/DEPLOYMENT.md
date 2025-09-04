@@ -173,7 +173,7 @@ Railway is the recommended deployment platform for yoohoo.guru backend. The repo
    {
      "build": {
        "builder": "NIXPACKS",
-       "buildCommand": "npm run build:backend"
+       "buildCommand": "npm run build"
      },
      "deploy": {
        "startCommand": "npm start",
@@ -181,6 +181,8 @@ Railway is the recommended deployment platform for yoohoo.guru backend. The repo
      }
    }
    ```
+   
+   **Note**: The build command uses `npm run build` (not `npm run build:backend`) because the backend serves the frontend static files. Both frontend and backend must be built for proper deployment.
 
 2. **Environment Variables**
    
