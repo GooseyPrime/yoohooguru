@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useTheme } from '../contexts/ThemeContext';
 import { Search, Calendar, Users, Star, Clock, ChevronRight } from 'lucide-react';
 import Button from '../components/Button';
 import { getSkillCategoriesForDisplay } from '../lib/skillCategorization';
@@ -8,7 +7,7 @@ import { getSkillCategoriesForDisplay } from '../lib/skillCategorization';
 const Container = styled.div`
   min-height: calc(100vh - 140px);
   padding: 2rem 1rem;
-  background: ${props => props.theme.colors.background};
+  background: ${props => props.theme.colors.bg};
 `;
 
 const Content = styled.div`
@@ -26,17 +25,17 @@ const Title = styled.h1`
 
 const Description = styled.p`
   font-size: var(--text-lg);
-  color: ${props => props.theme.colors.textSecondary};
+  color: ${props => props.theme.colors.muted};
   margin-bottom: 3rem;
   text-align: center;
 `;
 
 const SearchSection = styled.div`
   background: ${props => props.theme.colors.surface};
-  border-radius: var(--radius-xl);
+  border-radius: var(--r-xl);
   padding: 2rem;
   margin-bottom: 3rem;
-  box-shadow: var(--shadow-lg);
+  box-shadow: ${props => props.theme.shadow.card};
   border: 1px solid ${props => props.theme.colors.border};
 `;
 
@@ -50,7 +49,7 @@ const SearchHeader = styled.div`
   }
   
   p {
-    color: ${props => props.theme.colors.textSecondary};
+    color: ${props => props.theme.colors.muted};
   }
 `;
 
@@ -64,20 +63,20 @@ const SearchInput = styled.input`
   width: 100%;
   padding: 1rem 1rem 1rem 3rem;
   border: 2px solid ${props => props.theme.colors.border};
-  border-radius: var(--radius-lg);
-  background: ${props => props.theme.colors.inputBg};
+  border-radius: var(--r-lg);
+  background: ${props => props.theme.colors.surface};
   color: ${props => props.theme.colors.text};
   font-size: var(--text-base);
-  transition: all var(--transition-fast);
+  transition: all var(--t-fast);
   
   &:focus {
     outline: none;
-    border-color: ${props => props.theme.colors.primary};
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    border-color: ${props => props.theme.colors.pri};
+    box-shadow: 0 0 0 3px rgba(124, 140, 255, 0.1);
   }
   
   &::placeholder {
-    color: ${props => props.theme.colors.textMuted};
+    color: ${props => props.theme.colors.muted};
   }
 `;
 
@@ -86,7 +85,7 @@ const SearchIcon = styled(Search)`
   left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  color: ${props => props.theme.colors.textMuted};
+  color: ${props => props.theme.colors.muted};
   width: 20px;
   height: 20px;
 `;
@@ -104,13 +103,13 @@ const Tab = styled.button`
   padding: 1rem 2rem;
   font-size: var(--text-base);
   font-weight: var(--font-medium);
-  color: ${props => props.$active ? props.theme.colors.primary : props.theme.colors.textSecondary};
+  color: ${props => props.$active ? props.theme.colors.pri : props.theme.colors.muted};
   cursor: pointer;
-  border-bottom: 2px solid ${props => props.$active ? props.theme.colors.primary : 'transparent'};
-  transition: all var(--transition-fast);
+  border-bottom: 2px solid ${props => props.$active ? props.theme.colors.pri : 'transparent'};
+  transition: all var(--t-fast);
   
   &:hover {
-    color: ${props => props.theme.colors.primary};
+    color: ${props => props.theme.colors.pri};
   }
 `;
 
@@ -122,12 +121,12 @@ const SkillsGrid = styled.div`
 `;
 
 const SkillCategory = styled.div`
-  background: ${props => props.theme.colors.cardBg};
-  border-radius: var(--radius-xl);
+  background: ${props => props.theme.colors.surface};
+  border-radius: var(--r-xl);
   padding: 2rem;
-  box-shadow: var(--shadow-lg);
+  box-shadow: ${props => props.theme.shadow.card};
   border: 1px solid ${props => props.theme.colors.border};
-  transition: all var(--transition-normal);
+  transition: all var(--t-med);
   
   &:hover {
     transform: translateY(-2px);
@@ -154,22 +153,22 @@ const SkillsList = styled.ul`
   
   li {
     padding: 0.5rem 0;
-    color: ${props => props.theme.colors.textSecondary};
+    color: ${props => props.theme.colors.muted};
     display: flex;
     align-items: center;
     gap: 0.5rem;
     
     &:before {
       content: "•";
-      color: ${props => props.theme.colors.primary};
+      color: ${props => props.theme.colors.pri};
       font-weight: bold;
     }
   }
 `;
 
 const SessionTemplates = styled.div`
-  background: ${props => props.theme.colors.surfaceSecondary};
-  border-radius: var(--radius-lg);
+  background: ${props => props.theme.colors.elev};
+  border-radius: var(--r-lg);
   padding: 1rem;
   margin-bottom: 1rem;
   border: 1px solid ${props => props.theme.colors.border};
@@ -180,14 +179,14 @@ const SessionTemplate = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 0.75rem;
-  border-radius: var(--radius-md);
+  border-radius: var(--r-md);
   margin-bottom: 0.5rem;
   background: ${props => props.theme.colors.surface};
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all var(--t-fast);
   
   &:hover {
-    background: ${props => props.theme.colors.cardBg};
+    background: ${props => props.theme.colors.surface};
     transform: translateX(4px);
   }
   
@@ -208,7 +207,7 @@ const SessionInfo = styled.div`
   
   .session-details {
     font-size: var(--text-xs);
-    color: ${props => props.theme.colors.textMuted};
+    color: ${props => props.theme.colors.muted};
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -219,6 +218,16 @@ const CategoryActions = styled.div`
   display: flex;
   gap: 0.5rem;
   margin-top: 1rem;
+`;
+
+const TemplateHeader = styled.div`
+  font-weight: var(--font-medium);
+  font-size: var(--text-sm);
+  color: ${props => props.theme.colors.text};
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 `;
 
 const AICoachBadge = styled.div`
@@ -265,7 +274,6 @@ const RiskBadge = styled.div`
 `;
 
 function SkillsPage() {
-  const { theme } = useTheme();
   const [activeTab, setActiveTab] = useState('browse');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -280,23 +288,23 @@ function SkillsPage() {
     : skillCategories;
 
   return (
-    <Container theme={theme}>
+    <Container>
       <Content>
-        <Title theme={theme}>Discover & Learn Skills</Title>
-        <Description theme={theme}>
+        <Title>Discover & Learn Skills</Title>
+        <Description>
           Connect with skilled community members and book AI-moderated learning sessions
           tailored to your learning style and goals.
         </Description>
 
-        <SearchSection theme={theme}>
-          <SearchHeader theme={theme}>
+        <SearchSection>
+          <SearchHeader>
             <h2>Find Your Perfect Learning Match</h2>
             <p>Search by skill, category, or session type</p>
           </SearchHeader>
           <SearchInputContainer>
-            <SearchIcon theme={theme} />
+            <SearchIcon />
             <SearchInput 
-              theme={theme}
+             
               type="text"
               placeholder="Search skills (e.g., Python, Yoga, Spanish...)"
               value={searchTerm}
@@ -305,24 +313,24 @@ function SkillsPage() {
           </SearchInputContainer>
         </SearchSection>
 
-        <TabsContainer theme={theme}>
+        <TabsContainer>
           <Tab 
             $active={activeTab === 'browse'} 
-            theme={theme}
+           
             onClick={() => setActiveTab('browse')}
           >
             Browse Skills
           </Tab>
           <Tab 
             $active={activeTab === 'sessions'} 
-            theme={theme}
+           
             onClick={() => setActiveTab('sessions')}
           >
             Session Templates
           </Tab>
           <Tab 
             $active={activeTab === 'ai-coach'} 
-            theme={theme}
+           
             onClick={() => setActiveTab('ai-coach')}
           >
             AI Coaching
@@ -331,7 +339,7 @@ function SkillsPage() {
 
         <SkillsGrid>
           {filteredCategories.map((category, index) => (
-            <SkillCategory key={index} theme={theme}>
+            <SkillCategory key={index}>
               <h3>
                 <span className="category-icon">{category.icon}</span>
                 {category.name}
@@ -342,22 +350,14 @@ function SkillsPage() {
                 )}
               </h3>
               
-              <SkillsList theme={theme}>
+              <SkillsList>
                 {category.keywords.slice(0, 6).map((skill, skillIndex) => (
                   <li key={skillIndex}>{skill}</li>
                 ))}
               </SkillsList>
 
-              <SessionTemplates theme={theme}>
-                <div style={{ 
-                  fontWeight: 'var(--font-medium)', 
-                  fontSize: 'var(--text-sm)', 
-                  color: theme.colors.text,
-                  marginBottom: '0.75rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem'
-                }}>
+              <SessionTemplates>
+                <TemplateHeader>
                   <Calendar size={16} />
                   Available Session Templates
                   {category.requiresWaiver && (
@@ -369,11 +369,11 @@ function SkillsPage() {
                       ⚠️ Waiver Required
                     </span>
                   )}
-                </div>
+                </TemplateHeader>
                 
                 {category.sessionTemplates.map((template, templateIndex) => (
-                  <SessionTemplate key={templateIndex} theme={theme}>
-                    <SessionInfo theme={theme}>
+                  <SessionTemplate key={templateIndex}>
+                    <SessionInfo>
                       <div className="session-name">{template.name}</div>
                       <div className="session-details">
                         <span><Clock size={12} /> {template.duration}</span>
@@ -385,7 +385,7 @@ function SkillsPage() {
                       <AICoachBadge>
                         🤖 AI Coach
                       </AICoachBadge>
-                      <ChevronRight size={16} color={theme.colors.textMuted} />
+                      <ChevronRight size={16} color="#9AA7B2" />
                     </div>
                   </SessionTemplate>
                 ))}

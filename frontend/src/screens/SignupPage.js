@@ -4,6 +4,7 @@ import styled from 'styled-components';
 const Container = styled.div`
   min-height: calc(100vh - 140px);
   padding: 2rem 1rem;
+  background: ${props => props.theme.colors.bg};
 `;
 
 const Content = styled.div`
@@ -16,20 +17,20 @@ const Content = styled.div`
 const Title = styled.h1`
   font-size: var(--text-3xl);
   margin-bottom: 1rem;
-  color: var(--gray-900);
+  color: ${props => props.theme.colors.text};
 `;
 
 const Description = styled.p`
   font-size: var(--text-lg);
-  color: var(--gray-600);
+  color: ${props => props.theme.colors.muted};
   margin-bottom: 2rem;
 `;
 
 const ComingSoon = styled.div`
-  background: linear-gradient(135deg, var(--primary) 0%, var(--growth-green) 100%);
+  background: linear-gradient(135deg, ${props => props.theme.colors.pri} 0%, ${props => props.theme.colors.succ} 100%);
   color: white;
   padding: 3rem 2rem;
-  border-radius: var(--radius-xl);
+  border-radius: var(--r-xl);
   margin: 2rem 0;
 
   h2 {
