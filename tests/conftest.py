@@ -1,5 +1,5 @@
 """
-Test configuration and fixtures for RIPPLE Community MCP Server tests.
+Test configuration and fixtures for yoohoo.guru MCP Server tests.
 """
 
 import pytest

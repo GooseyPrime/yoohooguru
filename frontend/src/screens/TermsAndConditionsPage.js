@@ -253,7 +253,7 @@ function TermsAndConditionsPage() {
           <h3>User Interactions and Skill-Sharing Activities</h3>
           <p>
 
-            RIPPLE Community is not responsible for the quality, safety, or legality of skills offered, 
+            {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'} is not responsible for the quality, safety, or legality of skills offered, 
             the truth of user profiles, or the performance of skill exchanges. Users participate in 
             skill-sharing activities at their own risk and responsibility.
           </p>
@@ -280,7 +280,7 @@ function TermsAndConditionsPage() {
 
           <h3>Release of Claims</h3>
           <p>
-            You hereby release, waive, discharge, and hold harmless RIPPLE Community, its officers, 
+            You hereby release, waive, discharge, and hold harmless {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}, its officers, 
             directors, employees, agents, and affiliates from any and all liability, claims, demands, 
             actions, or causes of action arising out of or related to:
           </p>
@@ -294,7 +294,7 @@ function TermsAndConditionsPage() {
 
           <h3>Indemnification</h3>
           <p>
-            You agree to indemnify, defend, and hold harmless RIPPLE Community from and against any 
+            You agree to indemnify, defend, and hold harmless {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'} from and against any 
             and all claims, liabilities, damages, losses, costs, expenses, or fees (including reasonable 
             attorney fees) arising from or relating to:
           </p>
@@ -307,7 +307,7 @@ function TermsAndConditionsPage() {
 
           <h3>Property Damage Disclaimer</h3>
           <p>
-            RIPPLE Community is not responsible for any damage to personal property, real estate, 
+            {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'} is not responsible for any damage to personal property, real estate, 
             or belongings that may occur during skill exchanges. Users are responsible for ensuring 
             appropriate insurance coverage and taking necessary precautions to protect their property.
           </p>
@@ -315,10 +315,10 @@ function TermsAndConditionsPage() {
           <h3>Limitation of Liability</h3>
           <p>
 
-            To the maximum extent permitted by law, RIPPLE Community&apos;s total liability to you for 
+            To the maximum extent permitted by law, {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}&apos;s total liability to you for 
             all damages, losses, and causes of action (whether in contract, tort, or otherwise) 
-            shall not exceed the amount you have paid to RIPPLE Community in the twelve (12) months 
-            preceding the claim. In no event shall RIPPLE Community be liable for:
+            shall not exceed the amount you have paid to {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'} in the twelve (12) months 
+            preceding the claim. In no event shall {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'} be liable for:
           </p>
           <ul>
             <li>Indirect, incidental, special, consequential, or punitive damages</li>

@@ -204,7 +204,7 @@ function LiabilityWaiver({
 
         <h3>4. Release and Waiver</h3>
         <p>
-          I hereby release, waive, discharge, and covenant not to sue RIPPLE Community, its officers, 
+          I hereby release, waive, discharge, and covenant not to sue {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}, its officers, 
           directors, employees, agents, and other participants from any and all liability, claims, 
           demands, actions, and causes of action arising out of or related to any loss, damage, or 
           injury that may be sustained by me during this activity.
@@ -219,7 +219,7 @@ function LiabilityWaiver({
 
         <h3>6. Insurance and Medical Expenses</h3>
         <p>
-          I understand that RIPPLE Community does not provide insurance coverage for participants. 
+          I understand that {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'} does not provide insurance coverage for participants. 
           I am responsible for my own medical expenses and maintaining adequate insurance coverage.
         </p>
       </WaiverContent>
@@ -281,7 +281,7 @@ function LiabilityWaiver({
           onChange={(e) => setAgreesToTerms(e.target.checked)}
         />
         <CheckboxLabel htmlFor="agreesToTerms">
-          I agree to release and hold harmless RIPPLE Community and all participants from any 
+          I agree to release and hold harmless {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'} and all participants from any 
           liability arising from my participation in this skill exchange activity.
         </CheckboxLabel>
       </CheckboxContainer>

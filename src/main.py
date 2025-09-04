@@ -32,7 +32,7 @@ class MCPServer:
     def __init__(self) -> None:
         """Initialize the MCP server."""
         self.app = FastAPI(
-            title="RIPPLE Community MCP Server",
+            title="yoohoo.guru MCP Server",
             description="Multi-Component Platform server for neighborhood skill-sharing",
             version="1.0.0",
             docs_url="/docs",

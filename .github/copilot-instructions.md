@@ -1,6 +1,6 @@
-# RIPPLE Community Platform - Developer Instructions
+# yoohoo.guru Platform - Developer Instructions
 
-RIPPLE Community is a neighborhood-based skill-sharing platform where users exchange skills, discover purpose, and create exponential community impact.
+yoohoo.guru is a neighborhood-based skill-sharing platform where users exchange skills, discover purpose, and create exponential community impact.
 
 **ALWAYS reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.**
 
@@ -51,7 +51,7 @@ npm install express
 npm install --save-dev jest eslint prettier
 
 # Create basic Express server (TESTED - WORKS)
-echo 'const express = require("express"); const app = express(); app.get("/", (req, res) => res.send("Hello RIPPLE!")); app.listen(3000, () => console.log("Server running on port 3000"));' > index.js
+echo 'const express = require("express"); const app = express(); app.get("/", (req, res) => res.send("Hello yoohoo.guru!")); app.listen(3000, () => console.log("Server running on port 3000"));' > index.js
 
 # Start server (TESTED - WORKS)  
 node index.js &
@@ -81,7 +81,7 @@ app = FastAPI()
 
 @app.get("/")
 def read_root():
-    return {"message": "Hello RIPPLE Community!"}
+    return {"message": "Hello yoohoo.guru Community!"}
 EOF
 
 # Start server (TESTED - WORKS)
@@ -100,7 +100,7 @@ echo "FROM node:20-alpine" > Dockerfile
 # Build image (TESTED: ~3.8 seconds for simple alpine)  
 # NEVER CANCEL: Docker builds may take 5-30 minutes for complex applications
 # Set timeout to 45+ minutes for production builds
-docker build -t ripple-community .
+docker build -t yoohoo-community .
 ```
 
 ### Commands That WILL FAIL in Current Repository State
@@ -118,7 +118,7 @@ npm run lint                   # ERROR: Could not read package.json
 pip install -r requirements.txt    # ERROR: Could not open requirements file
 
 # These commands FAIL - no Dockerfile exists
-docker build -t ripple-community . # ERROR: failed to read dockerfile
+docker build -t yoohoo-community . # ERROR: failed to read dockerfile
 
 # These commands FAIL - tools not installed
 eslint .                       # ERROR: command not found
@@ -170,7 +170,7 @@ python3 -m venv venv
 **Docker Build Process:**
 ```bash
 # Simple builds (MEASURED: 3.8 seconds for alpine base)  
-docker build -t ripple-community .
+docker build -t yoohoo-community .
 
 # NEVER CANCEL: Production Docker builds may take 10-30 minutes
 # Set timeout to 45+ minutes for complex multi-stage builds
@@ -187,7 +187,7 @@ After implementing project initialization, ALWAYS test these scenarios:
 # 1. Server starts and responds (TESTED - WORKS)
 node index.js &
 curl http://localhost:3000
-# Expected: "Hello RIPPLE!" response
+# Expected: "Hello yoohoo.guru!" response
 
 # 2. Test application endpoints  
 curl -X GET http://localhost:3000/api/health    # When health endpoint exists
@@ -202,7 +202,7 @@ pkill -f "node index.js"
 # 1. FastAPI server starts and responds (TESTED - WORKS)
 ./venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000 &
 curl http://localhost:8000  
-# Expected: {"message": "Hello RIPPLE Community!"} response
+# Expected: {"message": "Hello yoohoo.guru Community!"} response
 
 # 2. Test API documentation (when available)
 curl http://localhost:8000/docs     # Auto-generated API docs
@@ -313,7 +313,7 @@ npm run format                         # When script exists
 ls -la .env .env.local .env.development .env.production 2>/dev/null || echo "No environment files found"
 
 # Typical environment variables for skill-sharing platforms:
-# DATABASE_URL=postgresql://user:pass@localhost:5432/ripple_db
+# DATABASE_URL=postgresql://user:pass@localhost:5432/yoohoo_db
 # JWT_SECRET=your-secret-key  
 # API_BASE_URL=http://localhost:3000
 # REDIS_URL=redis://localhost:6379

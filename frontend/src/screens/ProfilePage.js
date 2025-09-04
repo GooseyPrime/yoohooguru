@@ -26,7 +26,7 @@ const Description = styled.p`
 `;
 
 const ComingSoon = styled.div`
-  background: linear-gradient(135deg, var(--ripple-blue) 0%, var(--growth-green) 100%);
+  background: linear-gradient(135deg, var(--yoohoo-blue) 0%, var(--growth-green) 100%);
   color: white;
   padding: 3rem 2rem;
   border-radius: var(--radius-xl);
@@ -56,7 +56,7 @@ function ProfilePage() {
           <h2>🚧 Profile Management Coming Soon!</h2>
           <p>
             Your profile page is being developed with features to manage your skills,
-            update your information, and customize your RIPPLE experience.
+            update your information, and customize your yoohoo.guru experience.
           </p>
         </ComingSoon>
       </Content>
