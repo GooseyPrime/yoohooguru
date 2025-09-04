@@ -9,6 +9,9 @@ import DashboardPage from '../screens/DashboardPage';
 import ProfilePage from '../screens/ProfilePage';
 import SkillsPage from '../screens/SkillsPage';
 import AngelsListPage from '../screens/AngelsListPage';
+import AboutPage from '../screens/AboutPage';
+import HowItWorksPage from '../screens/HowItWorksPage';
+import PricingPage from '../screens/PricingPage';
 import PrivacyPolicyPage from '../screens/PrivacyPolicyPage';
 import TermsAndConditionsPage from '../screens/TermsAndConditionsPage';
 import AdminLoginPage from '../screens/AdminLoginPage';
@@ -64,6 +67,9 @@ function AppRouter() {
         {/* SkillShare (public label) – technical route remains /skills */}
         <Route path="skills" element={<SkillsPage />} />
         <Route path="angels-list" element={<AngelsListPage />} />
+        <Route path="about" element={<AboutPage />} />
+        <Route path="how-it-works" element={<HowItWorksPage />} />
+        <Route path="pricing" element={<PricingPage />} />
         <Route path="liability-demo" element={<LiabilityEnhancementDemo />} />
         
         {/* Legal pages - supporting both new and existing URLs */}

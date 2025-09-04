@@ -1,50 +1,181 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import Button from '../components/Button';
+import toast from 'react-hot-toast';
 
 const Container = styled.div`
   min-height: calc(100vh - 140px);
   padding: 2rem 1rem;
   background: ${props => props.theme.colors.bg};
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const Content = styled.div`
-  max-width: 800px;
-  margin: 0 auto;
-  text-align: center;
+  max-width: 500px;
+  width: 100%;
   padding: 2rem;
+  background: ${props => props.theme.colors.surface};
+  border-radius: var(--r-lg);
+  border: 1px solid ${props => props.theme.colors.border};
+  box-shadow: ${props => props.theme.shadow.card};
 `;
 
 const Title = styled.h1`
-  font-size: var(--text-3xl);
-  margin-bottom: 1rem;
+  font-size: var(--text-2xl);
+  margin-bottom: 0.5rem;
   color: ${props => props.theme.colors.text};
+  text-align: center;
 `;
 
 const Description = styled.p`
-  font-size: var(--text-lg);
+  font-size: var(--text-base);
   color: ${props => props.theme.colors.muted};
   margin-bottom: 2rem;
+  text-align: center;
 `;
 
-const ComingSoon = styled.div`
-  background: linear-gradient(135deg, ${props => props.theme.colors.pri} 0%, ${props => props.theme.colors.succ} 100%);
-  color: white;
-  padding: 3rem 2rem;
-  border-radius: var(--r-xl);
-  margin: 2rem 0;
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
 
-  h2 {
-    font-size: var(--text-2xl);
-    margin-bottom: 1rem;
+const InputGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+const Label = styled.label`
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: ${props => props.theme.colors.text};
+`;
+
+const Input = styled.input`
+  padding: 0.75rem;
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: var(--r-md);
+  background: ${props => props.theme.colors.surface};
+  color: ${props => props.theme.colors.text};
+  font-size: var(--text-base);
+  transition: all var(--t-fast);
+  
+  &:focus {
+    outline: none;
+    border-color: ${props => props.theme.colors.pri};
+    box-shadow: 0 0 0 2px rgba(124, 140, 255, 0.1);
   }
+  
+  &::placeholder {
+    color: ${props => props.theme.colors.muted};
+  }
+`;
 
-  p {
-    opacity: 0.9;
-    line-height: 1.6;
+const ErrorMessage = styled.div`
+  color: ${props => props.theme.colors.err};
+  font-size: var(--text-sm);
+  margin-top: 0.25rem;
+`;
+
+const LoginLink = styled.div`
+  text-align: center;
+  margin-top: 1.5rem;
+  color: ${props => props.theme.colors.muted};
+  
+  a {
+    color: ${props => props.theme.colors.pri};
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
   }
 `;
 
 function SignupPage() {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const { signup } = useAuth();
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = 'First name is required';
+    }
+    
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = 'Last name is required';
+    }
+    
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Email is invalid';
+    }
+    
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+    
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
+    }
+    
+    return newErrors;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    const newErrors = validateForm();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await signup(formData.email, formData.password, {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        displayName: `${formData.firstName} ${formData.lastName}`
+      });
+      
+      toast.success('Account created successfully! Please check your email to verify your account.');
+      navigate('/dashboard');
+    } catch (error) {
+      toast.error(error.message || 'Failed to create account');
+      console.error('Signup error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Container>
       <Content>
@@ -53,13 +184,91 @@ function SignupPage() {
           Create your account to start sharing skills and building meaningful connections.
         </Description>
         
-        <ComingSoon>
-          <h2>🚧 Coming Soon!</h2>
-          <p>
-            The signup page is currently being built. Check back soon to create your account
-            and start your skill-sharing journey with {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}.
-          </p>
-        </ComingSoon>
+        <Form onSubmit={handleSubmit}>
+          <InputGroup>
+            <Label htmlFor="firstName">First Name</Label>
+            <Input
+              type="text"
+              id="firstName"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              placeholder="Enter your first name"
+              required
+            />
+            {errors.firstName && <ErrorMessage>{errors.firstName}</ErrorMessage>}
+          </InputGroup>
+
+          <InputGroup>
+            <Label htmlFor="lastName">Last Name</Label>
+            <Input
+              type="text"
+              id="lastName"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              placeholder="Enter your last name"
+              required
+            />
+            {errors.lastName && <ErrorMessage>{errors.lastName}</ErrorMessage>}
+          </InputGroup>
+
+          <InputGroup>
+            <Label htmlFor="email">Email Address</Label>
+            <Input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Enter your email"
+              required
+            />
+            {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
+          </InputGroup>
+
+          <InputGroup>
+            <Label htmlFor="password">Password</Label>
+            <Input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Create a password"
+              required
+            />
+            {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
+          </InputGroup>
+
+          <InputGroup>
+            <Label htmlFor="confirmPassword">Confirm Password</Label>
+            <Input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="Confirm your password"
+              required
+            />
+            {errors.confirmPassword && <ErrorMessage>{errors.confirmPassword}</ErrorMessage>}
+          </InputGroup>
+
+          <Button 
+            type="submit" 
+            variant="primary" 
+            size="lg" 
+            disabled={loading}
+            style={{ marginTop: '1rem' }}
+          >
+            {loading ? 'Creating Account...' : 'Create Account'}
+          </Button>
+        </Form>
+
+        <LoginLink>
+          Already have an account? <a href="/login">Sign in</a>
+        </LoginLink>
       </Content>
     </Container>
   );

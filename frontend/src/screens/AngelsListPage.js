@@ -145,6 +145,18 @@ function AngelsListPage() {
   const [selectedCity, setSelectedCity] = useState('all');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
+  const handleViewAngels = (categoryTitle) => {
+    // Show available providers for this category
+    alert(`Viewing available angels for ${categoryTitle}. Sign-in required to continue.`);
+    // In production: navigate to sign-in or show providers list
+  };
+
+  const handleBookNow = (categoryTitle) => {
+    // Direct booking for this service
+    alert(`Booking ${categoryTitle}. Please sign in to continue with your booking.`);
+    // In production: navigate to sign-in or booking flow
+  };
+
   const categories = [
     {
       id: 1,
@@ -278,10 +290,10 @@ function AngelsListPage() {
               </MetaItem>
             </CategoryMeta>
             <CategoryActions>
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" onClick={() => handleViewAngels(category.title)}>
                 View Angels
               </Button>
-              <Button variant="primary" size="sm">
+              <Button variant="primary" size="sm" onClick={() => handleBookNow(category.title)}>
                 Book Now
               </Button>
             </CategoryActions>
