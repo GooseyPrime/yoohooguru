@@ -8,6 +8,7 @@ const compression = require('compression');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 
 const { initializeFirebase } = require('./config/firebase');
 const { logger } = require('./utils/logger');
@@ -54,6 +55,10 @@ app.use(morgan('combined', { stream: { write: message => logger.info(message.tri
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Serve static files from frontend build
+const frontendDistPath = path.join(__dirname, '../../frontend/dist');
+app.use(express.static(frontendDistPath));
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({
@@ -83,8 +88,8 @@ app.use('/api/onboarding', onboardingRoutes);
 const documentsRoutes = require('./routes/documents');
 app.use('/api/documents', documentsRoutes);
 
-// Welcome route
-app.get('/', (req, res) => {
+// API status endpoint (moved from root to avoid conflicts)
+app.get('/api', (req, res) => {
   res.json({
     message: '🎯 Welcome to yoohoo.guru API',
     version: '1.0.0',
@@ -94,12 +99,18 @@ app.get('/', (req, res) => {
   });
 });
 
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({
-    error: 'Route not found',
-    message: `The requested resource ${req.originalUrl} was not found on this server.`
-  });
+// Catch-all handler: send back React's index.html file for non-API routes
+app.get('*', (req, res) => {
+  // Only serve React app for non-API routes
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({
+      error: 'Route not found',
+      message: `The requested API resource ${req.originalUrl} was not found on this server.`
+    });
+  }
+  
+  // Serve React app for all other routes
+  res.sendFile(path.join(frontendDistPath, 'index.html'));
 });
 
 // Error handling middleware (must be last)
