@@ -177,7 +177,7 @@ function Header() {
       <HeaderContent>
         <Logo to="/">
           <YoohooIcon>🎯</YoohooIcon>
-          yoohoo.guru
+          {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}
         </Logo>
 
         <Nav $isOpen={isMenuOpen}>

@@ -1,5 +1,5 @@
 """
-Tests for the root API endpoints of RIPPLE Community MCP Server.
+Tests for the root API endpoints of yoohoo.guru MCP Server.
 """
 
 from datetime import datetime
@@ -133,4 +133,4 @@ class TestAPIDocumentation:
         schema = response.json()
         assert "openapi" in schema
         assert "info" in schema
-        assert schema["info"]["title"] == "RIPPLE Community MCP Server"
+        assert schema["info"]["title"] == "yoohoo.guru MCP Server"

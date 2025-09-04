@@ -24,7 +24,7 @@ router.get('/', (req, res) => {
  * Get all feature flags (admin only)
  */
 router.get('/admin', (req, res) => {
-  const adminCookie = req.cookies?.ripple_admin;
+  const adminCookie = req.cookies?.yoohoo_admin;
   
   if (adminCookie !== '1') {
     return res.status(401).json({ 
@@ -49,7 +49,7 @@ router.get('/admin', (req, res) => {
  * Update a feature flag (admin only, write operations enabled)
  */
 router.patch('/admin/:flagName', (req, res) => {
-  const adminCookie = req.cookies?.ripple_admin;
+  const adminCookie = req.cookies?.yoohoo_admin;
   
   if (adminCookie !== '1') {
     return res.status(401).json({ 

@@ -13,12 +13,24 @@ This guide covers deploying yoohoo.guru to various hosting platforms.
 
 ### 1. Environment Variables
 
+**Important**: For complete environment variable documentation, see [Environment Variables Guide](./ENVIRONMENT_VARIABLES.md).
+
 Copy `.env.example` to `.env` and configure:
 
 ```env
 # Production Environment
 NODE_ENV=production
 PORT=3001
+
+# App Branding (customize for your deployment)
+APP_BRAND_NAME=yoohoo.guru
+APP_DISPLAY_NAME=yoohoo.guru
+APP_LEGAL_EMAIL=legal@yoohoo.guru
+APP_PRIVACY_EMAIL=privacy@yoohoo.guru
+APP_SUPPORT_EMAIL=support@yoohoo.guru
+
+# CORS Origins (update with your actual domains)
+CORS_ORIGIN_PRODUCTION=https://your-domain.com,https://www.your-domain.com
 
 # Firebase Configuration
 FIREBASE_API_KEY=your_firebase_api_key
@@ -32,6 +44,22 @@ FIREBASE_APP_ID=your_app_id
 # Frontend URLs
 REACT_APP_API_URL=https://your-api-domain.com/api
 REACT_APP_ENVIRONMENT=production
+
+# Frontend Branding (must use REACT_APP_ prefix)
+REACT_APP_BRAND_NAME=yoohoo.guru
+REACT_APP_DISPLAY_NAME=yoohoo.guru
+REACT_APP_LEGAL_EMAIL=legal@yoohoo.guru
+REACT_APP_PRIVACY_EMAIL=privacy@yoohoo.guru
+REACT_APP_SUPPORT_EMAIL=support@yoohoo.guru
+REACT_APP_CONTACT_ADDRESS=yoohoo.guru, Legal Department
+
+# Security & JWT (REQUIRED in production)
+JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
+JWT_EXPIRES_IN=7d
+
+# Rate Limiting (optional, has defaults)
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=100
 
 # Add all other variables from .env.example
 ```

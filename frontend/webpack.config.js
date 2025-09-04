@@ -65,6 +65,13 @@ module.exports = (env, argv) => {
           REACT_APP_FIREBASE_STORAGE_BUCKET: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
           REACT_APP_FIREBASE_MESSAGING_SENDER_ID: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
           REACT_APP_FIREBASE_APP_ID: process.env.REACT_APP_FIREBASE_APP_ID,
+          // App branding environment variables
+          REACT_APP_BRAND_NAME: process.env.APP_BRAND_NAME,
+          REACT_APP_DISPLAY_NAME: process.env.APP_DISPLAY_NAME,
+          REACT_APP_LEGAL_EMAIL: process.env.APP_LEGAL_EMAIL,
+          REACT_APP_PRIVACY_EMAIL: process.env.APP_PRIVACY_EMAIL,
+          REACT_APP_SUPPORT_EMAIL: process.env.APP_SUPPORT_EMAIL,
+          REACT_APP_CONTACT_ADDRESS: process.env.APP_CONTACT_ADDRESS,
         }),
       }),
       new CopyWebpackPlugin({
@@ -106,20 +113,20 @@ module.exports = (env, argv) => {
               skipWaiting: true,
               runtimeCaching: [
                 {
-                  urlPattern: /^https:\/\/fonts\.googleapis\.com\//,
+                  urlPattern: new RegExp(`^${process.env.GOOGLE_FONTS_STYLESHEETS_URL || 'https://fonts\\.googleapis\\.com'}/`),
                   handler: 'StaleWhileRevalidate',
                   options: {
                     cacheName: 'google-fonts-stylesheets',
                   },
                 },
                 {
-                  urlPattern: /^https:\/\/fonts\.gstatic\.com\//,
+                  urlPattern: new RegExp(`^${process.env.GOOGLE_FONTS_WEBFONTS_URL || 'https://fonts\\.gstatic\\.com'}/`),
                   handler: 'CacheFirst',
                   options: {
                     cacheName: 'google-fonts-webfonts',
                     expiration: {
-                      maxEntries: 30,
-                      maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+                      maxEntries: parseInt(process.env.CACHE_MAX_ENTRIES) || 30,
+                      maxAgeSeconds: parseInt(process.env.CACHE_MAX_AGE_SECONDS) || 60 * 60 * 24 * 365, // 1 year
                     },
                   },
                 },
@@ -137,10 +144,10 @@ module.exports = (env, argv) => {
           publicPath: '/',
         },
       ],
-      port: 3000,
-      hot: true,
+      port: parseInt(process.env.FRONTEND_DEV_PORT) || 3000,
+      hot: process.env.WEBPACK_DEV_HOT !== 'false',
       historyApiFallback: true,
-      open: true,
+      open: process.env.WEBPACK_DEV_OPEN !== 'false',
     },
     optimization: {
       splitChunks: {

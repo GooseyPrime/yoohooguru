@@ -28,7 +28,7 @@ router.post('/login', async (req, res) => {
     }
 
     // Set httpOnly cookie for simple admin session (4 hours)
-    res.cookie('ripple_admin', '1', { 
+    res.cookie('yoohoo_admin', '1', { 
       httpOnly: true, 
       sameSite: 'lax', 
       secure: process.env.NODE_ENV === 'production', 
@@ -51,7 +51,7 @@ router.post('/login', async (req, res) => {
  * Admin Ping - Check if admin session is valid
  */
 router.get('/ping', (req, res) => {
-  const adminCookie = req.cookies?.ripple_admin;
+  const adminCookie = req.cookies?.yoohoo_admin;
   
   if (adminCookie === '1') {
     res.json({ success: true, authenticated: true });
@@ -64,7 +64,7 @@ router.get('/ping', (req, res) => {
  * Admin Logout - Clear admin session
  */
 router.post('/logout', (req, res) => {
-  res.clearCookie('ripple_admin', { path: '/' });
+  res.clearCookie('yoohoo_admin', { path: '/' });
   res.json({ success: true, message: 'Admin logout successful' });
 });
 
@@ -72,7 +72,7 @@ router.post('/logout', (req, res) => {
  * Admin Dashboard Data - Get system overview (protected route)
  */
 router.get('/dashboard', (req, res) => {
-  const adminCookie = req.cookies?.ripple_admin;
+  const adminCookie = req.cookies?.yoohoo_admin;
   
   if (adminCookie !== '1') {
     return res.status(401).json({ 

@@ -440,7 +440,7 @@ function AdminDashboardPage() {
     <AdminGuard>
       <Container>
         <Header>
-          <Title>🌊 RIPPLE Admin Dashboard</Title>
+          <Title>🎯 yoohoo.guru Admin Dashboard</Title>
           <LogoutButton onClick={handleLogout}>
             Logout
           </LogoutButton>

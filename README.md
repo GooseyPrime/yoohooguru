@@ -1,103 +1,291 @@
 
 # yoohoo.guru Platform
 
-Create a comprehensive skill-sharing platform called "yoohoo.guru" — a neighborhood-based app where users exchange skills, discover purpose, and create exponential community impact.
+A comprehensive skill-sharing platform where users exchange skills, discover purpose, and create exponential community impact through neighborhood-based connections.
 
-## MCP Server Implementation
+## 🚀 Platform Overview
 
-**Status: 🟢 ACTIVE** | **Version: 1.0.0** | **Last Verified: 2025-08-30**
+**Status: 🟢 ACTIVE** | **Version: 1.0.0** | **Architecture: Full Stack**
 
-This repository contains a minimal, scalable **Multi-Component Platform (MCP) server** built with FastAPI as the backend foundation for the yoohoo.guru project. The server provides a modular structure designed for easy extension with additional components and services.
+This is a modern, full-stack web application built with:
+- **Frontend**: React with Webpack, styled-components, and PWA support
+- **Backend**: Node.js with Express, Firebase integration, and comprehensive API
+- **Configuration**: Environment-driven architecture for flexible deployment
 
-### ✅ Current Status Confirmation
+### ✅ Key Features
 
-The MCP server is **operational and responding correctly**:
+- **🎯 Skill Sharing Marketplace** - Connect community members for skill exchange
+- **🔐 Firebase Authentication** - Secure user management and authentication
+- **💳 Stripe Integration** - Payment processing for premium features
+- **🤖 AI-Powered Recommendations** - Smart skill matching using OpenRouter
+- **📱 Progressive Web App** - Mobile-optimized with offline capabilities
+- **🛡️ Enterprise Security** - Rate limiting, CORS protection, and input validation
+- **⚙️ Environment-Driven Configuration** - Fully configurable via environment variables
 
-```json
-{
-  "status": "healthy",
-  "message": "yoohoo.guru MCP Server is running",
-  "timestamp": "2025-08-30T21:00:17.783451Z",
-  "version": "1.0.0"
-}
-```
-
-All endpoints are functional, tests pass (7/7), and the server is ready for development and production use.
-
-## Features
-
-- **FastAPI-based REST API** with automatic OpenAPI documentation
-- **Modular architecture** designed for easy extension
-- **Type-safe Python code** with Pydantic models
-- **Comprehensive test suite** using pytest
-- **Docker containerization** for easy deployment
-- **Health check endpoints** for monitoring
-- **Production-ready configuration** with proper error handling
-
-## Project Structure
+## 📁 Project Structure
 
 ```
-├── src/
-│   ├── __init__.py
-│   ├── main.py          # FastAPI application and MCP server
-│   └── config.py        # Configuration management
-├── tests/
-│   ├── __init__.py
-│   ├── conftest.py      # Test fixtures and configuration
-│   └── test_main.py     # Test cases for API endpoints
-├── requirements.txt     # Python dependencies
-├── Dockerfile          # Docker container configuration
-├── pyproject.toml      # Pytest configuration
-├── .gitignore          # Git ignore patterns
-└── README.md           # This file
+├── frontend/                 # React frontend application
+│   ├── src/
+│   │   ├── components/      # Reusable UI components
+│   │   ├── screens/         # Main page components
+│   │   ├── contexts/        # React contexts (Auth, etc.)
+│   │   └── utils/           # Frontend utilities
+│   ├── public/              # Static assets
+│   ├── webpack.config.js    # Webpack configuration
+│   └── package.json         # Frontend dependencies
+├── backend/                  # Node.js backend API
+│   ├── src/
+│   │   ├── config/          # Configuration management
+│   │   ├── routes/          # API route handlers
+│   │   ├── middleware/      # Express middleware
+│   │   ├── utils/           # Backend utilities
+│   │   └── lib/             # Business logic libraries
+│   ├── tests/               # Backend test suites
+│   └── package.json         # Backend dependencies
+├── docs/                     # Documentation
+│   ├── ENVIRONMENT_VARIABLES.md  # Complete env var guide
+│   ├── DEPLOYMENT.md         # Deployment instructions
+│   └── RAILWAY_DEPLOYMENT.md # Railway-specific guide
+├── .env.example             # Environment variables template
+├── package.json             # Root workspace configuration
+└── README.md                # This file
 ```
 
-## API Endpoints
+## 🏃‍♂️ Quick Start
 
-- **GET /** - Root endpoint returning service status
-- **GET /health** - Health check endpoint for monitoring
-- **GET /docs** - Interactive API documentation (Swagger UI)
-- **GET /redoc** - Alternative API documentation (ReDoc)
-- **GET /openapi.json** - OpenAPI schema
+### Prerequisites
 
-## Requirements
+- **Node.js 18+** and npm
+- **Firebase project** (for authentication and data)
+- **Environment configuration** (see [Environment Variables Guide](./docs/ENVIRONMENT_VARIABLES.md))
 
-- Python 3.11 or higher
-- pip (Python package manager)
-- Docker (optional, for containerization)
-
-## Local Development Setup
-
-### 1. Clone the Repository
+### 1. Clone and Install
 
 ```bash
 git clone https://github.com/GooseyPrime/yoohooguru.git
 cd yoohooguru
+
+# Install all dependencies (frontend + backend)
+npm run install:all
 ```
 
-### 2. Create Virtual Environment
+### 2. Environment Setup
 
 ```bash
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+# Copy environment template
+cp .env.example .env
+
+# Edit .env with your configuration
+# See docs/ENVIRONMENT_VARIABLES.md for complete guide
 ```
 
-### 3. Install Dependencies
+**Minimum required variables:**
+```env
+# Firebase (required)
+FIREBASE_PROJECT_ID=your_project_id
+FIREBASE_API_KEY=your_api_key
+
+# Security (required for production)
+JWT_SECRET=your_super_secret_key
+
+# App Branding (optional, defaults to yoohoo.guru)
+APP_BRAND_NAME=yoohoo.guru
+REACT_APP_BRAND_NAME=yoohoo.guru
+```
+
+### 3. Development
 
 ```bash
-pip install --upgrade pip
-pip install -r requirements.txt
+# Run both frontend and backend
+npm run dev
+
+# Or run separately:
+npm run dev:frontend  # React dev server on port 3000
+npm run dev:backend   # Express API server on port 3001
 ```
 
-### 4. Run the Server
+### 4. Production Build
 
 ```bash
-# Development mode with hot reload
-python src/main.py
+# Build everything
+npm run build
 
-# Or using uvicorn directly
-uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+# Start production server
+npm start
 ```
+
+## 🌍 Deployment
+
+The platform supports multiple deployment options with full environment configuration:
+
+- **[Railway](./docs/RAILWAY_DEPLOYMENT.md)** - Recommended for full-stack deployment
+- **[Netlify + Railway](./docs/DEPLOYMENT.md)** - Frontend on Netlify, backend on Railway
+- **[Docker](./docker-compose.yml)** - Container-based deployment
+- **[Custom](./docs/DEPLOYMENT.md)** - Deploy anywhere with environment variables
+
+### Environment Configuration
+
+This platform is **fully environment-driven** with 40+ configurable variables:
+
+- **🎨 Branding**: Customize app name, emails, contact info
+- **🔗 URLs**: Configure domains, CORS origins, API endpoints  
+- **🔧 Performance**: Adjust rate limits, cache settings, file upload limits
+- **🚀 Features**: Enable/disable features via feature flags
+- **🔐 Security**: Configure secrets, authentication, permissions
+
+**📋 [Complete Environment Variables Guide](./docs/ENVIRONMENT_VARIABLES.md)**
+
+## 🔧 Configuration Management
+
+### Centralized Configuration
+
+The platform uses a centralized configuration system with validation:
+
+```javascript
+// Backend configuration with validation
+const { getConfig, validateConfig } = require('./backend/src/config/appConfig');
+const config = getConfig();        // Load all environment variables
+validateConfig(config);            // Validate required variables
+```
+
+### Environment-Specific Settings
+
+```bash
+# Development (automatic defaults)
+NODE_ENV=development
+
+# Production (requires all security variables)
+NODE_ENV=production
+JWT_SECRET=required_in_production
+FIREBASE_PROJECT_ID=required_in_production
+```
+
+### Feature Flags
+
+Control feature availability across environments:
+
+```env
+# Feature flags (environment-driven)
+FEATURE_AI_RECOMMENDATIONS=true
+FEATURE_DARK_MODE=false
+FEATURE_MOBILE_APP=true
+ADMIN_WRITE_ENABLED=false
+```
+
+## 🔌 API Endpoints
+
+### Core API
+- **GET /api** - API status and welcome message
+- **GET /health** - Health check with system info
+- **GET /api/feature-flags** - Available feature flags
+
+### Authentication & Users
+- **POST /api/auth/login** - User authentication
+- **POST /api/auth/register** - User registration
+- **GET /api/users/profile** - User profile management
+
+### Skills & Exchanges
+- **GET /api/skills** - Browse available skills
+- **POST /api/skills** - Create skill offering
+- **GET /api/exchanges** - Skill exchange history
+- **POST /api/exchanges** - Request skill exchange
+
+### Payments & Premium
+- **POST /api/payments/create-intent** - Create payment
+- **POST /api/payments/webhook** - Stripe webhook handler
+
+### AI & Recommendations
+- **POST /api/ai/recommendations** - Get AI-powered skill matches
+- **POST /api/ai/chat** - AI assistant for skill guidance
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+npm test
+
+# Run tests separately
+npm run test:frontend   # React component tests
+npm run test:backend    # Express API tests
+
+# Run with coverage
+npm run test:coverage
+```
+
+### Test Coverage
+- **Backend**: 31 tests covering API endpoints, utilities, and business logic
+- **Frontend**: Component testing with Jest and React Testing Library
+- **Integration**: End-to-end API testing with supertest
+
+## 🔍 Development Commands
+
+```bash
+# Install dependencies
+npm run install:all
+
+# Development
+npm run dev                 # Start both frontend and backend
+npm run dev:frontend        # Frontend only (port 3000)
+npm run dev:backend         # Backend only (port 3001)
+
+# Building
+npm run build               # Build both for production
+npm run build:frontend      # Build React app
+npm run build:backend       # Prepare backend for production
+
+# Testing
+npm test                    # Run all tests
+npm run lint                # Check code style
+npm run format              # Format code
+
+# Deployment
+npm start                   # Start production server
+npm run deploy              # Deploy to configured services
+```
+
+## 🔒 Security Features
+
+- **🛡️ Input Validation** - Comprehensive request validation with express-validator
+- **🔐 Authentication** - Firebase Auth integration with JWT tokens
+- **🚦 Rate Limiting** - Configurable rate limits per endpoint
+- **🌐 CORS Protection** - Environment-configurable CORS origins
+- **🔒 Helmet.js** - Security headers and protection middleware
+- **📝 Audit Logging** - Comprehensive request/response logging
+
+## 🤝 Contributing
+
+1. **Fork the repository**
+2. **Create feature branch** (`git checkout -b feature/amazing-feature`)
+3. **Configure environment** (copy `.env.example` to `.env`)
+4. **Make changes** with tests
+5. **Run tests** (`npm test`)
+6. **Commit changes** (`git commit -m 'Add amazing feature'`)
+7. **Push to branch** (`git push origin feature/amazing-feature`)
+8. **Open Pull Request**
+
+### Development Guidelines
+
+- **Environment-driven**: All configuration via environment variables
+- **Test coverage**: Add tests for new features
+- **Documentation**: Update docs for configuration changes
+- **Security**: Follow security best practices
+- **Performance**: Consider performance impact of changes
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+- **📚 Documentation**: [docs/](./docs/) directory
+- **🐛 Issues**: [GitHub Issues](https://github.com/GooseyPrime/yoohooguru/issues)
+- **💬 Discussions**: [GitHub Discussions](https://github.com/GooseyPrime/yoohooguru/discussions)
+- **📧 Contact**: support@yoohoo.guru (configurable via `APP_SUPPORT_EMAIL`)
+
+---
+
+**Built with ❤️ for community skill sharing and exponential impact** 🚀
 
 The server will start on `http://localhost:8000`
 

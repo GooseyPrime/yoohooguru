@@ -25,16 +25,16 @@ const featureFlags = {
   systemReports: true,
 
   // experimental/beta features
-  aiRecommendations: process.env.NODE_ENV === 'development',
-  mobileApp: false,
-  darkMode: false,
-  internationalSupport: false,
+  aiRecommendations: process.env.FEATURE_AI_RECOMMENDATIONS === 'true' || process.env.NODE_ENV === 'development',
+  mobileApp: process.env.FEATURE_MOBILE_APP === 'true',
+  darkMode: process.env.FEATURE_DARK_MODE === 'true',
+  internationalSupport: process.env.FEATURE_INTERNATIONAL_SUPPORT === 'true',
 
   // onboarding features (append new flags only)
-  oddJobs: true,                 // new section enabled
-  oddJobsHourly: false,          // Coming Soon
-  oddJobsMaterials: false,       // Coming Soon
-  backgroundChecks: false,       // Coming Soon
+  oddJobs: process.env.FEATURE_ODD_JOBS !== 'false', // enabled by default, can be disabled
+  oddJobsHourly: process.env.FEATURE_ODD_JOBS_HOURLY === 'true',
+  oddJobsMaterials: process.env.FEATURE_ODD_JOBS_MATERIALS === 'true',
+  backgroundChecks: process.env.FEATURE_BACKGROUND_CHECKS === 'true',
 };
 
 /**

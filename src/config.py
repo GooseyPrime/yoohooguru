@@ -1,5 +1,5 @@
 """
-Configuration module for RIPPLE Community MCP Server.
+Configuration module for yoohoo.guru MCP Server.
 
 This module provides configuration management for the MCP server,
 designed for easy extension with environment-specific settings.
@@ -19,7 +19,7 @@ class Settings:
     
     def __init__(self) -> None:
         """Initialize settings from environment variables."""
-        self.app_name: str = "RIPPLE Community MCP Server"
+        self.app_name: str = "yoohoo.guru MCP Server"
         self.version: str = "1.0.0"
         self.host: str = os.getenv("HOST", "0.0.0.0")
         self.port: int = int(os.getenv("PORT", "8000"))

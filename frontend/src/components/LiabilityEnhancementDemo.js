@@ -213,7 +213,7 @@ function LiabilityEnhancementDemo() {
 
   return (
     <DemoContainer>
-      <DemoTitle>🌊 RIPPLE Community - Enhanced Liability Protection Demo</DemoTitle>
+      <DemoTitle>🎯 {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'} - Enhanced Liability Protection Demo</DemoTitle>
       
       <InfoPanel>
         <h2>🛡️ Enhanced Liability Protection Features</h2>
