@@ -27,9 +27,12 @@ const GlobalStyle = createGlobalStyle`
 
   html, body, #root { height: 100%; }
   body {
-    margin: 0; background: var(--bg); color: var(--text);
-    font-family: ${({ theme }) => theme.fonts.sans};
-    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+    margin: 0; 
+    background: var(--bg); 
+    color: var(--text);
+    font-family: 'Inter var', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; 
+    -moz-osx-font-smoothing: grayscale;
   }
   * { box-sizing: border-box; }
   a { color: inherit; text-decoration: none; }
@@ -83,6 +86,31 @@ const GlobalStyle = createGlobalStyle`
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
+  }
+
+  /* Fallback styles for when custom font fails to load */
+  .font-loading-error {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+  }
+
+  /* Ensure the app renders even with styling issues */
+  #root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Basic button reset for accessibility */
+  button {
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
   }
 `;
 

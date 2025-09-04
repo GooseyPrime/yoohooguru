@@ -9,15 +9,15 @@ const fadeIn = keyframes`
 const pulse = keyframes`
   0% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+    box-shadow: 0 0 0 0 rgba(124, 140, 255, 0.7);
   }
   70% {
     transform: scale(1.05);
-    box-shadow: 0 0 0 20px rgba(0, 123, 255, 0);
+    box-shadow: 0 0 0 20px rgba(124, 140, 255, 0);
   }
   100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+    box-shadow: 0 0 0 0 rgba(124, 140, 255, 0);
   }
 `;
 
@@ -26,9 +26,9 @@ const LoadingContainer = styled.div`
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--growth-green) 100%);
+  background: linear-gradient(135deg, var(--pri) 0%, var(--succ) 100%);
   color: white;
-  font-family: var(--font-heading);
+  font-family: ${({ theme }) => theme.fonts.sans};
   animation: ${fadeIn} 0.5s ease-in-out;
 `;
 
@@ -53,13 +53,13 @@ const YoohooLogo = styled.div`
 const LoadingText = styled.div`
   font-size: 18px;
   margin-bottom: 10px;
-  font-weight: var(--font-medium);
+  font-weight: 600;
 `;
 
 const LoadingSubtitle = styled.div`
   font-size: 14px;
   opacity: 0.8;
-  font-weight: var(--font-normal);
+  font-weight: 400;
 `;
 
 function LoadingScreen({ message = 'Loading your skill-sharing platform...' }) {

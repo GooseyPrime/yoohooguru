@@ -1,52 +1,63 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { initializeApp } from 'firebase/app';
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged,
-  GoogleAuthProvider,
-  signInWithPopup,
-  sendPasswordResetEmail
-} from 'firebase/auth';
-import { getDatabase } from 'firebase/database';
 import toast from 'react-hot-toast';
 
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID
+// Mock Firebase functions for when Firebase isn't configured
+const mockAuth = {
+  currentUser: null,
+  onAuthStateChanged: (callback) => {
+    callback(null);
+    return () => {};
+  }
 };
 
-// Check if Firebase is properly configured
+// Check if Firebase environment variables are available
 const isFirebaseConfigured = () => {
-  return firebaseConfig.apiKey && 
-         firebaseConfig.apiKey !== 'your_firebase_api_key_here' &&
-         firebaseConfig.projectId && 
-         firebaseConfig.projectId !== 'your_project_id';
+  return process.env.REACT_APP_FIREBASE_API_KEY && 
+         process.env.REACT_APP_FIREBASE_API_KEY !== 'your_firebase_api_key_here' &&
+         process.env.REACT_APP_FIREBASE_PROJECT_ID && 
+         process.env.REACT_APP_FIREBASE_PROJECT_ID !== 'your_project_id';
 };
 
 // Initialize Firebase only if properly configured
-let app, auth, database;
+let auth, database;
 
 if (isFirebaseConfigured()) {
   try {
-    app = initializeApp(firebaseConfig);
+    const { initializeApp } = require('firebase/app');
+    const {
+      getAuth,
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged,
+      GoogleAuthProvider,
+      signInWithPopup,
+      sendPasswordResetEmail
+    } = require('firebase/auth');
+    const { getDatabase } = require('firebase/database');
+
+    const firebaseConfig = {
+      apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+      authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+      databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+      projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+      storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+      appId: process.env.REACT_APP_FIREBASE_APP_ID
+    };
+
+    const app = initializeApp(firebaseConfig);
     auth = getAuth(app);
     database = getDatabase(app);
+    
+    console.log('Firebase initialized successfully');
   } catch (error) {
     console.warn('Firebase initialization failed:', error.message);
-    console.warn('Firebase features will be disabled. Please check your configuration.');
+    auth = mockAuth;
   }
 } else {
-  console.warn('Firebase is not properly configured. Using placeholder values.');
-  console.warn('Please update your environment variables with valid Firebase configuration.');
+  console.log('Firebase not configured - using offline mode');
+  auth = mockAuth;
 }
 
 export { auth, database };
@@ -66,34 +77,42 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [userProfile, setUserProfile] = useState(null);
 
+  // Mock functions for when Firebase isn't available
+  const mockFunction = async () => {
+    toast.error('Authentication features are currently unavailable. Please try again later.');
+    throw new Error('Firebase not configured');
+  };
+
   // Sign up with email and password
   const signup = async (email, password, userData = {}) => {
-    if (!auth) {
-      toast.error('Authentication is not available. Please check Firebase configuration.');
-      throw new Error('Firebase Auth not initialized');
-    }
+    if (auth === mockAuth) return mockFunction();
     
     try {
+      const { createUserWithEmailAndPassword } = require('firebase/auth');
       const result = await createUserWithEmailAndPassword(auth, email, password);
       
-      // Create user profile in backend
-      const token = await result.user.getIdToken();
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          email,
-          displayName: userData.displayName || '',
-          skills: userData.skills || { offered: [], wanted: [] },
-          location: userData.location || ''
-        })
-      });
+      // Create user profile in backend if API is available
+      try {
+        const token = await result.user.getIdToken();
+        const response = await fetch(`${process.env.REACT_APP_API_URL || ''}/auth/register`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            email,
+            displayName: userData.displayName || '',
+            skills: userData.skills || { offered: [], wanted: [] },
+            location: userData.location || ''
+          })
+        });
 
-      if (!response.ok) {
-        throw new Error('Failed to create user profile');
+        if (!response.ok) {
+          console.warn('Failed to create user profile in backend');
+        }
+      } catch (apiError) {
+        console.warn('Backend API not available:', apiError.message);
       }
 
       toast.success('Account created successfully!');
@@ -106,12 +125,10 @@ export function AuthProvider({ children }) {
 
   // Login with email and password
   const login = async (email, password) => {
-    if (!auth) {
-      toast.error('Authentication is not available. Please check Firebase configuration.');
-      throw new Error('Firebase Auth not initialized');
-    }
+    if (auth === mockAuth) return mockFunction();
     
     try {
+      const { signInWithEmailAndPassword } = require('firebase/auth');
       const result = await signInWithEmailAndPassword(auth, email, password);
       toast.success('Welcome back!');
       return result;
@@ -123,12 +140,10 @@ export function AuthProvider({ children }) {
 
   // Login with Google
   const loginWithGoogle = async () => {
-    if (!auth) {
-      toast.error('Authentication is not available. Please check Firebase configuration.');
-      throw new Error('Firebase Auth not initialized');
-    }
+    if (auth === mockAuth) return mockFunction();
     
     try {
+      const { GoogleAuthProvider, signInWithPopup } = require('firebase/auth');
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       toast.success('Signed in with Google!');
@@ -141,12 +156,15 @@ export function AuthProvider({ children }) {
 
   // Logout
   const logout = async () => {
-    if (!auth) {
-      toast.error('Authentication is not available. Please check Firebase configuration.');
-      throw new Error('Firebase Auth not initialized');
+    if (auth === mockAuth) {
+      setCurrentUser(null);
+      setUserProfile(null);
+      toast.success('Signed out successfully');
+      return;
     }
     
     try {
+      const { signOut } = require('firebase/auth');
       await signOut(auth);
       setUserProfile(null);
       toast.success('Signed out successfully');
@@ -158,12 +176,10 @@ export function AuthProvider({ children }) {
 
   // Reset password
   const resetPassword = async (email) => {
-    if (!auth) {
-      toast.error('Authentication is not available. Please check Firebase configuration.');
-      throw new Error('Firebase Auth not initialized');
-    }
+    if (auth === mockAuth) return mockFunction();
     
     try {
+      const { sendPasswordResetEmail } = require('firebase/auth');
       await sendPasswordResetEmail(auth, email);
       toast.success('Password reset email sent!');
     } catch (error) {
@@ -174,6 +190,8 @@ export function AuthProvider({ children }) {
 
   // Get user profile
   const getUserProfile = async (user) => {
+    if (!user || !process.env.REACT_APP_API_URL) return null;
+    
     try {
       const token = await user.getIdToken();
       const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/profile`, {
@@ -188,14 +206,16 @@ export function AuthProvider({ children }) {
         return data.data;
       }
     } catch (error) {
-      console.error('Failed to fetch user profile:', error);
+      console.warn('Failed to fetch user profile:', error);
     }
+    return null;
   };
 
   // Update user profile
   const updateProfile = async (updates) => {
     try {
       if (!currentUser) throw new Error('No user logged in');
+      if (!process.env.REACT_APP_API_URL) throw new Error('API not configured');
       
       const token = await currentUser.getIdToken();
       const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/profile`, {
@@ -209,7 +229,6 @@ export function AuthProvider({ children }) {
 
       if (response.ok) {
         toast.success('Profile updated successfully!');
-        // Refresh profile data
         await getUserProfile(currentUser);
       } else {
         throw new Error('Failed to update profile');
@@ -222,22 +241,29 @@ export function AuthProvider({ children }) {
 
   // Listen for auth state changes
   useEffect(() => {
-    if (!auth) {
-      setLoading(false);
-      return;
-    }
+    let unsubscribe = () => {};
     
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user);
-      
-      if (user) {
-        await getUserProfile(user);
-      } else {
-        setUserProfile(null);
+    if (auth && auth !== mockAuth) {
+      try {
+        const { onAuthStateChanged } = require('firebase/auth');
+        unsubscribe = onAuthStateChanged(auth, async (user) => {
+          setCurrentUser(user);
+          
+          if (user) {
+            await getUserProfile(user);
+          } else {
+            setUserProfile(null);
+          }
+          
+          setLoading(false);
+        });
+      } catch (error) {
+        console.warn('Auth state listener failed:', error);
+        setLoading(false);
       }
-      
+    } else {
       setLoading(false);
-    });
+    }
 
     return unsubscribe;
   }, []);

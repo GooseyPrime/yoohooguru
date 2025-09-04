@@ -2,10 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 
 const FooterContainer = styled.footer`
-  background: var(--gray-900);
-  color: var(--gray-300);
+  background: var(--surface);
+  color: var(--muted);
   padding: 3rem 0 1.5rem;
   margin-top: auto;
+  border-top: 1px solid var(--border);
 `;
 
 const FooterContent = styled.div`
@@ -28,24 +29,25 @@ const FooterGrid = styled.div`
 
 const FooterSection = styled.div`
   h3 {
-    color: white;
-    font-size: var(--text-lg);
-    font-weight: var(--font-semibold);
+    color: var(--text);
+    font-size: 1.125rem;
+    font-weight: 600;
     margin-bottom: 1rem;
   }
 
   p {
     margin-bottom: 0.5rem;
     line-height: 1.6;
+    color: var(--muted);
   }
 
   a {
-    color: var(--gray-400);
+    color: var(--muted);
     text-decoration: none;
-    transition: color var(--transition-fast);
+    transition: color var(--t-fast);
 
     &:hover {
-      color: var(--primary);
+      color: var(--pri);
       text-decoration: none;
     }
   }
@@ -62,7 +64,7 @@ const FooterLinks = styled.ul`
 `;
 
 const FooterBottom = styled.div`
-  border-top: 1px solid var(--gray-700);
+  border-top: 1px solid var(--border);
   padding-top: 1.5rem;
   display: flex;
   justify-content: space-between;
@@ -81,12 +83,12 @@ const SocialLinks = styled.div`
   gap: 1rem;
 
   a {
-    color: var(--gray-400);
+    color: var(--muted);
     font-size: 1.2rem;
-    transition: color var(--transition-fast);
+    transition: color var(--t-fast);
 
     &:hover {
-      color: var(--primary);
+      color: var(--pri);
     }
   }
 `;
@@ -112,10 +114,9 @@ function Footer() {
             <h3>Quick Links</h3>
             <FooterLinks>
               <li><a href="/skills">Browse Skills</a></li>
+              <li><a href="/angels-list">Angel's List</a></li>
               <li><a href="/dashboard">Dashboard</a></li>
               <li><a href="/about">About Us</a></li>
-              <li><a href="/how-it-works">How It Works</a></li>
-              <li><a href="/pricing">Pricing</a></li>
             </FooterLinks>
           </FooterSection>
 
@@ -126,7 +127,6 @@ function Footer() {
               <li><a href="/success-stories">Success Stories</a></li>
               <li><a href="/events">Community Events</a></li>
               <li><a href="/forum">Discussion Forum</a></li>
-              <li><a href="/mentorship">Mentorship Program</a></li>
             </FooterLinks>
           </FooterSection>
 
@@ -135,7 +135,6 @@ function Footer() {
             <FooterLinks>
               <li><a href="/help">Help Center</a></li>
               <li><a href="/contact">Contact Us</a></li>
-              <li><a href="/safety">Safety & Trust</a></li>
               <li><a href="/privacy">Privacy Policy</a></li>
               <li><a href="/terms">Terms of Service</a></li>
             </FooterLinks>
