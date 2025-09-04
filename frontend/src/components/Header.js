@@ -152,11 +152,17 @@ function Header() {
   };
 
   const isActive = (path) => location.pathname === path;
+  const isHomePage = location.pathname === '/';
 
   return (
     <HeaderContainer>
       <HeaderContent>
-        <Logo showImage={true} showText={true} size="normal" />
+        <Logo 
+          showImage={true} 
+          showText={isHomePage} 
+          showLettering={!isHomePage}
+          size="normal" 
+        />
 
         <Nav $isOpen={isMenuOpen}>
           <NavLink 

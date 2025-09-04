@@ -60,10 +60,17 @@ const DotSeparator = styled.span`
   margin: 0 0.1rem;
 `;
 
+const LogoLettering = styled.img`
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+`;
+
 const Logo = ({ 
-  showIcon = true, 
+  showIcon = false, // Changed default to false to remove bullseye
   showImage = false, 
-  showText = true, 
+  showText = true,
+  showLettering = false, // New prop for lettering image
   size = 'normal',
   to = '/',
   className 
@@ -86,7 +93,15 @@ const Logo = ({
         />
       )}
       
-      {showText && (
+      {showLettering && (
+        <LogoLettering 
+          src="/assets/images/yoohoogurulettering.png" 
+          alt="yoohoo.guru"
+          style={{ height: `${32 * sizeMultiplier}px` }}
+        />
+      )}
+      
+      {showText && !showLettering && (
         <LogoText>
           <YoohooText style={{ fontSize: `${1.8 * sizeMultiplier}rem` }}>
             Yoohoo
