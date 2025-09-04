@@ -1,22 +1,25 @@
 const theme = {
   colors: {
-    bg: '#0B0D10',
-    surface: '#12151A',
-    elev: '#171B22',
+    bg: '#040118',
+    surface: '#0A0B1E',
+    elev: '#111225',
     text: '#E8EDF2',
     muted: '#9AA7B2',
-    border: '#252B34',
-    pri: '#7C8CFF',
-    succ: '#27C093',
+    border: '#1A1D35',
+    pri: '#00c78c',
+    succ: '#00c78c',
     warn: '#F5B950',
-    err: '#F26D6D'
+    err: '#F26D6D',
+    accent: '#00c78c'
   },
-  radius: { sm: 8, md: 12, lg: 16, xl: 24 },
+  radius: { sm: 6, md: 8, lg: 12, xl: 16 },
   shadow: {
-    card: '0 6px 24px rgba(0,0,0,.24)'
+    card: '0 4px 20px rgba(0,0,0,.25)',
+    lg: '0 8px 32px rgba(0,0,0,.3)',
+    xl: '0 12px 48px rgba(0,0,0,.35)'
   },
   motion: {
-    fast: '140ms', med: '200ms', slow: '260ms',
+    fast: '120ms', med: '180ms', slow: '240ms',
     in: 'cubic-bezier(.2,.7,.25,1)', out: 'cubic-bezier(.3,.1,.2,1)'
   },
   fonts: {

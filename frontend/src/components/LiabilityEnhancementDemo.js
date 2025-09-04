@@ -199,7 +199,7 @@ function LiabilityEnhancementDemo() {
         waiverId: waiverData.waiverId
       }
     });
-    setStatusMessage(`✅ Liability waiver accepted! You can now participate in "${selectedSkill.skillName}". Exchange can proceed safely.`);
+    setStatusMessage(`Liability waiver accepted! You can now participate in "${selectedSkill.skillName}". Exchange can proceed safely.`);
     setSelectedSkill(null);
   };
 
@@ -207,7 +207,7 @@ function LiabilityEnhancementDemo() {
     setShowWaiver(false);
     setSelectedSkill(null);
     if (!waiverStatus[selectedSkill?.id]?.accepted) {
-      setStatusMessage('⚠️ Liability waiver is required to participate in skill exchanges. Please accept the waiver to continue.');
+      setStatusMessage('Liability waiver is required to participate in skill exchanges. Please accept the waiver to continue.');
     }
   };
 
@@ -228,7 +228,7 @@ function LiabilityEnhancementDemo() {
       </InfoPanel>
 
       {statusMessage && (
-        <StatusMessage className={statusMessage.includes('✅') ? 'success' : 'info'}>
+        <StatusMessage className={statusMessage.includes('accepted!') ? 'success' : 'info'}>
           {statusMessage}
         </StatusMessage>
       )}
@@ -257,7 +257,7 @@ function LiabilityEnhancementDemo() {
               alignItems: 'center',
               gap: '0.5rem'
             }}>
-              ✅ Liability waiver accepted
+              Liability waiver accepted
               <span style={{ 
                 fontSize: 'var(--text-sm)', 
                 color: 'var(--gray-600)' 

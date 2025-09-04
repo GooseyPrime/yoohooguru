@@ -118,24 +118,28 @@ function Footer() {
               <li><a href="/angels-list">Angel&apos;s List</a></li>
               <li><a href="/dashboard">Dashboard</a></li>
               <li><a href="/about">About Us</a></li>
+              <li><a href="/how-it-works">How It Works</a></li>
+              <li><a href="/pricing">Pricing</a></li>
             </FooterLinks>
           </FooterSection>
 
           <FooterSection>
             <h3>Community</h3>
             <FooterLinks>
-              <li><a href="/blog">Blog</a></li>
-              <li><a href="/success-stories">Success Stories</a></li>
-              <li><a href="/events">Community Events</a></li>
-              <li><a href="/forum">Discussion Forum</a></li>
+              <li><a href="/blog">Blog <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></a></li>
+              <li><a href="/success-stories">Success Stories <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></a></li>
+              <li><a href="/events">Community Events <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></a></li>
+              <li><a href="/forum">Discussion Forum <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></a></li>
+              <li><a href="/mentorship">Mentorship Program <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></a></li>
             </FooterLinks>
           </FooterSection>
 
           <FooterSection>
             <h3>Support</h3>
             <FooterLinks>
-              <li><a href="/help">Help Center</a></li>
-              <li><a href="/contact">Contact Us</a></li>
+              <li><a href="/help">Help Center <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></a></li>
+              <li><a href="/contact">Contact Us <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></a></li>
+              <li><a href="/safety">Safety & Trust <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></a></li>
               <li><a href="/privacy">Privacy Policy</a></li>
               <li><a href="/terms">Terms of Service</a></li>
             </FooterLinks>
@@ -145,11 +149,11 @@ function Footer() {
         <FooterBottom>
           <p>&copy; 2024 {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}. All rights reserved.</p>
           <SocialLinks>
-            <a href="#" aria-label="Twitter">🐦</a>
-            <a href="#" aria-label="Facebook">📘</a>
-            <a href="#" aria-label="Instagram">📷</a>
-            <a href="#" aria-label="LinkedIn">💼</a>
-            <a href="#" aria-label="Discord">💬</a>
+            <a href="#" aria-label="Twitter">Twitter</a>
+            <a href="#" aria-label="Facebook">Facebook</a>
+            <a href="#" aria-label="Instagram">Instagram</a>
+            <a href="#" aria-label="LinkedIn">LinkedIn</a>
+            <a href="#" aria-label="Discord">Discord</a>
           </SocialLinks>
         </FooterBottom>
       </FooterContent>

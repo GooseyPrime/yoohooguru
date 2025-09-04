@@ -108,12 +108,24 @@ npm run dev:backend   # Express API server on port 3001
 ### 4. Production Build
 
 ```bash
-# Build everything
+# Build everything (first build: 15-60+ seconds, subsequent: 4-15 seconds)
 npm run build
+
+# Fast build (skips some optimizations for development)
+npm run build:fast
+
+# Clean build with optimization and timing
+npm run build:clean
 
 # Start production server
 npm start
 ```
+
+**Build Performance Notes:**
+- First-time builds (cold cache): 15 seconds - 6+ minutes depending on hardware
+- Subsequent builds (warm cache): 4-15 seconds
+- Environment factors affect build time (CPU, RAM, storage type, OS)
+- See [Build Performance Guide](docs/BUILD_PERFORMANCE.md) for optimization tips
 
 ## 🌍 Deployment
 
@@ -230,8 +242,11 @@ npm run dev:frontend        # Frontend only (port 3000)
 npm run dev:backend         # Backend only (port 3001)
 
 # Building
-npm run build               # Build both for production
-npm run build:frontend      # Build React app
+npm run build               # Build both for production (see performance notes above)
+npm run build:fast          # Fast build (skips optimizations)
+npm run build:clean         # Clean build with optimization script
+npm run build:analyze       # Build with bundle analysis
+npm run build:frontend      # Build React app only
 npm run build:backend       # Prepare backend for production
 
 # Testing

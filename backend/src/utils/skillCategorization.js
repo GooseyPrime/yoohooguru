@@ -24,61 +24,61 @@ const SKILL_CATEGORIES = {
   'Martial Arts': {
     keywords: ['martial-arts', 'martial arts', 'karate', 'judo', 'taekwondo', 'boxing', 'kickboxing', 'mma', 'self-defense', 'jiu-jitsu', 'kung fu'],
     riskLevel: RISK_LEVELS.HIGH,
-    icon: '🥋',
+    icon: '',
     description: 'Combat and martial arts training with significant injury risk'
   },
   'Electrical': {
     keywords: ['electrical', 'electrician', 'wiring', 'electronics', 'circuit', 'voltage', 'power systems'],
     riskLevel: RISK_LEVELS.HIGH,
-    icon: '⚡',
+    icon: '',
     description: 'Electrical work with high risk of shock or electrocution'
   },
   'Woodworking': {
     keywords: ['woodworking', 'wood working', 'furniture making', 'cabinetry', 'joinery', 'sawing', 'power tools', 'carpentry'],
     riskLevel: RISK_LEVELS.HIGH,
-    icon: '🪵',
+    icon: '',
     description: 'Woodworking and carpentry with high risk from power tools and sharp instruments'
   },
   'Health & Fitness': {
     keywords: ['fitness training', 'fitness', 'yoga', 'meditation', 'nutrition', 'cooking', 'exercise', 'health', 'wellness', 'personal training', 'strength training'],
     riskLevel: RISK_LEVELS.MEDIUM,
-    icon: '🧘',
+    icon: '',
     description: 'Health and fitness activities with moderate physical exertion risk'
   },
   'Creative': {
     keywords: ['graphic design', 'design', 'music', 'photography', 'writing', 'painting', 'drawing', 'pottery', 'craft', 'creative', 'art'],
     riskLevel: RISK_LEVELS.LOW,
-    icon: '🎨',
+    icon: '',
     description: 'Artistic and creative skills with minimal physical risk'
   },
   'Technical': {
     keywords: ['programming', 'coding', 'web development', 'software', 'computer', 'tech', 'development', 'data', 'ai', 'machine learning'],
     riskLevel: RISK_LEVELS.LOW,
-    icon: '💻', 
+    icon: '', 
     description: 'Technology and software skills with minimal physical risk'
   },
   'Language': {
     keywords: ['english', 'spanish', 'french', 'german', 'chinese', 'japanese', 'language', 'translation'],
     riskLevel: RISK_LEVELS.LOW,
-    icon: '🌍',
+    icon: '',
     description: 'Language learning and communication skills with minimal risk'
   },
   'Business': {
     keywords: ['marketing', 'sales', 'finance', 'accounting', 'management', 'business', 'entrepreneurship'],
     riskLevel: RISK_LEVELS.LOW,
-    icon: '📈',
+    icon: '',
     description: 'Business and professional skills with minimal risk'
   },
   'Practical': {
     keywords: ['repair', 'maintenance', 'plumbing', 'gardening', 'cleaning', 'organizing'],
     riskLevel: RISK_LEVELS.MEDIUM,
-    icon: '🔧',
+    icon: '',
     description: 'Practical and maintenance skills with moderate risk'
   },
   'Academic': {
     keywords: ['math', 'science', 'physics', 'chemistry', 'biology', 'history', 'geography', 'tutoring', 'teaching'],
     riskLevel: RISK_LEVELS.LOW,
-    icon: '📚',
+    icon: '',
     description: 'Academic subjects and tutoring with minimal risk'
   }
 };

@@ -17,39 +17,48 @@ const Content = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: var(--text-3xl);
-  margin-bottom: 1rem;
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  margin-bottom: 0.75rem;
   color: ${props => props.theme.colors.text};
   text-align: center;
+  line-height: 1.3;
 `;
 
 const Description = styled.p`
-  font-size: var(--text-lg);
+  font-size: var(--text-base);
   color: ${props => props.theme.colors.muted};
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
   text-align: center;
+  line-height: 1.5;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 const SearchSection = styled.div`
   background: ${props => props.theme.colors.surface};
-  border-radius: var(--r-xl);
-  padding: 2rem;
-  margin-bottom: 3rem;
+  border-radius: var(--r-lg);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
   box-shadow: ${props => props.theme.shadow.card};
   border: 1px solid ${props => props.theme.colors.border};
 `;
 
 const SearchHeader = styled.div`
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   
   h2 {
     color: ${props => props.theme.colors.text};
     margin-bottom: 0.5rem;
+    font-size: var(--text-xl);
+    font-weight: 600;
   }
   
   p {
     color: ${props => props.theme.colors.muted};
+    font-size: var(--text-sm);
   }
 `;
 
@@ -61,18 +70,18 @@ const SearchInputContainer = styled.div`
 
 const SearchInput = styled.input`
   width: 100%;
-  padding: 1rem 1rem 1rem 3rem;
-  border: 2px solid ${props => props.theme.colors.border};
-  border-radius: var(--r-lg);
+  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: var(--r-md);
   background: ${props => props.theme.colors.surface};
   color: ${props => props.theme.colors.text};
-  font-size: var(--text-base);
+  font-size: var(--text-sm);
   transition: all var(--t-fast);
   
   &:focus {
     outline: none;
     border-color: ${props => props.theme.colors.pri};
-    box-shadow: 0 0 0 3px rgba(124, 140, 255, 0.1);
+    box-shadow: 0 0 0 2px rgba(124, 140, 255, 0.1);
   }
   
   &::placeholder {
@@ -122,20 +131,21 @@ const SkillsGrid = styled.div`
 
 const SkillCategory = styled.div`
   background: ${props => props.theme.colors.surface};
-  border-radius: var(--r-xl);
-  padding: 2rem;
+  border-radius: var(--r-lg);
+  padding: 1.5rem;
   box-shadow: ${props => props.theme.shadow.card};
   border: 1px solid ${props => props.theme.colors.border};
   transition: all var(--t-med);
   
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-xl);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
   }
 
   h3 {
-    font-size: var(--text-xl);
-    margin-bottom: 1rem;
+    font-size: var(--text-lg);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
     color: ${props => props.theme.colors.text};
     display: flex;
     align-items: center;
@@ -143,20 +153,21 @@ const SkillCategory = styled.div`
   }
 
   .category-icon {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
 `;
 
 const SkillsList = styled.ul`
   list-style: none;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   
   li {
-    padding: 0.5rem 0;
+    padding: 0.25rem 0;
     color: ${props => props.theme.colors.muted};
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    font-size: var(--text-sm);
     
     &:before {
       content: "•";
@@ -168,8 +179,8 @@ const SkillsList = styled.ul`
 
 const SessionTemplates = styled.div`
   background: ${props => props.theme.colors.elev};
-  border-radius: var(--r-lg);
-  padding: 1rem;
+  border-radius: var(--r-md);
+  padding: 0.75rem;
   margin-bottom: 1rem;
   border: 1px solid ${props => props.theme.colors.border};
 `;
@@ -383,7 +394,7 @@ function SkillsPage() {
                     </SessionInfo>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                       <AICoachBadge>
-                        🤖 AI Coach
+                        AI Coach
                       </AICoachBadge>
                       <ChevronRight size={16} color="#9AA7B2" />
                     </div>
@@ -404,7 +415,7 @@ function SkillsPage() {
         </SkillsGrid>
 
         <ComingSoon>
-          <h2>🚀 Advanced Features Coming Soon!</h2>
+          <h2>Advanced Features Coming Soon!</h2>
           <p>
 			We&#39;re building advanced skill matching, real-time AI coaching, progress tracking,
             and certification pathways. Join our community to be the first to experience

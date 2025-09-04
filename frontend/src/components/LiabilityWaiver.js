@@ -19,8 +19,10 @@ const WaiverTitle = styled.h2`
   gap: 0.5rem;
 
   &::before {
-    content: '⚠️';
+    content: '!';
     font-size: 1.5rem;
+    font-weight: bold;
+    color: #ff6b35;
   }
 `;
 

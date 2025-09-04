@@ -22,7 +22,7 @@ export const SKILL_CATEGORIES = {
   'Martial Arts': {
     keywords: ['martial-arts', 'martial arts', 'karate', 'judo', 'taekwondo', 'boxing', 'kickboxing', 'mma', 'self-defense', 'jiu-jitsu', 'kung fu'],
     riskLevel: RISK_LEVELS.HIGH,
-    icon: '🥋',
+    icon: '',
     description: 'Combat and martial arts training with significant injury risk',
     sessionTemplates: [
       { name: 'Sparring Session', duration: '45 min', participants: '2', difficulty: 'Intermediate' },
@@ -33,7 +33,7 @@ export const SKILL_CATEGORIES = {
   'Electrical': {
     keywords: ['electrical', 'electrician', 'wiring', 'electronics', 'circuit', 'voltage', 'power systems'],
     riskLevel: RISK_LEVELS.HIGH,
-    icon: '⚡',
+    icon: '',
     description: 'Electrical work with high risk of shock or electrocution',
     sessionTemplates: [
       { name: 'Electrical Safety Training', duration: '120 min', participants: '2-3', difficulty: 'Beginner' },
@@ -44,7 +44,7 @@ export const SKILL_CATEGORIES = {
   'Woodworking': {
     keywords: ['woodworking', 'wood working', 'furniture making', 'cabinetry', 'joinery', 'sawing', 'power tools', 'carpentry'],
     riskLevel: RISK_LEVELS.HIGH,
-    icon: '🪵',
+    icon: '',
     description: 'Woodworking and carpentry with high risk from power tools and sharp instruments',
     sessionTemplates: [
       { name: 'Power Tool Safety', duration: '90 min', participants: '2-4', difficulty: 'Beginner' },
@@ -55,7 +55,7 @@ export const SKILL_CATEGORIES = {
   'Health & Fitness': {
     keywords: ['fitness training', 'fitness', 'yoga', 'meditation', 'nutrition', 'cooking', 'exercise', 'health', 'wellness', 'personal training', 'strength training'],
     riskLevel: RISK_LEVELS.MEDIUM,
-    icon: '🧘',
+    icon: '',
     description: 'Health and fitness activities with moderate physical exertion risk',
     sessionTemplates: [
       { name: 'Personal Training Session', duration: '60 min', participants: '1-2', difficulty: 'All Levels' },
@@ -66,7 +66,7 @@ export const SKILL_CATEGORIES = {
   'Creative': {
     keywords: ['graphic design', 'design', 'music', 'photography', 'writing', 'painting', 'drawing', 'pottery', 'craft', 'creative', 'art'],
     riskLevel: RISK_LEVELS.LOW,
-    icon: '🎨',
+    icon: '',
     description: 'Artistic and creative skills with minimal physical risk',
     sessionTemplates: [
       { name: '1-on-1 Design Critique', duration: '60 min', participants: '2', difficulty: 'Beginner' },
@@ -77,7 +77,7 @@ export const SKILL_CATEGORIES = {
   'Technical': {
     keywords: ['programming', 'coding', 'web development', 'software', 'computer', 'tech', 'development', 'data', 'ai', 'machine learning'],
     riskLevel: RISK_LEVELS.LOW,
-    icon: '💻', 
+    icon: '', 
     description: 'Technology and software skills with minimal physical risk',
     sessionTemplates: [
       { name: 'Code Review & Mentoring', duration: '45 min', participants: '2', difficulty: 'Intermediate' },
@@ -88,7 +88,7 @@ export const SKILL_CATEGORIES = {
   'Language': {
     keywords: ['english', 'spanish', 'french', 'german', 'chinese', 'japanese', 'language', 'translation'],
     riskLevel: RISK_LEVELS.LOW,
-    icon: '🌍',
+    icon: '',
     description: 'Language learning and communication skills with minimal risk',
     sessionTemplates: [
       { name: 'Conversation Practice', duration: '30 min', participants: '2', difficulty: 'Beginner' },
@@ -99,7 +99,7 @@ export const SKILL_CATEGORIES = {
   'Business': {
     keywords: ['marketing', 'sales', 'finance', 'accounting', 'management', 'business', 'entrepreneurship'],
     riskLevel: RISK_LEVELS.LOW,
-    icon: '📈',
+    icon: '',
     description: 'Business and professional skills with minimal risk',
     sessionTemplates: [
       { name: 'Business Plan Review', duration: '90 min', participants: '2-3', difficulty: 'Intermediate' },
@@ -110,7 +110,7 @@ export const SKILL_CATEGORIES = {
   'Practical': {
     keywords: ['repair', 'maintenance', 'plumbing', 'gardening', 'cleaning', 'organizing'],
     riskLevel: RISK_LEVELS.MEDIUM,
-    icon: '🔧',
+    icon: '',
     description: 'Practical and maintenance skills with moderate risk',
     sessionTemplates: [
       { name: 'Hands-on Tutorial', duration: '90 min', participants: '2-3', difficulty: 'Beginner' },
@@ -121,7 +121,7 @@ export const SKILL_CATEGORIES = {
   'Academic': {
     keywords: ['math', 'science', 'physics', 'chemistry', 'biology', 'history', 'geography', 'tutoring', 'teaching'],
     riskLevel: RISK_LEVELS.LOW,
-    icon: '📚',
+    icon: '',
     description: 'Academic subjects and tutoring with minimal risk',
     sessionTemplates: [
       { name: 'Tutoring Session', duration: '60 min', participants: '2', difficulty: 'All Levels' },
