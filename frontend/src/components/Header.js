@@ -156,7 +156,7 @@ function Header() {
   return (
     <HeaderContainer>
       <HeaderContent>
-        <Logo showIcon={true} showText={true} size="normal" />
+        <Logo showImage={true} showText={true} size="normal" />
 
         <Nav $isOpen={isMenuOpen}>
           <NavLink 
