@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Menu, X, User, LogOut, Settings } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import Button from './Button';
+import Logo from './Logo';
 
 const HeaderContainer = styled.header`
   position: sticky; 
@@ -22,26 +23,6 @@ const HeaderContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-`;
-
-const Logo = styled(Link)`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: ${({ theme }) => theme.fonts.sans};
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--pri);
-  text-decoration: none;
-  
-  &:hover {
-    text-decoration: none;
-  }
-`;
-
-const YoohooIcon = styled.span`
-  font-size: 1.8rem;
-  animation: pulse 3s infinite;
 `;
 
 const Nav = styled.nav`
@@ -175,10 +156,7 @@ function Header() {
   return (
     <HeaderContainer>
       <HeaderContent>
-        <Logo to="/">
-          <YoohooIcon>🎯</YoohooIcon>
-          {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}
-        </Logo>
+        <Logo showIcon={true} showText={true} size="normal" />
 
         <Nav $isOpen={isMenuOpen}>
           <NavLink 
