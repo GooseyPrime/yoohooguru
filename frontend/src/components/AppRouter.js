@@ -12,6 +12,16 @@ import AngelsListPage from '../screens/AngelsListPage';
 import AboutPage from '../screens/AboutPage';
 import HowItWorksPage from '../screens/HowItWorksPage';
 import PricingPage from '../screens/PricingPage';
+import { 
+  HelpCenterPage,
+  ContactUsPage,
+  SafetyPage,
+  BlogPage,
+  SuccessStoriesPage,
+  EventsPage,
+  ForumPage,
+  MentorshipPage
+} from '../screens/ComingSoonPages';
 import PrivacyPolicyPage from '../screens/PrivacyPolicyPage';
 import TermsAndConditionsPage from '../screens/TermsAndConditionsPage';
 import AdminLoginPage from '../screens/AdminLoginPage';
@@ -70,6 +80,17 @@ function AppRouter() {
         <Route path="about" element={<AboutPage />} />
         <Route path="how-it-works" element={<HowItWorksPage />} />
         <Route path="pricing" element={<PricingPage />} />
+        
+        {/* Coming Soon pages */}
+        <Route path="help" element={<HelpCenterPage />} />
+        <Route path="contact" element={<ContactUsPage />} />
+        <Route path="safety" element={<SafetyPage />} />
+        <Route path="blog" element={<BlogPage />} />
+        <Route path="success-stories" element={<SuccessStoriesPage />} />
+        <Route path="events" element={<EventsPage />} />
+        <Route path="forum" element={<ForumPage />} />
+        <Route path="mentorship" element={<MentorshipPage />} />
+        
         <Route path="liability-demo" element={<LiabilityEnhancementDemo />} />
         
         {/* Legal pages - supporting both new and existing URLs */}

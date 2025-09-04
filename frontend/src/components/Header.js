@@ -176,7 +176,7 @@ function Header() {
     <HeaderContainer>
       <HeaderContent>
         <Logo to="/">
-          <YoohooIcon>🎯</YoohooIcon>
+          <YoohooIcon>Y</YoohooIcon>
           {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}
         </Logo>
 

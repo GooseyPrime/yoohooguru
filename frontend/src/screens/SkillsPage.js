@@ -415,7 +415,7 @@ function SkillsPage() {
         </SkillsGrid>
 
         <ComingSoon>
-          <h2>🚀 Advanced Features Coming Soon!</h2>
+          <h2>Advanced Features Coming Soon!</h2>
           <p>
 			We&#39;re building advanced skill matching, real-time AI coaching, progress tracking,
             and certification pathways. Join our community to be the first to experience
