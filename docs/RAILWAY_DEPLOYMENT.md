@@ -90,7 +90,7 @@ The repository includes pre-configured Railway deployment files:
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
     "builder": "NIXPACKS",
-    "buildCommand": "npm run build"
+    "buildCommand": "npm run install:all && npm run build"
   },
   "deploy": {
     "startCommand": "npm start",
@@ -102,7 +102,29 @@ The repository includes pre-configured Railway deployment files:
 }
 ```
 
-**Important**: The build command uses `npm run build` (not `npm run build:backend`) because this is a monorepo where the backend serves the frontend static files. Both components must be built during deployment.
+**Important**: The build command uses `npm run install:all && npm run build` to ensure all workspace dependencies are properly installed before building. This is essential for monorepo deployments where the backend serves the frontend static files.
+
+### `nixpacks.toml`
+```toml
+# Nixpacks configuration for yoohoo.guru monorepo
+[variables]
+NIXPACKS_NODE_VERSION = "20"
+NPM_CONFIG_PRODUCTION = "false"
+
+[phases.setup]
+nixPkgs = ["nodejs-20_x", "npm-9_x"]
+
+[phases.install]
+cmds = ["npm run install:all"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "npm start"
+```
+
+**Note**: This configuration ensures Nixpacks properly handles the monorepo workspace structure with explicit dependency installation phases.
 
 ### `Procfile`
 ```
