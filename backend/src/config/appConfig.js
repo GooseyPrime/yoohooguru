@@ -40,7 +40,7 @@ function getConfig() {
     rateLimitMessage: process.env.RATE_LIMIT_MESSAGE || 'Too many requests from this IP, please try again later.',
     
     // API Configuration
-    apiWelcomeMessage: process.env.API_WELCOME_MESSAGE || '🎯 Welcome to yoohoo.guru API',
+    apiWelcomeMessage: process.env.API_WELCOME_MESSAGE || 'Welcome to yoohoo.guru API',
     apiVersion: process.env.API_VERSION || '1.0.0',
     apiDescription: process.env.API_DESCRIPTION || 'Skill-sharing platform backend',
     
