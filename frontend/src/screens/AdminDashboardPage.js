@@ -132,6 +132,14 @@ const PlaceholderText = styled.p`
   margin: 2rem 0;
 `;
 
+const DocumentCard = styled.div`
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  background: var(--surface);
+  margin-bottom: 0.5rem;
+`;
+
 function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState('overview');
   const [dashboardData, setDashboardData] = useState(null);
@@ -366,15 +374,7 @@ function AdminDashboardPage() {
             ) : (
               <div style={{ display: 'grid', gap: '1rem' }}>
                 {pendingDocuments.map((doc) => (
-                  <div 
-                    key={`${doc.uid}-${doc.id}`}
-                    style={{
-                      border: '1px solid #e5e7eb',
-                      borderRadius: '8px',
-                      padding: '1rem',
-                      background: 'white'
-                    }}
-                  >
+                  <DocumentCard key={`${doc.uid}-${doc.id}`}>
                     <div style={{ marginBottom: '0.5rem' }}>
                       <strong>Type:</strong> {doc.type}
                       {doc.category && <span> ({doc.category})</span>}
@@ -424,7 +424,7 @@ function AdminDashboardPage() {
                         Reject
                       </button>
                     </div>
-                  </div>
+                  </DocumentCard>
                 ))}
               </div>
             )}

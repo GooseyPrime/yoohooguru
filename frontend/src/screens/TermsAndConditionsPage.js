@@ -4,30 +4,31 @@ import styled from 'styled-components';
 const Container = styled.div`
   min-height: calc(100vh - 140px);
   padding: 2rem 1rem;
-  background: var(--light-gray);
+  background: ${props => props.theme.colors.bg};
 `;
 
 const Content = styled.div`
   max-width: 900px;
   margin: 0 auto;
-  background: white;
+  background: ${props => props.theme.colors.surface};
   padding: 3rem;
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--r-xl);
+  box-shadow: ${props => props.theme.shadow.card};
+  border: 1px solid ${props => props.theme.colors.border};
 `;
 
 const Title = styled.h1`
   font-size: var(--text-4xl);
   margin-bottom: 1rem;
-  color: var(--gray-900);
+  color: ${props => props.theme.colors.text};
   text-align: center;
-  border-bottom: 3px solid var(--primary);
+  border-bottom: 3px solid ${props => props.theme.colors.pri};
   padding-bottom: 1rem;
 `;
 
 const LastUpdated = styled.p`
   text-align: center;
-  color: var(--gray-600);
+  color: ${props => props.theme.colors.muted};
   font-style: italic;
   margin-bottom: 3rem;
 `;
@@ -38,15 +39,15 @@ const Section = styled.section`
   h2 {
     font-size: var(--text-2xl);
     margin-bottom: 1rem;
-    color: var(--gray-900);
-    border-left: 4px solid var(--primary);
+    color: ${props => props.theme.colors.text};
+    border-left: 4px solid ${props => props.theme.colors.pri};
     padding-left: 1rem;
   }
 
   h3 {
     font-size: var(--text-xl);
     margin-bottom: 0.75rem;
-    color: var(--gray-800);
+    color: ${props => props.theme.colors.text};
     margin-top: 1.5rem;
   }
 

@@ -12,17 +12,18 @@ const LoginContainer = styled.div`
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
-  background: linear-gradient(135deg, rgba(0, 123, 255, 0.05) 0%, rgba(40, 167, 69, 0.05) 100%);
+  background: ${props => props.theme.colors.bg};
 `;
 
 const LoginCard = styled.div`
-  background: white;
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-xl);
+  background: ${props => props.theme.colors.surface};
+  border-radius: var(--r-xl);
+  box-shadow: ${props => props.theme.shadow.card};
   padding: 3rem;
   width: 100%;
   max-width: 400px;
   text-align: center;
+  border: 1px solid ${props => props.theme.colors.border};
 `;
 
 const Logo = styled.div`
@@ -33,12 +34,12 @@ const Logo = styled.div`
 const Title = styled.h1`
   font-size: var(--text-2xl);
   font-weight: var(--font-semibold);
-  color: var(--gray-900);
+  color: ${props => props.theme.colors.text};
   margin-bottom: 0.5rem;
 `;
 
 const Subtitle = styled.p`
-  color: var(--gray-600);
+  color: ${props => props.theme.colors.muted};
   margin-bottom: 2rem;
 `;
 
@@ -56,7 +57,7 @@ const InputGroup = styled.div`
 const Label = styled.label`
   display: block;
   font-weight: var(--font-medium);
-  color: var(--gray-700);
+  color: ${props => props.theme.colors.text};
   margin-bottom: 0.5rem;
 `;
 
@@ -70,26 +71,28 @@ const Input = styled.input`
   width: 100%;
   padding: 0.75rem 1rem;
   padding-left: 2.5rem;
-  border: 1px solid var(--gray-300);
-  border-radius: var(--radius-md);
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: var(--r-md);
   font-size: var(--text-base);
-  transition: border-color var(--transition-fast);
+  background: ${props => props.theme.colors.surface};
+  color: ${props => props.theme.colors.text};
+  transition: border-color var(--t-fast);
 
   &:focus {
     outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    border-color: ${props => props.theme.colors.pri};
+    box-shadow: 0 0 0 3px rgba(124, 140, 255, 0.1);
   }
 
   &.error {
-    border-color: var(--error);
+    border-color: ${props => props.theme.colors.err};
   }
 `;
 
 const InputIcon = styled.div`
   position: absolute;
   left: 0.75rem;
-  color: var(--gray-400);
+  color: ${props => props.theme.colors.muted};
   z-index: 1;
 `;
 
@@ -98,26 +101,26 @@ const PasswordToggle = styled.button`
   right: 0.75rem;
   background: none;
   border: none;
-  color: var(--gray-400);
+  color: ${props => props.theme.colors.muted};
   cursor: pointer;
   padding: 0;
   display: flex;
   align-items: center;
 
   &:hover {
-    color: var(--gray-600);
+    color: ${props => props.theme.colors.text};
   }
 `;
 
 const ErrorMessage = styled.span`
-  color: var(--error);
+  color: ${props => props.theme.colors.err};
   font-size: var(--text-sm);
   margin-top: 0.25rem;
   display: block;
 `;
 
 const ForgotPassword = styled(Link)`
-  color: var(--primary);
+  color: ${props => props.theme.colors.pri};
   font-size: var(--text-sm);
   text-decoration: none;
   display: block;
@@ -138,22 +141,22 @@ const Divider = styled.div`
     content: '';
     flex: 1;
     height: 1px;
-    background: var(--gray-300);
+    background: ${props => props.theme.colors.border};
   }
   
   span {
     margin: 0 1rem;
-    color: var(--gray-500);
+    color: ${props => props.theme.colors.muted};
     font-size: var(--text-sm);
   }
 `;
 
 const SignupLink = styled.p`
   margin-top: 2rem;
-  color: var(--gray-600);
+  color: ${props => props.theme.colors.muted};
   
   a {
-    color: var(--primary);
+    color: ${props => props.theme.colors.pri};
     text-decoration: none;
     font-weight: var(--font-medium);
     
