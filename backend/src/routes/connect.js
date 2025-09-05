@@ -9,7 +9,7 @@ router.post('/start', authenticateUser, async (req, res) => {
   try {
     const { uid, email } = req.user;
     const db = getDatabase();
-    const profSnap = await db.ref(`profiles/${uid}`).get();
+    const profSnap = await db.ref(`profiles/${uid}`).once('value');
     const profile = profSnap.val() || {};
 
     let accountId = profile.stripe_account_id;
@@ -49,7 +49,7 @@ router.get('/status', authenticateUser, async (req, res) => {
   try {
     const { uid } = req.user;
     const db = getDatabase();
-    const profSnap = await db.ref(`profiles/${uid}`).get();
+    const profSnap = await db.ref(`profiles/${uid}`).once('value');
     const profile = profSnap.val() || {};
     const accountId = profile.stripe_account_id;
     if (!accountId) return res.json({ ok: true, connected: false });

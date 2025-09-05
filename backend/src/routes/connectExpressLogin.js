@@ -9,7 +9,7 @@ const router = express.Router();
 router.post('/express-login', authenticateUser, async (req, res) => {
   try {
     const db = getDatabase();
-    const snap = await db.ref(`profiles/${req.user.uid}`).get();
+    const snap = await db.ref(`profiles/${req.user.uid}`).once('value');
     const profile = snap.val() || {};
     if (!profile.stripe_account_id) return res.status(400).json({ ok: false, error: 'Not connected to Stripe' });
 

@@ -7,7 +7,7 @@ const router = express.Router();
 
 async function getAccountId(uid) {
   const db = getDatabase();
-  const snap = await db.ref(`profiles/${uid}`).get();
+  const snap = await db.ref(`profiles/${uid}`).once('value');
   const profile = snap.val() || {};
   return profile.stripe_account_id || null;
 }

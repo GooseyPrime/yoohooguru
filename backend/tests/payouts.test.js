@@ -2,10 +2,35 @@ const request = require('supertest');
 const app = require('../src/index');
 
 // Mock Firebase for testing
-jest.mock('../src/config/firebase');
+jest.mock('../src/config/firebase', () => ({
+  initializeFirebase: jest.fn(),
+  getDatabase: jest.fn(() => ({
+    ref: jest.fn(() => ({
+      once: jest.fn(() => Promise.resolve({
+        val: () => null, // Returns null to simulate no Stripe account connected
+        forEach: () => {}
+      })),
+      set: jest.fn(() => Promise.resolve()),
+      update: jest.fn(() => Promise.resolve()),
+      push: jest.fn(() => Promise.resolve()),
+      remove: jest.fn(() => Promise.resolve())
+    }))
+  })),
+  getAuth: jest.fn(() => ({
+    verifyIdToken: jest.fn(() => Promise.resolve({ uid: 'test-user-id' }))
+  })),
+  getFirestore: jest.fn()
+}));
 jest.mock('../src/middleware/auth', () => ({
   authenticateUser: (req, res, next) => {
     req.user = { uid: 'test-user-id' };
+    next();
+  },
+  optionalAuth: (req, res, next) => {
+    // Optional auth doesn't require a user
+    next();
+  },
+  requireRole: (roles) => (req, res, next) => {
     next();
   }
 }));
