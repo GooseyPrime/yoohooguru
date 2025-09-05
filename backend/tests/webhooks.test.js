@@ -14,7 +14,7 @@ describe('Stripe Webhooks', () => {
 
   beforeEach(() => {
     originalEnv = process.env;
-    process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
+    process.env.STRIPE_WEBHOOK_SECRET = 'whsec_fake_webhook_secret_test';
   });
 
   afterEach(() => {
@@ -42,7 +42,7 @@ describe('Stripe Webhooks', () => {
       });
 
       const timestamp = Math.floor(Date.now() / 1000);
-      const signature = createValidSignature(payload, 'whsec_test_secret', timestamp);
+      const signature = createValidSignature(payload, 'whsec_fake_webhook_secret_test', timestamp);
 
       const response = await request(app)
         .post('/api/webhooks/stripe')
@@ -104,7 +104,7 @@ describe('Stripe Webhooks', () => {
       });
 
       const timestamp = Math.floor(Date.now() / 1000);
-      const signature = createValidSignature(payload, 'whsec_test_secret', timestamp);
+      const signature = createValidSignature(payload, 'whsec_fake_webhook_secret_test', timestamp);
 
       const response = await request(app)
         .post('/api/webhooks/stripe')
@@ -130,7 +130,7 @@ describe('Stripe Webhooks', () => {
       });
 
       const timestamp = Math.floor(Date.now() / 1000);
-      const signature = createValidSignature(payload, 'whsec_test_secret', timestamp);
+      const signature = createValidSignature(payload, 'whsec_fake_webhook_secret_test', timestamp);
 
       const response = await request(app)
         .post('/api/webhooks/stripe')
@@ -154,7 +154,7 @@ describe('Stripe Webhooks', () => {
       });
 
       const timestamp = Math.floor(Date.now() / 1000);
-      const signature = createValidSignature(payload, 'whsec_test_secret', timestamp);
+      const signature = createValidSignature(payload, 'whsec_fake_webhook_secret_test', timestamp);
 
       const response = await request(app)
         .post('/api/webhooks/stripe')
