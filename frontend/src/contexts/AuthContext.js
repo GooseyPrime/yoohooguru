@@ -28,16 +28,7 @@ let auth, database;
 if (isFirebaseConfigured()) {
   try {
     const { initializeApp } = require('firebase/app');
-    const {
-      getAuth,
-      signInWithEmailAndPassword,
-      createUserWithEmailAndPassword,
-      signOut,
-      onAuthStateChanged,
-      GoogleAuthProvider,
-      signInWithPopup,
-      sendPasswordResetEmail
-    } = require('firebase/auth');
+    const { getAuth } = require('firebase/auth');
     const { getDatabase } = require('firebase/database');
 
     const firebaseConfig = {

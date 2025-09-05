@@ -85,7 +85,7 @@ function AboutPage() {
         <Section>
           <h2>About InTellMe</h2>
           <p>
-            InTellMe is an independent, founder-led studio building human-centered tools that make everyday life simpler, fairer, and more connected. We're the team behind YooHoo Guru—a friendly skill-swap and odd-jobs marketplace where neighbors teach, learn, and lend a hand. Our approach is practical: design clear systems, reward real effort, and keep trust at the center of every exchange.
+            InTellMe is an independent, founder-led studio building human-centered tools that make everyday life simpler, fairer, and more connected. We&apos;re the team behind YooHoo Guru—a friendly skill-swap and odd-jobs marketplace where neighbors teach, learn, and lend a hand. Our approach is practical: design clear systems, reward real effort, and keep trust at the center of every exchange.
           </p>
         </Section>
 
@@ -104,7 +104,7 @@ function AboutPage() {
             (Image will be added)
           </FounderImage>
           <p>
-            Hi—I'm Michael Brandon Lane, but most folks call me Brandon (or "Goosey"). I'm a hands-on builder with roots in science and engineering, focused on turning useful ideas into everyday tools. After a hard-won health journey, I doubled down on projects that help people help each other—like YooHoo Guru, where a little know-how can make a big difference for your neighbor.
+            Hi—I&apos;m Michael Brandon Lane, but most folks call me Brandon (or &quot;Goosey&quot;). I&apos;m a hands-on builder with roots in science and engineering, focused on turning useful ideas into everyday tools. After a hard-won health journey, I doubled down on projects that help people help each other—like YooHoo Guru, where a little know-how can make a big difference for your neighbor.
           </p>
           <p>
             I cook, code, research, and obsess over how systems work. InTellMe is how I channel that curiosity into products that create real-world value.

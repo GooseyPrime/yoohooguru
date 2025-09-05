@@ -200,7 +200,7 @@ function PricingPage() {
           <h2>Start Earning Today</h2>
           <p>
             yoohoo.guru makes it easy to monetize your skills and help your community. 
-            Whether you're teaching a hobby, offering professional services, or helping with odd jobs, 
+            Whether you&apos;re teaching a hobby, offering professional services, or helping with odd jobs, 
             our platform connects you with neighbors who need your expertise.
           </p>
 
