@@ -99,10 +99,19 @@ jobs:
       run: |
         echo "🔍 Checking PR for prohibited Firebase mock/emulator usage..."
         
-        # Check for prohibited patterns in code changes
-        if git grep -l "FIREBASE_EMULATOR_HOST\|USE_MOCKS.*true\|firebase.*emulator\|mock.*firebase" -- '*.js' '*.jsx' '*.ts' '*.tsx' '*.json' '*.yml' '*.yaml' || true; then
-          echo "❌ Found prohibited Firebase emulator/mock usage in codebase"
+        # Check for actual emulator/mock usage (not just validation checks)
+        # Allow validation code that checks for emulator usage but rejects it
+        if git grep -l "FIREBASE_EMULATOR_HOST.*=\|USE_MOCKS.*=.*true\|firebase.*emulator.*use\|mock.*firebase.*init" -- '*.js' '*.jsx' '*.ts' '*.tsx' '*.json' ':!*test*' ':!*spec*' ':!.github/*' ':!**/*test*' ':!**/*spec*' || true; then
+          echo "❌ Found prohibited Firebase emulator/mock configuration in application code"
           echo "   PR validation failed: All Firebase usage must target live projects in deployed environments"
+          echo "   Note: Mock usage is allowed in test files, but not in application code"
+          exit 1
+        fi
+        
+        # Check for environment variables being set to emulator values in source code
+        if git grep -E "(FIREBASE_EMULATOR_HOST|USE_MOCKS).*=.*(localhost|127\.0\.0\.1|true)" -- '*.js' '*.jsx' '*.ts' '*.tsx' ':!*test*' ':!*spec*' ':!.github/*' ':!**/*test*' ':!**/*spec*' || true; then
+          echo "❌ Found hardcoded emulator/mock configuration in application code"
+          echo "   PR validation failed: Emulator configurations must not be hardcoded in application code"
           exit 1
         fi
         
@@ -111,10 +120,11 @@ jobs:
           echo "⚠️  Found demo values in .env.example - this is OK for documentation"
         fi
         
-        echo "✅ No prohibited Firebase emulator/mock usage found"
+        echo "✅ No prohibited Firebase emulator/mock usage found in application code"
         echo "📋 PR Firebase Policy Check Passed"
         echo "   • All Firebase configurations must use live projects in preview environments"
         echo "   • Emulators and mocks are only permitted in local development and unit tests"
+        echo "   • Validation code that rejects emulator usage is allowed and encouraged"
 
   security-scan:
     name: Security Scan

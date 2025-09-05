@@ -70,6 +70,19 @@ validate_firebase_config() {
     echo "  Frontend Firebase Configuration:"
     for var in "${react_firebase_vars[@]}"; do
         local value="${!var}"
+        
+        # Special handling for DATABASE_URL which may be truncated due to secret name limits
+        if [ "$var" = "REACT_APP_FIREBASE_DATABASE_URL" ] && [ -z "$value" ]; then
+            # Check for truncated version
+            local truncated_var="REACT_APP_FIREBASE_DATABASE_"
+            local truncated_value="${!truncated_var}"
+            if [ -n "$truncated_value" ]; then
+                value="$truncated_value"
+                echo "    ✅ $var is properly configured (using truncated variable name)"
+                continue
+            fi
+        fi
+        
         if [ -z "$value" ]; then
             echo "    ❌ $var is not set"
             validation_failed=1
