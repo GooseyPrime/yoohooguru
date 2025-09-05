@@ -140,10 +140,11 @@ function SignupPage() {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { signup } = useAuth();
+  const { signup, loginWithGoogle, isFirebaseConfigured } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -311,6 +312,8 @@ function SignupPage() {
                 hasToggle={true}
                 required
               />
+              <PasswordToggle
+                type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
               >
