@@ -7,6 +7,13 @@ const router = express.Router();
 
 router.post('/start', authenticateUser, async (req, res) => {
   try {
+    if (!stripe && process.env.NODE_ENV !== 'test') {
+      return res.status(503).json({ 
+        ok: false, 
+        error: 'Stripe not configured. Please set STRIPE_SECRET_KEY environment variable.' 
+      });
+    }
+
     const { uid, email } = req.user;
     const db = getDatabase();
     const profSnap = await db.ref(`profiles/${uid}`).once('value');
@@ -87,6 +94,13 @@ router.get('/status', authenticateUser, async (req, res) => {
 // Get account balance with instant available amounts
 router.get('/balance', authenticateUser, async (req, res) => {
   try {
+    if (!stripe && process.env.NODE_ENV !== 'test') {
+      return res.status(503).json({ 
+        ok: false, 
+        error: 'Stripe not configured. Please set STRIPE_SECRET_KEY environment variable.' 
+      });
+    }
+
     const { uid } = req.user;
     const db = getDatabase();
     const profSnap = await db.ref(`profiles/${uid}`).get();
@@ -127,6 +141,13 @@ router.get('/balance', authenticateUser, async (req, res) => {
 // Create instant payout
 router.post('/instant-payout', authenticateUser, async (req, res) => {
   try {
+    if (!stripe && process.env.NODE_ENV !== 'test') {
+      return res.status(503).json({ 
+        ok: false, 
+        error: 'Stripe not configured. Please set STRIPE_SECRET_KEY environment variable.' 
+      });
+    }
+
     const { uid } = req.user;
     const { amount, currency = 'usd' } = req.body;
     

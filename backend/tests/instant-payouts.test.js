@@ -24,6 +24,7 @@ jest.mock('../src/config/firebase', () => ({
   getDatabase: jest.fn(() => ({
     ref: jest.fn(() => ({
       get: jest.fn(),
+      once: jest.fn(),
       update: jest.fn()
     }))
   }))
@@ -300,7 +301,7 @@ describe('Stripe Instant Payouts', () => {
     test('should create account with manual payout schedule for instant payouts', async () => {
       // Mock profile without connected account
       mockDb.ref.mockReturnValue({
-        get: jest.fn().mockResolvedValue({
+        once: jest.fn().mockResolvedValue({
           val: () => ({})
         }),
         update: jest.fn().mockResolvedValue()
