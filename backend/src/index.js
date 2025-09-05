@@ -53,6 +53,10 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
+// 1) Webhook route MUST use raw parser to verify signatures
+const stripeWebhooks = require('./routes/stripeWebhooks');
+app.use('/api/webhooks/stripe', express.raw({ type: 'application/json' }), stripeWebhooks);
+
 // General middleware
 app.use(compression());
 app.use(cookieParser());
@@ -85,6 +89,10 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/feature-flags', featureFlagRoutes);
 app.use('/api/liability', liabilityRoutes);
+
+// 3) Connect routes (standard JSON)
+const connectRoutes = require('./routes/connect');
+app.use('/api/connect', connectRoutes);
 
 // Onboarding routes
 const onboardingRoutes = require('./routes/onboarding');
