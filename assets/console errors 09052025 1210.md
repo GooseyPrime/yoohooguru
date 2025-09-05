@@ -64,3 +64,68 @@ hook.js:608  Google Auth Error: FirebaseError: Firebase: Error (auth/internal-er
     at p (vendors.13b1316f9d9c3cc32370.js:172:3908)
     at HTMLScriptElement.<anonymous> (vendors.13b1316f9d9c3cc32370.js:172:94994)
 overrideMethod @ hook.js:608
+
+
+Buttons must have discernible text: Element has no title attribute
+<button class="sc-jaXbil giVypV">
+Open in Elements
+Request
+https://yoohoo.guru/signup
+Further Reading
+Learn more about this axe rule at Deque University
+Learn why this is important and how to fix it on webhint.io
+<button type="button" class="sc-eJoXEY dfEaJI">
+Open in Elements
+Request
+https://yoohoo.guru/signup
+Further Reading
+Learn more about this axe rule at Deque University
+Learn why this is important and how to fix it on webhint.io
+Compatibility
+'meta[name=theme-color]' is not supported by Firefox.
+<meta name="theme-color" content="#007BFF">
+Open in Elements
+Request
+https://yoohoo.guru/signup
+Further Reading
+Learn more about this HTML feature on MDN
+Learn why this is important and how to fix it on webhint.io
+Performance
+'height' changes to this property will trigger: 'Layout', which can impact performance when used inside @keyframes.
+@keyframes go651618207 {
+    0% {
+        height: 0;
+        width: 0;
+        opacity: 0;
+    }
+}
+Request
+https://yoohoo.guru/signup
+Further Reading
+Learn why this is important and how to fix it on webhint.io
+'width' changes to this property will trigger: 'Layout', which can impact performance when used inside @keyframes.
+@keyframes go651618207 {
+    0% {
+        height: 0;
+        width: 0;
+        opacity: 0;
+    }
+}
+Request
+https://yoohoo.guru/signup
+Further Reading
+Learn why this is important and how to fix it on webhint.io
+Security
+Content Security Policy of your site blocks some resources
+Some resources are blocked because their origin is not listed in your site's Content Security Policy (CSP). Your site's CSP is allowlist-based, so resources must be listed in the allowlist in order to be accessed.
+
+A site's Content Security Policy is set either via an HTTP header (recommended), or via a meta HTML tag.
+
+To fix this issue do one of the following:
+
+(Recommended) If you're using an allowlist for 'script-src', consider switching from an allowlist CSP to a strict CSP, because strict CSPs are more robust against XSS. See how to set a strict CSP.
+Or carefully check that all of the blocked resources are trustworthy; if they are, include their sources in the CSP of your site. ⚠️Never add a source you don't trust to your site's CSP. If you don't trust the source, consider hosting resources on your own site instead.
+2 directives
+Resource	Status	Directive	Source location
+https://apis.google.com/js/api.js?onload=__iframefcb611093	blocked	script-src-elem	vendors.13b1316….js:172
+https://apis.google.com/js/api.js?onload=__iframefcb989027	blocked	script-src-elem	vendors.13b1316….js:172
