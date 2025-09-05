@@ -71,8 +71,11 @@ const initializeFirebase = () => {
         // Google Cloud service account key
       };
 
-      // Validate configuration for production environments
-      validateProductionFirebaseConfig(firebaseConfig);
+      // Validate configuration for production environments only
+      // Test environment uses real Firebase but with relaxed validation
+      if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
+        validateProductionFirebaseConfig(firebaseConfig);
+      }
 
       firebaseApp = admin.initializeApp(firebaseConfig);
       logger.info('Firebase Admin SDK initialized successfully');
@@ -83,6 +86,8 @@ const initializeFirebase = () => {
       
       if (env === 'production' || env === 'staging') {
         logger.info('🚀 Running with live Firebase configuration (production-ready)');
+      } else if (env === 'test') {
+        logger.info('🧪 Running with test Firebase configuration (real Firebase, test environment)');
       } else {
         logger.info('🛠️  Running with development Firebase configuration');
       }
