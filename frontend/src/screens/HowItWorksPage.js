@@ -95,7 +95,7 @@ function HowItWorksPage() {
             Create Your Profile
           </h3>
           <p>
-            Sign up and tell us about the skills you have to offer and what you'd like to learn. 
+            Sign up and tell us about the skills you have to offer and what you&apos;d like to learn. 
             Add your location, availability, and experience level to help others find you.
           </p>
         </StepCard>
@@ -106,7 +106,7 @@ function HowItWorksPage() {
             Browse & Connect
           </h3>
           <p>
-            Search for skills in your area or browse the Angel's List for local help. 
+            Search for skills in your area or browse the Angel&apos;s List for local help. 
             Connect with neighbors who can teach you something new or help with odd jobs.
           </p>
         </StepCard>

@@ -15,10 +15,11 @@ const validateRegistration = [
   body('location').optional().trim()
 ];
 
-const validateLogin = [
-  body('email').isEmail().normalizeEmail(),
-  body('password').exists()
-];
+// Validation rules for login (currently unused but may be needed later)
+// const validateLogin = [
+//   body('email').isEmail().normalizeEmail(),
+//   body('password').exists()
+// ];
 
 // @desc    Register user
 // @route   POST /api/auth/register
