@@ -12,14 +12,15 @@ const mockAuth = {
 
 // Check if Firebase environment variables are available
 const isFirebaseConfigured = () => {
-  const hasApiKey = process.env.REACT_APP_FIREBASE_API_KEY && 
-                   process.env.REACT_APP_FIREBASE_API_KEY !== 'your_firebase_api_key_here';
-  const hasProjectId = process.env.REACT_APP_FIREBASE_PROJECT_ID && 
-                      process.env.REACT_APP_FIREBASE_PROJECT_ID !== 'your_project_id';
-  const hasAuthDomain = process.env.REACT_APP_FIREBASE_AUTH_DOMAIN &&
-                       process.env.REACT_APP_FIREBASE_AUTH_DOMAIN !== 'your_project.firebaseapp.com';
+  const apiKey = process.env.REACT_APP_FIREBASE_API_KEY;
+  const projectId = process.env.REACT_APP_FIREBASE_PROJECT_ID;
   
-  return hasApiKey && hasProjectId && hasAuthDomain;
+  return apiKey && 
+         apiKey !== 'your_firebase_api_key_here' &&
+         apiKey !== 'demo-api-key' &&
+         projectId && 
+         projectId !== 'your_project_id' &&
+         projectId !== 'demo-project';
 };
 
 // Initialize Firebase only if properly configured
@@ -82,7 +83,8 @@ export function AuthProvider({ children }) {
 
   // Mock functions for when Firebase isn't available
   const mockFunction = async () => {
-    toast.error('Authentication features are currently unavailable. Please configure Firebase to enable login.');
+
+    toast.error('🔧 Firebase configuration required. Please contact the administrator to set up authentication.');
     throw new Error('Firebase not configured');
   };
 
