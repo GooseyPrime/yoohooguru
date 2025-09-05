@@ -98,7 +98,7 @@ router.post('/waiver', authenticateUser, validateWaiverAcceptance, async (req, r
 // @access  Private
 router.get('/waivers', authenticateUser, async (req, res) => {
   try {
-    const { limit = 20, offset = 0 } = req.query;
+    const { limit = 20 } = req.query;
     
     const db = getDatabase();
     const waiversSnapshot = await db.ref('liability_waivers')
