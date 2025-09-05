@@ -12,9 +12,9 @@ router.get('/status', authenticateUser, async (req, res) => {
     const db = getDatabase();
 
     const [profileSnap, picksSnap, docsSnap] = await Promise.all([
-      db.ref(`profiles/${uid}`).get(),
-      db.ref(`profile_categories/${uid}`).get(),
-      db.ref(`profile_documents/${uid}`).get()
+      db.ref(`profiles/${uid}`).once('value'),
+      db.ref(`profile_categories/${uid}`).once('value'),
+      db.ref(`profile_documents/${uid}`).once('value')
     ]);
 
     const profile = profileSnap.val() || {};
@@ -30,7 +30,7 @@ router.get('/status', authenticateUser, async (req, res) => {
     };
 
     // Check requirements for selected categories
-    const reqsSnap = await db.ref('category_requirements').get();
+    const reqsSnap = await db.ref('category_requirements').once('value');
     const reqs = reqsSnap.val() || {};
     for (const slug of Object.keys(picks)) {
       const r = reqs[slug] || {};
@@ -97,8 +97,8 @@ router.get('/requirements', authenticateUser, async (req, res) => {
     const uid = req.user.uid;
     const db = getDatabase();
     const [picksSnap, reqsSnap] = await Promise.all([
-      db.ref(`profile_categories/${uid}`).get(),
-      db.ref('category_requirements').get()
+      db.ref(`profile_categories/${uid}`).once('value'),
+      db.ref('category_requirements').once('value')
     ]);
     const picks = Object.keys(picksSnap.val() || {});
     const reqs  = reqsSnap.val() || {};
