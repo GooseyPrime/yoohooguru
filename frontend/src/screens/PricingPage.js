@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Button from '../components/Button';
 
@@ -141,7 +141,71 @@ const EarningCard = styled.div`
   }
 `;
 
+const StripePricingSection = styled.div`
+  background: ${props => props.theme.colors.surface};
+  border-radius: var(--r-lg);
+  padding: 2rem;
+  margin: 3rem 0;
+  border: 1px solid ${props => props.theme.colors.border};
+  text-align: center;
+  
+  h2 {
+    font-size: var(--text-2xl);
+    margin-bottom: 1rem;
+    color: ${props => props.theme.colors.text};
+  }
+  
+  p {
+    font-size: var(--text-base);
+    color: ${props => props.theme.colors.muted};
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+  
+  stripe-pricing-table {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  
+  .fallback-message {
+    padding: 1rem;
+    background: ${props => props.theme.colors.elev};
+    border-radius: var(--r-md);
+    border: 1px dashed ${props => props.theme.colors.border};
+    color: ${props => props.theme.colors.muted};
+    font-size: var(--text-sm);
+    margin-top: 1rem;
+  }
+`;
+
 function PricingPage() {
+  const [stripeLoaded, setStripeLoaded] = useState(false);
+
+  useEffect(() => {
+    // Check if Stripe pricing table script is loaded
+    const checkStripeLoaded = () => {
+      if (typeof window !== 'undefined' && window.customElements && window.customElements.get('stripe-pricing-table')) {
+        setStripeLoaded(true);
+      }
+    };
+
+    // Check immediately
+    checkStripeLoaded();
+
+    // Set up interval to check for Stripe loading
+    const interval = setInterval(checkStripeLoaded, 500);
+    
+    // Clean up after 10 seconds
+    const timeout = setTimeout(() => {
+      clearInterval(interval);
+    }, 10000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, []);
+
   return (
     <Container>
       <Content>
@@ -149,6 +213,22 @@ function PricingPage() {
         <Subtitle>
           Start earning money by sharing your skills and helping your neighbors
         </Subtitle>
+        
+        <StripePricingSection>
+          <h2>Choose Your Plan</h2>
+          <p>
+            Select the plan that best fits your needs. All plans include promo code support and monthly recurring billing.
+          </p>
+          <stripe-pricing-table 
+            pricing-table-id="prctbl_1S44QQJF6bibA8neW22850S2"
+            publishable-key="pk_live_uDtqCIG6cqKBt1QeIrGVHglz">
+          </stripe-pricing-table>
+          {!stripeLoaded && (
+            <div className="fallback-message">
+              Loading Stripe pricing table... If this doesn&apos;t load, please disable ad blockers or use the pricing options below.
+            </div>
+          )}
+        </StripePricingSection>
         
         <PricingGrid>
           <PricingCard>
