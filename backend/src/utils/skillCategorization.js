@@ -24,7 +24,7 @@ const SKILL_CATEGORIES = {
   'Martial Arts': {
     keywords: ['martial-arts', 'martial arts', 'karate', 'judo', 'taekwondo', 'boxing', 'kickboxing', 'mma', 'self-defense', 'jiu-jitsu', 'kung fu'],
     riskLevel: RISK_LEVELS.HIGH,
-    icon: '',
+    icon: '🥋',
     description: 'Combat and martial arts training with significant injury risk'
   },
   'Electrical': {
