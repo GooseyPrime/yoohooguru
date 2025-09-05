@@ -298,9 +298,8 @@ function SignupPage() {
                 hasToggle={true}
                 required
               />
-              <PasswordToggle
-                type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
               >
                 {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </PasswordToggle>
