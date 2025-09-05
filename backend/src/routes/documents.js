@@ -7,7 +7,7 @@ const router = express.Router();
 // List pending docs (admin)
 router.get('/pending', requireRole(['admin']), async (req, res) => {
   const db = getDatabase();
-  const usersSnap = await db.ref('profile_documents').get();
+  const usersSnap = await db.ref('profile_documents').once('value');
   const pending = [];
   usersSnap.forEach(user => {
     const docs = user.val() || {};

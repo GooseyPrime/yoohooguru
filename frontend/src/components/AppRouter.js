@@ -38,6 +38,9 @@ import OnboardingDocuments from '../screens/onboarding/OnboardingDocuments';
 import OnboardingPayout from '../screens/onboarding/OnboardingPayout';
 import OnboardingReview from '../screens/onboarding/OnboardingReview';
 
+// Account screens
+import PayoutsPanel from '../screens/account/PayoutsPanel';
+
 // Protected Route Component
 function ProtectedRoute({ children }) {
   const { currentUser, loading } = useAuth();
@@ -189,6 +192,16 @@ function AppRouter() {
           element={
             <ProtectedRoute>
               <OnboardingReview />
+            </ProtectedRoute>
+          } 
+        />
+
+        {/* Account routes */}
+        <Route 
+          path="account/payouts" 
+          element={
+            <ProtectedRoute>
+              <PayoutsPanel />
             </ProtectedRoute>
           } 
         />

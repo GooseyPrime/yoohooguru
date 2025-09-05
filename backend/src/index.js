@@ -100,6 +100,14 @@ app.use('/api/webhooks', webhookRoutes);
 const connectRoutes = require('./routes/connect');
 app.use('/api/connect', connectRoutes);
 
+// Payouts routes
+const payoutsRoutes = require('./routes/payouts');
+app.use('/api/payouts', payoutsRoutes);
+
+// Connect Express Login routes
+const connectExpressLogin = require('./routes/connectExpressLogin');
+app.use('/api/connect', connectExpressLogin);
+
 // Onboarding routes
 const onboardingRoutes = require('./routes/onboarding');
 app.use('/api/onboarding', onboardingRoutes);

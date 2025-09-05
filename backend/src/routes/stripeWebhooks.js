@@ -43,7 +43,7 @@ router.post('/', async (req, res) => {
         const acct = event.data.object;
         // Find which profile has this accountId (store reverse index if you like)
         // Here we scan profiles once (ok for MVP scale). For scale, keep an index: accountId -> uid.
-        const profilesSnap = await db.ref('profiles').get();
+        const profilesSnap = await db.ref('profiles').once('value');
         profilesSnap.forEach(async (child) => {
           const p = child.val() || {};
           if (p.stripe_account_id === acct.id) {
