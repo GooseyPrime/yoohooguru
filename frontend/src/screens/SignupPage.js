@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 import Button from '../components/Button';
 import toast from 'react-hot-toast';
 
@@ -56,7 +57,9 @@ const Label = styled.label`
   color: ${props => props.theme.colors.text};
 `;
 
-const Input = styled.input`
+const Input = styled.input.withConfig({
+  shouldForwardProp: (prop) => prop !== 'hasToggle'
+})`
   padding: 0.75rem;
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: var(--r-md);
@@ -64,6 +67,7 @@ const Input = styled.input`
   color: ${props => props.theme.colors.text};
   font-size: var(--text-base);
   transition: all var(--t-fast);
+  padding-right: ${props => props.hasToggle ? '2.5rem' : '0.75rem'};
   
   &:focus {
     outline: none;
@@ -73,6 +77,35 @@ const Input = styled.input`
   
   &::placeholder {
     color: ${props => props.theme.colors.muted};
+  }
+`;
+
+const InputWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+`;
+
+const PasswordToggle = styled.button`
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: ${props => props.theme.colors.muted};
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--t-fast);
+  
+  &:hover {
+    color: ${props => props.theme.colors.text};
+  }
+  
+  &:focus {
+    outline: none;
+    color: ${props => props.theme.colors.pri};
   }
 `;
 
@@ -108,6 +141,9 @@ function SignupPage() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { signup, loginWithGoogle, isFirebaseConfigured } = useAuth();
   const navigate = useNavigate();
 
@@ -242,29 +278,48 @@ function SignupPage() {
 
           <InputGroup>
             <Label htmlFor="password">Password</Label>
-            <Input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Create a password"
-              required
-            />
+            <InputWrapper>
+              <Input
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Create a password"
+                hasToggle={true}
+                required
+              />
+              <PasswordToggle
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </PasswordToggle>
+            </InputWrapper>
             {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
           </InputGroup>
 
           <InputGroup>
             <Label htmlFor="confirmPassword">Confirm Password</Label>
-            <Input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="Confirm your password"
-              required
-            />
+            <InputWrapper>
+              <Input
+                type={showConfirmPassword ? 'text' : 'password'}
+                id="confirmPassword"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Confirm your password"
+                hasToggle={true}
+                required
+              />
+              <PasswordToggle
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+              >
+                {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </PasswordToggle>
+            </InputWrapper>
             {errors.confirmPassword && <ErrorMessage>{errors.confirmPassword}</ErrorMessage>}
           </InputGroup>
 
