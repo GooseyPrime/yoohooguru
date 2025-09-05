@@ -167,7 +167,7 @@ const SignupLink = styled.p`
 `;
 
 function LoginPage() {
-  const { login, loginWithGoogle } = useAuth();
+  const { login, loginWithGoogle, isFirebaseConfigured } = useAuth();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -285,9 +285,12 @@ function LoginPage() {
           variant="outline" 
           fullWidth
           loading={isGoogleLoading}
+          disabled={!isFirebaseConfigured}
           onClick={handleGoogleLogin}
+          title={!isFirebaseConfigured ? "Google Sign-in requires Firebase configuration" : "Sign in with Google"}
         >
           Continue with Google
+          {!isFirebaseConfigured && <span style={{ fontSize: '0.8em', marginLeft: '0.5rem' }}>⚠️</span>}
         </Button>
 
         <SignupLink>
