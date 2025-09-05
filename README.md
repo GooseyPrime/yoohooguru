@@ -46,7 +46,8 @@ This is a modern, full-stack web application built with:
 ├── docs/                     # Documentation
 │   ├── ENVIRONMENT_VARIABLES.md  # Complete env var guide
 │   ├── DEPLOYMENT.md         # Deployment instructions
-│   └── RAILWAY_DEPLOYMENT.md # Railway-specific guide
+│   ├── RAILWAY_DEPLOYMENT.md # Railway-specific guide
+│   └── FIREBASE_POLICY.md    # Firebase usage policy & standards
 ├── .env.example             # Environment variables template
 ├── package.json             # Root workspace configuration
 └── README.md                # This file
@@ -229,6 +230,28 @@ npm run test:coverage
 - **Backend**: 31 tests covering API endpoints, utilities, and business logic
 - **Frontend**: Component testing with Jest and React Testing Library
 - **Integration**: End-to-end API testing with supertest
+
+## 🔒 Security & Deployment Standards
+
+### Firebase Production Policy
+
+**🚨 Important**: This project enforces strict Firebase usage policies to ensure production deployments use live cloud infrastructure.
+
+- **✅ Production/Staging**: Must use live Firebase projects only
+- **❌ Prohibited**: Emulators, mocks, or demo configurations in deployed environments  
+- **🔍 Enforcement**: Automated validation in CI/CD pipeline
+- **📋 Documentation**: See [Firebase Policy Guide](./docs/FIREBASE_POLICY.md)
+
+```bash
+# Validate Firebase configuration before deployment
+./scripts/validate-firebase-production.sh
+```
+
+### Environment Security
+- All secrets managed via environment variables
+- No hardcoded credentials in source code
+- Production configurations validated at build time
+- Separate Firebase projects for different environments
 
 ## 🔍 Development Commands
 

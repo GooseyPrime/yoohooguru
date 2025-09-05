@@ -86,10 +86,50 @@ jobs:
     - name: Build backend
       run: cd backend && npm run build
 
+  validate-pr-firebase:
+    name: Validate PR Firebase Configuration
+    runs-on: ubuntu-latest
+    needs: [test-backend, test-frontend]
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Check for Firebase Mock Usage in PR
+      run: |
+        echo "🔍 Checking PR for prohibited Firebase mock/emulator usage..."
+        
+        # Check for actual emulator/mock usage (not just validation checks)
+        # Allow validation code that checks for emulator usage but rejects it
+        if git grep -l "FIREBASE_EMULATOR_HOST.*=\|USE_MOCKS.*=.*true\|firebase.*emulator.*use\|mock.*firebase.*init" -- '*.js' '*.jsx' '*.ts' '*.tsx' '*.json' ':!*test*' ':!*spec*' ':!.github/*' ':!**/*test*' ':!**/*spec*' || true; then
+          echo "❌ Found prohibited Firebase emulator/mock configuration in application code"
+          echo "   PR validation failed: All Firebase usage must target live projects in deployed environments"
+          echo "   Note: Mock usage is allowed in test files, but not in application code"
+          exit 1
+        fi
+        
+        # Check for environment variables being set to emulator values in source code
+        if git grep -E "(FIREBASE_EMULATOR_HOST|USE_MOCKS).*=.*(localhost|127\.0\.0\.1|true)" -- '*.js' '*.jsx' '*.ts' '*.tsx' ':!*test*' ':!*spec*' ':!.github/*' ':!**/*test*' ':!**/*spec*' || true; then
+          echo "❌ Found hardcoded emulator/mock configuration in application code"
+          echo "   PR validation failed: Emulator configurations must not be hardcoded in application code"
+          exit 1
+        fi
+        
+        # Check environment files for demo values
+        if grep -r "demo\|test\|mock\|example\|your_.*firebase\|changeme" .env.example || true; then
+          echo "⚠️  Found demo values in .env.example - this is OK for documentation"
+        fi
+        
+        echo "✅ No prohibited Firebase emulator/mock usage found in application code"
+        echo "📋 PR Firebase Policy Check Passed"
+        echo "   • All Firebase configurations must use live projects in preview environments"
+        echo "   • Emulators and mocks are only permitted in local development and unit tests"
+        echo "   • Validation code that rejects emulator usage is allowed and encouraged"
+
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
-    needs: [test-backend, test-frontend]
+    needs: [validate-pr-firebase]
     
     steps:
     - uses: actions/checkout@v4
@@ -105,10 +145,37 @@ jobs:
       run: cd frontend && npm audit --audit-level=moderate
       continue-on-error: true
 
+  validate-firebase-staging:
+    name: Validate Firebase Configuration (Staging)
+    runs-on: ubuntu-latest
+    needs: [build-test, security-scan]
+    if: github.ref == 'refs/heads/develop'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Validate Firebase for Staging
+      run: ./scripts/validate-firebase-production.sh
+      env:
+        NODE_ENV: staging
+        # These would be set in GitHub Secrets for actual deployment
+        FIREBASE_PROJECT_ID: ${{ secrets.STAGING_FIREBASE_PROJECT_ID }}
+        FIREBASE_API_KEY: ${{ secrets.STAGING_FIREBASE_API_KEY }}
+        FIREBASE_AUTH_DOMAIN: ${{ secrets.STAGING_FIREBASE_AUTH_DOMAIN }}
+        FIREBASE_DATABASE_URL: ${{ secrets.STAGING_FIREBASE_DATABASE_URL }}
+        FIREBASE_STORAGE_BUCKET: ${{ secrets.STAGING_FIREBASE_STORAGE_BUCKET }}
+        FIREBASE_APP_ID: ${{ secrets.STAGING_FIREBASE_APP_ID }}
+        REACT_APP_FIREBASE_PROJECT_ID: ${{ secrets.STAGING_FIREBASE_PROJECT_ID }}
+        REACT_APP_FIREBASE_API_KEY: ${{ secrets.STAGING_FIREBASE_API_KEY }}
+        REACT_APP_FIREBASE_AUTH_DOMAIN: ${{ secrets.STAGING_FIREBASE_AUTH_DOMAIN }}
+        REACT_APP_FIREBASE_DATABASE_URL: ${{ secrets.STAGING_FIREBASE_DATABASE_URL }}
+        REACT_APP_FIREBASE_STORAGE_BUCKET: ${{ secrets.STAGING_FIREBASE_STORAGE_BUCKET }}
+        REACT_APP_FIREBASE_APP_ID: ${{ secrets.STAGING_FIREBASE_APP_ID }}
+
   deploy-staging:
     name: Deploy to Staging
     runs-on: ubuntu-latest
-    needs: [build-test, security-scan]
+    needs: [validate-firebase-staging]
     if: github.ref == 'refs/heads/develop'
     
     steps:
@@ -118,10 +185,37 @@ jobs:
       run: echo "Deploy to staging environment"
       # Add your staging deployment commands here
 
+  validate-firebase-production:
+    name: Validate Firebase Configuration (Production)
+    runs-on: ubuntu-latest
+    needs: [build-test, security-scan]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Validate Firebase for Production
+      run: ./scripts/validate-firebase-production.sh
+      env:
+        NODE_ENV: production
+        # These would be set in GitHub Secrets for actual deployment
+        FIREBASE_PROJECT_ID: ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }}
+        FIREBASE_API_KEY: ${{ secrets.PRODUCTION_FIREBASE_API_KEY }}
+        FIREBASE_AUTH_DOMAIN: ${{ secrets.PRODUCTION_FIREBASE_AUTH_DOMAIN }}
+        FIREBASE_DATABASE_URL: ${{ secrets.PRODUCTION_FIREBASE_DATABASE_URL }}
+        FIREBASE_STORAGE_BUCKET: ${{ secrets.PRODUCTION_FIREBASE_STORAGE_BUCKET }}
+        FIREBASE_APP_ID: ${{ secrets.PRODUCTION_FIREBASE_APP_ID }}
+        REACT_APP_FIREBASE_PROJECT_ID: ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }}
+        REACT_APP_FIREBASE_API_KEY: ${{ secrets.PRODUCTION_FIREBASE_API_KEY }}
+        REACT_APP_FIREBASE_AUTH_DOMAIN: ${{ secrets.PRODUCTION_FIREBASE_AUTH_DOMAIN }}
+        REACT_APP_FIREBASE_DATABASE_URL: ${{ secrets.PRODUCTION_FIREBASE_DATABASE_URL }}
+        REACT_APP_FIREBASE_STORAGE_BUCKET: ${{ secrets.PRODUCTION_FIREBASE_STORAGE_BUCKET }}
+        REACT_APP_FIREBASE_APP_ID: ${{ secrets.PRODUCTION_FIREBASE_APP_ID }}
+
   deploy-production:
     name: Deploy to Production
     runs-on: ubuntu-latest
-    needs: [build-test, security-scan]
+    needs: [validate-firebase-production]
     if: github.ref == 'refs/heads/main'
     
     steps:

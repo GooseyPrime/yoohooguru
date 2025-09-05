@@ -24,6 +24,7 @@
     "railway:build": "npm run build",
     "railway:start": "cd backend && npm start",
     "railway:validate": "./scripts/validate-railway.sh",
+    "firebase:validate": "./scripts/validate-firebase-production.sh",
     "deploy": "npm run build && npm run deploy:frontend && npm run deploy:backend",
     "deploy:frontend": "cd frontend && npm run deploy",
     "deploy:backend": "cd backend && npm run deploy"

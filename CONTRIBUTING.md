@@ -121,7 +121,13 @@ npm run test:watch
 - Write unit tests for utility functions
 - Add integration tests for API endpoints
 - Include component tests for React components
-- Mock external dependencies (Firebase, Stripe, etc.)
+- Mock external dependencies (Firebase, Stripe, etc.) **only in unit tests**
+
+⚠️ **Important**: Follow our [Firebase Policy](./docs/FIREBASE_POLICY.md) for testing:
+- **Unit tests**: Mocks and emulators are permitted
+- **E2E/Integration tests**: Must use live Firebase for PR validation
+- **Preview environments**: Must use live Firebase projects
+- **Local development**: Emulators and mocks are allowed
 
 ## 🏗️ Project Structure
 
@@ -206,6 +212,26 @@ Help improve our documentation:
 - Report security vulnerabilities privately
 - Follow secure coding practices
 - Keep dependencies updated
+
+### Firebase Security Policy
+
+**🚨 Critical**: This project enforces strict Firebase usage standards:
+
+- **✅ Production/Staging/PR environments**: Must use live Firebase projects
+- **❌ Prohibited**: Emulators, mocks, or demo configurations in deployed environments
+- **🔍 Validation**: All PRs and deployments are automatically validated
+- **📋 Documentation**: See [Firebase Policy Guide](./docs/FIREBASE_POLICY.md)
+
+Before submitting PRs:
+```bash
+# Validate your Firebase configuration
+./scripts/validate-firebase-production.sh
+
+# Check for prohibited patterns in your code
+git grep -l "FIREBASE_EMULATOR_HOST\|USE_MOCKS.*true" -- '*.js' '*.jsx' '*.ts' '*.tsx'
+```
+
+**Policy violations will block PR merges and deployments.**
 
 ## 📦 Dependencies
 
