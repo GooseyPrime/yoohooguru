@@ -302,6 +302,23 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Built with ❤️ for community skill sharing and exponential impact** 🚀
 
+## Stripe Connect (Express)
+
+Endpoints:
+- POST `/api/connect/start`   → creates or reuses Express account and returns onboarding link
+- GET  `/api/connect/status`  → returns charges/payouts readiness
+- POST `/api/webhooks/stripe` → Stripe webhook (use raw body)
+
+Webhook URL (prod): `https://yoohoo.guru/api/webhooks/stripe`  
+Set `STRIPE_WEBHOOK_SECRET` from the Dashboard after adding the endpoint.
+
+Booking charges should use Stripe Checkout with:
+- `payment_intent_data.application_fee_amount`
+- `payment_intent_data.transfer_data.destination = {connectedAccountId}`
+
+Environment:
+- `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `PUBLIC_BASE_URL`
+
 The server will start on `http://localhost:8000`
 
 ### 5. Access the API

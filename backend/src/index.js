@@ -23,6 +23,7 @@ const aiRoutes = require('./routes/ai');
 const adminRoutes = require('./routes/admin');
 const featureFlagRoutes = require('./routes/featureFlags');
 const liabilityRoutes = require('./routes/liability');
+const webhookRoutes = require('./routes/webhooks');
 
 const app = express();
 
@@ -53,10 +54,18 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
+// 1) Webhook route MUST use raw parser to verify signatures
+const stripeWebhooks = require('./routes/stripeWebhooks');
+app.use('/api/webhooks/stripe', express.raw({ type: 'application/json' }), stripeWebhooks);
+
 // General middleware
 app.use(compression());
 app.use(cookieParser());
 app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
+
+// Raw body parsing for webhooks (must be before JSON parsing)
+app.use('/api/webhooks/stripe', express.raw({ type: 'application/json' }));
+
 app.use(express.json({ limit: config.expressJsonLimit }));
 app.use(express.urlencoded({ extended: true, limit: config.expressUrlLimit }));
 
@@ -85,6 +94,11 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/feature-flags', featureFlagRoutes);
 app.use('/api/liability', liabilityRoutes);
+app.use('/api/webhooks', webhookRoutes);
+
+// 3) Connect routes (standard JSON)
+const connectRoutes = require('./routes/connect');
+app.use('/api/connect', connectRoutes);
 
 // Onboarding routes
 const onboardingRoutes = require('./routes/onboarding');

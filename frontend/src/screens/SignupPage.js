@@ -140,6 +140,7 @@ function SignupPage() {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { signup } = useAuth();
@@ -208,6 +209,18 @@ function SignupPage() {
       console.error('Signup error:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleSignup = async () => {
+    setIsGoogleLoading(true);
+    try {
+      await loginWithGoogle();
+      navigate('/dashboard');
+    } catch (error) {
+      // Error handling is done in AuthContext
+    } finally {
+      setIsGoogleLoading(false);
     }
   };
 
@@ -317,6 +330,31 @@ function SignupPage() {
             {loading ? 'Creating Account...' : 'Create Account'}
           </Button>
         </Form>
+
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          margin: '1.5rem 0',
+          color: '#666',
+          fontSize: '0.9rem'
+        }}>
+          <div style={{ flex: 1, height: '1px', background: '#ddd' }}></div>
+          <span style={{ padding: '0 1rem' }}>OR</span>
+          <div style={{ flex: 1, height: '1px', background: '#ddd' }}></div>
+        </div>
+
+        <Button 
+          variant="outline" 
+          size="lg"
+          disabled={!isFirebaseConfigured}
+          loading={isGoogleLoading}
+          onClick={handleGoogleSignup}
+          title={!isFirebaseConfigured ? "Google Sign-up requires Firebase configuration" : "Sign up with Google"}
+          style={{ width: '100%' }}
+        >
+          Continue with Google
+          {!isFirebaseConfigured && <span style={{ fontSize: '0.8em', marginLeft: '0.5rem' }}>⚠️</span>}
+        </Button>
 
         <LoginLink>
           Already have an account? <a href="/login">Sign in</a>

@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import Button from '../components/Button';
+import Logo from '../components/Logo';
 
 const LoginContainer = styled.div`
   min-height: calc(100vh - 140px);
@@ -26,8 +27,9 @@ const LoginCard = styled.div`
   border: 1px solid ${props => props.theme.colors.border};
 `;
 
-const Logo = styled.div`
-  font-size: 2rem;
+const LogoWrapper = styled.div`
+  display: flex;
+  justify-content: center;
   margin-bottom: 0.5rem;
 `;
 
@@ -167,7 +169,7 @@ const SignupLink = styled.p`
 `;
 
 function LoginPage() {
-  const { login, loginWithGoogle } = useAuth();
+  const { login, loginWithGoogle, isFirebaseConfigured } = useAuth();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -206,7 +208,9 @@ function LoginPage() {
   return (
     <LoginContainer>
       <LoginCard>
-        <Logo>🎯</Logo>
+        <LogoWrapper>
+          <Logo showImage={true} size="small" />
+        </LogoWrapper>
         <Title>Welcome Back</Title>
         <Subtitle>Sign in to your {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'} account</Subtitle>
 
@@ -285,9 +289,12 @@ function LoginPage() {
           variant="outline" 
           fullWidth
           loading={isGoogleLoading}
+          disabled={!isFirebaseConfigured}
           onClick={handleGoogleLogin}
+          title={!isFirebaseConfigured ? "Google Sign-in requires Firebase configuration" : "Sign in with Google"}
         >
           Continue with Google
+          {!isFirebaseConfigured && <span style={{ fontSize: '0.8em', marginLeft: '0.5rem' }}>⚠️</span>}
         </Button>
 
         <SignupLink>

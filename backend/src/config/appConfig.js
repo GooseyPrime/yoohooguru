@@ -48,8 +48,17 @@ function getConfig() {
     jwtSecret: process.env.JWT_SECRET,
     jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
     openrouterApiKey: process.env.OPENROUTER_API_KEY,
+    
+    // Stripe Configuration
     stripeSecretKey: process.env.STRIPE_SECRET_KEY,
+    stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
     stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+    stripeWebhookId: process.env.STRIPE_WEBHOOK_ID,
+    
+    // Stripe Price IDs
+    stripeGuruPassPriceId: process.env.STRIPE_GURU_PASS_PRICE_ID,
+    stripeSkillVerificationPriceId: process.env.STRIPE_SKILL_VERIFICATION_PRICE_ID,
+    stripeTrustSafetyPriceId: process.env.STRIPE_TRUST_SAFETY_PRICE_ID,
     
     // Firebase Configuration
     firebaseProjectId: process.env.FIREBASE_PROJECT_ID,
