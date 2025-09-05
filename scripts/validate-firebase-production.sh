@@ -1,0 +1,173 @@
+#!/bin/bash
+
+# Firebase Production Validation Script
+# Ensures that production/staging deployments use real Firebase projects, not emulators or mocks
+
+set -e
+
+echo "🔥 Firebase Production Validation"
+echo "=================================="
+
+# Function to check if a value indicates a demo/test/mock project
+is_demo_value() {
+    local value="$1"
+    case "$value" in
+        *demo* | *test* | *mock* | *localhost* | *emulator* | *example* | *your_* | *changeme* | *placeholder*)
+            return 0
+            ;;
+        "")
+            return 0
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+# Function to validate Firebase configuration
+validate_firebase_config() {
+    local env_name="$1"
+    echo ""
+    echo "🔍 Validating Firebase configuration for $env_name environment..."
+
+    # Required Firebase environment variables
+    local firebase_vars=(
+        "FIREBASE_PROJECT_ID"
+        "FIREBASE_API_KEY"
+        "FIREBASE_AUTH_DOMAIN"
+        "FIREBASE_DATABASE_URL"
+        "FIREBASE_STORAGE_BUCKET"
+        "FIREBASE_APP_ID"
+    )
+
+    local react_firebase_vars=(
+        "REACT_APP_FIREBASE_PROJECT_ID"
+        "REACT_APP_FIREBASE_API_KEY"
+        "REACT_APP_FIREBASE_AUTH_DOMAIN"
+        "REACT_APP_FIREBASE_DATABASE_URL"
+        "REACT_APP_FIREBASE_STORAGE_BUCKET"
+        "REACT_APP_FIREBASE_APP_ID"
+    )
+
+    local validation_failed=0
+
+    # Check backend Firebase variables
+    echo "  Backend Firebase Configuration:"
+    for var in "${firebase_vars[@]}"; do
+        local value="${!var}"
+        if [ -z "$value" ]; then
+            echo "    ❌ $var is not set"
+            validation_failed=1
+        elif is_demo_value "$value"; then
+            echo "    ❌ $var contains demo/test/mock value: $value"
+            validation_failed=1
+        else
+            echo "    ✅ $var is properly configured"
+        fi
+    done
+
+    # Check frontend Firebase variables
+    echo "  Frontend Firebase Configuration:"
+    for var in "${react_firebase_vars[@]}"; do
+        local value="${!var}"
+        if [ -z "$value" ]; then
+            echo "    ❌ $var is not set"
+            validation_failed=1
+        elif is_demo_value "$value"; then
+            echo "    ❌ $var contains demo/test/mock value: $value"
+            validation_failed=1
+        else
+            echo "    ✅ $var is properly configured"
+        fi
+    done
+
+    # Check for prohibited emulator settings
+    echo "  Emulator/Mock Configuration Check:"
+    if [ -n "$FIREBASE_EMULATOR_HOST" ]; then
+        echo "    ❌ FIREBASE_EMULATOR_HOST is set: $FIREBASE_EMULATOR_HOST (prohibited in $env_name)"
+        validation_failed=1
+    else
+        echo "    ✅ FIREBASE_EMULATOR_HOST is not set"
+    fi
+
+    if [ -n "$USE_MOCKS" ] && [ "$USE_MOCKS" != "false" ]; then
+        echo "    ❌ USE_MOCKS is enabled: $USE_MOCKS (prohibited in $env_name)"
+        validation_failed=1
+    else
+        echo "    ✅ USE_MOCKS is not enabled"
+    fi
+
+    # Validate Firebase project ID format
+    if [ -n "$FIREBASE_PROJECT_ID" ]; then
+        if [[ "$FIREBASE_PROJECT_ID" =~ ^[a-z0-9-]+$ ]]; then
+            echo "    ✅ FIREBASE_PROJECT_ID format is valid"
+        else
+            echo "    ❌ FIREBASE_PROJECT_ID format is invalid: $FIREBASE_PROJECT_ID"
+            validation_failed=1
+        fi
+    fi
+
+    return $validation_failed
+}
+
+# Main validation logic
+main() {
+    local environment="${NODE_ENV:-development}"
+    
+    echo "Environment: $environment"
+    
+    case "$environment" in
+        "production")
+            echo "🚀 Production environment detected - strict validation required"
+            validate_firebase_config "production"
+            if [ $? -ne 0 ]; then
+                echo ""
+                echo "❌ VALIDATION FAILED: Production deployment blocked!"
+                echo "   All Firebase configurations must use live projects."
+                echo "   Mocks and emulators are prohibited in production."
+                exit 1
+            fi
+            ;;
+        "staging")
+            echo "🔄 Staging environment detected - strict validation required"
+            validate_firebase_config "staging"
+            if [ $? -ne 0 ]; then
+                echo ""
+                echo "❌ VALIDATION FAILED: Staging deployment blocked!"
+                echo "   All Firebase configurations must use live projects."
+                echo "   Mocks and emulators are prohibited in staging."
+                exit 1
+            fi
+            ;;
+        "test")
+            echo "🧪 Test environment detected - allowing mock configurations"
+            echo "   Mocks and emulators are permitted for testing."
+            ;;
+        "development")
+            echo "🛠️  Development environment detected - allowing mock configurations"
+            echo "   Mocks and emulators are permitted for local development."
+            ;;
+        *)
+            echo "⚠️  Unknown environment: $environment"
+            echo "   Treating as production for safety - strict validation required"
+            validate_firebase_config "unknown"
+            if [ $? -ne 0 ]; then
+                echo ""
+                echo "❌ VALIDATION FAILED: Deployment blocked for unknown environment!"
+                exit 1
+            fi
+            ;;
+    esac
+
+    echo ""
+    echo "✅ Firebase validation passed for $environment environment"
+    echo ""
+    echo "📋 Policy Reminder:"
+    echo "   • Production/Staging: Live Firebase projects only"
+    echo "   • Preview/PR environments: Live Firebase projects only"
+    echo "   • Development/Test: Mocks and emulators allowed"
+    echo "   • All cloud dependencies must be exercised live in deployed environments"
+}
+
+# Run main function
+main "$@"
