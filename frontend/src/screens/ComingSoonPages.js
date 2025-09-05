@@ -80,7 +80,7 @@ function ComingSoonPage({ title, description, features = [] }) {
         )}
         
         <Description style={{ fontSize: 'var(--text-base)', marginTop: '2rem' }}>
-          We're working hard to bring you this feature. Check back soon!
+          We&apos;re working hard to bring you this feature. Check back soon!
         </Description>
       </Content>
     </Container>

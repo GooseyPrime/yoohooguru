@@ -1,5 +1,4 @@
 const express = require('express');
-const { body, query, validationResult } = require('express-validator');
 const { getDatabase } = require('../config/firebase');
 const { authenticateUser, optionalAuth } = require('../middleware/auth');
 const { logger } = require('../utils/logger');
