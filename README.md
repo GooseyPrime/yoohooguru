@@ -646,3 +646,16 @@ For questions, issues, or contributions, please:
 5. **Caching**: Add Redis-based caching
 6. **Monitoring**: Integrate with monitoring solutions
 7. **CI/CD**: Set up automated testing and deployment pipelines
+
+### Stripe Connect — Debit cards & Instant Payouts (Express)
+
+**Connect → Settings → Payouts**
+- Require at least one external account: **ON**
+- Collection method: **Financial Connections (with manual fallback)**
+- Saved bank accounts (Link): **Allow**
+- Allow debit cards: **ON**  ← required for Instant Payouts
+- Payout schedule: **Weekly (Friday)** (default)
+- Instant Payouts: **ON**
+- Statement descriptor (payouts): `YOOHOO GURU PAYOUT`
+
+Gurus can manage payout methods in the Stripe Express Dashboard (button in **/account/payouts**).

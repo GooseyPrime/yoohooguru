@@ -58,7 +58,8 @@ class FeatureFlagsService {
       aiRecommendations: false,
       mobileApp: false,
       darkMode: false,
-      internationalSupport: false
+      internationalSupport: false,
+      instantPayouts: true
     };
   }
 

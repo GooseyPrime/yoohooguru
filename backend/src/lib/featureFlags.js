@@ -35,6 +35,9 @@ const featureFlags = {
   oddJobsHourly: process.env.FEATURE_ODD_JOBS_HOURLY === 'true',
   oddJobsMaterials: process.env.FEATURE_ODD_JOBS_MATERIALS === 'true',
   backgroundChecks: process.env.FEATURE_BACKGROUND_CHECKS === 'true',
+  
+  // payout features
+  instantPayouts: true, // enable new UI/actions
 };
 
 /**
