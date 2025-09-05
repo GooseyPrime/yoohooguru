@@ -125,8 +125,12 @@ All Firebase variables also need `REACT_APP_` prefixed versions for frontend use
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `STRIPE_SECRET_KEY` | ❌ | Stripe secret key for payments |
-| `STRIPE_WEBHOOK_SECRET` | ❌ | Stripe webhook secret |
 | `STRIPE_PUBLISHABLE_KEY` | ❌ | Stripe publishable key |
+| `STRIPE_WEBHOOK_SECRET` | ❌ | Stripe webhook secret |
+| `STRIPE_WEBHOOK_ID` | ❌ | Stripe webhook ID |
+| `STRIPE_GURU_PASS_PRICE_ID` | ❌ | Price ID for Guru Pass subscription |
+| `STRIPE_SKILL_VERIFICATION_PRICE_ID` | ❌ | Price ID for skill verification |
+| `STRIPE_TRUST_SAFETY_PRICE_ID` | ❌ | Price ID for trust & safety features |
 
 #### AI Services
 
