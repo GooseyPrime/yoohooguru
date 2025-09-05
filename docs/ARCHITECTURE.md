@@ -204,10 +204,16 @@ skills: {
 - `PUT /api/exchanges/:id` - Update exchange
 - `POST /api/exchanges/:id/complete` - Mark exchange complete
 
-#### Payments (Future)
-- `POST /api/payments/intent` - Create payment intent
-- `POST /api/payments/confirm` - Confirm payment
-- `GET /api/payments/history` - Payment history
+#### Payments
+- `GET /api/payments/config` - Get payment configuration
+- `POST /api/payments/create-payment-intent` - Create payment intent (planned)
+- `GET /api/payments/subscription/:userId` - Get subscription status (planned)
+
+#### Connect & Instant Payouts
+- `POST /api/connect/start` - Start Stripe Connect onboarding
+- `GET /api/connect/status` - Get connected account status
+- `GET /api/connect/balance` - Get account balance with instant available amounts
+- `POST /api/connect/instant-payout` - Create instant payout to connected account
 
 ### Response Format
 ```javascript
