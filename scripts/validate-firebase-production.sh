@@ -2,11 +2,31 @@
 
 # Firebase Production Validation Script
 # Ensures that production/staging deployments use real Firebase projects, not emulators or mocks
+# Enhanced to support copilot environment secrets access
 
 set -e
 
 echo "🔥 Firebase Production Validation"
 echo "=================================="
+
+# Function to check for copilot environment variables
+check_copilot_env() {
+    local env_name="$1"
+    echo "🤖 Checking for copilot environment variables..."
+    
+    # Check if we're in a copilot environment
+    if [ -n "$COPILOT_ENV" ] || [ -n "$GITHUB_COPILOT" ]; then
+        echo "   ✅ Copilot environment detected"
+        
+        # Try to access copilot secrets if available
+        if command -v copilot-env 2>/dev/null; then
+            echo "   🔑 Accessing copilot environment secrets..."
+            copilot-env load || echo "   ⚠️  Could not load copilot environment secrets"
+        fi
+    else
+        echo "   📋 Standard environment mode"
+    fi
+}
 
 # Function to check if a value indicates a demo/test/mock project
 is_demo_value() {
@@ -129,6 +149,9 @@ main() {
     
     echo "Environment: $environment"
     
+    # Check for copilot environment integration
+    check_copilot_env "$environment"
+    
     case "$environment" in
         "production")
             echo "🚀 Production environment detected - strict validation required"
@@ -138,6 +161,7 @@ main() {
                 echo "❌ VALIDATION FAILED: Production deployment blocked!"
                 echo "   All Firebase configurations must use live projects."
                 echo "   Mocks and emulators are prohibited in production."
+                echo "   💡 Tip: Check your copilot environment secrets configuration"
                 exit 1
             fi
             ;;
@@ -149,6 +173,7 @@ main() {
                 echo "❌ VALIDATION FAILED: Staging deployment blocked!"
                 echo "   All Firebase configurations must use live projects."
                 echo "   Mocks and emulators are prohibited in staging."
+                echo "   💡 Tip: Check your copilot environment secrets configuration"
                 exit 1
             fi
             ;;
@@ -167,6 +192,7 @@ main() {
             if [ $? -ne 0 ]; then
                 echo ""
                 echo "❌ VALIDATION FAILED: Deployment blocked for unknown environment!"
+                echo "   💡 Tip: Set NODE_ENV properly and check copilot secrets"
                 exit 1
             fi
             ;;
@@ -180,6 +206,7 @@ main() {
     echo "   • Preview/PR environments: Live Firebase projects only"
     echo "   • Development/Test: Mocks and emulators allowed"
     echo "   • All cloud dependencies must be exercised live in deployed environments"
+    echo "   • Use copilot environment secrets for secure configuration management"
 }
 
 # Run main function

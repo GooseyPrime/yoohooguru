@@ -96,6 +96,10 @@ app.use('/api/feature-flags', featureFlagRoutes);
 app.use('/api/liability', liabilityRoutes);
 app.use('/api/webhooks', webhookRoutes);
 
+// Angels marketplace routes
+const angelsRoutes = require('./routes/angels');
+app.use('/api/angels', angelsRoutes);
+
 // 3) Connect routes (standard JSON)
 const connectRoutes = require('./routes/connect');
 app.use('/api/connect', connectRoutes);
