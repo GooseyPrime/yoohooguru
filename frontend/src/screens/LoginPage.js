@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import Button from '../components/Button';
+import Logo from '../components/Logo';
 
 const LoginContainer = styled.div`
   min-height: calc(100vh - 140px);
@@ -26,8 +27,9 @@ const LoginCard = styled.div`
   border: 1px solid ${props => props.theme.colors.border};
 `;
 
-const Logo = styled.div`
-  font-size: 2rem;
+const LogoWrapper = styled.div`
+  display: flex;
+  justify-content: center;
   margin-bottom: 0.5rem;
 `;
 
@@ -206,7 +208,9 @@ function LoginPage() {
   return (
     <LoginContainer>
       <LoginCard>
-        <Logo>🎯</Logo>
+        <LogoWrapper>
+          <Logo showImage={true} size="small" />
+        </LogoWrapper>
         <Title>Welcome Back</Title>
         <Subtitle>Sign in to your {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'} account</Subtitle>
 

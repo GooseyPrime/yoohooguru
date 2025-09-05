@@ -108,7 +108,7 @@ function HomePage() {
       <HeroSection>
         <HeroContent>
           <HeroArt src="/assets/images/yoohooguruyetiman.png" alt="yoohoo.guru community skill-sharing platform" />
-          <h1>Find help or share your skills — the Handy‑Yeti way.</h1>
+          <h1>A community where you can swap skills, share services, or find trusted local help.</h1>
           <p>
             Local connections, meaningful exchanges, and community impact through 
             our trusted skill-sharing platform.

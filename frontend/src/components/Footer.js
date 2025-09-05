@@ -100,7 +100,7 @@ function Footer() {
       <FooterContent>
         <FooterGrid>
           <FooterSection>
-            <Logo showIcon={true} showText={true} size="normal" to="/" />
+            <Logo showImage={true} showText={true} size="normal" to="/" />
             <p>
               A neighborhood-based skill-sharing platform where users exchange skills,
               discover purpose, and create exponential community impact.
