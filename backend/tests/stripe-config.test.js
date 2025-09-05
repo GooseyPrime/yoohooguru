@@ -45,16 +45,16 @@ describe('Stripe Configuration', () => {
 
   describe('Stripe General Configuration', () => {
     test('should load all Stripe configurations', () => {
-      process.env.STRIPE_SECRET_KEY = 'sk_test_12345';
+      process.env.STRIPE_SECRET_KEY = 'sk_test_fake_key_12345';
       process.env.STRIPE_PUBLISHABLE_KEY = 'pk_test_12345';
-      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_12345';
+      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_fake_test_12345';
       process.env.STRIPE_WEBHOOK_ID = 'we_test_12345';
       
       const config = getConfig();
       
-      expect(config.stripeSecretKey).toBe('sk_test_12345');
+      expect(config.stripeSecretKey).toBe('sk_test_fake_key_12345');
       expect(config.stripePublishableKey).toBe('pk_test_12345');
-      expect(config.stripeWebhookSecret).toBe('whsec_test_12345');
+      expect(config.stripeWebhookSecret).toBe('whsec_fake_test_12345');
       expect(config.stripeWebhookId).toBe('we_test_12345');
     });
   });

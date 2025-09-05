@@ -48,15 +48,15 @@ describe('Secrets Integration Tests', () => {
       process.env.FIREBASE_PROJECT_ID = 'test-project';
       process.env.FIREBASE_STORAGE_BUCKET = 'test.appspot.com';
       
-      process.env.JWT_SECRET = 'super_secret_jwt_key';
+      process.env.JWT_SECRET = 'fake_jwt_key_for_testing_only';
       
       process.env.STRIPE_GURU_PASS_PRICE_ID = 'price_guru_pass_test';
       process.env.STRIPE_PUBLISHABLE_KEY = 'pk_test_publishable';
-      process.env.STRIPE_SECRET_KEY = 'sk_test_secret';
+      process.env.STRIPE_SECRET_KEY = 'sk_test_fake_key_for_testing';
       process.env.STRIPE_SKILL_VERIFICATION_PRICE_ID = 'price_skill_verification_test';
       process.env.STRIPE_TRUST_SAFETY_PRICE_ID = 'price_trust_safety_test';
       process.env.STRIPE_WEBHOOK_ID = 'we_1S3nQHJF6bibA8neDupDJ3j4';
-      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_webhook_secret';
+      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_fake_webhook_secret_for_testing';
 
       const config = getConfig();
       
@@ -70,16 +70,16 @@ describe('Secrets Integration Tests', () => {
       expect(config.firebaseStorageBucket).toBe('test.appspot.com');
       
       // Verify JWT configuration
-      expect(config.jwtSecret).toBe('super_secret_jwt_key');
+      expect(config.jwtSecret).toBe('fake_jwt_key_for_testing_only');
       
       // Verify Stripe configuration
       expect(config.stripeGuruPassPriceId).toBe('price_guru_pass_test');
       expect(config.stripePublishableKey).toBe('pk_test_publishable');
-      expect(config.stripeSecretKey).toBe('sk_test_secret');
+      expect(config.stripeSecretKey).toBe('sk_test_fake_key_for_testing');
       expect(config.stripeSkillVerificationPriceId).toBe('price_skill_verification_test');
       expect(config.stripeTrustSafetyPriceId).toBe('price_trust_safety_test');
       expect(config.stripeWebhookId).toBe('we_1S3nQHJF6bibA8neDupDJ3j4');
-      expect(config.stripeWebhookSecret).toBe('whsec_test_webhook_secret');
+      expect(config.stripeWebhookSecret).toBe('whsec_fake_webhook_secret_for_testing');
     });
 
     test('should expose payment configuration via API endpoint', async () => {
@@ -104,19 +104,19 @@ describe('Secrets Integration Tests', () => {
     test('should handle webhook configuration correctly', () => {
       // Set webhook configuration as mentioned in the issue
       process.env.STRIPE_WEBHOOK_ID = 'we_1S3nQHJF6bibA8neDupDJ3j4';
-      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_webhook_secret_from_issue';
+      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_fake_webhook_from_issue_test';
 
       const config = getConfig();
       
       expect(config.stripeWebhookId).toBe('we_1S3nQHJF6bibA8neDupDJ3j4');
-      expect(config.stripeWebhookSecret).toBe('whsec_webhook_secret_from_issue');
+      expect(config.stripeWebhookSecret).toBe('whsec_fake_webhook_from_issue_test');
     });
   });
 
   describe('Production Environment Validation', () => {
     test('should validate required secrets in production mode', () => {
       process.env.NODE_ENV = 'production';
-      process.env.JWT_SECRET = 'production_jwt_secret';
+      process.env.JWT_SECRET = 'fake_production_jwt_key_for_testing';
       process.env.FIREBASE_PROJECT_ID = 'production_project';
       process.env.FIREBASE_API_KEY = 'production_api_key';
 
