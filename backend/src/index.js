@@ -155,11 +155,13 @@ process.on('SIGINT', () => {
   process.exit(0);
 });
 
-// Start server
-app.listen(PORT, () => {
-  logger.info(`🎯 ${config.appBrandName} Backend server running on port ${PORT}`);
-  logger.info(`Environment: ${config.nodeEnv}`);
-  logger.info(`Health check: http://localhost:${PORT}/health`);
-});
+// Start server only if this file is run directly (not imported)
+if (require.main === module) {
+  app.listen(PORT, () => {
+    logger.info(`🎯 ${config.appBrandName} Backend server running on port ${PORT}`);
+    logger.info(`Environment: ${config.nodeEnv}`);
+    logger.info(`Health check: http://localhost:${PORT}/health`);
+  });
+}
 
 module.exports = app;

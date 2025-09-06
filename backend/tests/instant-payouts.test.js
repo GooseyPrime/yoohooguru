@@ -21,10 +21,13 @@ jest.mock('../src/lib/stripe', () => ({
 }));
 
 jest.mock('../src/config/firebase', () => ({
-  getDatabase: jest.fn(() => ({
-    ref: jest.fn(() => ({
-      get: jest.fn(),
-      update: jest.fn()
+  getFirestore: jest.fn(() => ({
+    collection: jest.fn(() => ({
+      doc: jest.fn(() => ({
+        get: jest.fn(),
+        set: jest.fn(),
+        update: jest.fn()
+      }))
     }))
   }))
 }));
@@ -37,25 +40,43 @@ jest.mock('../src/middleware/auth', () => ({
 }));
 
 const { stripe } = require('../src/lib/stripe');
-const { getDatabase } = require('../src/config/firebase');
+const { getFirestore } = require('../src/config/firebase');
 const connectRouter = require('../src/routes/connect');
 
 describe('Stripe Instant Payouts', () => {
   let app;
+  let server;
   let mockDb;
 
-  beforeEach(() => {
+  beforeAll(async () => {
     app = express();
     app.use(express.json());
     app.use('/api/connect', connectRouter);
 
+    // Start server for integration tests
+    server = app.listen(0); // Use port 0 to get a random available port
+  });
+
+  afterAll(async () => {
+    // Clean shutdown of server
+    if (server) {
+      await new Promise((resolve) => {
+        server.close(resolve);
+      });
+    }
+  });
+
+  beforeEach(() => {
     mockDb = {
-      ref: jest.fn(() => ({
-        get: jest.fn(),
-        update: jest.fn()
+      collection: jest.fn(() => ({
+        doc: jest.fn(() => ({
+          get: jest.fn(),
+          set: jest.fn(),
+          update: jest.fn()
+        }))
       }))
     };
-    getDatabase.mockReturnValue(mockDb);
+    getFirestore.mockReturnValue(mockDb);
 
     // Reset all mocks
     jest.clearAllMocks();
@@ -69,10 +90,15 @@ describe('Stripe Instant Payouts', () => {
         payouts_ready: true
       };
 
-      mockDb.ref.mockReturnValue({
+      const mockDocRef = {
         get: jest.fn().mockResolvedValue({
-          val: () => mockProfile
+          exists: true,
+          data: () => mockProfile
         })
+      };
+
+      mockDb.collection.mockReturnValue({
+        doc: jest.fn().mockReturnValue(mockDocRef)
       });
 
       // Mock Stripe balance response
@@ -107,10 +133,15 @@ describe('Stripe Instant Payouts', () => {
 
     test('should return error when no connected account exists', async () => {
       // Mock profile without connected account
-      mockDb.ref.mockReturnValue({
+      const mockDocRef = {
         get: jest.fn().mockResolvedValue({
-          val: () => ({})
+          exists: false,
+          data: () => ({})
         })
+      };
+
+      mockDb.collection.mockReturnValue({
+        doc: jest.fn().mockReturnValue(mockDocRef)
       });
 
       const response = await request(app)
@@ -128,10 +159,15 @@ describe('Stripe Instant Payouts', () => {
         payouts_ready: true
       };
 
-      mockDb.ref.mockReturnValue({
+      const mockDocRef = {
         get: jest.fn().mockResolvedValue({
-          val: () => mockProfile
+          exists: true,
+          data: () => mockProfile
         })
+      };
+
+      mockDb.collection.mockReturnValue({
+        doc: jest.fn().mockReturnValue(mockDocRef)
       });
 
       // Mock Stripe error
@@ -154,10 +190,15 @@ describe('Stripe Instant Payouts', () => {
         payouts_ready: true
       };
 
-      mockDb.ref.mockReturnValue({
+      const mockDocRef = {
         get: jest.fn().mockResolvedValue({
-          val: () => mockProfile
+          exists: true,
+          data: () => mockProfile
         })
+      };
+
+      mockDb.collection.mockReturnValue({
+        doc: jest.fn().mockReturnValue(mockDocRef)
       });
 
       // Mock Stripe payout response
@@ -204,10 +245,15 @@ describe('Stripe Instant Payouts', () => {
 
     test('should require connected account', async () => {
       // Mock profile without connected account
-      mockDb.ref.mockReturnValue({
+      const mockDocRef = {
         get: jest.fn().mockResolvedValue({
-          val: () => ({})
+          exists: false,
+          data: () => ({})
         })
+      };
+
+      mockDb.collection.mockReturnValue({
+        doc: jest.fn().mockReturnValue(mockDocRef)
       });
 
       const response = await request(app)
@@ -226,10 +272,15 @@ describe('Stripe Instant Payouts', () => {
         payouts_ready: false
       };
 
-      mockDb.ref.mockReturnValue({
+      const mockDocRef = {
         get: jest.fn().mockResolvedValue({
-          val: () => mockProfile
+          exists: true,
+          data: () => mockProfile
         })
+      };
+
+      mockDb.collection.mockReturnValue({
+        doc: jest.fn().mockReturnValue(mockDocRef)
       });
 
       const response = await request(app)
@@ -248,10 +299,15 @@ describe('Stripe Instant Payouts', () => {
         payouts_ready: true
       };
 
-      mockDb.ref.mockReturnValue({
+      const mockDocRef = {
         get: jest.fn().mockResolvedValue({
-          val: () => mockProfile
+          exists: true,
+          data: () => mockProfile
         })
+      };
+
+      mockDb.collection.mockReturnValue({
+        doc: jest.fn().mockReturnValue(mockDocRef)
       });
 
       // Mock Stripe card error
@@ -277,10 +333,15 @@ describe('Stripe Instant Payouts', () => {
         payouts_ready: true
       };
 
-      mockDb.ref.mockReturnValue({
+      const mockDocRef = {
         get: jest.fn().mockResolvedValue({
-          val: () => mockProfile
+          exists: true,
+          data: () => mockProfile
         })
+      };
+
+      mockDb.collection.mockReturnValue({
+        doc: jest.fn().mockReturnValue(mockDocRef)
       });
 
       // Mock generic Stripe error
@@ -299,11 +360,16 @@ describe('Stripe Instant Payouts', () => {
   describe('Account Creation with Instant Payout Settings', () => {
     test('should create account with manual payout schedule for instant payouts', async () => {
       // Mock profile without connected account
-      mockDb.ref.mockReturnValue({
+      const mockDocRef = {
         get: jest.fn().mockResolvedValue({
-          val: () => ({})
+          exists: false,
+          data: () => ({})
         }),
-        update: jest.fn().mockResolvedValue()
+        set: jest.fn().mockResolvedValue()
+      };
+
+      mockDb.collection.mockReturnValue({
+        doc: jest.fn().mockReturnValue(mockDocRef)
       });
 
       // Mock Stripe account creation

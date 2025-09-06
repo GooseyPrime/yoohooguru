@@ -36,6 +36,21 @@ jest.mock('../src/middleware/auth', () => ({
 }));
 
 describe('Payouts API Tests', () => {
+  let server;
+
+  beforeAll(async () => {
+    // Start server for integration tests
+    server = app.listen(0); // Use port 0 to get a random available port
+  });
+
+  afterAll(async () => {
+    // Clean shutdown of server
+    if (server) {
+      await new Promise((resolve) => {
+        server.close(resolve);
+      });
+    }
+  });
   describe('GET /api/payouts/balance', () => {
     it('should return not connected when no Stripe account', async () => {
       const response = await request(app)
@@ -78,6 +93,21 @@ describe('Payouts API Tests', () => {
 });
 
 describe('Feature Flags API Tests', () => {
+  let server;
+
+  beforeAll(async () => {
+    // Start server for integration tests
+    server = app.listen(0); // Use port 0 to get a random available port
+  });
+
+  afterAll(async () => {
+    // Clean shutdown of server
+    if (server) {
+      await new Promise((resolve) => {
+        server.close(resolve);
+      });
+    }
+  });
   describe('GET /api/feature-flags', () => {
     it('should include instantPayouts flag', async () => {
       const response = await request(app)
