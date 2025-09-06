@@ -9,6 +9,7 @@ on:
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
+    environment: copilot # <-- This line is added to pull secrets from your 'copilot' environment
 
     strategy:
       matrix:
