@@ -1,10 +1,6 @@
 const request = require('supertest');
 
-// Simple mock for testing
-jest.mock('../src/config/firebase');
-jest.mock('../src/middleware/auth');
-jest.mock('../src/utils/logger');
-
+// Remove Firebase mocking - use real Firebase connections
 describe('Liability API Tests', () => {
   describe('Risk Level Categorization', () => {
     it('should categorize high-risk activities correctly', () => {

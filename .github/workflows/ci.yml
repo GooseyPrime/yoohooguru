@@ -9,6 +9,7 @@ on:
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
+    environment: copilot # <-- This line is added to pull secrets from your 'copilot' environment
 
     strategy:
       matrix:
@@ -41,6 +42,25 @@ jobs:
     - name: Run Backend Tests
       run: npm test
       working-directory: ./backend
+      environment: copilot
+      env:
+        FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+        FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
+        FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
+        FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+        FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+        FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
+        FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+        FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+        FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+        STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
+        STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+        STRIPE_WEBHOOK_ID: ${{ secrets.STRIPE_WEBHOOK_ID }}
+        STRIPE_GURU_PASS_PRICE_ID: ${{ secrets.STRIPE_GURU_PASS_PRICE_ID }}
+        STRIPE_SKILL_VERIFICATION_PRICE_ID: ${{ secrets.STRIPE_SKILL_VERIFICATION_PRICE_ID }}
+        STRIPE_TRUST_SAFETY_PRICE_ID: ${{ secrets.STRIPE_TRUST_SAFETY_PRICE_ID }}
 
     - name: Build Frontend
       run: npm run build

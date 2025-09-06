@@ -1,33 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#000000" />
-  <meta
-    name="description"
-    content="YooHoo Guru - Connect with experts for one-on-one guidance"
-  />
-  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-
-  <!-- 
-    Updated Content-Security-Policy:
-    - Added 'https://apis.google.com' to script-src to allow Google API scripts to load.
-    - This is necessary for Google Sign-In and other Google services to function correctly.
-  -->
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    script-src 'self' 'unsafe-inline' https://js.stripe.com https://apis.google.com;
-    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-    img-src 'self' data: https://*.stripe.com;
-    font-src 'self' https://fonts.gstatic.com;
-    frame-src 'self' https://js.stripe.com;
-    connect-src 'self' http://localhost:5001 ws://localhost:5001 https://api.stripe.com;
-  ">
-
-  <title>YooHoo Guru</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>yoohoo.guru - Skill Sharing Platform</title>
+    <meta name="description" content="Exchange skills, discover purpose, and create exponential community impact through neighborhood-based connections.">
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#007BFF" />
+    <!-- Local fonts are loaded via CSS @font-face declarations in GlobalStyles.js -->
+    <!-- Stripe Pricing Table Script -->
+    <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
 </head>
 <body>
   <noscript>You need to enable JavaScript to run this app.</noscript>

@@ -75,7 +75,11 @@ const initializeFirebase = () => {
 
       const firebaseConfig = {
         projectId: process.env.FIREBASE_PROJECT_ID,
-        databaseURL: process.env.FIREBASE_DATABASE_URL,
+        // By removing the databaseURL, we prevent the SDK from making an unnecessary
+        // connection attempt to the Realtime Database, which was causing the warnings.
+        // Your app uses Firestore, so this property is not needed.
+        // databaseURL: process.env.FIREBASE_DATABASE_URL,
+        
         // Conditionally add the credential object ONLY if the necessary secrets are present.
         // This ensures the code remains compatible with environments (like Railway)
         // that use GOOGLE_APPLICATION_CREDENTIALS, where these vars won't be set.
@@ -84,8 +88,11 @@ const initializeFirebase = () => {
         })
       };
 
-      // Validate configuration for production environments
-      validateProductionFirebaseConfig(firebaseConfig);
+      // Validate configuration for production environments only
+      // Test environment uses real Firebase but with relaxed validation
+      if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
+        validateProductionFirebaseConfig(firebaseConfig);
+      }
 
       firebaseApp = admin.initializeApp(firebaseConfig);
       logger.info('Firebase Admin SDK initialized successfully');
@@ -96,6 +103,8 @@ const initializeFirebase = () => {
       
       if (env === 'production' || env === 'staging') {
         logger.info('🚀 Running with live Firebase configuration (production-ready)');
+      } else if (env === 'test') {
+        logger.info('🧪 Running with test Firebase configuration (real Firebase, test environment)');
       } else {
         logger.info('🛠️  Running with development Firebase configuration');
       }
@@ -115,6 +124,14 @@ const initializeFirebase = () => {
 const getDatabase = () => {
   if (!firebaseApp) {
     throw new Error('Firebase not initialized. Call initializeFirebase() first.');
+  }
+  // This is a safety check. If the app was initialized without a databaseURL,
+  // it means it's configured for Firestore only. This prevents silent failures.
+  if (!firebaseApp.options.databaseURL) {
+    throw new Error(
+      'Firebase Realtime Database is not configured for this application. ' +
+      'The application is initialized for Firestore. Use getFirestore() instead.'
+    );
   }
   return admin.database();
 };

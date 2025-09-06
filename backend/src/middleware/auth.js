@@ -68,6 +68,7 @@ const requireRole = (roles) => {
 
 module.exports = {
   authenticateUser,
+  requireAuth: authenticateUser, // Alias for convenience
   optionalAuth,
   requireRole
 };
