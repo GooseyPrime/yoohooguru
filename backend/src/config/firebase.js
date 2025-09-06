@@ -75,7 +75,11 @@ const initializeFirebase = () => {
 
       const firebaseConfig = {
         projectId: process.env.FIREBASE_PROJECT_ID,
-        databaseURL: process.env.FIREBASE_DATABASE_URL,
+        // By removing the databaseURL, we prevent the SDK from making an unnecessary
+        // connection attempt to the Realtime Database, which was causing the warnings.
+        // Your app uses Firestore, so this property is not needed.
+        // databaseURL: process.env.FIREBASE_DATABASE_URL,
+        
         // Conditionally add the credential object ONLY if the necessary secrets are present.
         // This ensures the code remains compatible with environments (like Railway)
         // that use GOOGLE_APPLICATION_CREDENTIALS, where these vars won't be set.
@@ -139,3 +143,4 @@ module.exports = {
   getAuth,
   getFirestore
 };
+
