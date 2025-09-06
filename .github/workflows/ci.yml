@@ -38,7 +38,7 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: 'frontend/package.json' # FIX: Point to package.json as lock file is not in repo
+          cache-dependency-path: 'package-lock.json' # FIX: Point to the root lock file for monorepo caching
 
       - name: Install frontend dependencies
         run: cd frontend && npm install
@@ -82,7 +82,7 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: 'backend/package-lock.json'
+          cache-dependency-path: 'package-lock.json' # FIX: Point to the root lock file for monorepo caching
 
       - name: Install backend dependencies
         run: cd backend && npm install
@@ -111,7 +111,7 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          cache-dependency-path: 'package-lock.json' # FIX: Consolidate build cache to root lock file as well
 
       - name: Install all dependencies
         run: npm run install:all
