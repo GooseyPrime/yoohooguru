@@ -15,6 +15,13 @@ async function getAccountId(uid) {
 // GET /api/payouts/balance
 router.get('/balance', authenticateUser, async (req, res) => {
   try {
+    if (!stripe && process.env.NODE_ENV !== 'test') {
+      return res.status(503).json({ 
+        ok: false, 
+        error: 'Stripe not configured. Please set STRIPE_SECRET_KEY environment variable.' 
+      });
+    }
+
     const accountId = await getAccountId(req.user.uid);
     if (!accountId) return res.json({ ok: true, connected: false });
 
@@ -38,6 +45,13 @@ router.get('/balance', authenticateUser, async (req, res) => {
 // body: { amountCents?: number, currency?: 'usd' }
 router.post('/instant', authenticateUser, async (req, res) => {
   try {
+    if (!stripe && process.env.NODE_ENV !== 'test') {
+      return res.status(503).json({ 
+        ok: false, 
+        error: 'Stripe not configured. Please set STRIPE_SECRET_KEY environment variable.' 
+      });
+    }
+
     const accountId = await getAccountId(req.user.uid);
     if (!accountId) return res.status(400).json({ ok: false, error: 'Stripe account not connected' });
 

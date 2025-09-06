@@ -10,6 +10,12 @@ router.post('/', async (req, res) => {
   let event;
 
   try {
+    if (!stripe && process.env.NODE_ENV !== 'test') {
+      return res.status(503).json({ 
+        error: 'Stripe not configured. Please set STRIPE_SECRET_KEY environment variable.' 
+      });
+    }
+
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (err) {
     console.error('❌ Webhook signature verification failed.', err.message);

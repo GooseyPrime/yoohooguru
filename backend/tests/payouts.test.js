@@ -1,26 +1,9 @@
 const request = require('supertest');
 const app = require('../src/index');
 
-// Mock Firebase for testing
-jest.mock('../src/config/firebase', () => ({
-  initializeFirebase: jest.fn(),
-  getDatabase: jest.fn(() => ({
-    ref: jest.fn(() => ({
-      once: jest.fn(() => Promise.resolve({
-        val: () => null, // Returns null to simulate no Stripe account connected
-        forEach: () => {}
-      })),
-      set: jest.fn(() => Promise.resolve()),
-      update: jest.fn(() => Promise.resolve()),
-      push: jest.fn(() => Promise.resolve()),
-      remove: jest.fn(() => Promise.resolve())
-    }))
-  })),
-  getAuth: jest.fn(() => ({
-    verifyIdToken: jest.fn(() => Promise.resolve({ uid: 'test-user-id' }))
-  })),
-  getFirestore: jest.fn()
-}));
+// Remove Firebase mocking - use real Firebase connections
+
+// Mock authentication for testing
 jest.mock('../src/middleware/auth', () => ({
   authenticateUser: (req, res, next) => {
     req.user = { uid: 'test-user-id' };
@@ -36,6 +19,21 @@ jest.mock('../src/middleware/auth', () => ({
 }));
 
 describe('Payouts API Tests', () => {
+  let server;
+
+  beforeAll(async () => {
+    // Start server for integration tests
+    server = app.listen(0); // Use port 0 to get a random available port
+  });
+
+  afterAll(async () => {
+    // Clean shutdown of server
+    if (server) {
+      await new Promise((resolve) => {
+        server.close(resolve);
+      });
+    }
+  });
   describe('GET /api/payouts/balance', () => {
     it('should return not connected when no Stripe account', async () => {
       const response = await request(app)
@@ -78,6 +76,21 @@ describe('Payouts API Tests', () => {
 });
 
 describe('Feature Flags API Tests', () => {
+  let server;
+
+  beforeAll(async () => {
+    // Start server for integration tests
+    server = app.listen(0); // Use port 0 to get a random available port
+  });
+
+  afterAll(async () => {
+    // Clean shutdown of server
+    if (server) {
+      await new Promise((resolve) => {
+        server.close(resolve);
+      });
+    }
+  });
   describe('GET /api/feature-flags', () => {
     it('should include instantPayouts flag', async () => {
       const response = await request(app)
