@@ -6,6 +6,82 @@ const { categorizeSkill, getSkillCategories } = require('../utils/skillCategoriz
 
 const router = express.Router();
 
+// AI Skill Matching Algorithm
+function calculateSkillMatchScore(userA, userB) {
+  let matchScore = 0;
+  let matchDetails = [];
+
+  // Direct skill matches (user A offers what user B wants)
+  const userAOffered = (userA.skillsOffered || []).map(s => s.toLowerCase());
+  const userBWanted = (userB.skillsWanted || []).map(s => s.toLowerCase());
+  
+  userAOffered.forEach(skillA => {
+    userBWanted.forEach(skillB => {
+      if (skillA.includes(skillB) || skillB.includes(skillA)) {
+        matchScore += 10; // High score for direct matches
+        matchDetails.push({
+          type: 'direct_match',
+          teacherSkill: skillA,
+          learnerWant: skillB,
+          points: 10
+        });
+      }
+    });
+  });
+
+  // Reverse matches (user B offers what user A wants)
+  const userBOffered = (userB.skillsOffered || []).map(s => s.toLowerCase());
+  const userAWanted = (userA.skillsWanted || []).map(s => s.toLowerCase());
+  
+  userBOffered.forEach(skillB => {
+    userAWanted.forEach(skillA => {
+      if (skillB.includes(skillA) || skillA.includes(skillB)) {
+        matchScore += 10; // High score for mutual exchange potential
+        matchDetails.push({
+          type: 'reverse_match',
+          teacherSkill: skillB,
+          learnerWant: skillA,
+          points: 10
+        });
+      }
+    });
+  });
+
+  // Category-based matches (same category skills)
+  userAOffered.forEach(skillA => {
+    const categoryA = categorizeSkill(skillA);
+    userBWanted.forEach(skillB => {
+      const categoryB = categorizeSkill(skillB);
+      if (categoryA === categoryB && categoryA !== 'Other') {
+        matchScore += 3; // Lower score for category matches
+        matchDetails.push({
+          type: 'category_match',
+          category: categoryA,
+          points: 3
+        });
+      }
+    });
+  });
+
+  // Location proximity bonus (if both have location data)
+  if (userA.location && userB.location) {
+    // Simple same-city check (can be enhanced with actual distance calculation)
+    if (userA.location.city === userB.location.city) {
+      matchScore += 5;
+      matchDetails.push({
+        type: 'location_bonus',
+        city: userA.location.city,
+        points: 5
+      });
+    }
+  }
+
+  return {
+    score: matchScore,
+    details: matchDetails
+  };
+}
+
 // @desc    Get all skills
 // @route   GET /api/skills
 // @access  Public
@@ -198,5 +274,149 @@ router.get('/suggestions/autocomplete', async (req, res) => {
     });
   }
 });
+
+// @desc    Get AI-powered skill matches for a user
+// @route   GET /api/skills/matches/:userId
+// @access  Public (with user ID)
+router.get('/matches/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { limit = 10, minScore = 5 } = req.query;
+
+    const db = getDatabase();
+    
+    // Get the target user
+    const targetUserSnapshot = await db.ref(`users/${userId}`).once('value');
+    if (!targetUserSnapshot.exists()) {
+      return res.status(404).json({
+        success: false,
+        error: { message: 'User not found' }
+      });
+    }
+
+    const targetUser = { id: userId, ...targetUserSnapshot.val() };
+    
+    // Get all other users
+    const usersSnapshot = await db.ref('users').once('value');
+    const matches = [];
+
+    usersSnapshot.forEach(childSnapshot => {
+      const otherUserId = childSnapshot.key;
+      if (otherUserId !== userId) {
+        const otherUser = { id: otherUserId, ...childSnapshot.val() };
+        
+        // Calculate match score
+        const matchResult = calculateSkillMatchScore(targetUser, otherUser);
+        
+        if (matchResult.score >= minScore) {
+          // Remove sensitive information
+          delete otherUser.email;
+          delete otherUser.lastLoginAt;
+          
+          matches.push({
+            user: otherUser,
+            matchScore: matchResult.score,
+            matchDetails: matchResult.details
+          });
+        }
+      }
+    });
+
+    // Sort by match score (highest first) and limit results
+    const sortedMatches = matches
+      .sort((a, b) => b.matchScore - a.matchScore)
+      .slice(0, parseInt(limit));
+
+    res.json({
+      success: true,
+      data: {
+        targetUserId: userId,
+        matches: sortedMatches,
+        totalMatches: sortedMatches.length,
+        algorithm: 'ai_skill_matching_v1'
+      }
+    });
+
+  } catch (error) {
+    logger.error('Get skill matches error:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: 'Failed to fetch skill matches' }
+    });
+  }
+});
+
+// @desc    Get optimal skill exchange pairs in the community
+// @route   GET /api/skills/exchange-pairs
+// @access  Public
+router.get('/exchange-pairs', async (req, res) => {
+  try {
+    const { limit = 20, minScore = 10 } = req.query;
+
+    const db = getDatabase();
+    const usersSnapshot = await db.ref('users').once('value');
+    const users = [];
+    
+    // Collect all users
+    usersSnapshot.forEach(childSnapshot => {
+      const user = { id: childSnapshot.key, ...childSnapshot.val() };
+      delete user.email;
+      delete user.lastLoginAt;
+      users.push(user);
+    });
+
+    const exchangePairs = [];
+
+    // Calculate mutual exchange potential between all user pairs
+    for (let i = 0; i < users.length; i++) {
+      for (let j = i + 1; j < users.length; j++) {
+        const userA = users[i];
+        const userB = users[j];
+        
+        const matchResult = calculateSkillMatchScore(userA, userB);
+        
+        // Check for mutual exchange potential (both users can teach each other)
+        const mutualExchange = matchResult.details.some(detail => 
+          detail.type === 'direct_match'
+        ) && matchResult.details.some(detail => 
+          detail.type === 'reverse_match'
+        );
+
+        if (matchResult.score >= minScore && mutualExchange) {
+          exchangePairs.push({
+            userA: userA,
+            userB: userB,
+            exchangeScore: matchResult.score,
+            exchangeDetails: matchResult.details,
+            mutualExchange: true
+          });
+        }
+      }
+    }
+
+    // Sort by exchange score and limit results
+    const sortedPairs = exchangePairs
+      .sort((a, b) => b.exchangeScore - a.exchangeScore)
+      .slice(0, parseInt(limit));
+
+    res.json({
+      success: true,
+      data: {
+        exchangePairs: sortedPairs,
+        totalPairs: sortedPairs.length,
+        algorithm: 'mutual_skill_exchange_v1'
+      }
+    });
+
+  } catch (error) {
+    logger.error('Get exchange pairs error:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: 'Failed to fetch exchange pairs' }
+    });
+  }
+});
+
+module.exports = router;
 
 module.exports = router;

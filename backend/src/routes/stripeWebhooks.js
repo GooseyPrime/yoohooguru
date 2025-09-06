@@ -32,7 +32,6 @@ router.post('/', async (req, res) => {
         // Example booking fulfillment (adapt to your booking schema):
         // session.metadata could include jobId/listingId/etc.
         const jobId = session?.metadata?.jobId;
-        const userId = session?.metadata?.userId;
         if (jobId) {
           await db.ref(`job_bookings/${jobId}`).update({
             status: 'paid',
