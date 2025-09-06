@@ -63,12 +63,29 @@ const initializeFirebase = () => {
   try {
     // Initialize Firebase Admin SDK
     if (!admin.apps.length) {
+      // In CI/CD or environments where credentials are provided as discrete variables,
+      // we must construct the service account object manually.
+      const serviceAccount = {
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        // This is the critical fix for CI environments. It correctly formats the
+        // private key by replacing escaped newlines with actual newlines.
+        privateKey: (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
+      };
+
       const firebaseConfig = {
         projectId: process.env.FIREBASE_PROJECT_ID,
-        databaseURL: process.env.FIREBASE_DATABASE_URL,
-        // Note: In production, service account credentials should be provided
-        // via GOOGLE_APPLICATION_CREDENTIALS environment variable or
-        // Google Cloud service account key
+        // By removing the databaseURL, we prevent the SDK from making an unnecessary
+        // connection attempt to the Realtime Database, which was causing the warnings.
+        // Your app uses Firestore, so this property is not needed.
+        // databaseURL: process.env.FIREBASE_DATABASE_URL,
+        
+        // Conditionally add the credential object ONLY if the necessary secrets are present.
+        // This ensures the code remains compatible with environments (like Railway)
+        // that use GOOGLE_APPLICATION_CREDENTIALS, where these vars won't be set.
+        ...(serviceAccount.clientEmail && serviceAccount.privateKey && {
+          credential: admin.credential.cert(serviceAccount)
+        })
       };
 
       // Validate configuration for production environments only
@@ -91,6 +108,10 @@ const initializeFirebase = () => {
       } else {
         logger.info('🛠️  Running with development Firebase configuration');
       }
+    } else {
+      // If the app is already initialized (e.g., in another part of the test suite),
+      // get the default app instance to ensure our module's state is correct.
+      firebaseApp = admin.app();
     }
     
     return firebaseApp;
@@ -103,6 +124,14 @@ const initializeFirebase = () => {
 const getDatabase = () => {
   if (!firebaseApp) {
     throw new Error('Firebase not initialized. Call initializeFirebase() first.');
+  }
+  // This is a safety check. If the app was initialized without a databaseURL,
+  // it means it's configured for Firestore only. This prevents silent failures.
+  if (!firebaseApp.options.databaseURL) {
+    throw new Error(
+      'Firebase Realtime Database is not configured for this application. ' +
+      'The application is initialized for Firestore. Use getFirestore() instead.'
+    );
   }
   return admin.database();
 };

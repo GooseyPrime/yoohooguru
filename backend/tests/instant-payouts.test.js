@@ -29,16 +29,17 @@ jest.mock('../src/middleware/auth', () => ({
 }));
 
 const { stripe } = require('../src/lib/stripe');
-const { getDatabase } = require('../src/config/firebase');
+const { getFirestore } = require('../src/config/firebase');
 const connectRouter = require('../src/routes/connect');
 
 describe('Stripe Instant Payouts', () => {
   let app;
 
-  beforeEach(() => {
+  beforeAll(async () => {
     app = express();
     app.use(express.json());
     app.use('/api/connect', connectRouter);
+
 
     // Reset all mocks
     jest.clearAllMocks();
