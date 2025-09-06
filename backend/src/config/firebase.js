@@ -99,6 +99,10 @@ const initializeFirebase = () => {
       } else {
         logger.info('🛠️  Running with development Firebase configuration');
       }
+    } else {
+      // If the app is already initialized (e.g., in another part of the test suite),
+      // get the default app instance to ensure our module's state is correct.
+      firebaseApp = admin.app();
     }
     
     return firebaseApp;
