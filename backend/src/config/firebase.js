@@ -120,6 +120,14 @@ const getDatabase = () => {
   if (!firebaseApp) {
     throw new Error('Firebase not initialized. Call initializeFirebase() first.');
   }
+  // This is a safety check. If the app was initialized without a databaseURL,
+  // it means it's configured for Firestore only. This prevents silent failures.
+  if (!firebaseApp.options.databaseURL) {
+    throw new Error(
+      'Firebase Realtime Database is not configured for this application. ' +
+      'The application is initialized for Firestore. Use getFirestore() instead.'
+    );
+  }
   return admin.database();
 };
 
@@ -143,4 +151,3 @@ module.exports = {
   getAuth,
   getFirestore
 };
-
