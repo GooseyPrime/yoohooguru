@@ -1,6 +1,6 @@
 const express = require('express');
 const { stripe } = require('../lib/stripe');
-const { getDatabase } = require('../config/firebase');
+const { getFirestore } = require('../config/firebase'); // Correctly import getFirestore
 const { authenticateUser } = require('../middleware/auth');
 
 const router = express.Router();
@@ -8,9 +8,10 @@ const router = express.Router();
 router.post('/start', authenticateUser, async (req, res) => {
   try {
     const { uid, email } = req.user;
-    const db = getDatabase();
-    const profSnap = await db.ref(`profiles/${uid}`).once('value');
-    const profile = profSnap.val() || {};
+    const db = getFirestore(); // Initialize Firestore
+    const profileRef = db.collection('profiles').doc(uid); // Get document reference
+    const profSnap = await profileRef.get(); // Use Firestore .get()
+    const profile = profSnap.exists ? profSnap.data() : {}; // Use Firestore .exists and .data()
 
     let accountId = profile.stripe_account_id;
 
@@ -34,7 +35,8 @@ router.post('/start', authenticateUser, async (req, res) => {
         }
       });
       accountId = acct.id;
-      await db.ref(`profiles/${uid}`).update({ stripe_account_id: accountId, payouts_ready: false });
+      // Use Firestore .set() with merge to create/update the document
+      await profileRef.set({ stripe_account_id: accountId, payouts_ready: false }, { merge: true });
     }
 
     const base = process.env.PUBLIC_BASE_URL || 'https://yoohoo.guru';
@@ -55,17 +57,18 @@ router.post('/start', authenticateUser, async (req, res) => {
 router.get('/status', authenticateUser, async (req, res) => {
   try {
     const { uid } = req.user;
-    const db = getDatabase();
-    const profSnap = await db.ref(`profiles/${uid}`).once('value');
-    const profile = profSnap.val() || {};
+    const db = getFirestore(); // Initialize Firestore
+    const profileRef = db.collection('profiles').doc(uid); // Get document reference
+    const profSnap = await profileRef.get(); // Use Firestore .get()
+    const profile = profSnap.exists ? profSnap.data() : {}; // Use Firestore .exists and .data()
     const accountId = profile.stripe_account_id;
     if (!accountId) return res.json({ ok: true, connected: false });
 
     const acct = await stripe.accounts.retrieve(accountId);
     const { charges_enabled, payouts_enabled, details_submitted, requirements = {} } = acct;
 
-    // mirror a simple boolean in the profile for quick UI gating (optional)
-    await db.ref(`profiles/${uid}`).update({
+    // Use Firestore .update()
+    await profileRef.update({
       payouts_ready: Boolean(payouts_enabled && charges_enabled && details_submitted)
     });
 
@@ -88,9 +91,10 @@ router.get('/status', authenticateUser, async (req, res) => {
 router.get('/balance', authenticateUser, async (req, res) => {
   try {
     const { uid } = req.user;
-    const db = getDatabase();
-    const profSnap = await db.ref(`profiles/${uid}`).get();
-    const profile = profSnap.val() || {};
+    const db = getFirestore(); // Initialize Firestore
+    const profileRef = db.collection('profiles').doc(uid); // Get document reference
+    const profSnap = await profileRef.get(); // Use Firestore .get()
+    const profile = profSnap.exists ? profSnap.data() : {}; // Use Firestore .exists and .data()
     const accountId = profile.stripe_account_id;
     
     if (!accountId) {
@@ -137,9 +141,10 @@ router.post('/instant-payout', authenticateUser, async (req, res) => {
       });
     }
 
-    const db = getDatabase();
-    const profSnap = await db.ref(`profiles/${uid}`).get();
-    const profile = profSnap.val() || {};
+    const db = getFirestore(); // Initialize Firestore
+    const profileRef = db.collection('profiles').doc(uid); // Get document reference
+    const profSnap = await profileRef.get(); // Use Firestore .get()
+    const profile = profSnap.exists ? profSnap.data() : {}; // Use Firestore .exists and .data()
     const accountId = profile.stripe_account_id;
     
     if (!accountId) {
