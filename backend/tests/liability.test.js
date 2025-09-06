@@ -1,84 +1,85 @@
 const request = require('supertest');
+const { app, server } = require('../src/index'); // Assumes server is exported from index.js
+const { getDatabase } = require('../src/config/firebase');
 
-// Remove Firebase mocking - use real Firebase connections
-describe('Liability API Tests', () => {
-  describe('Risk Level Categorization', () => {
-    it('should categorize high-risk activities correctly', () => {
-      const highRiskCategories = [
-        'physical-training',
-        'construction', 
-        'automotive',
-        'outdoor-activities',
-        'sports'
-      ];
+// Mock Firebase
+jest.mock('../src/config/firebase', () => ({
+  getDatabase: jest.fn(() => ({
+    ref: jest.fn(() => ({
+      get: jest.fn(),
+      update: jest.fn()
+    }))
+  }))
+}));
 
-      highRiskCategories.forEach(category => {
-        const isHighRisk = ['physical-training', 'construction', 'automotive', 'outdoor-activities', 'sports'].includes(category);
-        expect(isHighRisk).toBe(true);
-      });
-    });
+// Mock Auth Middleware
+jest.mock('../src/middleware/auth', () => ({
+  authenticateUser: (req, res, next) => {
+    req.user = { uid: 'test-user-123' };
+    next();
+  }
+}));
 
-    it('should categorize medium-risk activities correctly', () => {
-      const mediumRiskCategories = [
-        'cooking',
-        'arts-crafts',
-        'home-repair',
-        'gardening'
-      ];
+describe('Liability Waiver', () => {
+  let mockDb;
 
-      mediumRiskCategories.forEach(category => {
-        const isMediumRisk = ['cooking', 'arts-crafts', 'home-repair', 'gardening'].includes(category);
-        expect(isMediumRisk).toBe(true);
-      });
-    });
+  beforeEach(() => {
+    // Setup mock database for each test
+    mockDb = {
+      ref: jest.fn(() => ({
+        get: jest.fn().mockResolvedValue({ val: () => ({ name: 'Test User' }) }), // Default to user existing
+        update: jest.fn().mockResolvedValue()
+      }))
+    };
+    getDatabase.mockReturnValue(mockDb);
+    jest.clearAllMocks();
   });
 
-  describe('Emergency Contact Validation', () => {
-    it('should require emergency contact for high-risk activities', () => {
-      const emergencyContact = {
-        name: 'Test Contact',
-        phone: '555-1234',
-        relationship: 'friend'
-      };
-
-      const isValid = !!(emergencyContact.name && emergencyContact.phone);
-      expect(isValid).toBe(true);
-    });
-
-    it('should reject incomplete emergency contact', () => {
-      const emergencyContact = {
-        name: 'Test Contact',
-        phone: '',
-        relationship: 'friend'
-      };
-
-      const isValid = !!(emergencyContact.name && emergencyContact.phone);
-      expect(isValid).toBe(false);
-    });
+  // Add this cleanup hook to close the server after all tests in this file run
+  afterAll((done) => {
+    server.close(done);
   });
 
-  describe('Enhanced Terms and Conditions', () => {
-    it('should include comprehensive liability coverage', () => {
-      const liabilityTerms = {
-        assumptionOfRisk: true,
-        releaseOfClaims: true,
-        indemnification: true,
-        propertyDamageDisclaimer: true,
-        limitationOfLiability: true,
-        noWarranty: true
-      };
+  describe('POST /api/liability/sign', () => {
+    test('should sign the liability waiver for an authenticated user', async () => {
+      const response = await request(app)
+        .post('/api/liability/sign')
+        .expect(200);
 
-      Object.values(liabilityTerms).forEach(term => {
-        expect(term).toBe(true);
+      expect(response.body.ok).toBe(true);
+      expect(response.body.message).toBe('Liability waiver signed successfully.');
+
+      const dbRef = mockDb.ref(`users/test-user-123`);
+      expect(dbRef).toHaveBeenCalled();
+      expect(dbRef().update).toHaveBeenCalledWith({
+        liability_waiver_signed: true,
+        liability_waiver_timestamp: expect.any(Number)
       });
     });
 
-    it('should specify different risk levels', () => {
-      const riskLevels = ['low', 'medium', 'high'];
-      
-      riskLevels.forEach(level => {
-        expect(['low', 'medium', 'high'].includes(level)).toBe(true);
-      });
+    test('should return an error if user profile is not found', async () => {
+        // Override mock for this specific test
+        mockDb.ref().get.mockResolvedValue({ val: () => null });
+
+        const response = await request(app)
+            .post('/api/liability/sign')
+            .expect(404);
+
+        expect(response.body.ok).toBe(false);
+        expect(response.body.error).toBe('User profile not found.');
+    });
+
+
+    test('should handle database errors gracefully', async () => {
+        // Mock a database update failure
+        mockDb.ref().update.mockRejectedValue(new Error('Database error'));
+
+        const response = await request(app)
+            .post('/api/liability/sign')
+            .expect(500);
+
+        expect(response.body.ok).toBe(false);
+        expect(response.body.error).toBe('Failed to sign liability waiver.');
     });
   });
 });
