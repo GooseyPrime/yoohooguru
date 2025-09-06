@@ -18,9 +18,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
 
       - name: Install dependencies
-        run: npm run install:all
+        run: npm ci # Use 'ci' for faster, deterministic installs
 
       - name: Run ESLint
         run: npm run lint
@@ -38,13 +40,13 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: 'package-lock.json' # FIX: Point to the root lock file for monorepo caching
+          cache-dependency-path: 'package-lock.json'
 
       - name: Install frontend dependencies
-        run: cd frontend && npm install
+        run: npm ci --workspace=frontend
 
       - name: Run frontend tests
-        run: cd frontend && npm test
+        run: npm test --workspace=frontend
 
   test-backend:
     name: Backend Tests (20.x)
@@ -52,23 +54,7 @@ jobs:
     needs: lint
     environment: copilot
     services:
-      # Future service definitions (e.g., database) can go here
-      # redis:
-      #   image: redis
-      #   ports:
-      #     - 6379:6379
-      # postgres:
-      #   image: postgres
-      #   ports:
-      #     - 5432:5432
-      #   env:
-      #     POSTGRES_USER: runner
-      #     POSTGRES_DB: test
-      #     POSTGRES_PASSWORD: password
       pass_through:
-        # Action will only work with a pass-through service for now
-        # until the MCP is more fully developed
-        # (this is an anti-pattern, but it works for now)
         image: alpine:latest
         ports:
           - 5432:5432
@@ -82,13 +68,13 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: 'package-lock.json' # FIX: Point to the root lock file for monorepo caching
+          cache-dependency-path: 'package-lock.json'
 
       - name: Install backend dependencies
-        run: cd backend && npm install
+        run: npm ci --workspace=backend
 
       - name: Run backend tests
-        run: cd backend && npm test -- --detectOpenHandles
+        run: npm test --workspace=backend -- --detectOpenHandles
         env:
           CI: true
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
@@ -111,18 +97,17 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: 'package-lock.json' # FIX: Consolidate build cache to root lock file as well
+          cache-dependency-path: 'package-lock.json'
 
       - name: Install all dependencies
-        run: npm run install:all
+        run: npm ci
 
       - name: Build frontend
-        run: cd frontend && npm run build
+        run: npm run build --workspace=frontend
         env:
-          CI: false # Allow warnings without failing build for now
+          CI: false
 
       - name: Build backend (if necessary)
-        # Add backend build step here if you have one, e.g., TypeScript compilation
         run: echo "Backend build step would go here if needed"
 
       - name: Upload Frontend Build Artifact
@@ -146,7 +131,7 @@ jobs:
     environment:
       name: staging
       url: https://staging.yoohoo.guru
-    if: github.ref == 'refs/heads/main' # Or your staging branch
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Download Frontend Artifact
         uses: actions/download-artifact@v4
@@ -159,23 +144,9 @@ jobs:
         with:
           name: backend-server
           path: backend
-
-      # Example Deployment Steps (replace with your actual commands)
-      - name: Deploy Frontend to Firebase Staging
-        run: echo "Deploying frontend to Firebase staging..."
-        # uses: FirebaseExtended/action-hosting-deploy@v0
-        # with:
-        #   repoToken: '${{ secrets.GITHUB_TOKEN }}'
-        #   firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_STAGING }}'
-        #   channelId: staging
-        #   projectId: your-staging-project-id
-
-      - name: Deploy Backend to Railway Staging
-        run: echo "Deploying backend to Railway staging..."
-        # uses: railwayapp/cli-action@v1
-        # with:
-        #   railway_token: ${{ secrets.RAILWAY_TOKEN_STAGING }}
-        #   service: your-staging-backend-service-name
+      
+      - name: Deploy to Staging
+        run: echo "Staging deployment steps go here"
 
   deploy-production:
     name: Deploy to Production
@@ -184,7 +155,7 @@ jobs:
     environment:
       name: production
       url: https://yoohoo.guru
-    if: github.ref == 'refs/heads/master' # Or your main/production branch
+    if: github.ref == 'refs/heads/master'
     steps:
       - name: Download Frontend Artifact
         uses: actions/download-artifact@v4
@@ -198,18 +169,5 @@ jobs:
           name: backend-server
           path: backend
 
-      - name: Deploy Frontend to Firebase Production
-        run: echo "Deploying frontend to Firebase production..."
-        # uses: FirebaseExtended/action-hosting-deploy@v0
-        # with:
-        #   repoToken: '${{ secrets.GITHUB_TOKEN }}'
-        #   firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_PRODUCTION }}'
-        #   channelId: live
-        #   projectId: your-production-project-id
-
-      - name: Deploy Backend to Railway Production
-        run: echo "Deploying backend to Railway production..."
-        # uses: railwayapp/cli-action@v1
-        # with:
-        #   railway_token: ${{ secrets.RAILWAY_TOKEN_PRODUCTION }}
-        #   service: your-production-backend-service-name
+      - name: Deploy to Production
+        run: echo "Production deployment steps go here"
