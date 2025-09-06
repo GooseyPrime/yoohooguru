@@ -136,7 +136,7 @@ function HomePage() {
       <WelcomeTiles>
         <Tile>
           <h3>Angel&apos;s List</h3>
-          <p>Find help, rentals, and odd jobs near you.</p>
+          <p>Find help and odd jobs near you.</p>
           <Button 
             variant="ghost" 
             onClick={() => navigate('/angels-list')}
@@ -149,7 +149,7 @@ function HomePage() {
           <div className="icon">
             <BookOpen size={24} />
           </div>
-          <h3>SkillShare (led by Coach Guru)</h3>
+          <h3>SkillShare</h3>
           <p>Learn or teach. Book a Guru or swap skills.</p>
           <Button 
             variant="ghost" 
