@@ -98,13 +98,23 @@ if (isFirebaseConfigured()) {
     auth = mockAuth;
   }
 } else {
-  console.log('⚠️ Firebase not configured - using offline mode');
-  console.log('💡 To enable authentication, set these environment variables:');
-  console.log('   - REACT_APP_FIREBASE_API_KEY');
-  console.log('   - REACT_APP_FIREBASE_PROJECT_ID');
-  console.log('   - REACT_APP_FIREBASE_AUTH_DOMAIN');
-  console.log('📝 Copy .env.example to .env and add your Firebase config');
-  auth = mockAuth;
+  const env = process.env.NODE_ENV || 'development';
+  
+  if (env === 'production') {
+    // In production, Firebase configuration is mandatory
+    console.error('❌ Firebase configuration is required in production');
+    throw new Error('Firebase configuration is required in production. Mock authentication is prohibited.');
+  } else {
+    console.log('⚠️ Firebase not configured - using offline mode');
+    console.log('💡 To enable authentication, set these environment variables:');
+    console.log('   - REACT_APP_FIREBASE_API_KEY');
+    console.log('   - REACT_APP_FIREBASE_PROJECT_ID');
+    console.log('   - REACT_APP_FIREBASE_AUTH_DOMAIN');
+    console.log('📝 Copy .env.example to .env and add your Firebase config');
+    console.log('   - REACT_APP_FIREBASE_AUTH_DOMAIN');
+    console.log('📝 Copy .env.example to .env and add your Firebase config');
+    auth = mockAuth;
+  }
 }
 
 export { auth, database };
