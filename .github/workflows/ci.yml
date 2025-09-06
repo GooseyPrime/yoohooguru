@@ -22,7 +22,7 @@ jobs:
           cache-dependency-path: 'package-lock.json'
 
       - name: Install dependencies
-        run: npm ci # Use 'ci' for faster, deterministic installs
+        run: npm ci
 
       - name: Run ESLint
         run: npm run lint
@@ -40,13 +40,13 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
+          cache-dependency-path: 'package-lock.json' # CORRECT PATH
 
-      - name: Install frontend dependencies
-        run: npm ci --workspace=frontend
+      - name: Install all dependencies
+        run: npm ci # Simplified: Install all dependencies from root
 
       - name: Run frontend tests
-        run: npm test --workspace=frontend
+        run: npm test --workspace=frontend # Run tests for the specific workspace
 
   test-backend:
     name: Backend Tests (20.x)
@@ -68,10 +68,10 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
+          cache-dependency-path: 'package-lock.json' # CORRECT PATH
 
-      - name: Install backend dependencies
-        run: npm ci --workspace=backend
+      - name: Install all dependencies
+        run: npm ci # Simplified: Install all dependencies from root
 
       - name: Run backend tests
         run: npm test --workspace=backend -- --detectOpenHandles
@@ -84,6 +84,7 @@ jobs:
           FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
           FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
 
+  # Build and Deploy jobs remain the same as they were correctly configured
   build:
     name: Build Production Artifacts
     runs-on: ubuntu-latest
