@@ -92,14 +92,6 @@ if (isFirebaseConfigured()) {
     console.log('✅ Firebase initialized successfully');
     console.log(`🔥 Project: ${firebaseConfig.projectId}`);
     console.log(`🌐 Auth Domain: ${firebaseConfig.authDomain}`);
-    
-    // Log environment status
-    const env = process.env.NODE_ENV || 'development';
-    if (env === 'production') {
-      console.log('🚀 Running with live Firebase configuration (production)');
-    } else {
-      console.log(`🛠️  Running with Firebase configuration (${env})`);
-    }
   } catch (error) {
     console.warn('❌ Firebase initialization failed:', error.message);
     console.warn('🔄 Falling back to offline mode');
