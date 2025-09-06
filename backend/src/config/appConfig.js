@@ -49,6 +49,10 @@ function getConfig() {
     jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
     openrouterApiKey: process.env.OPENROUTER_API_KEY,
     
+    // Google OAuth Configuration
+    googleOAuthClientId: process.env.GOOGLE_OAUTH_CLIENT_ID,
+    googleOAuthClientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
+    
     // Stripe Configuration
     stripeSecretKey: process.env.STRIPE_SECRET_KEY,
     stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY,

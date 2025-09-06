@@ -57,6 +57,10 @@ describe('Secrets Integration Tests', () => {
       process.env.STRIPE_TRUST_SAFETY_PRICE_ID = 'price_trust_safety_test';
       process.env.STRIPE_WEBHOOK_ID = 'we_1S3nQHJF6bibA8neDupDJ3j4';
       process.env.STRIPE_WEBHOOK_SECRET = 'whsec_fake_webhook_secret_for_testing';
+      
+      // Google OAuth Configuration
+      process.env.GOOGLE_OAUTH_CLIENT_ID = 'test_google_oauth_client_id';
+      process.env.GOOGLE_OAUTH_CLIENT_SECRET = 'test_google_oauth_client_secret';
 
       const config = getConfig();
       
@@ -80,6 +84,10 @@ describe('Secrets Integration Tests', () => {
       expect(config.stripeTrustSafetyPriceId).toBe('price_trust_safety_test');
       expect(config.stripeWebhookId).toBe('we_1S3nQHJF6bibA8neDupDJ3j4');
       expect(config.stripeWebhookSecret).toBe('whsec_fake_webhook_secret_for_testing');
+      
+      // Verify Google OAuth configuration
+      expect(config.googleOAuthClientId).toBe('test_google_oauth_client_id');
+      expect(config.googleOAuthClientSecret).toBe('test_google_oauth_client_secret');
     });
 
     test('should expose payment configuration via API endpoint', async () => {
@@ -110,6 +118,30 @@ describe('Secrets Integration Tests', () => {
       
       expect(config.stripeWebhookId).toBe('we_1S3nQHJF6bibA8neDupDJ3j4');
       expect(config.stripeWebhookSecret).toBe('whsec_fake_webhook_from_issue_test');
+    });
+  });
+
+  describe('Google OAuth Configuration', () => {
+    test('should properly configure Google OAuth secrets', () => {
+      // Set Google OAuth environment variables
+      process.env.GOOGLE_OAUTH_CLIENT_ID = 'test_google_client_id_12345';
+      process.env.GOOGLE_OAUTH_CLIENT_SECRET = 'test_google_client_secret_abcdef';
+
+      const config = getConfig();
+      
+      expect(config.googleOAuthClientId).toBe('test_google_client_id_12345');
+      expect(config.googleOAuthClientSecret).toBe('test_google_client_secret_abcdef');
+    });
+
+    test('should handle missing Google OAuth configuration gracefully', () => {
+      // Don't set Google OAuth environment variables
+      delete process.env.GOOGLE_OAUTH_CLIENT_ID;
+      delete process.env.GOOGLE_OAUTH_CLIENT_SECRET;
+
+      const config = getConfig();
+      
+      expect(config.googleOAuthClientId).toBeUndefined();
+      expect(config.googleOAuthClientSecret).toBeUndefined();
     });
   });
 

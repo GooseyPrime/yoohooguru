@@ -12,15 +12,14 @@ const mockAuth = {
 
 // Check if Firebase environment variables are available
 const isFirebaseConfigured = () => {
-  const apiKey = process.env.REACT_APP_FIREBASE_API_KEY;
-  const projectId = process.env.REACT_APP_FIREBASE_PROJECT_ID;
+  const hasApiKey = process.env.REACT_APP_FIREBASE_API_KEY && 
+                   process.env.REACT_APP_FIREBASE_API_KEY !== 'your_firebase_api_key_here';
+  const hasProjectId = process.env.REACT_APP_FIREBASE_PROJECT_ID && 
+                      process.env.REACT_APP_FIREBASE_PROJECT_ID !== 'your_project_id';
+  const hasAuthDomain = process.env.REACT_APP_FIREBASE_AUTH_DOMAIN &&
+                       process.env.REACT_APP_FIREBASE_AUTH_DOMAIN !== 'your_project.firebaseapp.com';
   
-  return apiKey && 
-         apiKey !== 'your_firebase_api_key_here' &&
-         apiKey !== 'demo-api-key' &&
-         projectId && 
-         projectId !== 'your_project_id' &&
-         projectId !== 'demo-project';
+  return hasApiKey && hasProjectId && hasAuthDomain;
 };
 
 // Validate Firebase configuration for production environments
@@ -93,14 +92,6 @@ if (isFirebaseConfigured()) {
     console.log('✅ Firebase initialized successfully');
     console.log(`🔥 Project: ${firebaseConfig.projectId}`);
     console.log(`🌐 Auth Domain: ${firebaseConfig.authDomain}`);
-    
-    // Log environment status
-    const env = process.env.NODE_ENV || 'development';
-    if (env === 'production') {
-      console.log('🚀 Running with live Firebase configuration (production)');
-    } else {
-      console.log(`🛠️  Running with Firebase configuration (${env})`);
-    }
   } catch (error) {
     console.warn('❌ Firebase initialization failed:', error.message);
     console.warn('🔄 Falling back to offline mode');
@@ -118,6 +109,8 @@ if (isFirebaseConfigured()) {
     console.log('💡 To enable authentication, set these environment variables:');
     console.log('   - REACT_APP_FIREBASE_API_KEY');
     console.log('   - REACT_APP_FIREBASE_PROJECT_ID');
+    console.log('   - REACT_APP_FIREBASE_AUTH_DOMAIN');
+    console.log('📝 Copy .env.example to .env and add your Firebase config');
     console.log('   - REACT_APP_FIREBASE_AUTH_DOMAIN');
     console.log('📝 Copy .env.example to .env and add your Firebase config');
     auth = mockAuth;
@@ -143,8 +136,7 @@ export function AuthProvider({ children }) {
 
   // Mock functions for when Firebase isn't available
   const mockFunction = async () => {
-
-    toast.error('🔧 Firebase configuration required. Please contact the administrator to set up authentication.');
+    toast.error('Authentication features are currently unavailable. Please configure Firebase to enable login.');
     throw new Error('Firebase not configured');
   };
 

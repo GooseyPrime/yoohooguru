@@ -7,7 +7,7 @@
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
     "build": "echo 'Build completed'",
-    "test": "jest",
+    "test": "jest --forceExit",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "lint": "eslint src/ --ext .js",
@@ -56,5 +56,15 @@
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": ["./jest.setup.js"],
+    "testTimeout": 45000,
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/**/*.test.js"
+    ],
+    "verbose": true
   }
 }

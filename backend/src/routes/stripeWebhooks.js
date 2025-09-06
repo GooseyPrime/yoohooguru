@@ -10,6 +10,12 @@ router.post('/', async (req, res) => {
   let event;
 
   try {
+    if (!stripe && process.env.NODE_ENV !== 'test') {
+      return res.status(503).json({ 
+        error: 'Stripe not configured. Please set STRIPE_SECRET_KEY environment variable.' 
+      });
+    }
+
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (err) {
     console.error('❌ Webhook signature verification failed.', err.message);
@@ -26,7 +32,6 @@ router.post('/', async (req, res) => {
         // Example booking fulfillment (adapt to your booking schema):
         // session.metadata could include jobId/listingId/etc.
         const jobId = session?.metadata?.jobId;
-        const userId = session?.metadata?.userId;
         if (jobId) {
           await db.ref(`job_bookings/${jobId}`).update({
             status: 'paid',
