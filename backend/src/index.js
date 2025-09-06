@@ -14,6 +14,8 @@ const { initializeFirebase } = require('./config/firebase');
 const { getConfig, getCorsOrigins, validateConfig } = require('./config/appConfig');
 const { logger } = require('./utils/logger');
 const errorHandler = require('./middleware/errorHandler');
+
+// Route Imports
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const skillRoutes = require('./routes/skills');
@@ -24,6 +26,14 @@ const adminRoutes = require('./routes/admin');
 const featureFlagRoutes = require('./routes/featureFlags');
 const liabilityRoutes = require('./routes/liability');
 const webhookRoutes = require('./routes/webhooks');
+const stripeWebhooks = require('./routes/stripeWebhooks');
+const angelsRoutes = require('./routes/angels');
+const connectRoutes = require('./routes/connect');
+const payoutsRoutes = require('./routes/payouts');
+const connectExpressLogin = require('./routes/connectExpressLogin');
+const onboardingRoutes = require('./routes/onboarding');
+const documentsRoutes = require('./routes/documents');
+
 
 const app = express();
 
@@ -36,15 +46,18 @@ const PORT = config.port;
 // Initialize Firebase
 initializeFirebase();
 
-// Security middleware
-app.use(helmet());
+// --- Core Middleware Setup ---
 
+// Security headers, CORS, and Compression
+app.use(helmet());
 app.use(cors({
   origin: getCorsOrigins(config),
   credentials: true
 }));
+app.use(compression());
+app.use(cookieParser());
 
-// Rate limiting
+// Rate limiting for API routes
 const limiter = rateLimit({
   windowMs: config.rateLimitWindowMs,
   max: config.rateLimitMaxRequests,
@@ -54,24 +67,26 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// 1) Webhook route MUST use raw parser to verify signatures
-const stripeWebhooks = require('./routes/stripeWebhooks');
-app.use('/api/webhooks/stripe', express.raw({ type: 'application/json' }), stripeWebhooks);
-
-// General middleware
-app.use(compression());
-app.use(cookieParser());
+// Request logging
 app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
 
-// Raw body parsing for webhooks (must be before JSON parsing)
-app.use('/api/webhooks/stripe', express.raw({ type: 'application/json' }));
+// --- Body Parsers ---
 
+// Stripe webhook route MUST use a raw parser to verify signatures.
+// It is critical this comes BEFORE the general express.json() parser.
+app.use('/api/webhooks/stripe', express.raw({ type: 'application/json' }), stripeWebhooks);
+
+// General JSON and URL-encoded parsers for all other routes
 app.use(express.json({ limit: config.expressJsonLimit }));
 app.use(express.urlencoded({ extended: true, limit: config.expressUrlLimit }));
 
-// Serve static files from frontend build
+// --- Static File Serving ---
+
+// Serve static files from the frontend build directory
 const frontendDistPath = path.join(__dirname, '../../frontend/dist');
 app.use(express.static(frontendDistPath));
+
+// --- Application Routes ---
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -84,7 +99,7 @@ app.get('/health', (req, res) => {
   });
 });
 
-// API routes
+// Main API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/skills', skillRoutes);
@@ -95,32 +110,16 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/feature-flags', featureFlagRoutes);
 app.use('/api/liability', liabilityRoutes);
 app.use('/api/webhooks', webhookRoutes);
-
-// Angels marketplace routes
-const angelsRoutes = require('./routes/angels');
 app.use('/api/angels', angelsRoutes);
-
-// 3) Connect routes (standard JSON)
-const connectRoutes = require('./routes/connect');
 app.use('/api/connect', connectRoutes);
-
-// Payouts routes
-const payoutsRoutes = require('./routes/payouts');
 app.use('/api/payouts', payoutsRoutes);
-
-// Connect Express Login routes
-const connectExpressLogin = require('./routes/connectExpressLogin');
-app.use('/api/connect', connectExpressLogin);
-
-// Onboarding routes
-const onboardingRoutes = require('./routes/onboarding');
 app.use('/api/onboarding', onboardingRoutes);
-
-// Documents routes
-const documentsRoutes = require('./routes/documents');
 app.use('/api/documents', documentsRoutes);
 
-// API status endpoint (moved from root to avoid conflicts)
+// FIX: Mount the connectExpressLogin router to a non-conflicting path to resolve ambiguity
+app.use('/api/connect/express-login', connectExpressLogin);
+
+// API status endpoint
 app.get('/api', (req, res) => {
   res.json({
     message: config.apiWelcomeMessage,
@@ -131,24 +130,25 @@ app.get('/api', (req, res) => {
   });
 });
 
-// Catch-all handler: send back React's index.html file for non-API routes
+// --- Catch-all and Error Handling ---
+
+// FIX: Catch-all for API routes. If a request starts with /api/ and hasn't been handled, it's a 404.
+app.use('/api/*', (req, res) => {
+  res.status(404).json({
+    error: 'API Route Not Found',
+    message: `The requested API resource ${req.originalUrl} was not found on this server.`
+  });
+});
+
+// FIX: Catch-all for frontend routes. Serves the React app for any other GET request.
 app.get('*', (req, res) => {
-  // Only serve React app for non-API routes
-  if (req.path.startsWith('/api/')) {
-    return res.status(404).json({
-      error: 'Route not found',
-      message: `The requested API resource ${req.originalUrl} was not found on this server.`
-    });
-  }
-  
-  // Serve React app for all other routes
   res.sendFile(path.join(frontendDistPath, 'index.html'));
 });
 
-// Error handling middleware (must be last)
+// Global error handling middleware (must be the VERY LAST app.use call)
 app.use(errorHandler);
 
-// Graceful shutdown
+// --- Graceful Shutdown ---
 process.on('SIGTERM', () => {
   logger.info('SIGTERM received, shutting down gracefully');
   process.exit(0);
@@ -159,7 +159,7 @@ process.on('SIGINT', () => {
   process.exit(0);
 });
 
-// Start server only if this file is run directly (not imported)
+// --- Server Initialization ---
 if (require.main === module) {
   app.listen(PORT, () => {
     logger.info(`🎯 ${config.appBrandName} Backend server running on port ${PORT}`);
