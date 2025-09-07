@@ -36,7 +36,7 @@ jobs:
       run: npm test --workspace=frontend
 
     - name: Run backend tests
-      run: npm test -- --detectOpenHandles --workspace=backend
+      run: npm test -- --detectOpenHandles --verbose --workspace=backend
       env:
         NODE_ENV: test
         FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
@@ -77,3 +77,4 @@ jobs:
     - name: Deploy to production
       run: echo "Deploy to production environment"
       # Add your production deployment commands here
+
