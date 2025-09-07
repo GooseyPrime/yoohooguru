@@ -9,6 +9,10 @@ jest.mock('../src/middleware/auth', () => ({
     req.user = { uid: 'test-user-id' };
     next();
   },
+  requireAuth: (req, res, next) => {
+    req.user = { uid: 'test-user-id' };
+    next();
+  },
   optionalAuth: (req, res, next) => {
     // Optional auth doesn't require a user
     next();
