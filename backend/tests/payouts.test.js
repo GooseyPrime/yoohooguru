@@ -1,7 +1,23 @@
 const request = require('supertest');
 const app = require('../src/index');
 
-// Remove Firebase mocking - use real Firebase connections
+// Mock Firebase Firestore
+jest.mock('../src/config/firebase', () => ({
+  getFirestore: jest.fn(() => ({
+    collection: jest.fn((collectionName) => ({
+      doc: jest.fn((docId) => ({
+        get: jest.fn().mockResolvedValue({
+          exists: false,
+          data: () => ({})
+        })
+      }))
+    }))
+  })),
+  initializeFirebase: jest.fn(() => {
+    // Mock initialization
+    console.log('Mock Firebase initialized for test');
+  })
+}));
 
 // Mock authentication for testing
 jest.mock('../src/middleware/auth', () => ({
@@ -38,29 +54,29 @@ describe('Payouts API Tests', () => {
       });
     }
   });
-  describe('GET /api/payouts/balance', () => {
+  describe('GET /api/connect/balance', () => {
     it('should return not connected when no Stripe account', async () => {
       const response = await request(app)
-        .get('/api/payouts/balance')
-        .expect(200);
+        .get('/api/connect/balance')
+        .expect(400); // Expect 400 because no connected account
 
       expect(response.body).toEqual({
-        ok: true,
-        connected: false
+        ok: false,
+        error: 'No connected account found. Please complete account setup first.'
       });
     });
   });
 
   describe('POST /api/payouts/instant', () => {
-    it('should return error when not connected to Stripe', async () => {
+    it('should return 404 when instant payouts feature is disabled', async () => {
       const response = await request(app)
-        .post('/api/payouts/instant')
-        .send({ amountCents: 1000, currency: 'usd' })
-        .expect(400);
+        .post('/api/connect/instant-payout')
+        .send({ amount: 10.00, currency: 'usd' })
+        .expect(404);
 
       expect(response.body).toEqual({
         ok: false,
-        error: 'Stripe account not connected'
+        error: 'Instant payouts are not available at this time'
       });
     });
   });
@@ -96,13 +112,13 @@ describe('Feature Flags API Tests', () => {
     }
   });
   describe('GET /api/feature-flags', () => {
-    it('should include instantPayouts flag', async () => {
+    it('should include instantPayouts flag as disabled', async () => {
       const response = await request(app)
         .get('/api/feature-flags')
         .expect(200);
 
       expect(response.body.success).toBe(true);
-      expect(response.body.flags.instantPayouts).toBe(true);
+      expect(response.body.flags.instantPayouts).toBe(false);
     });
   });
 });

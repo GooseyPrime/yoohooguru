@@ -59,7 +59,7 @@ class FeatureFlagsService {
       mobileApp: false,
       darkMode: false,
       internationalSupport: false,
-      instantPayouts: true
+      instantPayouts: false // disabled - not available in current account
     };
   }
 

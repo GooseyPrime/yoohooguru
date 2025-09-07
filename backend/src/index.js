@@ -30,7 +30,6 @@ const stripeWebhooks = require('./routes/stripeWebhooks');
 const angelsRoutes = require('./routes/angels');
 const connectRoutes = require('./routes/connect');
 const payoutsRoutes = require('./routes/payouts');
-const connectExpressLogin = require('./routes/connectExpressLogin');
 const onboardingRoutes = require('./routes/onboarding');
 const documentsRoutes = require('./routes/documents');
 
@@ -115,9 +114,6 @@ app.use('/api/connect', connectRoutes);
 app.use('/api/payouts', payoutsRoutes);
 app.use('/api/onboarding', onboardingRoutes);
 app.use('/api/documents', documentsRoutes);
-
-// FIX: Mount the connectExpressLogin router to a non-conflicting path to resolve ambiguity
-app.use('/api/connect/express-login', connectExpressLogin);
 
 // API status endpoint
 app.get('/api', (req, res) => {

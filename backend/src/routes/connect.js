@@ -2,6 +2,7 @@ const express = require('express');
 const { stripe } = require('../lib/stripe');
 const { getFirestore } = require('../config/firebase'); // Correctly import getFirestore
 const { authenticateUser } = require('../middleware/auth');
+const { isFeatureEnabled } = require('../lib/featureFlags');
 
 const router = express.Router();
 
@@ -118,23 +119,31 @@ router.get('/balance', authenticateUser, async (req, res) => {
       });
     }
 
-    // Get balance with instant_available expansion as shown in the issue
-    const balance = await stripe.balance.retrieve({
-      expand: ['instant_available.net_available']
-    }, {
+    // Get balance with instant_available expansion only if feature is enabled
+    const expandParams = isFeatureEnabled('instantPayouts') 
+      ? { expand: ['instant_available.net_available'] }
+      : {};
+    
+    const balance = await stripe.balance.retrieve(expandParams, {
       stripeAccount: accountId
     });
+
+    const responseBalance = {
+      available: balance.available,
+      pending: balance.pending,
+      connect_reserved: balance.connect_reserved,
+      livemode: balance.livemode
+    };
+
+    // Only include instant_available if feature is enabled
+    if (isFeatureEnabled('instantPayouts') && balance.instant_available) {
+      responseBalance.instant_available = balance.instant_available;
+    }
 
     res.json({
       ok: true,
       accountId,
-      balance: {
-        available: balance.available,
-        pending: balance.pending,
-        instant_available: balance.instant_available,
-        connect_reserved: balance.connect_reserved,
-        livemode: balance.livemode
-      }
+      balance: responseBalance
     });
   } catch (err) {
     console.error('connect/balance error', err);
@@ -145,6 +154,14 @@ router.get('/balance', authenticateUser, async (req, res) => {
 // Create instant payout
 router.post('/instant-payout', authenticateUser, async (req, res) => {
   try {
+    // Check if instant payouts feature is enabled
+    if (!isFeatureEnabled('instantPayouts')) {
+      return res.status(404).json({ 
+        ok: false, 
+        error: 'Instant payouts are not available at this time' 
+      });
+    }
+
     if (!stripe && process.env.NODE_ENV !== 'test') {
       return res.status(503).json({ 
         ok: false, 
@@ -217,6 +234,37 @@ router.post('/instant-payout', authenticateUser, async (req, res) => {
     }
     
     res.status(500).json({ ok: false, error: 'Failed to create instant payout' });
+  }
+});
+
+// POST /api/connect/express-login
+router.post('/express-login', authenticateUser, async (req, res) => {
+  try {
+    if (!stripe && process.env.NODE_ENV !== 'test') {
+      return res.status(503).json({ 
+        ok: false, 
+        error: 'Stripe not configured. Please set STRIPE_SECRET_KEY environment variable.' 
+      });
+    }
+
+    const { uid } = req.user;
+    const db = getFirestore(); // Initialize Firestore
+    const profileRef = db.collection('profiles').doc(uid); // Get document reference
+    const profSnap = await profileRef.get(); // Use Firestore .get()
+    const profile = profSnap.exists ? profSnap.data() : {}; // Use Firestore .exists and .data()
+    
+    if (!profile.stripe_account_id) {
+      return res.status(400).json({ 
+        ok: false, 
+        error: 'Not connected to Stripe' 
+      });
+    }
+
+    const link = await stripe.accounts.createLoginLink(profile.stripe_account_id);
+    res.json({ ok: true, url: link.url });
+  } catch (err) {
+    console.error('connect/express-login error', err);
+    res.status(500).json({ ok: false, error: 'Failed to create login link' });
   }
 });
 

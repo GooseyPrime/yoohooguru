@@ -37,7 +37,7 @@ const featureFlags = {
   backgroundChecks: process.env.FEATURE_BACKGROUND_CHECKS === 'true',
   
   // payout features
-  instantPayouts: true, // enable new UI/actions
+  instantPayouts: false, // disabled - not available in current account
 };
 
 /**
