@@ -36,7 +36,7 @@ jobs:
       run: npm test --workspace=frontend
 
     - name: Run backend tests
-      run: npm test -- --detectOpenHandles --verbose --workspace=backend
+      run: npm run test --workspace=backend -- --detectOpenHandles --verbose
       env:
         NODE_ENV: test
         FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
