@@ -1,4 +1,4 @@
-{
+﻿{{
   "name": "yoohoo-guru-frontend",
   "version": "1.0.0",
   "description": "Frontend for yoohoo.guru skill-sharing platform",
@@ -66,5 +66,5 @@
     "pwa"
   ],
   "author": "GooseyPrime",
-  "license": "MIT"
-}
+  "license": "MIT
+
