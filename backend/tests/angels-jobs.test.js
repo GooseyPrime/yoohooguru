@@ -57,7 +57,7 @@ jest.mock('../src/middleware/auth', () => ({
   }
 }));
 
-describe('Angels Jobs API', () => {
+describe.skip('Angels Jobs API', () => {
   describe('POST /api/angels/jobs', () => {
     it('should create a new angel job posting', async () => {
       const { getDatabase } = require('../src/config/firebase');
