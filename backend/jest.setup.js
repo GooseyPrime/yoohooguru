@@ -23,6 +23,7 @@ beforeAll(async () => {
     console.warn('⚠️  Firebase connection warning during test setup:', error.message);
     console.log('🔥 Tests will continue with Firebase connection attempts (no mocks allowed)');
     // Don't fail tests if Firebase is not fully configured - tests will handle Firebase errors gracefully
+    // This allows tests to run even if Firebase credentials are not available in test environment
   }
 });
 

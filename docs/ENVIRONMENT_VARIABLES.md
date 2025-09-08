@@ -186,10 +186,21 @@ JWT_SECRET=your_development_secret
 
 In production, these variables are **required**:
 
-- `JWT_SECRET` - Must be a strong, unique secret
-- `FIREBASE_PROJECT_ID` - Your production Firebase project
+- `NODE_ENV=production` - Must be set for all CI workflows and production deployments
+- `FIREBASE_PROJECT_ID=ceremonial-tea-470904-f3` - Production Firebase project (REQUIRED - no placeholders allowed)
+- `FIREBASE_CLIENT_EMAIL` - Service account email (REQUIRED - must be referenced from secrets)
+- `FIREBASE_PRIVATE_KEY` - Service account private key (REQUIRED - must be referenced from secrets with proper escaping)
 - `FIREBASE_API_KEY` - Your production Firebase API key
+- `JWT_SECRET` - Must be a strong, unique secret
+- `STRIPE_WEBHOOK_SECRET` - Must be referenced as environment variable (not hardcoded)
 - All other Firebase configuration variables
+
+#### ❌ Prohibited in Production/Staging:
+
+- `FIREBASE_EMULATOR_HOST` - Emulators are prohibited in production/staging
+- `USE_MOCKS=true` - Mocks are prohibited in production/staging
+- Firebase project IDs containing: demo, test, mock, localhost, emulator, example, your_, changeme
+- Any hardcoded secret values in configuration files
 
 ### Configuration Validation
 
@@ -208,7 +219,7 @@ The application includes configuration validation that:
 # Set all required variables
 railway variables set NODE_ENV=production
 railway variables set JWT_SECRET=your_production_secret
-railway variables set FIREBASE_PROJECT_ID=your_project_id
+railway variables set FIREBASE_PROJECT_ID=ceremonial-tea-470904-f3
 # ... other variables
 
 # Deploy
@@ -222,7 +233,7 @@ Set these variables in Netlify dashboard:
 ```
 REACT_APP_API_URL=https://your-backend-url.com/api
 REACT_APP_FIREBASE_API_KEY=your_key
-REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+REACT_APP_FIREBASE_PROJECT_ID=ceremonial-tea-470904-f3
 # ... other REACT_APP_ variables
 ```
 

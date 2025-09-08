@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "yoohoo-guru-frontend",
   "version": "1.0.0",
   "description": "Frontend for yoohoo.guru skill-sharing platform",
@@ -48,7 +48,6 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.6.0",
-    "identity-obj-proxy": "^3.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "prettier": "^3.1.1",
@@ -66,5 +65,9 @@
     "pwa"
   ],
   "author": "GooseyPrime",
-  "license": "MIT"
+  "license": "MIT",
+  "browserslist": {
+    "production": [">0.2%","not dead","not op_mini all"],
+    "development": ["last 1 chrome version","last 1 firefox version","last 1 safari version"]
+  }
 }

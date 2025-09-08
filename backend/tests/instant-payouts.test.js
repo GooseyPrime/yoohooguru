@@ -33,6 +33,10 @@ jest.mock('../src/middleware/auth', () => ({
   authenticateUser: (req, res, next) => {
     req.user = { uid: 'test-user-123', email: 'test@example.com' };
     next();
+  },
+  requireAuth: (req, res, next) => {
+    req.user = { uid: 'test-user-123', email: 'test@example.com' };
+    next();
   }
 }));
 

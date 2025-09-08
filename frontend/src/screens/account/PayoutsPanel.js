@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import featureFlags from '../../lib/featureFlags';
 
 export default function PayoutsPanel() {
   const [status, setStatus] = useState(null);
@@ -6,6 +7,7 @@ export default function PayoutsPanel() {
   const [amount, setAmount] = useState('');
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState('');
+  const [flagsLoaded, setFlagsLoaded] = useState(false);
 
   const fmt = c => `$${(c/100).toFixed(2)}`;
 
@@ -19,8 +21,16 @@ export default function PayoutsPanel() {
   };
 
   useEffect(()=> {
-    fetchStatus();
-    fetchBalance();
+    const loadData = async () => {
+      // Load feature flags first
+      await featureFlags.loadFlags();
+      setFlagsLoaded(true);
+      
+      // Then load status and balance
+      fetchStatus();
+      fetchBalance();
+    };
+    loadData();
   }, []);
 
   const openExpress = async () => {
@@ -49,6 +59,7 @@ export default function PayoutsPanel() {
   };
 
   const instantAvail = (balance?.balance?.instant_available || []).find(a => a.currency === 'usd')?.amount || 0;
+  const isInstantPayoutsEnabled = flagsLoaded && featureFlags.isEnabled('instantPayouts');
 
   return (
     <div style={{maxWidth: '720px', margin: '0 auto', padding: '2rem'}}>
@@ -97,9 +108,11 @@ export default function PayoutsPanel() {
             <p style={{margin: '0.25rem 0'}}>
               <strong>Available:</strong> {balance.balance.available.map(a => fmt(a.amount) + ' ' + a.currency.toUpperCase()).join(', ') || '$0.00'}
             </p>
-            <p style={{margin: '0.25rem 0'}}>
-              <strong>Instant Available:</strong> {balance.balance.instant_available.map(a => fmt(a.amount) + ' ' + a.currency.toUpperCase()).join(', ') || '$0.00'}
-            </p>
+            {isInstantPayoutsEnabled && (
+              <p style={{margin: '0.25rem 0'}}>
+                <strong>Instant Available:</strong> {balance.balance.instant_available?.map(a => fmt(a.amount) + ' ' + a.currency.toUpperCase()).join(', ') || '$0.00'}
+              </p>
+            )}
             <p style={{margin: '0.25rem 0'}}>
               <strong>Pending:</strong> {balance.balance.pending.map(a => fmt(a.amount) + ' ' + a.currency.toUpperCase()).join(', ') || '$0.00'}
             </p>
@@ -108,7 +121,7 @@ export default function PayoutsPanel() {
       )}
 
       {/* Instant Payout */}
-      {balance?.connected && instantAvail > 0 && (
+      {balance?.connected && isInstantPayoutsEnabled && instantAvail > 0 && (
         <div style={{border: '1px solid #e5e7eb', borderRadius: '8px', padding: '1.5rem', marginBottom: '1.5rem'}}>
           <h3 style={{margin: '0 0 1rem 0'}}>Instant Payout</h3>
           <p style={{fontSize: '0.875rem', color: '#6b7280', margin: '0 0 1rem 0'}}>

@@ -19,6 +19,9 @@ describe('Firebase Production Validation', () => {
       process.env.NODE_ENV = 'development';
       process.env.FIREBASE_PROJECT_ID = 'dev-project';
       process.env.FIREBASE_DATABASE_URL = 'https://dev-project.firebaseio.com';
+      // Clear credentials to test without Firebase connection
+      process.env.FIREBASE_CLIENT_EMAIL = '';
+      process.env.FIREBASE_PRIVATE_KEY = '';
 
       expect(() => initializeFirebase()).not.toThrow();
     });
@@ -27,6 +30,9 @@ describe('Firebase Production Validation', () => {
       process.env.NODE_ENV = 'development';
       process.env.FIREBASE_PROJECT_ID = 'demo-project';
       process.env.FIREBASE_DATABASE_URL = 'https://demo-project.firebaseio.com';
+      // Clear credentials to test without Firebase connection
+      process.env.FIREBASE_CLIENT_EMAIL = '';
+      process.env.FIREBASE_PRIVATE_KEY = '';
 
       expect(() => initializeFirebase()).not.toThrow();
     });
@@ -37,6 +43,9 @@ describe('Firebase Production Validation', () => {
       process.env.NODE_ENV = 'production';
       process.env.FIREBASE_PROJECT_ID = 'demo-project';
       process.env.FIREBASE_DATABASE_URL = 'https://demo-project.firebaseio.com';
+      // Clear credentials to test validation logic
+      process.env.FIREBASE_CLIENT_EMAIL = '';
+      process.env.FIREBASE_PRIVATE_KEY = '';
 
       expect(() => initializeFirebase()).toThrow(/contains prohibited pattern/);
     });
@@ -45,6 +54,9 @@ describe('Firebase Production Validation', () => {
       process.env.NODE_ENV = 'production';
       process.env.FIREBASE_PROJECT_ID = 'test-project';
       process.env.FIREBASE_DATABASE_URL = 'https://test-project.firebaseio.com';
+      // Clear credentials to test validation logic
+      process.env.FIREBASE_CLIENT_EMAIL = '';
+      process.env.FIREBASE_PRIVATE_KEY = '';
 
       expect(() => initializeFirebase()).toThrow(/contains prohibited pattern/);
     });
@@ -53,6 +65,9 @@ describe('Firebase Production Validation', () => {
       process.env.NODE_ENV = 'production';
       process.env.FIREBASE_PROJECT_ID = 'mock-project';
       process.env.FIREBASE_DATABASE_URL = 'https://mock-project.firebaseio.com';
+      // Clear credentials to test validation logic
+      process.env.FIREBASE_CLIENT_EMAIL = '';
+      process.env.FIREBASE_PRIVATE_KEY = '';
 
       expect(() => initializeFirebase()).toThrow(/contains prohibited pattern/);
     });
@@ -62,6 +77,9 @@ describe('Firebase Production Validation', () => {
       process.env.FIREBASE_PROJECT_ID = 'production-project';
       process.env.FIREBASE_DATABASE_URL = 'https://production-project.firebaseio.com';
       process.env.FIREBASE_EMULATOR_HOST = 'localhost:9000';
+      // Clear credentials to test validation logic
+      process.env.FIREBASE_CLIENT_EMAIL = '';
+      process.env.FIREBASE_PRIVATE_KEY = '';
 
       expect(() => initializeFirebase()).toThrow(/emulator host is configured/);
     });
@@ -71,6 +89,9 @@ describe('Firebase Production Validation', () => {
       process.env.FIREBASE_PROJECT_ID = 'production-project';
       process.env.FIREBASE_DATABASE_URL = 'https://production-project.firebaseio.com';
       process.env.USE_MOCKS = 'true';
+      // Clear credentials to test validation logic
+      process.env.FIREBASE_CLIENT_EMAIL = '';
+      process.env.FIREBASE_PRIVATE_KEY = '';
 
       expect(() => initializeFirebase()).toThrow(/USE_MOCKS is enabled/);
     });
@@ -79,6 +100,9 @@ describe('Firebase Production Validation', () => {
       process.env.NODE_ENV = 'production';
       process.env.FIREBASE_PROJECT_ID = 'yoohoo-prod';
       process.env.FIREBASE_DATABASE_URL = 'https://yoohoo-prod.firebaseio.com';
+      // Clear credentials to test without Firebase connection
+      process.env.FIREBASE_CLIENT_EMAIL = '';
+      process.env.FIREBASE_PRIVATE_KEY = '';
 
       expect(() => initializeFirebase()).not.toThrow();
     });
@@ -87,6 +111,9 @@ describe('Firebase Production Validation', () => {
       process.env.NODE_ENV = 'production';
       delete process.env.FIREBASE_PROJECT_ID;
       process.env.FIREBASE_DATABASE_URL = 'https://example.firebaseio.com';
+      // Clear credentials to test validation logic
+      process.env.FIREBASE_CLIENT_EMAIL = '';
+      process.env.FIREBASE_PRIVATE_KEY = '';
 
       expect(() => initializeFirebase()).toThrow(/project ID is required/);
     });
@@ -95,6 +122,9 @@ describe('Firebase Production Validation', () => {
       process.env.NODE_ENV = 'production';
       process.env.FIREBASE_PROJECT_ID = 'Invalid_Project_ID';
       process.env.FIREBASE_DATABASE_URL = 'https://example.firebaseio.com';
+      // Clear credentials to test validation logic
+      process.env.FIREBASE_CLIENT_EMAIL = '';
+      process.env.FIREBASE_PRIVATE_KEY = '';
 
       expect(() => initializeFirebase()).toThrow(/invalid format/);
     });
@@ -105,6 +135,9 @@ describe('Firebase Production Validation', () => {
       process.env.NODE_ENV = 'staging';
       process.env.FIREBASE_PROJECT_ID = 'demo-project';
       process.env.FIREBASE_DATABASE_URL = 'https://demo-project.firebaseio.com';
+      // Clear credentials to test validation logic
+      process.env.FIREBASE_CLIENT_EMAIL = '';
+      process.env.FIREBASE_PRIVATE_KEY = '';
 
       expect(() => initializeFirebase()).toThrow(/contains prohibited pattern/);
     });
@@ -113,6 +146,9 @@ describe('Firebase Production Validation', () => {
       process.env.NODE_ENV = 'staging';
       process.env.FIREBASE_PROJECT_ID = 'yoohoo-staging';
       process.env.FIREBASE_DATABASE_URL = 'https://yoohoo-staging.firebaseio.com';
+      // Clear credentials to test validation logic
+      process.env.FIREBASE_CLIENT_EMAIL = '';
+      process.env.FIREBASE_PRIVATE_KEY = '';
 
       expect(() => initializeFirebase()).not.toThrow();
     });

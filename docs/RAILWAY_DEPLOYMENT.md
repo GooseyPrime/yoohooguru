@@ -64,13 +64,15 @@ railway variables set CORS_ORIGIN_PRODUCTION=https://your-app.railway.app,https:
 
 ### Firebase Configuration
 ```bash
-railway variables set FIREBASE_PROJECT_ID=your_project_id
+railway variables set FIREBASE_PROJECT_ID=ceremonial-tea-470904-f3
 railway variables set FIREBASE_API_KEY=your_api_key
-railway variables set FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-railway variables set FIREBASE_DATABASE_URL=https://your_project.firebaseio.com
-railway variables set FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+railway variables set FIREBASE_AUTH_DOMAIN=ceremonial-tea-470904-f3.firebaseapp.com
+railway variables set FIREBASE_DATABASE_URL=https://ceremonial-tea-470904-f3-default-rtdb.firebaseio.com
+railway variables set FIREBASE_STORAGE_BUCKET=ceremonial-tea-470904-f3.appspot.com
 railway variables set FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 railway variables set FIREBASE_APP_ID=your_app_id
+railway variables set FIREBASE_CLIENT_EMAIL=firebase-adminsdk-xyz@ceremonial-tea-470904-f3.iam.gserviceaccount.com
+railway variables set FIREBASE_PRIVATE_KEY=your_firebase_private_key_here
 ```
 
 ### Security & JWT
