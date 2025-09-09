@@ -137,6 +137,7 @@ function AdminLoginPage() {
             placeholder="Enter admin key"
             value={adminKey}
             onChange={(e) => setAdminKey(e.target.value)}
+            autoComplete="current-password"
             required
             disabled={loading}
           />

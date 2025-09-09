@@ -243,6 +243,7 @@ function SignupPage() {
               value={formData.firstName}
               onChange={handleChange}
               placeholder="Enter your first name"
+              autoComplete="given-name"
               required
             />
             {errors.firstName && <ErrorMessage>{errors.firstName}</ErrorMessage>}
@@ -257,6 +258,7 @@ function SignupPage() {
               value={formData.lastName}
               onChange={handleChange}
               placeholder="Enter your last name"
+              autoComplete="family-name"
               required
             />
             {errors.lastName && <ErrorMessage>{errors.lastName}</ErrorMessage>}
@@ -271,6 +273,7 @@ function SignupPage() {
               value={formData.email}
               onChange={handleChange}
               placeholder="Enter your email"
+              autoComplete="email"
               required
             />
             {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
@@ -286,6 +289,7 @@ function SignupPage() {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Create a password"
+                autoComplete="new-password"
                 hasToggle={true}
                 required
               />
@@ -309,6 +313,7 @@ function SignupPage() {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 placeholder="Confirm your password"
+                autoComplete="new-password"
                 hasToggle={true}
                 required
               />
