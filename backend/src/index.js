@@ -54,8 +54,8 @@ app.use(helmet({
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
       "script-src": ["'self'", "https://js.stripe.com", "https://apis.google.com"],
-      "frame-src": ["'self'", "https://js.stripe.com", "https://accounts.google.com"],
-      "connect-src": ["'self'", "https://api.stripe.com", "https://accounts.google.com", "https://www.googleapis.com"],
+      "frame-src": ["'self'", "https://js.stripe.com", "https://accounts.google.com", "https://*.firebaseapp.com"],
+      "connect-src": ["'self'", "https://api.stripe.com", "https://accounts.google.com", "https://www.googleapis.com", "https://identitytoolkit.googleapis.com", "https://securetoken.googleapis.com"],
     },
   },
 }));

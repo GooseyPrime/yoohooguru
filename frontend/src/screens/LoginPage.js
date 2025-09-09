@@ -225,6 +225,7 @@ function LoginPage() {
                 id="email"
                 type="email"
                 placeholder="Enter your email"
+                autoComplete="email"
                 className={errors.email ? 'error' : ''}
                 {...register('email', {
                   required: 'Email is required',
@@ -250,6 +251,7 @@ function LoginPage() {
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Enter your password"
+                autoComplete="current-password"
                 className={errors.password ? 'error' : ''}
                 {...register('password', {
                   required: 'Password is required'
