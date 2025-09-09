@@ -1,45 +1,27 @@
-# Build stage
-FROM node:18-alpine as builder
+# Stage 1: Builder
+FROM node:18-alpine AS builder
 
-WORKDIR /app
+WORKDIR /app/frontend
 
-# Copy package files
-COPY package*.json ./
+# Copy only package files and install dependencies to leverage caching
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm install
 
-# Install dependencies
-RUN npm ci
-
-# Copy source code
-COPY . .
+# Copy the rest of the frontend source code
+COPY frontend/ .
 
 # Build the application
 RUN npm run build
 
-# Production stage
-FROM nginx:alpine
+# Stage 2: Production Server
+FROM nginx:stable-alpine
 
-# Copy built application
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Copy the built assets from the builder stage
+COPY --from=builder /app/frontend/dist /usr/share/nginx/html
 
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
+# Copy the custom Nginx configuration
+COPY frontend/default.conf /etc/nginx/conf.d/default.conf
 
-# Create non-root user
-RUN addgroup -g 1001 -S nginx
-RUN adduser -S nginx -u 1001
-
-# Change ownership
-RUN chown -R nginx:nginx /usr/share/nginx/html
-RUN chown -R nginx:nginx /var/cache/nginx
-RUN chown -R nginx:nginx /var/log/nginx
-RUN chown -R nginx:nginx /etc/nginx/conf.d
-RUN touch /var/run/nginx.pid
-RUN chown -R nginx:nginx /var/run/nginx.pid
-
-USER nginx
-
-# Expose port
-EXPOSE 8080
-
-# Start nginx
+# Expose port 80 and start Nginx
+EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
