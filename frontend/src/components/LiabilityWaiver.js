@@ -122,6 +122,13 @@ const EmergencyContact = styled.div`
   }
 `;
 
+const ErrorMessage = styled.div`
+    color: var(--danger-red);
+    font-weight: var(--font-medium);
+    text-align: center;
+    margin-top: 1rem;
+`;
+
 function LiabilityWaiver({ 
   skillCategory = 'general', 
   onAccept, 
@@ -132,6 +139,8 @@ function LiabilityWaiver({
   const [hasRead, setHasRead] = useState(false);
   const [acknowledgesRisk, setAcknowledgesRisk] = useState(false);
   const [agreesToTerms, setAgreesToTerms] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
   const [emergencyContact, setEmergencyContact] = useState({
     name: '',
     phone: '',
@@ -152,15 +161,24 @@ function LiabilityWaiver({
   const canAccept = hasRead && acknowledgesRisk && agreesToTerms && 
     (riskLevel === 'high' ? emergencyContact.name && emergencyContact.phone : true);
 
-  const handleAccept = () => {
-    if (canAccept) {
-      onAccept({
+  const handleAccept = async () => {
+    if (!canAccept || isSubmitting) return;
+
+    setIsSubmitting(true);
+    setError('');
+    try {
+      await onAccept({
         riskLevel,
         emergencyContact: riskLevel === 'high' ? emergencyContact : null,
         timestamp: new Date().toISOString(),
         skillCategory,
         activityDescription
       });
+    } catch (err) {
+      console.error("Waiver acceptance failed:", err);
+      setError(err.message || "An unexpected error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -288,6 +306,8 @@ function LiabilityWaiver({
         </CheckboxLabel>
       </CheckboxContainer>
 
+      {error && <ErrorMessage>{error}</ErrorMessage>}
+
       <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
         <button
           onClick={onDecline}
@@ -304,18 +324,18 @@ function LiabilityWaiver({
         </button>
         <button
           onClick={handleAccept}
-          disabled={!canAccept}
+          disabled={!canAccept || isSubmitting}
           style={{
             padding: '0.75rem 1.5rem',
             border: '2px solid var(--danger-red)',
             background: canAccept ? 'var(--danger-red)' : 'var(--gray-300)',
             color: canAccept ? 'white' : 'var(--gray-500)',
             borderRadius: 'var(--radius-md)',
-            cursor: canAccept ? 'pointer' : 'not-allowed',
+            cursor: canAccept && !isSubmitting ? 'pointer' : 'not-allowed',
             fontWeight: 'var(--font-medium)'
           }}
         >
-          Accept Waiver and Proceed
+          {isSubmitting ? 'Accepting...' : 'Accept Waiver and Proceed'}
         </button>
       </div>
     </WaiverContainer>

@@ -48,7 +48,17 @@ initializeFirebase();
 // --- Core Middleware Setup ---
 
 // Security headers, CORS, and Compression
-app.use(helmet());
+// FIX: Configure Content Security Policy to allow scripts from Stripe and Google
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      "script-src": ["'self'", "https://js.stripe.com", "https://apis.google.com"],
+      "frame-src": ["'self'", "https://js.stripe.com", "https://accounts.google.com"],
+      "connect-src": ["'self'", "https://api.stripe.com", "https://accounts.google.com", "https://www.googleapis.com"],
+    },
+  },
+}));
 app.use(cors({
   origin: getCorsOrigins(config),
   credentials: true
