@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Search, Calendar, Users, Star, Clock, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import Button from '../components/Button';
 import { getSkillCategoriesForDisplay } from '../lib/skillCategorization';
 
@@ -285,6 +287,8 @@ const RiskBadge = styled.div`
 `;
 
 function SkillsPage() {
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
   const [activeTab, setActiveTab] = useState('browse');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -297,6 +301,48 @@ function SkillsPage() {
         category.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm.toLowerCase()))
       )
     : skillCategories;
+
+  const handleBookSession = (categoryName) => {
+    if (!currentUser) {
+      navigate('/login', {
+        state: {
+          returnTo: '/skills',
+          message: `Please sign in to book a ${categoryName} session`
+        }
+      });
+      return;
+    }
+    
+    // For authenticated users, navigate to dashboard with booking intent
+    navigate('/dashboard', {
+      state: {
+        action: 'book-skill-session',
+        category: categoryName,
+        message: `Ready to book a ${categoryName} session. Complete your profile to continue.`
+      }
+    });
+  };
+
+  const handleFindTeachers = (categoryName) => {
+    if (!currentUser) {
+      navigate('/login', {
+        state: {
+          returnTo: '/skills',
+          message: `Please sign in to find ${categoryName} teachers`
+        }
+      });
+      return;
+    }
+    
+    // For authenticated users, show teachers for this category
+    navigate('/dashboard', {
+      state: {
+        action: 'find-teachers',
+        category: categoryName,
+        message: `Searching for ${categoryName} teachers in your area.`
+      }
+    });
+  };
 
   return (
     <Container>
@@ -403,10 +449,18 @@ function SkillsPage() {
               </SessionTemplates>
 
               <CategoryActions>
-                <Button variant="primary" size="sm">
+                <Button 
+                  variant="primary" 
+                  size="sm"
+                  onClick={() => handleBookSession(category.name)}
+                >
                   Book Session
                 </Button>
-                <Button variant="outline" size="sm">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => handleFindTeachers(category.name)}
+                >
                   Find Teachers
                 </Button>
               </CategoryActions>

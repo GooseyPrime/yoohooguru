@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../../lib/api';
 import Button from '../../components/Button';
 
@@ -29,7 +29,7 @@ export default function OnboardingProfile() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch existing profile data when the component mounts
@@ -61,7 +61,7 @@ export default function OnboardingProfile() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
       });
-      history.push('/onboarding/categories'); // Use history for navigation
+      navigate('/onboarding/categories'); // Use history for navigation
     } catch (err) {
       console.error("Error saving profile:", err);
       setError(err.message || 'An unknown error occurred. Please try again.');

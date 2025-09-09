@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../../lib/api';
 import ComingSoon from '../../components/ComingSoon';
 import Button from '../../components/Button';
@@ -25,7 +25,7 @@ export default function OnboardingCategories() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,7 +73,7 @@ export default function OnboardingCategories() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ categories: chosen })
       });
-      history.push('/onboarding/requirements'); // Use React Router for navigation
+      navigate('/onboarding/requirements'); // Use React Router for navigation
     } catch (err) {
       console.error('Error saving categories:', err);
       setError(err.message || 'An unknown error occurred. Please try again.');
