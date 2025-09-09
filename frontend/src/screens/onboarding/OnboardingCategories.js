@@ -1,71 +1,134 @@
-
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { api } from '../../lib/api';
 import ComingSoon from '../../components/ComingSoon';
 import Button from '../../components/Button';
 
+// A simple styled component for displaying error messages
+const ErrorMessage = ({ children }) => (
+  <div style={{
+    padding: '1rem',
+    borderRadius: '6px',
+    backgroundColor: '#fef2f2',
+    border: '1px solid #ef4444',
+    color: '#991b1b',
+    marginBottom: '1rem',
+    fontSize: '0.875rem'
+  }}>
+    {children}
+  </div>
+);
+
 export default function OnboardingCategories() {
   const [cats, setCats] = useState([]);
   const [picks, setPicks] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState('');
+  const history = useHistory();
 
   useEffect(() => {
-    // Load categories from Firebase (using the seeded data)
-    // For now, we'll use hardcoded categories below
-    
-    // Load existing selections
-    // For now, we'll start with empty selections
-    
-    // Load categories - we'll use a simple hardcoded list for MVP since seedCategories creates them
-    // In production, you'd fetch from /api/categories endpoint
-    setCats([
-      { slug: 'tutoring', name: 'Tutoring & Lessons', class: 'E' },
-      { slug: 'music', name: 'Music Lessons', class: 'E' },
-      { slug: 'fitness', name: 'Personal Training', class: 'E' },
-      { slug: 'handyman', name: 'Handyman (basic)', class: 'B' },
-      { slug: 'cleaning', name: 'Cleaning (non-bio)', class: 'F' },
-      { slug: 'yard-farm', name: 'Yard & Farm (non-mechanical)', class: 'B' },
-      { slug: 'moving-help', name: 'Moving Help (no truck)', class: 'A' },
-      { slug: 'errands', name: 'Errands & Organizing', class: 'A' },
-      { slug: 'electrical', name: 'Electrical (licensed)', class: 'C', comingSoon: true },
-      { slug: 'plumbing', name: 'Plumbing (licensed)', class: 'C', comingSoon: true },
-      { slug: 'hvac', name: 'HVAC (licensed)', class: 'C', comingSoon: true },
-      { slug: 'tree-work', name: 'Tree Work (higher risk)', class: 'C', comingSoon: true },
-      { slug: 'transport', name: 'Transport/Hauling (provider vehicle)', class: 'D', comingSoon: true },
-    ]);
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError('');
+      try {
+        // Fetch both the available categories and the user's current profile concurrently
+        const [categoriesResp, profileResp] = await Promise.all([
+          api('/skills/categories'),
+          api('/onboarding/profile')
+        ]);
+        
+        const categoriesData = await categoriesResp.json();
+        const profileData = await profileResp.json();
+        
+        setCats(categoriesData);
+
+        // Pre-populate selections from the user's profile
+        if (profileData && profileData.categories) {
+          const initialPicks = profileData.categories.reduce((acc, slug) => {
+            acc[slug] = { selectedAt: Date.now() }; // or a simpler boolean `true`
+            return acc;
+          }, {});
+          setPicks(initialPicks);
+        }
+      } catch (err) {
+        console.error("Failed to load category data:", err);
+        setError("Could not load categories. Please try refreshing the page.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
   const toggle = (slug) => setPicks(prev => ({ ...prev, [slug]: prev[slug] ? undefined : { selectedAt: Date.now() } }));
 
-  const save = async () => {
+  const handleSubmit = async () => {
+    setIsSaving(true);
+    setError('');
     try {
       const chosen = Object.keys(picks).filter(k => !!picks[k]);
-      await api('/onboarding/categories', { method:'POST', body: JSON.stringify({ categories: chosen })});
-      window.location.href = '/onboarding/requirements';
-    } catch (error) {
-      alert('Error saving categories: ' + error.message);
+      await api('/onboarding/categories', { 
+        method:'POST', 
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ categories: chosen })
+      });
+      history.push('/onboarding/requirements'); // Use React Router for navigation
+    } catch (err) {
+      console.error('Error saving categories:', err);
+      setError(err.message || 'An unknown error occurred. Please try again.');
+    } finally {
+      setIsSaving(false);
     }
   };
+  
+  if (isLoading) {
+    return (
+        <div style={{maxWidth: '720px', margin: '2rem auto', textAlign: 'center'}}>
+            <p>Loading Your Categories...</p>
+        </div>
+    );
+  }
 
   return (
     <div style={{maxWidth: '720px', margin: '0 auto', padding: '2rem'}}>
       <h2>Choose what you offer</h2>
       <p>Select all that apply. Items marked <ComingSoon /> are not yet open for booking.</p>
-      <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '12px'}}>
-        {cats.map(c => (
-          <label key={c.slug} style={{border: '1px solid #e5e7eb', borderRadius: '12px', padding: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px'}}>
-            <input 
-              type="checkbox" 
-              checked={!!picks[c.slug]} 
-              onChange={() => toggle(c.slug)} 
-            />
-            <span style={{flex: 1}}>
-              {c.name} {c.comingSoon && <ComingSoon />}
-            </span>
-          </label>
-        ))}
+      
+      {error && <ErrorMessage>{error}</ErrorMessage>}
+
+      <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '12px', marginTop: '1.5rem'}}>
+        {cats.map(c => {
+            const isSelected = !!picks[c.slug];
+            return (
+                <label 
+                    key={c.slug} 
+                    style={{
+                        border: isSelected ? '2px solid #4f46e5' : '1px solid #e5e7eb',
+                        backgroundColor: isSelected ? '#eef2ff' : '#ffffff',
+                        borderRadius: '12px', 
+                        padding: '12px', 
+                        cursor: 'pointer', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '8px',
+                        transition: 'border 0.2s, background-color 0.2s'
+                    }}
+                >
+                    <input 
+                        type="checkbox" 
+                        checked={isSelected} 
+                        onChange={() => toggle(c.slug)} 
+                    />
+                    <span style={{flex: 1}}>
+                        {c.name} {c.comingSoon && <ComingSoon />}
+                    </span>
+                </label>
+            );
+        })}
       </div>
-      <Button onClick={save} variant="primary" style={{marginTop: '16px'}}>
-        Continue
+      <Button onClick={handleSubmit} variant="primary" style={{marginTop: '16px'}} disabled={isSaving}>
+        {isSaving ? 'Saving...' : 'Continue'}
       </Button>
     </div>
   );

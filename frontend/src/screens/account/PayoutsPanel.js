@@ -8,34 +8,59 @@ export default function PayoutsPanel() {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState('');
   const [flagsLoaded, setFlagsLoaded] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   const fmt = c => `$${(c/100).toFixed(2)}`;
 
   const fetchStatus = async () => {
-    const s = await fetch('/api/connect/status', { credentials: 'include' }).then(r=>r.json());
-    setStatus(s);
+    try {
+      const s = await fetch('/api/connect/status', { credentials: 'include' }).then(r=>r.json());
+      setStatus(s);
+    } catch (error) {
+      console.error("Failed to fetch Stripe status:", error);
+      setMsg("⚠️ Could not load your Stripe connection status. Please check your network and try again.");
+    }
   };
   const fetchBalance = async () => {
-    const b = await fetch('/api/payouts/balance', { credentials: 'include' }).then(r=>r.json());
-    setBalance(b);
+    try {
+      const b = await fetch('/api/payouts/balance', { credentials: 'include' }).then(r=>r.json());
+      setBalance(b);
+    } catch (error) {
+      console.error("Failed to fetch Stripe balance:", error);
+      setMsg("⚠️ Could not load your Stripe balance. Please check your network and try again.");
+    }
   };
 
   useEffect(()=> {
     const loadData = async () => {
-      // Load feature flags first
-      await featureFlags.loadFlags();
-      setFlagsLoaded(true);
-      
-      // Then load status and balance
-      fetchStatus();
-      fetchBalance();
+      setInitialLoading(true);
+      setMsg('');
+      try {
+        await featureFlags.loadFlags();
+        setFlagsLoaded(true);
+        await Promise.all([fetchStatus(), fetchBalance()]);
+      } catch (error) {
+        console.error("Failed to load payout data:", error);
+        setMsg("⚠️ An unexpected error occurred while loading page data. Please refresh.");
+      } finally {
+        setInitialLoading(false);
+      }
     };
     loadData();
   }, []);
 
   const openExpress = async () => {
-    const r = await fetch('/api/connect/express-login', { method:'POST', credentials:'include' }).then(r=>r.json());
-    if (r?.url) window.open(r.url, '_blank');
+    try {
+      const r = await fetch('/api/connect/express-login', { method:'POST', credentials:'include' }).then(r=>r.json());
+      if (r?.url) {
+        window.open(r.url, '_blank');
+      } else {
+        throw new Error('No URL returned from server.');
+      }
+    } catch(error) {
+      console.error("Failed to open Stripe Express dashboard:", error);
+      setMsg("⚠️ Could not open the Stripe dashboard. Please try again.");
+    }
   };
 
   const instantPayout = async () => {
@@ -55,16 +80,42 @@ export default function PayoutsPanel() {
       } else {
         setMsg(`⚠️ ${r.error || 'Payout failed'}`);
       }
-    } finally { setBusy(false); }
+    } catch(error) {
+      console.error("Instant payout failed:", error);
+      setMsg("⚠️ An unexpected error occurred during the payout process.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   const instantAvail = (balance?.balance?.instant_available || []).find(a => a.currency === 'usd')?.amount || 0;
   const isInstantPayoutsEnabled = flagsLoaded && featureFlags.isEnabled('instantPayouts');
 
+  if (initialLoading && !msg) {
+    return (
+      <div style={{maxWidth: '720px', margin: '0 auto', padding: '2rem', textAlign: 'center'}}>
+        <p>Loading Payouts Information...</p>
+      </div>
+    );
+  }
+
   return (
     <div style={{maxWidth: '720px', margin: '0 auto', padding: '2rem'}}>
       <h2>Payouts</h2>
       
+      {/* Messages */}
+      {msg && (
+        <div style={{
+          padding: '1rem',
+          borderRadius: '6px',
+          backgroundColor: msg.includes('✅') ? '#d1fae5' : '#fef2f2',
+          border: '1px solid ' + (msg.includes('✅') ? '#10b981' : '#ef4444'),
+          marginBottom: '1.5rem'
+        }}>
+          <p style={{margin: '0', fontSize: '0.875rem'}}>{msg}</p>
+        </div>
+      )}
+
       {/* Connection Status */}
       <div style={{border: '1px solid #e5e7eb', borderRadius: '8px', padding: '1.5rem', marginBottom: '1.5rem'}}>
         {status?.connected ? (
@@ -167,19 +218,6 @@ export default function PayoutsPanel() {
           >
             {busy ? 'Processing...' : 'Submit Instant Payout'}
           </button>
-        </div>
-      )}
-
-      {/* Messages */}
-      {msg && (
-        <div style={{
-          padding: '1rem',
-          borderRadius: '6px',
-          backgroundColor: msg.includes('✅') ? '#d1fae5' : '#fef2f2',
-          border: '1px solid ' + (msg.includes('✅') ? '#10b981' : '#ef4444'),
-          marginTop: '1rem'
-        }}>
-          <p style={{margin: '0', fontSize: '0.875rem'}}>{msg}</p>
         </div>
       )}
     </div>
