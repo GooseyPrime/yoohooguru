@@ -271,7 +271,7 @@ function HomePage() {
           </LocationDisplay>
         )}
         <HeroContent>
-          <HeroArt src="/assets/images/yoohooguruyetiman.png" alt="yoohoo.guru community skill-sharing platform" />
+          <HeroArt src={`${process.env.PUBLIC_URL || ''}/assets/images/yoohooguruyetiman.png`} alt="yoohoo.guru community skill-sharing platform" />
           <h1>A community where you can swap skills, share services, or find trusted local help.</h1>
           <p>
             Local connections, meaningful exchanges, and community impact through 

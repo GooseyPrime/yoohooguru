@@ -146,7 +146,7 @@ function GuruHeroSection({ character, theme, primarySkills, stats }) {
   };
 
   const handleJoinCommunity = () => {
-    window.open('https://yoohoo.guru/skills', '_blank');
+    window.open(`${process.env.REACT_APP_BASE_URL || 'https://yoohoo.guru'}/skills`, '_blank');
   };
 
   return (
