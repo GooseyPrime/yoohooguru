@@ -9,11 +9,9 @@
 
     <!--
     CSP and security fixes:
-    The original CSP was very specific and causing issues with a few local resources.
-    I have updated it to be a bit more permissive while remaining secure.
-    Specifically, the 'img-src' directive has been streamlined to allow images from the same origin,
-    and a few unnecessary domains have been removed to improve security. This should fix the blocked
-    favicon and yoohooguruyetiman.png images.
+    The previous CSP was too restrictive, causing the browser to block images served from your domain's
+    subdomain (`www.yoohoo.guru`). We are now explicitly including your domain to resolve this issue.
+    This change should fix the blocked favicon and other local images.
     -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
@@ -21,7 +19,7 @@
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
         connect-src 'self' https://api.stripe.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://*.googleapis.com https://api.unsplash.com https://images.unsplash.com https://api.bigdatacloud.net;
         frame-src 'self' https://js.stripe.com https://*.google.com https://*.firebaseapp.com;
-        img-src 'self' data: https://images.unsplash.com;
+        img-src 'self' data: https://images.unsplash.com https://www.yoohoo.guru;
         font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com;
         object-src 'none';
         base-uri 'self';
