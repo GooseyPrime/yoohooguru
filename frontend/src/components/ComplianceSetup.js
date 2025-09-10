@@ -280,7 +280,7 @@ function ComplianceSetup({ skillCategory, onComplete }) {
       const firstIncomplete = steps.findIndex(step => !step.checkCompliance(complianceData));
       setCurrentStep(firstIncomplete === -1 ? steps.length - 1 : firstIncomplete);
     }
-  }, [complianceData]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [complianceData, steps]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchComplianceData = async () => {
     try {
