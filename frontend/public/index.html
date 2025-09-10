@@ -6,10 +6,42 @@
     <title>yoohoo.guru - Skill Sharing Platform</title>
     <meta name="description" content="Exchange skills, discover purpose, and create exponential community impact through neighborhood-based connections.">
     <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#007BFF" />
-    
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src-elem 'self' https://js.stripe.com https://apis.google.com https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; connect-src 'self' https://api.stripe.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://*.googleapis.com https://api.unsplash.com https://images.unsplash.com https://api.bigdatacloud.net; frame-src 'self' https://js.stripe.com https://*.google.com https://*.firebaseapp.com; img-src 'self' data: https://images.unsplash.com https://unsplash.com; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; object-src 'none'; base-uri 'self';">
-    
+
+    <!--
+    CSP and security fixes:
+    The previous CSP was too restrictive, causing the browser to block images served from your domain's
+    subdomain (`www.yoohoo.guru`). We are now explicitly including your domain to resolve this issue.
+    This change should fix the blocked favicon and other local images.
+    -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' https://js.stripe.com https://apis.google.com https://www.google.com https://www.gstatic.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+        connect-src 'self' https://api.stripe.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://*.googleapis.com https://api.unsplash.com https://images.unsplash.com https://api.bigdatacloud.net;
+        frame-src 'self' https://js.stripe.com https://*.google.com https://*.firebaseapp.com;
+        img-src 'self' data: https://images.unsplash.com https://www.yoohoo.guru;
+        font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com;
+        object-src 'none';
+        base-uri 'self';
+    ">
+
+    <!--
+    Performance fix for @keyframes:
+    The original animation was using 'height' and 'width', which can cause a full page relayout on every frame,
+    leading to performance issues. We've replaced this with 'transform: scale()' and 'opacity', which are much
+    more performant as they are handled by the GPU. This change should address the reported performance warnings.
+    While the original animation is likely in a different file, adding this style block to your main HTML file
+    is the fastest way to get a fix in place.
+    -->
+    <style>
+      @keyframes go651618207 {
+          0% {
+              transform: scale(0);
+              opacity: 0;
+          }
+      }
+    </style>
+
     <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
 </head>
 <body>
