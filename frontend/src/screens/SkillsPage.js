@@ -366,10 +366,6 @@ const MatchCard = styled.div`
   }
 `;
 
-const SearchInputContainer = styled.div`
-  position: relative;
-`;
-
 const ComingSoon = styled.div`
   background: linear-gradient(135deg, var(--primary) 0%, var(--growth-green) 100%);
   color: white;
@@ -672,14 +668,9 @@ function SkillsPage() {
                 </div>
               </AiMatchesSection>
             )}
-           
-            onClick={() => setActiveTab('ai-coach')}
-          >
-            AI Coaching
-          </Tab>
-        </TabsContainer>
-
-        <SkillsGrid>
+            
+            {activeTab === 'browse' && (
+              <SkillsGrid>
           {filteredCategories.map((category, index) => (
             <SkillCategory key={index}>
               <h3>
@@ -752,6 +743,7 @@ function SkillsPage() {
             </SkillCategory>
           ))}
         </SkillsGrid>
+        )}
 
         <ComingSoon>
           <h2>Advanced Features Coming Soon!</h2>
@@ -761,6 +753,8 @@ function SkillsPage() {
             the future of peer-to-peer learning!
           </p>
         </ComingSoon>
+        </>
+        )}
       </Content>
     </Container>
   );

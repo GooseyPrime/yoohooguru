@@ -14,6 +14,7 @@ const { initializeFirebase } = require('./config/firebase');
 const { getConfig, getCorsOrigins, validateConfig } = require('./config/appConfig');
 const { logger } = require('./utils/logger');
 const errorHandler = require('./middleware/errorHandler');
+const { subdomainHandler } = require('./middleware/subdomainHandler');
 
 // Route Imports
 const authRoutes = require('./routes/auth');
@@ -32,6 +33,7 @@ const connectRoutes = require('./routes/connect');
 const payoutsRoutes = require('./routes/payouts');
 const onboardingRoutes = require('./routes/onboarding');
 const documentsRoutes = require('./routes/documents');
+const gurusRoutes = require('./routes/gurus');
 
 
 const app = express();
@@ -79,6 +81,9 @@ app.use('/api/', limiter);
 // Request logging
 app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
 
+// Subdomain detection middleware (must come before routes)
+app.use(subdomainHandler);
+
 // --- Body Parsers ---
 
 // Stripe webhook route MUST use a raw parser to verify signatures.
@@ -124,6 +129,7 @@ app.use('/api/connect', connectRoutes);
 app.use('/api/payouts', payoutsRoutes);
 app.use('/api/onboarding', onboardingRoutes);
 app.use('/api/documents', documentsRoutes);
+app.use('/api/gurus', gurusRoutes);
 
 // API status endpoint
 app.get('/api', (req, res) => {

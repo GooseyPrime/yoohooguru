@@ -1,8 +1,10 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useGuru } from '../hooks/useGuru';
 import Layout from './Layout';
 import HomePage from '../screens/HomePage';
+import GuruHomePage from '../screens/guru/GuruHomePage';
 import LoginPage from '../screens/LoginPage';
 import SignupPage from '../screens/SignupPage';
 import DashboardPage from '../screens/DashboardPage';
@@ -71,7 +73,59 @@ function PublicRoute({ children }) {
   return children;
 }
 
+// Redirect to main site component for guru subdomains
+function RedirectToMainSite({ path }) {
+  React.useEffect(() => {
+    window.location.href = `https://yoohoo.guru${path}`;
+  }, [path]);
+
+  return (
+    <div style={{ 
+      display: 'flex', 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      height: '100vh',
+      textAlign: 'center',
+      padding: '2rem'
+    }}>
+      <div>
+        <h3>Redirecting to YooHoo.guru...</h3>
+        <p>You're being redirected to the main platform.</p>
+      </div>
+    </div>
+  );
+}
+
 function AppRouter() {
+  const { isGuruSite } = useGuru();
+
+  // If we're on a guru subdomain, show guru-specific routes
+  if (isGuruSite) {
+    return (
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<GuruHomePage />} />
+          <Route path="about" element={<GuruHomePage />} />
+          <Route path="blog" element={<GuruHomePage />} />
+          <Route path="blog/:slug" element={<GuruHomePage />} />
+          <Route path="services" element={<GuruHomePage />} />
+          <Route path="contact" element={<GuruHomePage />} />
+          
+          {/* Redirect guru subdomain users to main site for these pages */}
+          <Route path="login" element={<RedirectToMainSite path="/login" />} />
+          <Route path="signup" element={<RedirectToMainSite path="/signup" />} />
+          <Route path="dashboard" element={<RedirectToMainSite path="/dashboard" />} />
+          <Route path="skills" element={<RedirectToMainSite path="/skills" />} />
+          <Route path="angels-list" element={<RedirectToMainSite path="/angels-list" />} />
+          
+          {/* Catch-all route for guru subdomains */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
+      </Routes>
+    );
+  }
+
+  // Main site routes (existing functionality)
   return (
     <Routes>
       {/* Public routes */}
