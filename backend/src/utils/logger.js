@@ -49,7 +49,16 @@ const transports = [
 
 // Add file transport in production
 if (process.env.NODE_ENV === 'production') {
-  const logDir = process.env.LOG_FILE_PATH ? path.dirname(process.env.LOG_FILE_PATH) : './logs';
+  // Defensive check for LOG_FILE_PATH - ensure it's a valid string before using path.dirname
+  let logDir = './logs'; // Default fallback
+  if (process.env.LOG_FILE_PATH && typeof process.env.LOG_FILE_PATH === 'string' && process.env.LOG_FILE_PATH.trim()) {
+    try {
+      logDir = path.dirname(process.env.LOG_FILE_PATH);
+    } catch (error) {
+      console.warn('Invalid LOG_FILE_PATH provided, using default ./logs directory:', error.message);
+      logDir = './logs';
+    }
+  }
   
   transports.push(
     new winston.transports.File({
