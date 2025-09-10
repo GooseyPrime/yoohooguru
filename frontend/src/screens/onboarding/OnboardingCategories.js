@@ -73,7 +73,7 @@ export default function OnboardingCategories() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ categories: chosen })
       });
-      navigate('/onboarding/requirements'); // Use React Router for navigation
+      navigate('/onboarding/requirements'); // Use navigate for navigation
     } catch (err) {
       console.error('Error saving categories:', err);
       setError(err.message || 'An unknown error occurred. Please try again.');
