@@ -415,7 +415,7 @@ function SkillsPage() {
   // Load skills data from API
   useEffect(() => {
     loadSkillsData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [activeTab]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Load AI matches when user is authenticated
   useEffect(() => {
