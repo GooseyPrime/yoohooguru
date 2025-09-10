@@ -1,0 +1,14 @@
+# Nixpacks configuration for yoohoo.guru backend API
+# This file is used when Railway deploys from the backend directory
+
+[phases.install]
+cmds = ["npm install"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "npm start"
+
+[variables]
+NODE_ENV = "production"
