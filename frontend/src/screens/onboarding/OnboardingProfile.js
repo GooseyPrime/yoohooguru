@@ -61,7 +61,7 @@ export default function OnboardingProfile() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
       });
-      navigate('/onboarding/categories'); // Use history for navigation
+      navigate('/onboarding/categories'); // Use navigate for navigation
     } catch (err) {
       console.error("Error saving profile:", err);
       setError(err.message || 'An unknown error occurred. Please try again.');
