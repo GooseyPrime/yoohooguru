@@ -57,7 +57,7 @@ jest.mock('../src/middleware/auth', () => ({
   }
 }));
 
-describe.skip('Angels Jobs API', () => {
+describe('Angels Jobs API', () => {
   describe('POST /api/angels/jobs', () => {
     it('should create a new angel job posting', async () => {
       const { getDatabase } = require('../src/config/firebase');
@@ -80,7 +80,8 @@ describe.skip('Angels Jobs API', () => {
         hourlyRate: 25,
         estimatedHours: 4,
         skills: ['Heavy Lifting', 'Furniture Moving'],
-        urgency: 'normal'
+        urgency: 'normal',
+        featured: true
       };
 
       const response = await request(app)
@@ -97,7 +98,8 @@ describe.skip('Angels Jobs API', () => {
           title: jobData.title,
           description: jobData.description,
           status: 'open',
-          postedBy: 'test-user-123'
+          postedBy: 'test-user-123',
+          featured: true
         })
       );
     });
@@ -206,6 +208,69 @@ describe.skip('Angels Jobs API', () => {
       expect(response.body.success).toBe(true);
       expect(response.body.data.jobs).toHaveLength(1);
       expect(response.body.data.jobs[0].title).toContain('Handyman');
+    });
+
+    it('should sort featured jobs to the top', async () => {
+      const { getDatabase } = require('../src/config/firebase');
+      const mockDB = getDatabase();
+
+      const mockJobs = [
+        {
+          id: 'job-1',
+          title: 'Regular Job',
+          category: 'home',
+          location: { city: 'Denver' },
+          status: 'open',
+          featured: false,
+          createdAt: Date.now() - 1000, // Older job
+          applications: {}
+        },
+        {
+          id: 'job-2',
+          title: 'Featured Job',
+          category: 'home',
+          location: { city: 'Denver' },
+          status: 'open',
+          featured: true,
+          createdAt: Date.now() - 2000, // Even older but featured
+          applications: {}
+        },
+        {
+          id: 'job-3',
+          title: 'Another Regular Job',
+          category: 'home',
+          location: { city: 'Denver' },
+          status: 'open',
+          featured: false,
+          createdAt: Date.now(), // Newest job
+          applications: {}
+        }
+      ];
+
+      mockDB.ref.mockImplementation(() => ({
+        once: jest.fn().mockResolvedValue({
+          forEach: (callback) => {
+            mockJobs.forEach(job => {
+              callback({ val: () => job });
+            });
+          }
+        })
+      }));
+
+      const response = await request(app)
+        .get('/api/angels/jobs')
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.data.jobs).toHaveLength(3);
+      
+      // Featured job should be first, regardless of creation date
+      expect(response.body.data.jobs[0].title).toBe('Featured Job');
+      expect(response.body.data.jobs[0].featured).toBe(true);
+      
+      // Regular jobs should be sorted by creation date after featured jobs
+      expect(response.body.data.jobs[1].title).toBe('Another Regular Job');
+      expect(response.body.data.jobs[2].title).toBe('Regular Job');
     });
   });
 

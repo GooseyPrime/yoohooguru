@@ -18,7 +18,8 @@ router.post('/jobs', requireAuth, async (req, res) => {
       hourlyRate,
       estimatedHours,
       skills,
-      urgency = 'normal'
+      urgency = 'normal',
+      featured = false
     } = req.body;
 
     // Validate required fields
@@ -42,6 +43,7 @@ router.post('/jobs', requireAuth, async (req, res) => {
       estimatedHours: estimatedHours || null,
       skills: skills || [],
       urgency,
+      featured: Boolean(featured),
       postedBy: req.user.uid,
       status: 'open',
       applications: {},
@@ -59,7 +61,8 @@ router.post('/jobs', requireAuth, async (req, res) => {
       details: {
         title,
         category,
-        location: location.city || location
+        location: location.city || location,
+        featured: Boolean(featured)
       },
       timestamp: Date.now()
     });
@@ -123,8 +126,15 @@ router.get('/jobs', optionalAuth, async (req, res) => {
       });
     });
 
-    // Sort by creation date (newest first)
-    jobs.sort((a, b) => b.createdAt - a.createdAt);
+    // Sort by featured status first, then by creation date (newest first)
+    jobs.sort((a, b) => {
+      // Featured jobs come first
+      if (a.featured && !b.featured) return -1;
+      if (!a.featured && b.featured) return 1;
+      
+      // If both are featured or both are not featured, sort by creation date
+      return b.createdAt - a.createdAt;
+    });
 
     // Implement pagination
     const startIndex = (page - 1) * limit;
