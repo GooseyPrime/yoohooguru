@@ -96,9 +96,16 @@ app.use(express.urlencoded({ extended: true, limit: config.expressUrlLimit }));
 
 // --- Static File Serving ---
 
-// Serve static files from the frontend build directory
-const frontendDistPath = path.join(__dirname, '../../frontend/dist');
-app.use(express.static(frontendDistPath));
+// Conditionally serve static files from the frontend build directory
+// Only when SERVE_FRONTEND is true (for local development or monolithic deployment)
+let frontendDistPath;
+if (config.serveFrontend) {
+  frontendDistPath = path.join(__dirname, '../../frontend/dist');
+  app.use(express.static(frontendDistPath));
+  logger.info(`🎨 Frontend static files will be served from: ${frontendDistPath}`);
+} else {
+  logger.info('🎨 Frontend serving disabled - frontend deployed separately');
+}
 
 // --- Application Routes ---
 
@@ -155,10 +162,34 @@ app.use('/api/*', (req, res) => {
   });
 });
 
-// FIX: Catch-all for frontend routes. Serves the React app for any other GET request.
-app.get('*', (req, res) => {
-  res.sendFile(path.join(frontendDistPath, 'index.html'));
-});
+// FIX: Catch-all for frontend routes. Only serves the React app when frontend serving is enabled.
+if (config.serveFrontend) {
+  app.get('*', (req, res) => {
+    try {
+      res.sendFile(path.join(frontendDistPath, 'index.html'));
+    } catch (error) {
+      logger.error(`Error serving frontend file: ${error.message}`);
+      res.status(404).json({
+        error: 'Frontend Not Available',
+        message: 'Frontend files are not available. Please ensure the frontend is built or deploy it separately.'
+      });
+    }
+  });
+} else {
+  // When frontend is deployed separately, return API info for non-API routes
+  app.get('*', (req, res) => {
+    res.status(404).json({
+      error: 'Route Not Found',
+      message: 'This is an API-only server. Frontend is deployed separately.',
+      api: {
+        version: config.apiVersion,
+        baseUrl: '/api',
+        health: '/health',
+        documentation: 'https://github.com/GooseyPrime/yoohooguru'
+      }
+    });
+  });
+}
 
 // Global error handling middleware (must be the VERY LAST app.use call)
 app.use(errorHandler);

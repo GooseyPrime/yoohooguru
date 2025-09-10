@@ -44,6 +44,9 @@ function getConfig() {
     apiVersion: process.env.API_VERSION || '1.0.0',
     apiDescription: process.env.API_DESCRIPTION || 'Skill-sharing platform backend',
     
+    // Frontend Serving Configuration
+    serveFrontend: process.env.SERVE_FRONTEND === 'true' || process.env.SERVE_FRONTEND === undefined,
+    
     // External API Keys (with validation)
     jwtSecret: process.env.JWT_SECRET,
     jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
@@ -125,6 +128,7 @@ function validateConfig(config) {
   logger.info(`Configuration loaded for environment: ${config.nodeEnv}`);
   logger.info(`App brand: ${config.appBrandName}`);
   logger.info(`CORS origins: ${getCorsOrigins(config).join(', ')}`);
+  logger.info(`Serve frontend: ${config.serveFrontend}`);
   
   return warnings;
 }

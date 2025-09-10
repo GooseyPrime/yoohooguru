@@ -1,6 +1,14 @@
 # Railway Deployment Guide for yoohoo.guru
 
-This guide provides step-by-step instructions for deploying yoohoo.guru to Railway.
+This guide provides step-by-step instructions for deploying yoohoo.guru backend to Railway when the frontend is deployed separately (e.g., to Vercel).
+
+## Configuration Overview
+
+The backend can operate in two modes:
+1. **Monolithic**: Serves both API and frontend static files (`SERVE_FRONTEND=true`)
+2. **API-only**: Serves only API endpoints (`SERVE_FRONTEND=false`)
+
+When deploying with a separate frontend (Vercel), set `SERVE_FRONTEND=false` to prevent errors trying to serve non-existent frontend files.
 
 ## Prerequisites
 
@@ -51,6 +59,10 @@ Set these required environment variables in your Railway project:
 railway variables set NODE_ENV=production
 railway variables set PORT=3001  # Railway will override this
 
+# Frontend Serving Configuration
+# Set to false when frontend is deployed separately (e.g., to Vercel)
+railway variables set SERVE_FRONTEND=false
+
 # App Branding (customize for your deployment)
 railway variables set APP_BRAND_NAME=yoohoo.guru
 railway variables set APP_DISPLAY_NAME=yoohoo.guru
@@ -58,8 +70,8 @@ railway variables set APP_LEGAL_EMAIL=legal@yoohoo.guru
 railway variables set APP_PRIVACY_EMAIL=privacy@yoohoo.guru
 railway variables set APP_SUPPORT_EMAIL=support@yoohoo.guru
 
-# CORS Origins (update with your Railway domain)
-railway variables set CORS_ORIGIN_PRODUCTION=https://your-app.railway.app,https://your-custom-domain.com
+# CORS Origins (update with your Railway domain and Vercel frontend URL)
+railway variables set CORS_ORIGIN_PRODUCTION=https://your-frontend.vercel.app,https://your-custom-domain.com
 ```
 
 ### Firebase Configuration

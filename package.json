@@ -21,7 +21,7 @@
     "lint:backend": "cd backend && npm run lint",
     "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
     "start": "cd backend && npm start",
-    "railway:build": "npm run build",
+    "railway:build": "cd backend && npm run build",
     "railway:start": "cd backend && npm start",
     "railway:validate": "./scripts/validate-railway.sh",
     "firebase:validate": "./scripts/validate-firebase-production.sh",
