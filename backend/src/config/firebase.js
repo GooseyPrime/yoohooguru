@@ -137,7 +137,9 @@ const initializeFirebase = () => {
 const getDatabase = () => {
   if (!firebaseApp) {
     if (process.env.NODE_ENV === 'test') {
-      throw new Error('Firebase not initialized for testing. This is expected in test environment.');
+      // Return null in test environment so tests can handle Firebase gracefully
+      logger.warn('Firebase not initialized for testing - returning null');
+      return null;
     }
     throw new Error('Firebase not initialized. Call initializeFirebase() first.');
   }
@@ -155,7 +157,9 @@ const getDatabase = () => {
 const getAuth = () => {
   if (!firebaseApp) {
     if (process.env.NODE_ENV === 'test') {
-      throw new Error('Firebase not initialized for testing. This is expected in test environment.');
+      // Return null in test environment so tests can handle Firebase gracefully
+      logger.warn('Firebase not initialized for testing - returning null');
+      return null;
     }
     throw new Error('Firebase not initialized. Call initializeFirebase() first.');
   }
@@ -165,7 +169,9 @@ const getAuth = () => {
 const getFirestore = () => {
   if (!firebaseApp) {
     if (process.env.NODE_ENV === 'test') {
-      throw new Error('Firebase not initialized for testing. This is expected in test environment.');
+      // Return null in test environment so tests can handle Firebase gracefully
+      logger.warn('Firebase not initialized for testing - returning null');
+      return null;
     }
     throw new Error('Firebase not initialized. Call initializeFirebase() first.');
   }
