@@ -52,7 +52,7 @@ jest.mock('../src/middleware/auth', () => ({
   }
 }));
 
-describe.skip('Skills AI Matching Routes', () => {
+describe('Skills AI Matching Routes', () => {
   describe('GET /api/skills/matches/:userId', () => {
     it('should return AI skill matches for a user', async () => {
       const { getDatabase } = require('../src/config/firebase');
@@ -170,7 +170,7 @@ describe.skip('Skills AI Matching Routes', () => {
   });
 });
 
-describe.skip('AI Skill Matching Algorithm', () => {
+describe('AI Skill Matching Algorithm', () => {
   // Access the internal function for unit testing
   const skillsModule = require('../src/routes/skills');
   
