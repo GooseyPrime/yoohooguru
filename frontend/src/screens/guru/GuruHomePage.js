@@ -207,7 +207,7 @@ function GuruHomePage() {
 
   // Redirect if not on a guru subdomain
   if (!isGuruSite) {
-    window.location.href = 'https://yoohoo.guru';
+    window.location.href = process.env.REACT_APP_BASE_URL || 'https://yoohoo.guru';
     return null;
   }
 
@@ -225,7 +225,7 @@ function GuruHomePage() {
         <div style={{ padding: '4rem 2rem', textAlign: 'center' }}>
           <h2>Guru Not Found</h2>
           <p>The guru subdomain &quot;{subdomain}&quot; could not be loaded.</p>
-          <button onClick={() => window.location.href = 'https://yoohoo.guru'}>
+          <button onClick={() => window.location.href = process.env.REACT_APP_BASE_URL || 'https://yoohoo.guru'}>
             Go to Main Site
           </button>
         </div>
@@ -234,11 +234,11 @@ function GuruHomePage() {
   }
 
   const handleServiceClick = () => {
-    window.open('https://yoohoo.guru/login', '_blank');
+    window.open(`${process.env.REACT_APP_BASE_URL || 'https://yoohoo.guru'}/login`, '_blank');
   };
 
   const handleJoinCommunity = () => {
-    window.open('https://yoohoo.guru/skills', '_blank');
+    window.open(`${process.env.REACT_APP_BASE_URL || 'https://yoohoo.guru'}/skills`, '_blank');
   };
 
   return (
