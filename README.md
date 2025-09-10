@@ -3,6 +3,33 @@
 
 A comprehensive skill-sharing platform where users exchange skills, discover purpose, and create exponential community impact through neighborhood-based connections.
 
+## 📋 Table of Contents
+
+- [🚀 Platform Overview](#-platform-overview)
+- [📁 Project Structure](#-project-structure)  
+- [🏃‍♂️ Quick Start](#️-quick-start)
+- [🌍 Deployment](#-deployment)
+  - [Vercel + Railway + Firebase Stack](#-recommended-vercel--railway--firebase-stack)
+  - [Alternative Deployment Options](#-alternative-deployment-options)
+- [📱 User Manual & Platform Features](#-user-manual--platform-features)
+  - [Core Features Overview](#-core-features-overview)
+  - [Getting Started](#-getting-started---home-page)
+  - [Authentication & Account Setup](#-authentication--account-setup)
+  - [Skills Marketplace](#-skills-marketplace)
+  - [Guru Dashboard](#-guru-teacher-dashboard)
+  - [Angel's List Service Marketplace](#️-angels-list---service-marketplace)
+  - [Safety & Compliance](#️-safety--compliance-features)
+  - [Recent Updates](#-recent-updates-last-4-prs)
+- [Environment Configuration](#environment-configuration)
+- [🔧 Configuration Management](#-configuration-management)
+- [🔌 API Endpoints](#-api-endpoints)
+- [🧪 Testing](#-testing)
+- [🔒 Security & Deployment Standards](#-security--deployment-standards)
+- [🔍 Development Commands](#-development-commands)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
+- [🆘 Support](#-support)
+
 ## 🚀 Platform Overview
 
 **Status: 🟢 ACTIVE** | **Version: 1.0.0** | **Architecture: Full Stack**
@@ -130,12 +157,575 @@ npm start
 
 ## 🌍 Deployment
 
-The platform supports multiple deployment options with full environment configuration:
+The platform supports multiple deployment architectures with complete environment configuration:
 
-- **[Railway](./docs/RAILWAY_DEPLOYMENT.md)** - Recommended for full-stack deployment
-- **[Netlify + Railway](./docs/DEPLOYMENT.md)** - Frontend on Netlify, backend on Railway
+### 🚀 **Recommended: Vercel + Railway + Firebase Stack**
+
+The optimal production setup for yoohoo.guru combines:
+- **[Vercel](https://vercel.com)** - Frontend deployment (React PWA)
+- **[Railway](https://railway.app)** - Backend API deployment (Node.js)  
+- **[Firebase](https://firebase.google.com)** - Database, authentication, and real-time features
+
+#### Quick Deploy (5 minutes)
+
+**Frontend to Vercel:**
+```bash
+# Deploy frontend to Vercel
+cd frontend
+npx vercel --prod
+
+# Set environment variables in Vercel dashboard
+REACT_APP_API_URL=https://your-backend.railway.app/api
+REACT_APP_FIREBASE_API_KEY=your_firebase_key
+REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+```
+
+#### Detailed Vercel Frontend Setup
+
+**Prerequisites:**
+- Vercel account ([sign up free](https://vercel.com))
+- GitHub repository connected to Vercel
+
+**Step 1: Initial Deployment**
+```bash
+cd frontend
+npx vercel --prod
+```
+
+**Step 2: Project Configuration**
+Create `frontend/vercel.json`:
+```json
+{
+  "framework": "webpack",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install",
+  "devCommand": "npm run dev",
+  "functions": {},
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "headers": { "cache-control": "s-maxage=31536000,immutable" },
+      "dest": "/static/$1"
+    },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ],
+  "env": {
+    "REACT_APP_API_URL": "@react_app_api_url",
+    "REACT_APP_FIREBASE_API_KEY": "@react_app_firebase_api_key",
+    "REACT_APP_FIREBASE_PROJECT_ID": "@react_app_firebase_project_id",
+    "REACT_APP_FIREBASE_AUTH_DOMAIN": "@react_app_firebase_auth_domain",
+    "REACT_APP_BRAND_NAME": "@react_app_brand_name"
+  }
+}
+```
+
+**Step 3: Environment Variables in Vercel Dashboard**
+```bash
+# Required - Set in Vercel project settings
+REACT_APP_API_URL=https://your-backend.railway.app/api
+REACT_APP_FIREBASE_API_KEY=your_firebase_api_key
+REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+REACT_APP_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+REACT_APP_FIREBASE_DATABASE_URL=https://your_project.firebaseio.com
+REACT_APP_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+
+# Optional - Branding customization
+REACT_APP_BRAND_NAME=yoohoo.guru
+REACT_APP_DISPLAY_NAME=yoohoo.guru
+REACT_APP_SUPPORT_EMAIL=support@yoohoo.guru
+```
+
+**Step 4: Custom Domain (Optional)**
+1. Add domain in Vercel dashboard
+2. Configure DNS to point to Vercel
+3. SSL certificate auto-provisioned
+
+#### Detailed Railway Backend Setup
+
+**Prerequisites:**
+- Railway account ([sign up free](https://railway.app))
+- Repository ready for deployment
+
+**Step 1: Deploy Backend**
+```bash
+npm install -g @railway/cli
+railway login
+railway up .
+```
+
+**Step 2: Environment Variables in Railway Dashboard**
+```bash
+# Core Configuration
+railway variables set NODE_ENV=production
+railway variables set PORT=8000  # Railway will override this
+
+# Firebase Configuration  
+railway variables set FIREBASE_PROJECT_ID=your_project_id
+railway variables set FIREBASE_API_KEY=your_api_key
+railway variables set FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+railway variables set FIREBASE_DATABASE_URL=https://your_project.firebaseio.com
+railway variables set FIREBASE_CLIENT_EMAIL=firebase-adminsdk@your_project.iam.gserviceaccount.com
+railway variables set FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nYOUR_KEY\n-----END PRIVATE KEY-----"
+
+# Security & Authentication
+railway variables set JWT_SECRET=your_super_secret_jwt_key
+railway variables set JWT_EXPIRES_IN=7d
+
+# External APIs
+railway variables set OPENROUTER_API_KEY=your_openrouter_key
+railway variables set STRIPE_SECRET_KEY=sk_live_your_stripe_key
+railway variables set STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
+
+# CORS (update with your Vercel domain)
+railway variables set CORS_ORIGIN_PRODUCTION=https://your-app.vercel.app,https://your-custom-domain.com
+```
+
+**Step 3: Domain Configuration**
+```bash
+# Add custom domain (optional)
+railway domain add api.yourdomain.com
+```
+
+#### Firebase Database Setup
+
+**Step 1: Create Firebase Project**
+1. Go to [Firebase Console](https://console.firebase.google.com)
+2. Create new project: "yoohoo-guru-production"
+3. Enable Realtime Database and Firestore
+
+**Step 2: Security Rules**
+Set in Firebase Console → Database → Rules:
+```javascript
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "$uid === auth.uid || root.child('users').child(auth.uid).child('role').val() === 'admin'",
+        ".write": "$uid === auth.uid || root.child('users').child(auth.uid).child('role').val() === 'admin'"
+      }
+    },
+    "skills": {
+      ".read": true,
+      ".write": "auth !== null"
+    },
+    "exchanges": {
+      "$exchangeId": {
+        ".read": "data.child('teacherId').val() === auth.uid || data.child('learnerId').val() === auth.uid",
+        ".write": "data.child('teacherId').val() === auth.uid || data.child('learnerId').val() === auth.uid"
+      }
+    }
+  }
+}
+```
+
+**Step 3: Authentication Setup**
+1. Enable Google Sign-In in Authentication → Sign-in method
+2. Add authorized domains: `localhost`, `your-app.vercel.app`, `yourdomain.com`
+3. Download service account key for backend
+
+**Step 4: Indexes for Performance**
+```json
+{
+  "indexes": {
+    "users": {
+      "tier": {},
+      "location": {},
+      "verified": {}
+    },
+    "exchanges": {
+      "teacherId": {},
+      "learnerId": {},
+      "status": {},
+      "createdAt": {}
+    },
+    "skills": {
+      "category": {},
+      "subcategory": {},
+      "location": {}
+    }
+  }
+}
+```
+
+### 📋 **Alternative Deployment Options**
+
+- **[Railway Full-Stack](./docs/RAILWAY_DEPLOYMENT.md)** - Backend + served frontend
+- **[Netlify + Railway](./docs/DEPLOYMENT.md)** - Alternative frontend + backend
 - **[Docker](./docker-compose.yml)** - Container-based deployment
-- **[Custom](./docs/DEPLOYMENT.md)** - Deploy anywhere with environment variables
+- **[Custom Infrastructure](./docs/DEPLOYMENT.md)** - Deploy anywhere with environment variables
+
+## 📱 User Manual & Platform Features
+
+### 🎯 **Core Features Overview**
+
+**yoohoo.guru** is a comprehensive skill-sharing platform that connects community members for mutual learning and professional services.
+
+#### **For Skill Learners**
+- **Skill Discovery** - Browse hundreds of skills across 15+ categories
+- **Teacher Matching** - AI-powered recommendations for perfect skill matches
+- **Booking System** - Schedule lessons and services with integrated payments
+- **Progress Tracking** - Monitor your learning journey and achievements
+- **Community Groups** - Join skill-specific communities and discussions
+
+#### **For Skill Teachers (Gurus)**
+- **Profile Creation** - Showcase your expertise with media, credentials, and reviews
+- **Service Listings** - Create offerings for lessons, consulting, and projects
+- **Availability Management** - Set schedules and manage booking calendar
+- **Payment Processing** - Secure payments via Stripe with instant payouts
+- **Student Communication** - In-platform messaging and video calls
+
+#### **For Service Seekers (Angel's List)**
+- **Job Posting** - Post projects and tasks needing skilled professionals
+- **Talent Discovery** - Browse verified professionals in your area
+- **Proposal Management** - Review bids and select the best candidates
+- **Project Tracking** - Monitor progress and handle milestone payments
+- **Quality Assurance** - Rating and review system for completed work
+
+### 🏠 **Getting Started - Home Page**
+
+**Hero Section**: Features the mission statement *"A community where you can swap skills, share services, or find trusted local help"* with primary navigation to:
+- **Learn a Skill** - Browse teachers and book lessons
+- **Teach a Skill** - Create your guru profile and start earning
+- **Find Help** - Post jobs on Angel's List marketplace
+
+**Featured Content**:
+- **Popular Skills** - Trending categories like cooking, music, coding
+- **Success Stories** - Community testimonials and achievements  
+- **Local Gurus** - Nearby teachers and service providers
+
+### 🔐 **Authentication & Account Setup**
+
+#### **User Registration**
+1. **Sign Up Options**:
+   - Email and password registration
+   - Google OAuth integration
+   - Facebook social login (when enabled)
+
+2. **Profile Completion**:
+   - Basic information (name, location, bio)
+   - Skill interests and teaching expertise
+   - Verification documents (optional for basic features)
+
+3. **Account Verification**:
+   - Email confirmation required
+   - Phone verification (optional)
+   - Identity verification for premium features
+
+#### **User Roles & Permissions**
+
+**Basic User** (Free):
+- Browse skills and teachers
+- Book standard lessons
+- Basic profile features
+- Community participation
+
+**Verified Guru** (Enhanced):
+- Create skill offerings  
+- Receive payments via Stripe Connect
+- Advanced profile with media uploads
+- Priority in search results
+- Access to analytics dashboard
+
+**Professional Service Provider**:
+- Angel's List marketplace access
+- Project bidding capabilities
+- Background check verification
+- Commercial insurance options
+- Advanced booking management
+
+### 🎓 **Skills Marketplace**
+
+#### **Skill Categories**
+The platform organizes skills into 15+ major categories:
+
+**Creative Arts**: Music, Art, Photography, Writing, Crafts
+**Technical Skills**: Programming, Web Design, Data Science, Engineering  
+**Life Skills**: Cooking, Home Improvement, Gardening, Organization
+**Health & Fitness**: Personal Training, Yoga, Nutrition, Mental Health
+**Business Skills**: Marketing, Finance, Leadership, Entrepreneurship
+**Language & Communication**: Foreign Languages, Public Speaking, Writing
+
+#### **Finding the Right Teacher**
+1. **Search & Filters**:
+   - Skill category and subcategory
+   - Geographic proximity (5-50 mile radius)
+   - Price range and session length
+   - Availability and scheduling
+   - Teacher experience level and ratings
+
+2. **AI-Powered Matching**:
+   - Personalized recommendations based on your profile
+   - Learning style compatibility assessment
+   - Schedule and location optimization
+   - Price and budget alignment
+
+3. **Teacher Profiles**:
+   - Detailed bio and teaching philosophy
+   - Skills offered with experience levels
+   - Portfolio samples and student work
+   - Reviews and ratings from previous students
+   - Video introduction and teaching samples
+   - Availability calendar and booking options
+
+#### **Booking Process**
+1. **Lesson Selection**:
+   - Choose skill and specific lesson type
+   - Select session length (30min, 1hr, 2hr, custom)
+   - Pick location (teacher's space, your location, online)
+
+2. **Scheduling**:
+   - View teacher's available time slots
+   - Select preferred date and time
+   - Add special requests or preparation notes
+
+3. **Payment & Confirmation**:
+   - Secure payment via Stripe
+   - Automatic confirmation emails
+   - Calendar integration (Google, Apple, Outlook)
+   - Pre-session preparation materials
+
+### 👨‍🏫 **Guru (Teacher) Dashboard**
+
+#### **Getting Started as a Guru**
+1. **Profile Setup**:
+   - Complete verification process
+   - Upload professional photos and videos
+   - Add credentials and certifications
+   - Set teaching rates and availability
+
+2. **Stripe Connect Onboarding**:
+   - Link bank account for payments
+   - Complete tax information (1099 handling)
+   - Set payout preferences (weekly/instant)
+   - Configure payment methods for students
+
+3. **Skill Offerings Creation**:
+   - Define what you teach and skill levels
+   - Create lesson packages and pricing
+   - Set location preferences and travel radius
+   - Upload teaching materials and resources
+
+#### **Managing Your Business**
+1. **Booking Management**:
+   - View upcoming lessons in calendar format
+   - Accept/decline lesson requests
+   - Manage recurring student sessions
+   - Handle cancellations and rescheduling
+
+2. **Student Communication**:
+   - In-platform messaging system
+   - Video call integration for online lessons
+   - Assignment and homework management
+   - Progress tracking and feedback tools
+
+3. **Financial Management**:
+   - Earnings dashboard with analytics
+   - Payment history and transaction details
+   - Tax document generation (1099-NEC)
+   - Payout management and scheduling
+
+4. **Performance Analytics**:
+   - Student satisfaction ratings
+   - Booking conversion rates
+   - Profile view and inquiry statistics
+   - Revenue trends and projections
+
+### 🛠️ **Angel's List - Service Marketplace**
+
+#### **For Service Seekers (Posting Jobs)**
+1. **Job Creation**:
+   - Select service category (handyman, tech, creative, etc.)
+   - Describe project scope and requirements
+   - Set budget range and timeline
+   - Add photos or reference materials
+   - Specify location and access requirements
+
+2. **Talent Selection**:
+   - Review professional profiles and proposals
+   - Compare pricing and availability
+   - Check ratings, reviews, and portfolios
+   - Interview candidates via platform messaging
+   - Select provider and finalize agreement
+
+3. **Project Management**:
+   - Milestone-based payment system
+   - Progress updates and photo documentation
+   - Change request and scope management
+   - Quality assurance and completion review
+
+#### **For Service Providers (Finding Work)**
+1. **Professional Setup**:
+   - Complete business profile with licenses
+   - Upload portfolio and previous work samples
+   - Set service areas and specializations
+   - Configure pricing and availability
+
+2. **Job Bidding**:
+   - Browse available projects in your area
+   - Submit detailed proposals with pricing
+   - Showcase relevant experience and examples
+   - Communicate directly with potential clients
+
+3. **Project Execution**:
+   - Accept approved projects and payments
+   - Update progress with photos and notes
+   - Handle client communication and requests
+   - Complete projects and request reviews
+
+### 🛡️ **Safety & Compliance Features**
+
+#### **Work Classification System**
+The platform categorizes services into safety-appropriate classes:
+
+**Class A - Casual Help** ✅ *Available at Launch*
+- Light errands and organization
+- Basic tutoring and homework help
+- Simple technology assistance
+- *Requirements*: ID recommended
+
+**Class B - Odd Jobs** ✅ *Available at Launch*  
+- Basic handyman work and repairs
+- Furniture assembly and mounting
+- Basic lawn care and gardening
+- *Requirements*: General liability insurance recommended
+
+**Class C - Skilled Trades** ⏳ *Phased Rollout*
+- Electrical, plumbing, HVAC work
+- Major home renovations
+- Professional installations
+- *Requirements*: Valid trade license + GL insurance
+
+**Class D - Transportation** ⏳ *Phased Rollout*
+- Moving and hauling services  
+- Delivery and logistics
+- Vehicle-based services
+- *Requirements*: Valid driver's license + auto insurance
+
+**Class E - Childcare/Tutoring** ✅ *Available with Limits*
+- Babysitting and childcare
+- Academic tutoring and test prep
+- Youth coaching and mentoring
+- *Requirements*: Background check, CPR certification
+
+**Class F - Cleaning Services** ✅ *Available at Launch*
+- Deep cleaning and move-out cleans
+- Regular house cleaning services
+- Organization and decluttering
+- *Requirements*: General liability insurance recommended
+
+**Class G - Prohibited** ❌ *Not Allowed*
+- Roofing and high-risk construction
+- Gas line and major electrical work
+- Medical or healthcare services
+- Legal or financial advice
+
+#### **Safety Features**
+- **Identity Verification**: Photo ID and address confirmation
+- **Background Checks**: Criminal history screening for child/elder care
+- **Insurance Verification**: Liability and professional coverage validation
+- **Secure Payments**: All transactions through Stripe with dispute resolution
+- **Rating System**: Two-way reviews for accountability
+- **Emergency Support**: 24/7 platform support for active sessions
+
+### 💬 **Communication & Community**
+
+#### **Messaging System**
+- **Direct Messages**: Private conversations between users
+- **Group Chats**: Skill-specific community discussions
+- **Video Calls**: Integrated video for online lessons and consultations
+- **File Sharing**: Exchange documents, photos, and resources
+- **Translation**: Multi-language support for diverse communities
+
+#### **Community Features**
+- **Skill Groups**: Join communities around specific interests
+- **Local Events**: Discover workshops and meetups in your area
+- **Success Stories**: Share achievements and learning milestones
+- **Q&A Forums**: Get advice from experts and peers
+- **Resource Library**: Access guides, tutorials, and learning materials
+
+### 📊 **Analytics & Insights**
+
+#### **For Learners**
+- **Learning Progress**: Track skills mastered and hours invested
+- **Goal Setting**: Set and monitor learning objectives
+- **Achievement Badges**: Earn recognition for milestones
+- **Spending Analytics**: Monitor learning investment and ROI
+
+#### **For Teachers**
+- **Earnings Dashboard**: Revenue tracking and forecasting
+- **Student Progress**: Monitor learner advancement and satisfaction
+- **Performance Metrics**: Booking rates, cancellations, and reviews
+- **Market Analytics**: Demand trends in your skill areas
+
+#### **For Service Providers**
+- **Business Dashboard**: Project pipeline and revenue tracking
+- **Client Analytics**: Repeat business and referral rates
+- **Market Opportunities**: Trending services in your area
+- **Performance Scoring**: Rating trends and improvement areas
+
+### 🔧 **Advanced Features**
+
+#### **API Integration**
+- **Calendar Sync**: Google Calendar, Apple Calendar, Outlook integration
+- **Payment Processing**: Stripe Connect for seamless transactions
+- **Video Conferencing**: Zoom, Google Meet, and native video calls
+- **Document Storage**: Secure file storage and sharing
+- **Notification System**: Email, SMS, and push notifications
+
+#### **Mobile Experience**
+- **Progressive Web App**: Native app experience in browsers
+- **Offline Capabilities**: Access core features without internet
+- **Push Notifications**: Real-time alerts for bookings and messages
+- **Mobile Payments**: Touch ID and Face ID payment authentication
+- **Location Services**: GPS-based teacher and service discovery
+
+### 📞 **Support & Help**
+
+#### **Getting Help**
+- **Help Center**: Comprehensive guides and FAQs
+- **Live Chat**: Real-time support during business hours
+- **Email Support**: support@yoohoo.guru for detailed issues
+- **Video Tutorials**: Step-by-step platform walkthroughs
+- **Community Support**: Peer assistance in forums
+
+#### **Safety Reporting**
+- **Report Issues**: Easy reporting for safety or quality concerns
+- **Emergency Contact**: 24/7 support for active sessions
+- **Dispute Resolution**: Mediation services for conflicts
+- **Fraud Protection**: Secure reporting for suspicious activity
+
+### 🆕 **Recent Updates (Last 4 PRs)**
+
+#### **PR #107 - CI Workflow & Image Fixes** ✅ *Completed*
+- Fixed TypeError in CI workflow for reliable deployments
+- Added missing favicon.ico to prevent browser errors
+- Fixed hardcoded production URLs in image loading
+- Enhanced error handling in logger utilities
+- Updated environment variable documentation
+
+#### **PR #105 - Liability & Compliance System** ✅ *Completed*
+- **Angel's List MVP**: Complete job posting and bidding marketplace
+- **SkillShare MVP**: Enhanced skill discovery with AI matching
+- **Subdomain Architecture**: Individual guru domain support  
+- **Compliance System**: Work classification and safety requirements
+- **Firebase Authentication**: Unified auth across all platform features
+- **Workflow Fixes**: Resolved all critical CI/CD infrastructure issues
+
+#### **PR #101 - Performance Optimizations** ✅ *Completed*
+- **Webpack Optimization**: 4-5x faster build times with thread-loader
+- **Docker Multi-Stage**: 40x+ faster subsequent builds with layer caching
+- **Production Configuration**: Optimized nginx setup for static assets
+- **Bundle Analysis**: Added tools for monitoring and optimizing bundle sizes
+
+#### **PR #99 - Security & UX Improvements** ✅ *Completed*
+- **CSP Fixes**: Resolved Content Security Policy violations for Firebase
+- **Form Enhancement**: Added autocomplete attributes for better UX
+- **Browser Compatibility**: Fixed authentication popup blocking issues
+- **Accessibility**: Improved form accessibility with proper autocomplete
+
+This comprehensive platform provides everything needed for a thriving skill-sharing community with enterprise-grade safety, security, and user experience features.
 
 ### Environment Configuration
 
