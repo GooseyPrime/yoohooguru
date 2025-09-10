@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { ArrowRight, GraduationCap, Wrench } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -167,7 +167,7 @@ function HomePage() {
   // Unsplash API - using demo/development key, should be moved to env var for production
   // const UNSPLASH_ACCESS_KEY = 'YOUR_UNSPLASH_ACCESS_KEY'; // This would be in env vars
 
-  const fetchCityImage = async (cityName) => {
+  const fetchCityImage = useCallback(async (cityName) => {
     try {
       // For demo purposes, we'll use a simple approach without requiring API key
       // In production, this would use the Unsplash API with proper authentication
@@ -195,9 +195,9 @@ function HomePage() {
       console.log('Could not fetch city image:', error);
       // Graceful fallback - no background image
     }
-  };
+  }, []);
 
-  const getLocationFromCoords = async (latitude, longitude) => {
+  const getLocationFromCoords = useCallback(async (latitude, longitude) => {
     try {
       // Using a simple reverse geocoding approach
       // In production, you'd want to use a proper geocoding service
@@ -214,9 +214,9 @@ function HomePage() {
     } catch (error) {
       console.log('Could not get location details:', error);
     }
-  };
+  }, [fetchCityImage]);
 
-  const requestLocation = () => {
+  const requestLocation = useCallback(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -229,20 +229,20 @@ function HomePage() {
         }
       );
     }
-  };
+  }, [getLocationFromCoords]);
 
-  const handleManualLocation = () => {
+  const handleManualLocation = useCallback(() => {
     if (locationInput.trim()) {
       setLocation(locationInput.trim());
       fetchCityImage(locationInput.trim());
       setShowLocationInput(false);
       setLocationInput('');
     }
-  };
+  }, [locationInput, fetchCityImage]);
 
   useEffect(() => {
     requestLocation();
-  }, []); // Empty dependency array is correct here since we only want to run once on mount
+  }, [requestLocation]);
 
   return (
     <>

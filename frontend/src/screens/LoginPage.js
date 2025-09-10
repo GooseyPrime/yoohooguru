@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
@@ -171,6 +171,7 @@ const SignupLink = styled.p`
 function LoginPage() {
   const { login, loginWithGoogle, isFirebaseConfigured } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -181,11 +182,15 @@ function LoginPage() {
     formState: { errors }
   } = useForm();
 
+  // Get redirect destination from location state
+  const from = location.state?.from?.pathname || '/dashboard';
+  const redirectMessage = location.state?.message;
+
   const onSubmit = async (data) => {
     setIsLoading(true);
     try {
       await login(data.email, data.password);
-      navigate('/dashboard');
+      navigate(from, { replace: true });
     } catch (error) {
       // Error handling is done in AuthContext
     } finally {
@@ -197,7 +202,7 @@ function LoginPage() {
     setIsGoogleLoading(true);
     try {
       await loginWithGoogle();
-      navigate('/dashboard');
+      navigate(from, { replace: true });
     } catch (error) {
       // Error handling is done in AuthContext
     } finally {
@@ -213,6 +218,21 @@ function LoginPage() {
         </LogoWrapper>
         <Title>Welcome Back</Title>
         <Subtitle>Sign in to your {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'} account</Subtitle>
+        
+        {redirectMessage && (
+          <div style={{ 
+            background: 'rgba(124, 140, 255, 0.1)', 
+            border: '1px solid rgba(124, 140, 255, 0.3)',
+            borderRadius: 'var(--r-md)',
+            padding: '0.75rem',
+            marginBottom: '1rem',
+            fontSize: 'var(--text-sm)',
+            color: 'var(--pri)',
+            textAlign: 'center'
+          }}>
+            {redirectMessage}
+          </div>
+        )}
 
         <Form onSubmit={handleSubmit(onSubmit)}>
           <InputGroup>

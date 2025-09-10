@@ -5,6 +5,7 @@ import { Menu, X, User, LogOut, Settings } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import Button from './Button';
 import Logo from './Logo';
+import AuthStatusIndicator from './auth/AuthStatusIndicator';
 
 const HeaderContainer = styled.header`
   position: sticky; 
@@ -200,13 +201,18 @@ function Header() {
         </Nav>
 
         <UserMenu>
+          {/* Show auth status indicator on mobile for better UX */}
+          <div style={{ display: 'none' }}>
+            <AuthStatusIndicator compact={true} />
+          </div>
+
           {currentUser ? (
             <>
               <UserButton 
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
               >
                 <User size={18} />
-                {userProfile?.displayName || 'User'}
+                {userProfile?.displayName || currentUser.displayName || currentUser.email?.split('@')[0] || 'User'}
               </UserButton>
               
               {isUserMenuOpen && (
@@ -226,7 +232,8 @@ function Header() {
               )}
             </>
           ) : (
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+              <AuthStatusIndicator showText={false} compact={true} />
               <Button 
                 variant="ghost" 
                 size="sm"

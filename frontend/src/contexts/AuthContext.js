@@ -140,6 +140,30 @@ export function AuthProvider({ children }) {
     throw new Error('Firebase not configured');
   };
 
+  // Enhanced error message mapping for Firebase auth errors
+  const getAuthErrorMessage = (error) => {
+    const errorMessages = {
+      'auth/user-not-found': 'No account found with this email address.',
+      'auth/wrong-password': 'Incorrect password. Please try again.',
+      'auth/invalid-email': 'Please enter a valid email address.',
+      'auth/user-disabled': 'This account has been disabled. Please contact support.',
+      'auth/too-many-requests': 'Too many failed attempts. Please try again later.',
+      'auth/network-request-failed': 'Network error. Please check your internet connection.',
+      'auth/email-already-in-use': 'An account with this email already exists.',
+      'auth/weak-password': 'Password should be at least 6 characters long.',
+      'auth/operation-not-allowed': 'This sign-in method is not enabled.',
+      'auth/invalid-credential': 'Invalid credentials. Please check your email and password.',
+      'auth/account-exists-with-different-credential': 'An account already exists with the same email but different sign-in method.',
+      'auth/credential-already-in-use': 'This credential is already associated with a different account.',
+      'auth/popup-closed-by-user': 'Sign-in cancelled. Please try again.',
+      'auth/popup-blocked': 'Popup blocked. Please allow popups for this site.',
+      'auth/cancelled-popup-request': 'Sign-in cancelled due to another popup request.',
+      'auth/unauthorized-domain': 'This domain is not authorized for authentication.',
+    };
+    
+    return errorMessages[error.code] || error.message || 'An authentication error occurred.';
+  };
+
   // Specific mock function for Google Auth with better messaging
   const mockGoogleAuth = async () => {
     toast.error('Google Sign-in is currently unavailable. Please configure Firebase with Google Auth to enable this feature.');
@@ -181,7 +205,8 @@ export function AuthProvider({ children }) {
       toast.success('Account created successfully!');
       return result;
     } catch (error) {
-      toast.error(error.message);
+      const errorMessage = getAuthErrorMessage(error);
+      toast.error(errorMessage);
       throw error;
     }
   };
@@ -196,7 +221,8 @@ export function AuthProvider({ children }) {
       toast.success('Welcome back!');
       return result;
     } catch (error) {
-      toast.error('Invalid email or password');
+      const errorMessage = getAuthErrorMessage(error);
+      toast.error(errorMessage);
       throw error;
     }
   };
@@ -241,21 +267,8 @@ export function AuthProvider({ children }) {
       return result;
     } catch (error) {
       console.error('Google Auth Error:', error);
-      
-      // Provide specific error messages for common issues
-      if (error.code === 'auth/popup-closed-by-user') {
-        toast.error('Sign-in cancelled. Please try again.');
-      } else if (error.code === 'auth/popup-blocked') {
-        toast.error('Popup blocked. Please allow popups for this site and try again.');
-      } else if (error.code === 'auth/cancelled-popup-request') {
-        toast.error('Sign-in cancelled. Please try again.');
-      } else if (error.code === 'auth/operation-not-allowed') {
-        toast.error('Google Sign-in is not enabled. Please contact support.');
-      } else if (error.code === 'auth/unauthorized-domain') {
-        toast.error('This domain is not authorized for Google Sign-in.');
-      } else {
-        toast.error('Failed to sign in with Google. Please try again.');
-      }
+      const errorMessage = getAuthErrorMessage(error);
+      toast.error(errorMessage);
       throw error;
     }
   };
@@ -275,7 +288,8 @@ export function AuthProvider({ children }) {
       setUserProfile(null);
       toast.success('Signed out successfully');
     } catch (error) {
-      toast.error('Failed to sign out');
+      const errorMessage = getAuthErrorMessage(error);
+      toast.error(`Failed to sign out: ${errorMessage}`);
       throw error;
     }
   };
@@ -287,9 +301,10 @@ export function AuthProvider({ children }) {
     try {
       const { sendPasswordResetEmail } = require('firebase/auth');
       await sendPasswordResetEmail(auth, email);
-      toast.success('Password reset email sent!');
+      toast.success('Password reset email sent! Check your inbox.');
     } catch (error) {
-      toast.error('Failed to send password reset email');
+      const errorMessage = getAuthErrorMessage(error);
+      toast.error(`Failed to send password reset email: ${errorMessage}`);
       throw error;
     }
   };
@@ -345,7 +360,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Listen for auth state changes
+  // Listen for auth state changes with improved error handling
   useEffect(() => {
     let unsubscribe = () => {};
     
@@ -353,21 +368,41 @@ export function AuthProvider({ children }) {
       try {
         const { onAuthStateChanged } = require('firebase/auth');
         unsubscribe = onAuthStateChanged(auth, async (user) => {
+          console.log('🔐 Auth state changed:', user ? `${user.email} signed in` : 'signed out');
+          
           setCurrentUser(user);
           
           if (user) {
-            await getUserProfile(user);
+            try {
+              await getUserProfile(user);
+            } catch (error) {
+              console.warn('Failed to fetch user profile on auth change:', error);
+              // Don't block authentication if profile fetch fails
+            }
           } else {
             setUserProfile(null);
           }
           
           setLoading(false);
+        }, (error) => {
+          console.error('❌ Auth state change error:', error);
+          setLoading(false);
+          
+          // Handle specific Firebase auth errors
+          if (error.code === 'auth/network-request-failed') {
+            toast.error('Network error. Please check your connection.');
+          } else if (error.code === 'auth/too-many-requests') {
+            toast.error('Too many authentication attempts. Please try again later.');
+          } else {
+            toast.error('Authentication error. Please refresh the page.');
+          }
         });
       } catch (error) {
         console.warn('Auth state listener failed:', error);
         setLoading(false);
       }
     } else {
+      console.log('🔄 Using offline mode - Firebase not configured');
       setLoading(false);
     }
 
