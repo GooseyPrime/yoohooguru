@@ -130,6 +130,9 @@ app.use('/api/payouts', payoutsRoutes);
 app.use('/api/onboarding', onboardingRoutes);
 app.use('/api/documents', documentsRoutes);
 app.use('/api/gurus', gurusRoutes);
+app.use('/api/badges', require('./routes/badges'));
+app.use('/api/compliance', require('./routes/compliance'));
+app.use('/api/insurance', require('./routes/insurance'));
 
 // API status endpoint
 app.get('/api', (req, res) => {
