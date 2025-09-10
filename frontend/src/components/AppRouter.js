@@ -90,7 +90,7 @@ function RedirectToMainSite({ path }) {
     }}>
       <div>
         <h3>Redirecting to YooHoo.guru...</h3>
-        <p>You're being redirected to the main platform.</p>
+        <p>You&apos;re being redirected to the main platform.</p>
       </div>
     </div>
   );

@@ -415,14 +415,14 @@ function SkillsPage() {
   // Load skills data from API
   useEffect(() => {
     loadSkillsData();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Load AI matches when user is authenticated
   useEffect(() => {
     if (currentUser?.uid && activeTab === 'ai-coach') {
       loadAiMatches();
     }
-  }, [currentUser, activeTab]);
+  }, [currentUser, activeTab]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle search suggestions
   useEffect(() => {
@@ -432,7 +432,7 @@ function SkillsPage() {
       setSuggestions([]);
       setShowSuggestions(false);
     }
-  }, [searchTerm]);
+  }, [searchTerm]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadSkillsData = async () => {
     try {

@@ -264,7 +264,7 @@ function ComplianceSetup({ skillCategory, onComplete }) {
       id: 'waiver',
       title: 'Accept Waiver',
       description: 'Read and accept liability waiver for this activity',
-      checkCompliance: (data) => false // Always show waiver step
+      checkCompliance: () => false // Always show waiver step
     }
   ];
 
@@ -272,7 +272,7 @@ function ComplianceSetup({ skillCategory, onComplete }) {
     if (skillCategory && user) {
       fetchComplianceData();
     }
-  }, [skillCategory, user]);
+  }, [skillCategory, user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (complianceData) {
@@ -280,7 +280,7 @@ function ComplianceSetup({ skillCategory, onComplete }) {
       const firstIncomplete = steps.findIndex(step => !step.checkCompliance(complianceData));
       setCurrentStep(firstIncomplete === -1 ? steps.length - 1 : firstIncomplete);
     }
-  }, [complianceData]);
+  }, [complianceData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchComplianceData = async () => {
     try {
@@ -456,7 +456,6 @@ function ComplianceSetup({ skillCategory, onComplete }) {
         {steps.map((step, index) => {
           const isCompleted = step.checkCompliance(complianceData);
           const isActive = index === currentStep;
-          const stepData = complianceData?.complianceStatus?.[step.id];
 
           return (
             <StepCard key={step.id} completed={isCompleted} active={isActive}>

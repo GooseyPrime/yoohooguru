@@ -224,7 +224,7 @@ function GuruHomePage() {
       <PageContainer>
         <div style={{ padding: '4rem 2rem', textAlign: 'center' }}>
           <h2>Guru Not Found</h2>
-          <p>The guru subdomain "{subdomain}" could not be loaded.</p>
+          <p>The guru subdomain &quot;{subdomain}&quot; could not be loaded.</p>
           <button onClick={() => window.location.href = 'https://yoohoo.guru'}>
             Go to Main Site
           </button>
@@ -233,7 +233,7 @@ function GuruHomePage() {
     );
   }
 
-  const handleServiceClick = (service) => {
+  const handleServiceClick = () => {
     window.open('https://yoohoo.guru/login', '_blank');
   };
 
@@ -294,7 +294,7 @@ function GuruHomePage() {
                   <ServiceButton
                     popular={service.popular}
                     primaryColor={guru.theme.primaryColor}
-                    onClick={() => handleServiceClick(service)}
+                    onClick={() => handleServiceClick()}
                   >
                     Book Now
                   </ServiceButton>

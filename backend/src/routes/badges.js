@@ -75,7 +75,7 @@ router.get('/types', async (req, res) => {
     let availableBadges = Object.entries(BADGE_CATEGORIES);
     
     if (skillCategory) {
-      availableBadges = availableBadges.filter(([key, badge]) => 
+      availableBadges = availableBadges.filter(([, badge]) => 
         badge.skillCategories.includes(skillCategory) || 
         badge.skillCategories.includes('all')
       );
@@ -319,7 +319,7 @@ router.get('/requirements/:skillCategory', async (req, res) => {
     
     // Get required badges for this skill category
     const requiredBadges = Object.entries(BADGE_CATEGORIES)
-      .filter(([key, badge]) => 
+      .filter(([, badge]) => 
         badge.skillCategories.includes(skillCategory) || 
         badge.skillCategories.includes('all')
       )

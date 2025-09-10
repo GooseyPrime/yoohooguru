@@ -1,5 +1,4 @@
 const express = require('express');
-const { body, validationResult } = require('express-validator');
 const { getDatabase } = require('../config/firebase');
 const { authenticateUser } = require('../middleware/auth');
 const { logger } = require('../utils/logger');
@@ -266,13 +265,13 @@ router.get('/status/:skillCategory', authenticateUser, async (req, res) => {
     // Calculate overall compliance
     const allCompliant = Object.entries(complianceStatus)
       .filter(([key]) => key !== 'overall')
-      .every(([key, status]) => status.compliant);
+      .every(([, status]) => status.compliant);
 
     complianceStatus.overall = {
       compliant: allCompliant,
       score: calculateComplianceScore(complianceStatus),
       canParticipate: allCompliant,
-      restrictions: allCompliant ? [] : getApplicableRestrictions(complianceStatus, requirements)
+      restrictions: allCompliant ? [] : getApplicableRestrictions(complianceStatus)
     };
 
     res.json({
@@ -541,7 +540,7 @@ function calculateComplianceScore(complianceStatus) {
   return Math.round((compliantCount / categories.length) * 100);
 }
 
-function getApplicableRestrictions(complianceStatus, requirements) {
+function getApplicableRestrictions(complianceStatus) {
   const restrictions = [];
   
   if (!complianceStatus.profile.compliant) {

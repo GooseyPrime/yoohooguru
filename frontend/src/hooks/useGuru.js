@@ -139,7 +139,7 @@ export function useGuru() {
       }
     } catch (err) {
       console.error('Error fetching services:', err);
-      setServices(getFallbackServices(subdomain));
+      setServices(getFallbackServices());
     }
   };
   
@@ -183,7 +183,7 @@ export function useGuru() {
     } else {
       setLoading(false);
     }
-  }, [subdomain, location.pathname]);
+  }, [subdomain, location.pathname]); // eslint-disable-line react-hooks/exhaustive-deps
   
   return {
     // State
@@ -259,7 +259,7 @@ function getFallbackGuruData(subdomain) {
 }
 
 // Fallback services for development/offline mode
-function getFallbackServices(subdomain) {
+function getFallbackServices() {
   return [
     {
       id: 'consultation',

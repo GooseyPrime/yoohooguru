@@ -237,7 +237,7 @@ function ComplianceDashboard() {
     if (user) {
       fetchDashboardData();
     }
-  }, [user]);
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchDashboardData = async () => {
     try {
@@ -264,7 +264,7 @@ function ComplianceDashboard() {
     }
   };
 
-  const renderRequirementItem = (requirement, status, type) => {
+  const renderRequirementItem = (requirement, status) => {
     const isCompleted = status.compliant || 
       (status.completedFields && status.completedFields.includes(requirement)) ||
       (status.approvedDocuments && status.approvedDocuments.includes(requirement)) ||
@@ -278,13 +278,13 @@ function ComplianceDashboard() {
           {isCompleted ? '✅' : '⭕'}
         </span>
         <span className={`item-text ${isCompleted ? 'completed' : 'missing'}`}>
-          {formatRequirementName(requirement, type)}
+          {formatRequirementName(requirement)}
         </span>
       </RequirementItem>
     );
   };
 
-  const formatRequirementName = (requirement, type) => {
+  const formatRequirementName = (requirement) => {
     const formatMap = {
       displayName: 'Display Name',
       bio: 'Biography',
@@ -415,10 +415,10 @@ function ComplianceDashboard() {
                 <RequirementGroup>
                   <RequirementGroupTitle>Profile Requirements</RequirementGroupTitle>
                   {category.status.profile.missingFields?.map(field => 
-                    renderRequirementItem(field, category.status.profile, 'profile')
+                    renderRequirementItem(field, category.status.profile)
                   )}
                   {category.status.profile.completedFields?.map(field => 
-                    renderRequirementItem(field, category.status.profile, 'profile')
+                    renderRequirementItem(field, category.status.profile)
                   )}
                 </RequirementGroup>
               )}
@@ -427,10 +427,10 @@ function ComplianceDashboard() {
                 <RequirementGroup>
                   <RequirementGroupTitle>Documents</RequirementGroupTitle>
                   {category.status.documents.missingDocuments?.map(doc => 
-                    renderRequirementItem(doc, category.status.documents, 'documents')
+                    renderRequirementItem(doc, category.status.documents)
                   )}
                   {category.status.documents.approvedDocuments?.map(doc => 
-                    renderRequirementItem(doc, category.status.documents, 'documents')
+                    renderRequirementItem(doc, category.status.documents)
                   )}
                 </RequirementGroup>
               )}
@@ -439,10 +439,10 @@ function ComplianceDashboard() {
                 <RequirementGroup>
                   <RequirementGroupTitle>Badges</RequirementGroupTitle>
                   {category.status.badges.missingBadges?.map(badge => 
-                    renderRequirementItem(badge, category.status.badges, 'badges')
+                    renderRequirementItem(badge, category.status.badges)
                   )}
                   {category.status.badges.earnedBadges?.map(badge => 
-                    renderRequirementItem(badge, category.status.badges, 'badges')
+                    renderRequirementItem(badge, category.status.badges)
                   )}
                 </RequirementGroup>
               )}
@@ -451,10 +451,10 @@ function ComplianceDashboard() {
                 <RequirementGroup>
                   <RequirementGroupTitle>Verifications</RequirementGroupTitle>
                   {category.status.verification.missingVerifications?.map(verification => 
-                    renderRequirementItem(verification, category.status.verification, 'verification')
+                    renderRequirementItem(verification, category.status.verification)
                   )}
                   {category.status.verification.completedVerifications?.map(verification => 
-                    renderRequirementItem(verification, category.status.verification, 'verification')
+                    renderRequirementItem(verification, category.status.verification)
                   )}
                 </RequirementGroup>
               )}
@@ -463,10 +463,10 @@ function ComplianceDashboard() {
                 <RequirementGroup>
                   <RequirementGroupTitle>Insurance</RequirementGroupTitle>
                   {category.status.insurance.missingInsurance?.map(insurance => 
-                    renderRequirementItem(insurance, category.status.insurance, 'insurance')
+                    renderRequirementItem(insurance, category.status.insurance)
                   )}
                   {category.status.insurance.approvedInsurance?.map(insurance => 
-                    renderRequirementItem(insurance, category.status.insurance, 'insurance')
+                    renderRequirementItem(insurance, category.status.insurance)
                   )}
                 </RequirementGroup>
               )}

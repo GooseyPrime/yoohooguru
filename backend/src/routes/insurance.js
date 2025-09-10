@@ -81,7 +81,7 @@ router.get('/types', async (req, res) => {
     
     if (skillCategory) {
       relevantInsurance = Object.fromEntries(
-        Object.entries(INSURANCE_TYPES).filter(([key, insurance]) => 
+        Object.entries(INSURANCE_TYPES).filter(([, insurance]) => 
           insurance.requiredFor.includes(skillCategory)
         )
       );
@@ -320,7 +320,7 @@ router.get('/requirements/:skillCategory', async (req, res) => {
 
     // Get required insurance types for this skill category
     const requiredInsurance = Object.entries(INSURANCE_TYPES)
-      .filter(([key, insurance]) => insurance.requiredFor.includes(skillCategory))
+      .filter(([, insurance]) => insurance.requiredFor.includes(skillCategory))
       .map(([key, insurance]) => ({ 
         type: key, 
         ...insurance,

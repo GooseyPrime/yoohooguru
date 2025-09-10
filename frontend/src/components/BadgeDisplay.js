@@ -204,7 +204,7 @@ function BadgeDisplay({ skillCategory, userId, showRequestOptions = false, onBad
     if (userId || user) {
       fetchUserBadges();
     }
-  }, [skillCategory, userId, user]);
+  }, [skillCategory, userId, user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchBadgeRequirements = async () => {
     try {
