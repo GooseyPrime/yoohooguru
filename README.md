@@ -349,12 +349,131 @@ Set in Firebase Console → Database → Rules:
 }
 ```
 
+#### Deployment Verification & Testing
+
+**Step 1: Verify Local Build**
+```bash
+# Test the complete build process locally
+npm run install:all
+npm run build
+
+# Verify individual components
+npm run test
+npm run lint
+```
+
+**Step 2: Test Production Deployment**
+```bash
+# Test frontend build (should create dist/ folder)
+cd frontend
+npm run build
+ls -la dist/  # Should contain index.html, static assets
+
+# Test backend startup
+cd ../backend  
+npm start
+# Should show: "Server running on port 3001"
+```
+
+**Step 3: Validate Environment Setup**
+```bash
+# Validate Firebase configuration (if configured)
+npm run firebase:validate
+
+# Validate Railway deployment readiness
+npm run railway:validate
+
+# Check environment variables
+node -e "console.log('Environment check:', process.env.NODE_ENV)"
+```
+
+**Step 4: Post-Deployment Health Checks**
+```bash
+# Frontend health check
+curl https://your-app.vercel.app
+
+# Backend health check  
+curl https://your-backend.railway.app/health
+
+# API functionality test
+curl https://your-backend.railway.app/api
+```
+
+**Expected Responses:**
+- Frontend: Should load React application homepage
+- Backend `/health`: `{"status":"OK","timestamp":"...","uptime":...}`
+- Backend `/api`: `{"message":"yoohoo.guru API is running","version":"1.0.0"}`
+
+#### Troubleshooting Common Issues
+
+**Vercel Build Failures:**
+```bash
+# Check build logs in Vercel dashboard
+# Common fixes:
+- Ensure all REACT_APP_ environment variables are set
+- Verify Node.js version compatibility (18+)
+- Check for missing dependencies in frontend/package.json
+```
+
+**Railway Deployment Issues:**
+```bash
+# Check Railway logs
+railway logs --tail
+
+# Common fixes:
+- Verify PORT environment variable is not hardcoded
+- Ensure all Firebase environment variables are set
+- Check that /health endpoint returns 200 status
+```
+
+**Firebase Connection Problems:**
+```bash
+# Validate Firebase configuration
+# Common fixes:
+- Verify project ID matches environment variables
+- Check Firebase rules allow read/write access
+- Ensure service account credentials are valid
+```
+
 ### 📋 **Alternative Deployment Options**
 
 - **[Railway Full-Stack](./docs/RAILWAY_DEPLOYMENT.md)** - Backend + served frontend
 - **[Netlify + Railway](./docs/DEPLOYMENT.md)** - Alternative frontend + backend
 - **[Docker](./docker-compose.yml)** - Container-based deployment
 - **[Custom Infrastructure](./docs/DEPLOYMENT.md)** - Deploy anywhere with environment variables
+
+### 🚀 **Production Deployment Checklist**
+
+**Pre-Deployment:**
+- [ ] Firebase project configured with proper security rules
+- [ ] Environment variables documented and secured
+- [ ] Local build and tests passing (`npm run build && npm test`)
+- [ ] Domain names registered and DNS configured
+
+**Vercel Frontend:**
+- [ ] Vercel account connected to GitHub repository
+- [ ] All `REACT_APP_*` environment variables set in Vercel dashboard
+- [ ] Custom domain added and SSL certificate active
+- [ ] Build and deployment successful
+
+**Railway Backend:**
+- [ ] Railway CLI installed and authenticated
+- [ ] All required environment variables set in Railway dashboard
+- [ ] Health check endpoint responding (`/health`)
+- [ ] API endpoints functional (`/api`)
+
+**Firebase Database:**
+- [ ] Security rules configured for production
+- [ ] Indexes created for optimal query performance
+- [ ] Authentication providers enabled and configured
+- [ ] Backup strategy implemented
+
+**Post-Deployment:**
+- [ ] End-to-end user flows tested (registration, login, skill booking)
+- [ ] Payment processing validated (Stripe integration)
+- [ ] Email notifications working
+- [ ] Mobile/PWA functionality verified
+- [ ] Performance monitoring setup (optional)
 
 ## 📱 User Manual & Platform Features
 
