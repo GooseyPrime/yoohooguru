@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { MapPin, DollarSign, Star } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import Button from '../components/Button';
 
 const PageContainer = styled.div`
@@ -141,20 +143,56 @@ const CategoryActions = styled.div`
 `;
 
 function AngelsListPage() {
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCity, setSelectedCity] = useState('all');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
   const handleViewAngels = (categoryTitle) => {
-    // Show available providers for this category
-    alert(`Viewing available angels for ${categoryTitle}. Sign-in required to continue.`);
-    // In production: navigate to sign-in or show providers list
+    // Filter the current view to show only this category
+    // In a full implementation, this would filter the providers list
+    const categoryLower = categoryTitle.toLowerCase();
+    if (categoryLower.includes('handyman')) {
+      setSelectedCategory('home');
+    } else if (categoryLower.includes('lawn') || categoryLower.includes('garden')) {
+      setSelectedCategory('outdoor');
+    } else if (categoryLower.includes('clean')) {
+      setSelectedCategory('cleaning');
+    } else if (categoryLower.includes('tutoring') || categoryLower.includes('music')) {
+      setSelectedCategory('education');
+    } else if (categoryLower.includes('errand') || categoryLower.includes('grocery')) {
+      setSelectedCategory('lifestyle');
+    } else {
+      setSelectedCategory('all');
+    }
+    
+    // Scroll to the filtered results
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleBookNow = (categoryTitle) => {
-    // Direct booking for this service
-    alert(`Booking ${categoryTitle}. Please sign in to continue with your booking.`);
-    // In production: navigate to sign-in or booking flow
+    // Check if user is authenticated
+    if (!currentUser) {
+      // Redirect to login with return URL
+      navigate('/login', { 
+        state: { 
+          returnTo: '/angels-list',
+          message: `Please sign in to book ${categoryTitle}`
+        }
+      });
+      return;
+    }
+    
+    // For authenticated users, navigate to booking flow
+    // In a full implementation, this would open a booking modal or navigate to booking page
+    navigate('/dashboard', {
+      state: {
+        action: 'book-service',
+        category: categoryTitle,
+        message: `Ready to book ${categoryTitle}. Complete your profile to continue.`
+      }
+    });
   };
 
   const categories = [

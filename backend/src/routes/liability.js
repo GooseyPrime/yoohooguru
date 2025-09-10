@@ -363,6 +363,208 @@ router.get('/terms-status', authenticateUser, async (req, res) => {
   }
 });
 
+// @desc    Check comprehensive compliance before activity
+// @route   GET /api/liability/compliance-check/:skillCategory
+// @access  Private
+router.get('/compliance-check/:skillCategory', authenticateUser, async (req, res) => {
+  try {
+    const { skillCategory } = req.params;
+    const userId = req.user.uid;
+    const db = getDatabase();
+
+    // Get compliance requirements
+    const complianceResponse = await fetch(`http://localhost:${process.env.PORT || 3000}/api/compliance/status/${skillCategory}`, {
+      headers: {
+        'Authorization': req.headers.authorization
+      }
+    });
+
+    let complianceData = null;
+    if (complianceResponse.ok) {
+      const complianceResult = await complianceResponse.json();
+      complianceData = complianceResult.data;
+    }
+
+    // Check existing waiver status
+    const validityDays = complianceData?.riskLevel === 'high' ? 30 : 90;
+    const validSince = new Date();
+    validSince.setDate(validSince.getDate() - validityDays);
+
+    const waiversSnapshot = await db.ref('liability_waivers')
+      .orderByChild('userId')
+      .equalTo(userId)
+      .once('value');
+
+    let hasValidWaiver = false;
+    let latestWaiver = null;
+
+    waiversSnapshot.forEach(childSnapshot => {
+      const waiver = childSnapshot.val();
+      if (waiver.skillCategory === skillCategory && 
+          new Date(waiver.acceptedAt) > validSince) {
+        hasValidWaiver = true;
+        if (!latestWaiver || new Date(waiver.acceptedAt) > new Date(latestWaiver.acceptedAt)) {
+          latestWaiver = waiver;
+        }
+      }
+    });
+
+    // Comprehensive compliance check
+    const complianceIssues = [];
+    let canProceed = true;
+
+    // Check profile compliance
+    if (complianceData && !complianceData.complianceStatus.overall.compliant) {
+      canProceed = false;
+      complianceIssues.push({
+        type: 'compliance',
+        severity: 'high',
+        message: 'Profile does not meet compliance requirements for this skill category',
+        missingRequirements: complianceData.complianceStatus.overall.restrictions
+      });
+    }
+
+    // Check waiver status
+    if (!hasValidWaiver) {
+      complianceIssues.push({
+        type: 'waiver',
+        severity: complianceData?.riskLevel === 'high' ? 'high' : 'medium',
+        message: 'Liability waiver required',
+        requiresAction: true
+      });
+    }
+
+    // Check insurance for high-risk activities
+    if (complianceData?.riskLevel === 'high') {
+      const insuranceResponse = await fetch(`http://localhost:${process.env.PORT || 3000}/api/insurance/requirements/${skillCategory}?userId=${userId}`, {
+        headers: {
+          'Authorization': req.headers.authorization
+        }
+      });
+
+      if (insuranceResponse.ok) {
+        const insuranceResult = await insuranceResponse.json();
+        if (!insuranceResult.data.isCompliant) {
+          canProceed = false;
+          complianceIssues.push({
+            type: 'insurance',
+            severity: 'high',
+            message: 'Required insurance verification missing',
+            missingInsurance: insuranceResult.data.requiredInsurance.filter(ins => 
+              !insuranceResult.data.userInsuranceStatus[ins.type] || 
+              insuranceResult.data.userInsuranceStatus[ins.type].status !== 'approved'
+            )
+          });
+        }
+      }
+    }
+
+    // Age verification for restricted categories
+    const restrictedCategories = ['childcare', 'medical', 'construction'];
+    if (restrictedCategories.includes(skillCategory)) {
+      const profileSnapshot = await db.ref(`profiles/${userId}`).once('value');
+      const profile = profileSnapshot.val() || {};
+      
+      if (!profile.dateOfBirth) {
+        canProceed = false;
+        complianceIssues.push({
+          type: 'age_verification',
+          severity: 'high',
+          message: 'Age verification required for this skill category'
+        });
+      } else {
+        const age = Math.floor((new Date() - new Date(profile.dateOfBirth)) / (365.25 * 24 * 60 * 60 * 1000));
+        const minAge = complianceData?.restrictions?.minAge || 18;
+        
+        if (age < minAge) {
+          canProceed = false;
+          complianceIssues.push({
+            type: 'age_restriction',
+            severity: 'high',
+            message: `Minimum age requirement not met (required: ${minAge}, current: ${age})`
+          });
+        }
+      }
+    }
+
+    res.json({
+      success: true,
+      data: {
+        canProceed,
+        skillCategory,
+        riskLevel: complianceData?.riskLevel || 'low',
+        hasValidWaiver,
+        complianceIssues,
+        waiver: {
+          required: !hasValidWaiver,
+          validUntil: latestWaiver ? new Date(new Date(latestWaiver.acceptedAt).getTime() + validityDays * 24 * 60 * 60 * 1000).toISOString() : null,
+          latest: latestWaiver
+        },
+        complianceStatus: complianceData?.complianceStatus,
+        nextSteps: generateNextSteps(complianceIssues, hasValidWaiver)
+      }
+    });
+
+  } catch (error) {
+    logger.error('Compliance check error:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: 'Failed to perform compliance check' }
+    });
+  }
+});
+
+// Helper function to generate next steps
+function generateNextSteps(issues, hasValidWaiver) {
+  const steps = [];
+  
+  // Priority order: compliance, insurance, waiver, age
+  const complianceIssue = issues.find(i => i.type === 'compliance');
+  if (complianceIssue) {
+    steps.push({
+      action: 'complete_compliance',
+      title: 'Complete Profile Requirements',
+      description: 'Your profile must meet all compliance requirements before participating in this skill category',
+      priority: 'high',
+      url: '/compliance/dashboard'
+    });
+  }
+
+  const insuranceIssue = issues.find(i => i.type === 'insurance');
+  if (insuranceIssue) {
+    steps.push({
+      action: 'verify_insurance',
+      title: 'Verify Insurance Coverage',
+      description: 'Required insurance documentation must be submitted and approved',
+      priority: 'high',
+      url: '/insurance/submit'
+    });
+  }
+
+  const ageIssue = issues.find(i => i.type === 'age_verification' || i.type === 'age_restriction');
+  if (ageIssue) {
+    steps.push({
+      action: 'verify_age',
+      title: 'Age Verification Required',
+      description: ageIssue.message,
+      priority: 'high',
+      url: '/profile/edit'
+    });
+  }
+
+  if (!hasValidWaiver && !complianceIssue && !insuranceIssue && !ageIssue) {
+    steps.push({
+      action: 'accept_waiver',
+      title: 'Accept Liability Waiver',
+      description: 'Read and accept the liability waiver for this activity',
+      priority: 'medium',
+      url: null // Handled by modal
+    });
+  }
+
+  return steps;
+}
+
 // @desc    Accept updated terms and conditions
 // @route   POST /api/liability/accept-terms
 // @access  Private
