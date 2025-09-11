@@ -1,9 +1,9 @@
 /**
  * Session Database Adapter
- * Handles distance session storage and retrieval using Firebase Realtime Database
+ * Handles distance session storage and retrieval using Firestore
  */
 
-const { getDatabase } = require('../config/firebase');
+const { getFirestore } = require('../config/firebase');
 const { logger } = require('../utils/logger');
 const { createDistanceSession, validateSessionData } = require('../types/session');
 
@@ -14,7 +14,7 @@ const { createDistanceSession, validateSessionData } = require('../types/session
  */
 async function create(sessionData) {
   try {
-    const db = getDatabase();
+    const db = getFirestore();
     if (!db) {
       throw new Error('Database not available');
     }
@@ -26,8 +26,9 @@ async function create(sessionData) {
     }
 
     const session = createDistanceSession(sessionData);
-    const sessionRef = db.ref(`sessions/${session.id}`);
-    await sessionRef.set(session);
+    
+    // Store in Firestore sessions collection
+    await db.collection('sessions').doc(session.id).set(session);
 
     logger.info(`Distance session created: ${session.id} for skill ${session.skillId}`);
     return session;
@@ -44,16 +45,16 @@ async function create(sessionData) {
  */
 async function get(sessionId) {
   try {
-    const db = getDatabase();
+    const db = getFirestore();
     if (!db) {
       return null;
     }
 
-    const snapshot = await db.ref(`sessions/${sessionId}`).once('value');
-    const session = snapshot.val();
+    const docRef = db.collection('sessions').doc(sessionId);
+    const doc = await docRef.get();
     
-    if (session) {
-      return { id: sessionId, ...session };
+    if (doc.exists) {
+      return { id: sessionId, ...doc.data() };
     }
     
     return null;
@@ -71,23 +72,20 @@ async function get(sessionId) {
  */
 async function byUser(userId, role = 'coach') {
   try {
-    const db = getDatabase();
+    const db = getFirestore();
     if (!db) {
       return [];
     }
 
-    const snapshot = await db.ref('sessions').once('value');
-    const sessions = [];
+    // Query sessions collection based on role
+    const fieldName = role === 'coach' ? 'coachId' : 'learnerId';
+    const querySnapshot = await db.collection('sessions')
+      .where(fieldName, '==', userId)
+      .get();
 
-    snapshot.forEach(childSnapshot => {
-      const session = { id: childSnapshot.key, ...childSnapshot.val() };
-      
-      // Filter by role
-      if (role === 'coach' && session.coachId === userId) {
-        sessions.push(session);
-      } else if (role === 'learner' && session.learnerId === userId) {
-        sessions.push(session);
-      }
+    const sessions = [];
+    querySnapshot.forEach(doc => {
+      sessions.push({ id: doc.id, ...doc.data() });
     });
 
     // Sort by startTime (most recent first)
@@ -109,25 +107,28 @@ async function byUser(userId, role = 'coach') {
  */
 async function updateStatus(sessionId, status) {
   try {
-    const db = getDatabase();
+    const db = getFirestore();
     if (!db) {
       throw new Error('Database not available');
     }
 
-    const sessionRef = db.ref(`sessions/${sessionId}`);
-    const snapshot = await sessionRef.once('value');
+    const docRef = db.collection('sessions').doc(sessionId);
+    const doc = await docRef.get();
     
-    if (!snapshot.exists()) {
+    if (!doc.exists) {
       return null;
     }
 
-    await sessionRef.update({ 
+    const updateData = {
       status,
       updatedAt: Date.now()
-    });
+    };
+    
+    await docRef.update(updateData);
 
-    const updatedSnapshot = await sessionRef.once('value');
-    const session = { id: sessionId, ...updatedSnapshot.val() };
+    // Get updated document
+    const updatedDoc = await docRef.get();
+    const session = { id: sessionId, ...updatedDoc.data() };
     
     logger.info(`Session ${sessionId} status updated to ${status}`);
     return session;
@@ -144,20 +145,18 @@ async function updateStatus(sessionId, status) {
  */
 async function bySkill(skillId) {
   try {
-    const db = getDatabase();
+    const db = getFirestore();
     if (!db) {
       return [];
     }
 
-    const snapshot = await db.ref('sessions').once('value');
-    const sessions = [];
+    const querySnapshot = await db.collection('sessions')
+      .where('skillId', '==', skillId)
+      .get();
 
-    snapshot.forEach(childSnapshot => {
-      const session = { id: childSnapshot.key, ...childSnapshot.val() };
-      
-      if (session.skillId === skillId) {
-        sessions.push(session);
-      }
+    const sessions = [];
+    querySnapshot.forEach(doc => {
+      sessions.push({ id: doc.id, ...doc.data() });
     });
 
     // Sort by startTime (most recent first)
@@ -177,7 +176,7 @@ async function bySkill(skillId) {
  */
 async function remove(sessionId) {
   try {
-    const db = getDatabase();
+    const db = getFirestore();
     if (!db) {
       throw new Error('Database not available');
     }

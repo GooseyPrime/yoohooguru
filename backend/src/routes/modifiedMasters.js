@@ -7,7 +7,7 @@ const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const { requireAuth, optionalAuth } = require('../middleware/auth');
 const { getConfig } = require('../config/appConfig');
-const { getDatabase } = require('../config/firebase');
+const { getFirestore } = require('../config/firebase');
 const { logger } = require('../utils/logger');
 const { 
   COACHING_STYLES, 
@@ -33,7 +33,7 @@ if (!config.featureModifiedMasters) {
  */
 router.get('/skills', optionalAuth, async (req, res) => {
   try {
-    const db = getDatabase();
+    const db = getFirestore();
     if (!db) {
       return res.status(503).json({
         success: false,
@@ -43,12 +43,12 @@ router.get('/skills', optionalAuth, async (req, res) => {
 
     const { tag, q: searchQuery, style } = req.query;
 
-    // Get all skills from users (following existing pattern)
-    const usersSnapshot = await db.ref('users').once('value');
+    // Get all skills from users (following existing pattern but with Firestore)
+    const usersSnapshot = await db.collection('users').get();
     const skills = [];
 
-    usersSnapshot.forEach(childSnapshot => {
-      const user = { id: childSnapshot.key, ...childSnapshot.val() };
+    usersSnapshot.forEach(doc => {
+      const user = { id: doc.id, ...doc.data() };
       
       // Only include skills marked as Modified Masters
       if (user.skillsOffered && user.modifiedMasters?.wantsToTeach) {
@@ -150,7 +150,7 @@ router.post('/skills', requireAuth, async (req, res) => {
       });
     }
 
-    const db = getDatabase();
+    const db = getFirestore();
     if (!db) {
       return res.status(503).json({
         success: false,
@@ -198,9 +198,9 @@ router.post('/skills', requireAuth, async (req, res) => {
     };
 
     // Update user's MM skills
-    const userRef = db.ref(`users/${userId}`);
-    const userSnapshot = await userRef.once('value');
-    const userData = userSnapshot.val() || {};
+    const userRef = db.collection('users').doc(userId);
+    const userDoc = await userRef.get();
+    const userData = userDoc.exists ? userDoc.data() : {};
 
     // Initialize MM data if needed
     if (!userData.modifiedMasters) {
@@ -228,7 +228,7 @@ router.post('/skills', requireAuth, async (req, res) => {
     // Store MM-specific skill data
     userData.modifiedMastersSkills[title] = skillData;
 
-    await userRef.set(userData);
+    await userRef.set(userData, { merge: true });
 
     logger.info(`Modified Masters skill created: ${title} by user ${userId}`);
 
@@ -285,7 +285,7 @@ router.post('/skills/:skillId/resources', requireAuth, async (req, res) => {
       });
     }
 
-    const db = getDatabase();
+    const db = getFirestore();
     if (!db) {
       return res.status(503).json({
         success: false,
@@ -301,17 +301,38 @@ router.post('/skills/:skillId/resources', requireAuth, async (req, res) => {
       addedBy: userId
     });
 
-    // Add resource to skill
-    const skillPath = `users/${skillUserId}/modifiedMastersSkills/${skillName}/resources`;
-    const resourcesRef = db.ref(skillPath);
-    const resourcesSnapshot = await resourcesRef.once('value');
-    const currentResources = resourcesSnapshot.val() || [];
+    // Add resource to skill using Firestore
+    const userRef = db.collection('users').doc(skillUserId);
+    const userDoc = await userRef.get();
     
+    if (!userDoc.exists) {
+      return res.status(404).json({
+        success: false,
+        error: { message: 'User not found' }
+      });
+    }
+    
+    const userData = userDoc.data();
+    const skillData = userData.modifiedMastersSkills?.[skillName];
+    
+    if (!skillData) {
+      return res.status(404).json({
+        success: false,
+        error: { message: 'Skill not found' }
+      });
+    }
+    
+    // Update resources
+    const currentResources = skillData.resources || [];
     currentResources.push(resource);
-    await resourcesRef.set(currentResources);
-
-    // Update skill's updatedAt
-    await db.ref(`users/${skillUserId}/modifiedMastersSkills/${skillName}/updatedAt`).set(Date.now());
+    
+    // Update the user document with new resource and updatedAt timestamp
+    const updateData = {
+      [`modifiedMastersSkills.${skillName}.resources`]: currentResources,
+      [`modifiedMastersSkills.${skillName}.updatedAt`]: Date.now()
+    };
+    
+    await userRef.update(updateData);
 
     logger.info(`Resource added to MM skill ${skillName} by user ${userId}`);
 
