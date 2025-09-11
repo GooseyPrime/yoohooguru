@@ -1,4 +1,4 @@
-const { getAuth } = require('../config/firebase');
+const { getAuth } = require('../firebase/admin');
 const { logger } = require('../utils/logger');
 
 const authenticateUser = async (req, res, next) => {
