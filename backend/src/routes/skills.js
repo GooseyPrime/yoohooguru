@@ -1,5 +1,6 @@
 const express = require('express');
-const { getDatabase } = require('../config/firebase');
+const { getFirestore } = require('../firebase/admin');
+const skillsDB = require('../db/skills');
 const { optionalAuth } = require('../middleware/auth');
 const { logger } = require('../utils/logger');
 const { categorizeSkill, getSkillCategories } = require('../utils/skillCategorization');
@@ -87,72 +88,47 @@ function calculateSkillMatchScore(userA, userB) {
 // @access  Public
 router.get('/', optionalAuth, async (req, res) => {
   try {
-    const { category, search, popular = false } = req.query;
+    const { 
+      category, 
+      search, 
+      popular = false, 
+      isModifiedMasters, 
+      status = 'published',
+      tag,
+      style 
+    } = req.query;
     
-    const db = getDatabase();
-    
-    // Get all skills from users
-    const usersSnapshot = await db.ref('users').once('value');
-    const skillsMap = new Map();
-
-    usersSnapshot.forEach(childSnapshot => {
-      const user = childSnapshot.val();
-      
-      // Count offered skills
-      (user.skillsOffered || []).forEach(skill => {
-        const skillLower = skill.toLowerCase();
-        if (!skillsMap.has(skillLower)) {
-          skillsMap.set(skillLower, {
-            name: skill,
-            offeredBy: 0,
-            wantedBy: 0,
-            category: categorizeSkill(skill)
-          });
-        }
-        skillsMap.get(skillLower).offeredBy++;
-      });
-
-      // Count wanted skills
-      (user.skillsWanted || []).forEach(skill => {
-        const skillLower = skill.toLowerCase();
-        if (!skillsMap.has(skillLower)) {
-          skillsMap.set(skillLower, {
-            name: skill,
-            offeredBy: 0,
-            wantedBy: 0,
-            category: categorizeSkill(skill)
-          });
-        }
-        skillsMap.get(skillLower).wantedBy++;
-      });
+    // Use new Firestore-based skills collection
+    const skills = await skillsDB.find({
+      q: search,
+      tag,
+      style,
+      isModifiedMasters: isModifiedMasters === 'true',
+      status
     });
 
-    let skills = Array.from(skillsMap.values());
-
-    // Apply filters
+    // Apply category filter (client-side for now, can be moved to DB later)
+    let filteredSkills = skills;
     if (category) {
-      skills = skills.filter(skill => skill.category === category);
+      filteredSkills = skills.filter(skill => {
+        const skillCategory = categorizeSkill(skill.title);
+        return skillCategory === category;
+      });
     }
 
-    if (search) {
-      const searchTerm = search.toLowerCase();
-      skills = skills.filter(skill => 
-        skill.name.toLowerCase().includes(searchTerm)
+    // Apply popularity filter (for now, just check if skill has been used in sessions)
+    if (popular === 'true') {
+      // For now, consider skills with resources as popular
+      filteredSkills = filteredSkills.filter(skill => 
+        skill.resources && skill.resources.length > 0
       );
     }
-
-    if (popular === 'true') {
-      skills = skills.filter(skill => skill.offeredBy > 0 && skill.wantedBy > 0);
-    }
-
-    // Sort by popularity (total mentions)
-    skills.sort((a, b) => (b.offeredBy + b.wantedBy) - (a.offeredBy + a.wantedBy));
 
     res.json({
       success: true,
       data: {
-        skills,
-        total: skills.length,
+        skills: filteredSkills,
+        total: filteredSkills.length,
         categories: getSkillCategories()
       }
     });
@@ -413,6 +389,205 @@ router.get('/exchange-pairs', async (req, res) => {
     res.status(500).json({
       success: false,
       error: { message: 'Failed to fetch exchange pairs' }
+    });
+  }
+});
+
+// NEW FIRESTORE-BASED SKILL MANAGEMENT ROUTES
+
+// @desc    Create a new skill
+// @route   POST /api/skills
+// @access  Private
+router.post('/', optionalAuth, async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        error: { message: 'Authentication required to create skills' }
+      });
+    }
+
+    const {
+      title,
+      summary,
+      isModifiedMasters = false,
+      accessibilityTags = [],
+      coachingStyles = []
+    } = req.body;
+
+    if (!title) {
+      return res.status(400).json({
+        success: false,
+        error: { message: 'Skill title is required' }
+      });
+    }
+
+    const skillData = {
+      title,
+      summary,
+      createdBy: req.user.uid,
+      isModifiedMasters,
+      accessibilityTags,
+      coachingStyles,
+      resources: [],
+      status: 'published' // For now, auto-publish. Can add moderation later.
+    };
+
+    const skill = await skillsDB.create(skillData);
+
+    res.status(201).json({
+      success: true,
+      data: { skill }
+    });
+
+  } catch (error) {
+    logger.error('Create skill error:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: 'Failed to create skill' }
+    });
+  }
+});
+
+// @desc    Get skill by ID
+// @route   GET /api/skills/:id
+// @access  Public
+router.get('/:id', async (req, res) => {
+  try {
+    const skill = await skillsDB.get(req.params.id);
+    
+    if (!skill) {
+      return res.status(404).json({
+        success: false,
+        error: { message: 'Skill not found' }
+      });
+    }
+
+    res.json({
+      success: true,
+      data: { skill }
+    });
+
+  } catch (error) {
+    logger.error('Get skill error:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: 'Failed to fetch skill' }
+    });
+  }
+});
+
+// @desc    Update skill
+// @route   PUT /api/skills/:id  
+// @access  Private
+router.put('/:id', optionalAuth, async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        error: { message: 'Authentication required' }
+      });
+    }
+
+    const skill = await skillsDB.get(req.params.id);
+    if (!skill) {
+      return res.status(404).json({
+        success: false,
+        error: { message: 'Skill not found' }
+      });
+    }
+
+    // Check ownership
+    if (skill.createdBy !== req.user.uid) {
+      return res.status(403).json({
+        success: false,
+        error: { message: 'Not authorized to update this skill' }
+      });
+    }
+
+    const updates = req.body;
+    delete updates.createdBy; // Prevent changing ownership
+    delete updates.createdAt; // Prevent changing creation date
+
+    const updatedSkill = await skillsDB.update(req.params.id, updates);
+
+    res.json({
+      success: true,
+      data: { skill: updatedSkill }
+    });
+
+  } catch (error) {
+    logger.error('Update skill error:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: 'Failed to update skill' }
+    });
+  }
+});
+
+// @desc    Add resource to skill
+// @route   POST /api/skills/:id/resources
+// @access  Private  
+router.post('/:id/resources', optionalAuth, async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        error: { message: 'Authentication required' }
+      });
+    }
+
+    const { title, url, type } = req.body;
+    if (!title || !url) {
+      return res.status(400).json({
+        success: false,
+        error: { message: 'Resource title and URL are required' }
+      });
+    }
+
+    const resource = {
+      title,
+      url,
+      type: type || 'link',
+      addedBy: req.user.uid
+    };
+
+    const updatedSkill = await skillsDB.addResource(req.params.id, resource);
+
+    res.json({
+      success: true,
+      data: { skill: updatedSkill }
+    });
+
+  } catch (error) {
+    logger.error('Add resource error:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: 'Failed to add resource' }
+    });
+  }
+});
+
+// @desc    Get skills by creator
+// @route   GET /api/skills/user/:userId
+// @access  Public
+router.get('/user/:userId', async (req, res) => {
+  try {
+    const skills = await skillsDB.getByCreator(req.params.userId);
+
+    res.json({
+      success: true,
+      data: {
+        skills,
+        total: skills.length
+      }
+    });
+
+  } catch (error) {
+    logger.error('Get user skills error:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: 'Failed to fetch user skills' }
     });
   }
 });

@@ -1,0 +1,59 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper function to check if user is signed in
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if user owns the resource
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Users collection - private data
+    match /users/{userId} {
+      // Users can only read/write their own profile
+      allow read, write: if isOwner(userId);
+    }
+
+    // Skills collection - public read, authenticated write
+    match /skills/{skillId} {
+      // Anyone can read published skills (for public browsing)
+      allow read: if true;
+      
+      // Authenticated users can create skills
+      allow create: if isSignedIn();
+      
+      // Only skill creators can update/delete their own skills
+      allow update, delete: if isSignedIn() && 
+        request.auth.uid == resource.data.createdBy;
+    }
+
+    // Sessions collection - restricted to participants
+    match /sessions/{sessionId} {
+      // Only coach or learner can read/update session
+      allow read, update: if isSignedIn() && 
+        (request.auth.uid == resource.data.coachId || 
+         request.auth.uid == resource.data.learnerId);
+      
+      // Authenticated users can create sessions (booking)
+      allow create: if isSignedIn();
+      
+      // No deletion allowed - maintain history
+      allow delete: if false;
+    }
+
+    // Categories collection - read-only for public
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if false; // Categories managed via admin SDK only
+    }
+
+    // Admin collections - restricted (managed via admin SDK)
+    match /admin/{document=**} {
+      allow read, write: if false; // Admin operations via server only
+    }
+  }
+}
