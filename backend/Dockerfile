@@ -3,14 +3,22 @@ FROM node:18-alpine
 # Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Copy package files - note: don't copy root package.json to avoid workspace issues
+COPY backend/package*.json ./backend/
+COPY frontend/package*.json ./frontend/
 
-# Install dependencies
-RUN npm ci --only=production && npm cache clean --force
+# Install backend dependencies directly
+RUN cd backend && npm ci --only=production && npm cache clean --force
+
+# Install frontend dependencies (including dev dependencies for build)
+RUN cd frontend && npm ci && npm cache clean --force
 
 # Copy source code
-COPY . .
+COPY backend/ ./backend/
+COPY frontend/ ./frontend/
+
+# Build frontend
+RUN cd frontend && npm run build
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs
@@ -27,5 +35,6 @@ EXPOSE 3001
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3001/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }).on('error', () => process.exit(1));"
 
-# Start the application
+# Start the application from backend directory
+WORKDIR /app/backend
 CMD ["node", "src/index.js"]
