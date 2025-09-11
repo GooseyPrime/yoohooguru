@@ -159,6 +159,164 @@ npm start
 
 The platform supports multiple deployment architectures with complete environment configuration:
 
+### 📁 **Standardized Deployment Configuration**
+
+**Critical**: This monorepo requires **consistent service initialization and platform configuration** to avoid deployment failures. Follow this exact process:
+
+#### **🎯 Step 1: Service Initialization & Linking**
+
+**Always initialize services from the repository root:**
+
+```powershell
+# Navigate to repository root (REQUIRED)
+cd yoohooguru
+
+# Initialize/link all services from root directory
+railway login && railway link                    # Link Railway project
+vercel link                                      # Link Vercel project  
+netlify link                                     # Link Netlify project (optional)
+firebase init                                    # Initialize Firebase project (optional)
+```
+
+#### **⚙️ Step 2: Platform Console Configuration**
+
+**Configure these exact settings in each platform's dashboard:**
+
+| Platform | Service Type | Root Directory Setting | Build Command | Output Directory |
+|----------|-------------|------------------------|---------------|------------------|
+| **Railway** (Full-Stack) | Web Service | `/` (root) | `npm run build` | - |
+| **Railway** (Backend-Only) | Web Service | `/backend` | `npm install && npm start` | - |
+| **Vercel** (Frontend) | Static Site | `/frontend` | `npm run build` | `dist` |
+| **Netlify** (Frontend) | Static Site | `/frontend` | `npm run build` | `dist` |
+| **Firebase** (Frontend) | Hosting | - | `npm run build` | `frontend/dist` |
+
+#### **🚀 Step 3: Deployment Commands**
+
+**Run deployment commands from the repository root (always):**
+
+```powershell
+# IMPORTANT: Always stay in repository root for all deployments
+cd yoohooguru
+
+# Deploy based on your platform configuration:
+
+# Railway Full-Stack (root directory configured as "/")
+railway up
+
+# Railway Backend-Only (root directory configured as "/backend") 
+railway up
+
+# Vercel Frontend (root directory configured as "/frontend")
+vercel --prod
+
+# Netlify Frontend (root directory configured as "/frontend")
+netlify deploy --prod
+
+# Firebase Frontend (build configured to output to "frontend/dist")
+firebase deploy --only hosting
+
+# Docker Full-Stack (always from root)
+docker-compose up -d
+```
+
+#### **🔧 Platform-Specific Setup Instructions**
+
+**Railway Setup:**
+```powershell
+cd yoohooguru
+railway login
+railway link
+
+# In Railway Dashboard → Settings:
+# - Root Directory: "/" (for full-stack) OR "/backend" (for backend-only)
+# - Build Command: "npm run build" (full-stack) OR "npm install && npm start" (backend-only)
+# - Start Command: "npm start"
+```
+
+**Vercel Setup:**
+```powershell
+cd yoohooguru
+vercel link
+
+# In Vercel Dashboard → Settings → General:
+# - Root Directory: "frontend"  
+# - Build Command: "npm run build"
+# - Output Directory: "dist"
+# - Install Command: "npm install"
+```
+
+**Netlify Setup:**
+```powershell
+cd yoohooguru
+netlify link
+
+# In Netlify Dashboard → Site Settings → Build & Deploy:
+# - Base Directory: "frontend"
+# - Build Command: "npm run build" 
+# - Publish Directory: "frontend/dist"
+```
+
+#### **Environment Variables by Platform**
+
+**Railway (Full-Stack or Backend-Only):**
+```env
+NODE_ENV=production
+FIREBASE_PROJECT_ID=your_project_id
+FIREBASE_API_KEY=your_key
+JWT_SECRET=your_secret_key
+PORT=8000
+```
+
+**Vercel/Netlify (Frontend-Only):**
+```env
+REACT_APP_API_URL=https://your-backend.railway.app/api
+REACT_APP_FIREBASE_API_KEY=your_key
+REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+REACT_APP_BRAND_NAME=yoohoo.guru
+```
+
+#### **🚨 Common Mistakes to Avoid**
+
+❌ **DON'T**: Navigate to subdirectories before running deployment commands  
+❌ **DON'T**: Set inconsistent root directory settings in platform dashboards  
+❌ **DON'T**: Link services from subdirectories  
+
+✅ **DO**: Always initialize and deploy from repository root (`yoohooguru/`)  
+✅ **DO**: Configure platform root directories to match your deployment type  
+✅ **DO**: Use consistent service linking across all platforms
+
+#### **🔧 Troubleshooting Common Issues**
+
+**Railway "Cannot locate backend" Error:**
+```
+Error: Build failed - cannot locate backend at yoohooguru/backend/backend
+```
+**Solution**: This happens when platform configuration doesn't match deployment approach
+1. Check Railway Dashboard → Settings → Root Directory setting
+2. For backend-only: Set to `/backend`, deploy from repository root
+3. For full-stack: Set to `/` (root), deploy from repository root
+
+**Vercel Build Path Errors:**
+```
+Error: No build output found at frontend/frontend/dist
+```
+**Solution**: Verify Vercel Dashboard → Settings → General configuration
+1. Root Directory: `frontend` (not `frontend/frontend`)
+2. Build Command: `npm run build`
+3. Output Directory: `dist`
+4. Always deploy from repository root
+
+**Service Linking Issues:**
+```
+Error: No project linked to this directory
+```
+**Solution**: Re-link services from repository root
+```powershell
+cd yoohooguru  # Always link from root
+railway link   # Re-link Railway
+vercel link    # Re-link Vercel
+```
+
 ### 🚀 **Recommended: Vercel + Railway + Firebase Stack**
 
 The optimal production setup for yoohoo.guru combines:
@@ -169,10 +327,19 @@ The optimal production setup for yoohoo.guru combines:
 #### Quick Deploy (5 minutes)
 
 **Frontend to Vercel:**
-```bash
-# Deploy frontend to Vercel
-cd frontend
-npx vercel --prod
+```powershell
+# Navigate to repository root and link project
+cd yoohooguru
+vercel link
+
+# Configure in Vercel Dashboard → Settings → General:
+# - Root Directory: "frontend"
+# - Build Command: "npm run build" 
+# - Output Directory: "dist"
+# - Install Command: "npm install"
+
+# Deploy frontend (always from repository root)
+vercel --prod
 
 # Set environment variables in Vercel dashboard
 REACT_APP_API_URL=https://your-backend.railway.app/api
@@ -187,9 +354,19 @@ REACT_APP_FIREBASE_PROJECT_ID=your_project_id
 - GitHub repository connected to Vercel
 
 **Step 1: Initial Deployment**
-```bash
-cd frontend
-npx vercel --prod
+```powershell
+# Navigate to repository root and link project
+cd yoohooguru
+vercel link
+
+# Configure in Vercel Dashboard → Settings → General:
+# - Root Directory: "frontend"
+# - Build Command: "npm run build"
+# - Output Directory: "dist" 
+# - Install Command: "npm install"
+
+# Deploy to Vercel (always from repository root)
+vercel --prod
 ```
 
 **Step 2: Project Configuration**
@@ -249,10 +426,22 @@ REACT_APP_SUPPORT_EMAIL=support@yoohoo.guru
 - Repository ready for deployment
 
 **Step 1: Deploy Backend**
-```bash
+```powershell
+# Install Railway CLI
 npm install -g @railway/cli
 railway login
-railway up .
+
+# Navigate to repository root and link project
+cd yoohooguru
+railway link
+
+# Configure in Railway Dashboard → Settings:
+# - Root Directory: "/" (for full-stack) OR "/backend" (for backend-only)
+# - Build Command: "npm run build" (full-stack) OR "npm install && npm start" (backend-only)
+# - Start Command: "npm start"
+
+# Deploy (always from repository root)
+railway up
 ```
 
 **Step 2: Environment Variables in Railway Dashboard**
@@ -437,10 +626,23 @@ railway logs --tail
 
 ### 📋 **Alternative Deployment Options**
 
-- **[Railway Full-Stack](./docs/RAILWAY_DEPLOYMENT.md)** - Backend + served frontend
-- **[Netlify + Railway](./docs/DEPLOYMENT.md)** - Alternative frontend + backend
-- **[Docker](./docker-compose.yml)** - Container-based deployment
-- **[Custom Infrastructure](./docs/DEPLOYMENT.md)** - Deploy anywhere with environment variables
+- **[Railway Full-Stack](./docs/RAILWAY_DEPLOYMENT.md)** - Deploy from `yoohooguru/` (root directory)
+- **[Netlify + Railway](./docs/DEPLOYMENT.md)** - Frontend from `yoohooguru/frontend/`, Backend from `yoohooguru/backend/`
+- **[Docker](./docker-compose.yml)** - Deploy from `yoohooguru/` (root directory)
+- **[Custom Infrastructure](./docs/DEPLOYMENT.md)** - Deploy from appropriate directory based on your setup
+
+#### **Quick Reference Summary**
+
+| Platform | Platform Root Directory | Command (from `yoohooguru/`) | Deploys |
+|----------|------------------------|-----------------------------|---------|
+| **Railway** (Full-Stack) | `/` | `railway up` | Frontend + Backend |
+| **Railway** (Backend-Only) | `/backend` | `railway up` | Backend API only |
+| **Vercel** (Frontend) | `/frontend` | `vercel --prod` | Frontend only |
+| **Netlify** (Frontend) | `/frontend` | `netlify deploy --prod` | Frontend only |
+| **Firebase** (Frontend) | - | `firebase deploy --only hosting` | Frontend only |
+| **Docker** (Full-Stack) | - | `docker-compose up -d` | Frontend + Backend |
+
+**Key Point**: Platform Root Directory is configured in the platform dashboard, but all deployment commands are run from the repository root (`yoohooguru/`).
 
 ### 🚀 **Production Deployment Checklist**
 
