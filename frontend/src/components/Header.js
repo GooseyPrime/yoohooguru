@@ -189,6 +189,13 @@ function Header() {
           >
             SkillShare
           </NavLink>
+          <NavLink 
+            to="/modified" 
+            className={isActive('/modified') ? 'active' : ''}
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Modified Masters
+          </NavLink>
           {currentUser && (
             <NavLink 
               to="/dashboard" 
@@ -197,6 +204,24 @@ function Header() {
             >
               Dashboard
             </NavLink>
+          )}
+          {currentUser && (
+            <>
+              <NavLink 
+                to="/dashboard/coach" 
+                className={isActive('/dashboard/coach') ? 'active' : ''}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Coach
+              </NavLink>
+              <NavLink 
+                to="/dashboard/understudy" 
+                className={isActive('/dashboard/understudy') ? 'active' : ''}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Understudy
+              </NavLink>
+            </>
           )}
         </Nav>
 

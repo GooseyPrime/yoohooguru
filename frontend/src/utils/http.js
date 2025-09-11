@@ -113,9 +113,6 @@ export async function del(path, options = {}) {
   }
 }
 
-// Named exports for convenience
-export { get, post, patch, del as delete };
-
 // Default export with all methods
 export default {
   get,
