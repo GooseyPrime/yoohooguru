@@ -1,6 +1,6 @@
-# 🚂 Railway Deployment - Quick Start
+# 🚂 Railway Deployment - Standardized Configuration
 
-Deploy yoohoo.guru backend to Railway in 3 commands:
+Deploy yoohoo.guru to Railway with consistent configuration:
 
 ```powershell
 # Install Railway CLI
@@ -9,9 +9,17 @@ npm install -g @railway/cli
 # Login to Railway
 railway login
 
-# Navigate to repository root and deploy (IMPORTANT: Must be in root directory)
+# Navigate to repository root and link project (REQUIRED)
 cd yoohooguru
-railway up .
+railway link
+
+# Configure in Railway Dashboard → Settings:
+# - Root Directory: "/" (for full-stack) OR "/backend" (for backend-only)
+# - Build Command: "npm run build" (full-stack) OR "npm install && npm start" (backend-only)
+# - Start Command: "npm start"
+
+# Deploy (always from repository root)
+railway up
 ```
 
 ## ⚡ Environment Variables Required
@@ -25,26 +33,25 @@ FIREBASE_API_KEY=your_api_key
 JWT_SECRET=your_super_secret_key
 ```
 
-## 📁 Directory Requirements
+## 📁 Deployment Options
 
-- **Full-Stack Deployment**: Run from `yoohooguru/` (root directory)
-- **Backend-Only Deployment**: Run from `yoohooguru/backend/` directory
+**Full-Stack Deployment (Recommended):**
+- Railway Dashboard Root Directory: `/` (root)
+- Build Command: `npm run build`
+- Deploys: Frontend + Backend
 
-```powershell
-# Option 1: Full-stack (recommended)
-cd yoohooguru
-railway up .
+**Backend-Only Deployment:**
+- Railway Dashboard Root Directory: `/backend`
+- Build Command: `npm install && npm start`  
+- Deploys: Backend API only
 
-# Option 2: Backend only  
-cd yoohooguru/backend
-railway up
-```
+**Important**: Always run `railway up` from repository root (`yoohooguru/`) regardless of which deployment option you choose. The platform configuration determines what gets deployed.
 
 ## 📚 Full Documentation
 
 - [Complete Railway Guide](docs/RAILWAY_DEPLOYMENT.md)
 - [Environment Variables Reference](.env.example)
-- [General Deployment Guide](docs/DEPLOYMENT.md)
+- [Standardized Deployment Guide](README.md#-standardized-deployment-configuration)
 
 ## ✅ Health Check
 
