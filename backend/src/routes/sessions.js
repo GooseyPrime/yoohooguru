@@ -5,10 +5,10 @@
 
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
-const { requireAuth, optionalAuth } = require('../middleware/auth');
+const { requireAuth } = require('../middleware/auth');
 const SessionsDB = require('../db/sessions');
 const { generateICS, generateAllCalendarLinks } = require('../utils/calendar');
-const { validateSessionData, SESSION_STATUSES } = require('../types/session');
+const { SESSION_STATUSES } = require('../types/session');
 const { logger } = require('../utils/logger');
 
 const router = express.Router();
