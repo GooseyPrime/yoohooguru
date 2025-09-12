@@ -43,6 +43,14 @@ import OnboardingReview from '../screens/onboarding/OnboardingReview';
 // Account screens
 import PayoutsPanel from '../screens/account/PayoutsPanel';
 
+// Modified Masters screens
+import ModifiedMasters from '../screens/ModifiedMasters';
+import DashboardCoach from '../screens/DashboardCoach';
+import DashboardUnderstudy from '../screens/DashboardUnderstudy';
+
+// Host routing
+import HostSubdomainRouterGate from './HostSubdomainRouterGate';
+
 // Protected Route Component
 function ProtectedRoute({ children }) {
   const { currentUser, loading } = useAuth();
@@ -259,6 +267,28 @@ function AppRouter() {
             </ProtectedRoute>
           } 
         />
+
+        {/* Modified Masters routes */}
+        <Route path="modified" element={<ModifiedMasters />} />
+        <Route 
+          path="dashboard/coach" 
+          element={
+            <ProtectedRoute>
+              <DashboardCoach />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="dashboard/understudy" 
+          element={
+            <ProtectedRoute>
+              <DashboardUnderstudy />
+            </ProtectedRoute>
+          } 
+        />
+
+        {/* Host Subdomain Router Gate - handles subdomain routing */}
+        <HostSubdomainRouterGate />
 
         {/* Admin routes (outside of Layout) */}
         <Route path="admin/login" element={<AdminLoginPage />} />
