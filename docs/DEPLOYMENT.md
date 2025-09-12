@@ -1,3 +1,42 @@
+# Production Split Deploy
+
+## Frontend (Vercel)
+1. Project: `frontend/`
+2. Production domain: `https://yoohoo.guru`
+3. Env (Production):
+   - `VITE_API_URL=https://api.yoohoo.guru`
+   - `VITE_FIREBASE_API_KEY=...`
+   - `VITE_FIREBASE_AUTH_DOMAIN=...`
+   - `VITE_FIREBASE_PROJECT_ID=...`
+   - `VITE_FIREBASE_STORAGE_BUCKET=...`
+   - `VITE_FIREBASE_MESSAGING_SENDER_ID=...`
+   - `VITE_FIREBASE_APP_ID=...`
+4. `frontend/vercel.json` provides CSP headers.
+
+## Backend (Railway)
+1. Service root: `backend/` (or repo root with Docker build context pointing to backend Dockerfile).
+2. Env:
+   - `NODE_ENV=production`
+   - `SERVE_FRONTEND=false`
+   - `CORS_ORIGIN_PRODUCTION=https://yoohoo.guru,https://*.vercel.app`
+   - `FIREBASE_PROJECT_ID=...`
+   - `FIREBASE_CLIENT_EMAIL=...`
+   - `FIREBASE_PRIVATE_KEY=...`  (use literal `\n` for newlines)
+   - `JWT_SECRET=...`
+3. Health: `GET /health` → 200
+4. API base: `/api/*`
+
+## Firebase Auth
+Authorized domains:
+- `yoohoo.guru`
+- Vercel previews (e.g., `*.vercel.app`)
+- Default Firebase auth domain (`<project>.firebaseapp.com`)
+Callbacks/redirects occur on the **frontend** domain (`https://yoohoo.guru`).
+
+## DNS
+- Apex `yoohoo.guru` → Vercel
+- `api.yoohoo.guru` → Railway service
+
 # Deployment Guide
 
 This guide covers deploying yoohoo.guru to various hosting platforms.
