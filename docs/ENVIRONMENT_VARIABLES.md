@@ -89,17 +89,20 @@ All React app variables must be prefixed with `REACT_APP_` to be accessible in t
 
 ### External Services
 
-#### Firebase Configuration
+#### Firebase Configuration (Firestore-only)
+
+**🔥 NOTE: This application now uses Firestore exclusively. Realtime Database is no longer supported.**
 
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `FIREBASE_API_KEY` | ✅ | Firebase API key |
 | `FIREBASE_AUTH_DOMAIN` | ✅ | Firebase auth domain |
-| `FIREBASE_DATABASE_URL` | ✅ | Firebase database URL |
 | `FIREBASE_PROJECT_ID` | ✅ | Firebase project ID |
 | `FIREBASE_STORAGE_BUCKET` | ✅ | Firebase storage bucket |
 | `FIREBASE_MESSAGING_SENDER_ID` | ✅ | Firebase messaging sender ID |
 | `FIREBASE_APP_ID` | ✅ | Firebase app ID |
+
+**⚠️ REMOVED**: `FIREBASE_DATABASE_URL` - No longer needed with Firestore-only configuration
 
 #### Firebase for Frontend
 
@@ -107,11 +110,12 @@ All Firebase variables also need `REACT_APP_` prefixed versions for frontend use
 
 - `REACT_APP_FIREBASE_API_KEY`
 - `REACT_APP_FIREBASE_AUTH_DOMAIN`
-- `REACT_APP_FIREBASE_DATABASE_URL`
 - `REACT_APP_FIREBASE_PROJECT_ID`
 - `REACT_APP_FIREBASE_STORAGE_BUCKET`
 - `REACT_APP_FIREBASE_MESSAGING_SENDER_ID`
 - `REACT_APP_FIREBASE_APP_ID`
+
+**⚠️ REMOVED**: `REACT_APP_FIREBASE_DATABASE_URL` - No longer needed with Firestore-only configuration
 
 #### JWT Configuration
 

@@ -1,5 +1,5 @@
 // Add-only seed for categories + category_requirements
-const { initializeFirebase, getDatabase } = require('../config/firebase');
+const { initializeFirebase, getFirestore } = require('../firebase/admin');
 
 const CATS = [
   // Lessons / tutoring / fitness
@@ -44,10 +44,27 @@ const REQUIREMENTS = {
 
 async function run() {
   initializeFirebase();
-  const db = getDatabase();
-  await db.ref('categories').update(CATS.reduce((acc,c)=>({ ...acc, [c.slug]: c }),{}));
-  await db.ref('category_requirements').update(REQUIREMENTS);
-  console.log('Seed complete.');
+  const db = getFirestore();
+  
+  // Convert categories to Firestore documents
+  const categoriesCollection = db.collection('categories');
+  const batch = db.batch();
+  
+  // Add categories
+  CATS.forEach(cat => {
+    const docRef = categoriesCollection.doc(cat.slug);
+    batch.set(docRef, cat);
+  });
+  
+  // Add category requirements
+  const requirementsCollection = db.collection('category_requirements');
+  Object.entries(REQUIREMENTS).forEach(([slug, requirements]) => {
+    const docRef = requirementsCollection.doc(slug);
+    batch.set(docRef, { slug, ...requirements });
+  });
+  
+  await batch.commit();
+  console.log('✅ Firestore seed complete - categories and requirements added');
   process.exit(0);
 }
 run().catch(e=>{ console.error(e); process.exit(1); });
