@@ -4,6 +4,86 @@ yoohoo.guru is a neighborhood-based skill-sharing platform where users exchange 
 
 **ALWAYS reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.**
 
+## Deployment Architecture Analysis Protocol - CRITICAL
+
+**ALWAYS follow this protocol before fixing deployment issues to avoid logical errors:**
+
+### Step 1: Map Expected Architecture
+```bash
+# Document what SHOULD be happening:
+# Domain → Service mapping
+# yoohoo.guru → Vercel frontend
+# www.yoohoo.guru → Vercel frontend  
+# api.yoohoo.guru → Railway backend
+
+# Data flow expectations
+# Frontend (Vercel) calls API (Railway)
+# No frontend content should be served by backend in production
+```
+
+### Step 2: Verify Actual Routing  
+```bash  
+# Test where domains actually point
+curl -I https://yoohoo.guru/
+curl -I https://www.yoohoo.guru/
+curl -I https://api.yoohoo.guru/health
+
+# Check response headers to identify the serving platform
+# Railway responses: server: railway-edge, JSON content
+# Vercel responses: server: Vercel, HTML content, x-vercel-id headers
+```
+
+### Step 3: CRITICAL - Test Current Behavior Before Assuming Problems
+```bash
+# NEVER assume DNS routing is wrong without testing
+# Check actual responses, not just assumptions
+curl -L https://yoohoo.guru/ | head -5      # Should show HTML from Vercel
+curl https://www.yoohoo.guru/ | head -5     # Should show HTML from Vercel  
+curl https://api.yoohoo.guru/ | head -5     # Should show JSON from Railway
+
+# Look for specific indicators:
+# - 307 redirects from apex to www (normal Vercel behavior)
+# - x-vercel-id headers (indicates Vercel serving)  
+# - server: railway-edge headers (indicates Railway serving)
+```
+
+### Step 4: Identify Architecture Discrepancies (IF THEY EXIST)
+```bash
+# Only proceed if there are ACTUAL discrepancies:
+# If yoohoo.guru returns JSON instead of HTML → DNS points to backend  
+# If api.yoohoo.guru returns HTML instead of JSON → DNS points to frontend
+# If both domains return same content type but behave differently → investigate deeper
+
+# CRITICAL LESSON: DNS A records supersede CNAME records
+# An A record pointing to Vercel IP means the domain goes to Vercel, regardless of other CNAMEs
+```
+
+### Step 5: Fix Root Cause (ONLY if needed)
+```markdown  
+**NEVER fix symptoms before addressing root cause:**
+- ❌ Don't modify CSP headers if wrong service is serving content
+- ❌ Don't modify build configs if DNS routing is wrong
+- ❌ Don't assume problems exist without testing current behavior  
+- ✅ Test current state thoroughly first
+- ✅ Fix DNS configuration only if actually wrong
+- ✅ Then fix environment variables if needed
+- ✅ Finally address build/deployment configs if required
+```
+
+### Step 6: Validate Understanding vs Reality
+```bash
+# Test all domains after any fixes and BEFORE claiming success
+curl -I https://yoohoo.guru/ 2>&1 | grep -E "(server:|location:)"
+curl -I https://www.yoohoo.guru/ 2>&1 | grep "server:"  
+curl -I https://api.yoohoo.guru/ 2>&1 | grep "server:"
+```
+
+**Critical Lessons Learned:**
+1. **DNS A records supersede CNAME records** - An A record to Vercel IP means traffic goes to Vercel
+2. **Test don't assume** - Always verify current behavior before "fixing" problems
+3. **Different symptoms ≠ different sources** - Same service can behave differently based on configuration
+4. **Redirects are normal** - 307 redirects from apex to www is standard Vercel behavior
+
 ## Current Project State - VALIDATED
 
 **CRITICAL**: This is an early-stage repository currently containing only README.md, LICENSE, and .github/copilot-instructions.md files. The actual application codebase has not been implemented yet.
