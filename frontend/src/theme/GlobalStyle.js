@@ -130,6 +130,111 @@ const GlobalStyle = createGlobalStyle`
     cursor: not-allowed;
     opacity: 0.6;
   }
+
+  /* ========== ACCESSIBILITY TOOLBAR STYLES ========== */
+  
+  /* Large text styles */
+  .a11y-large-text {
+    font-size: 1.125rem !important;
+    line-height: 1.7 !important;
+  }
+  
+  .a11y-large-text p,
+  .a11y-large-text span,
+  .a11y-large-text div,
+  .a11y-large-text button,
+  .a11y-large-text input,
+  .a11y-large-text label {
+    font-size: 1.125rem !important;
+    line-height: 1.7 !important;
+  }
+  
+  .a11y-large-text h1 { font-size: 2.25rem !important; }
+  .a11y-large-text h2 { font-size: 2rem !important; }
+  .a11y-large-text h3 { font-size: 1.75rem !important; }
+  .a11y-large-text h4 { font-size: 1.5rem !important; }
+  .a11y-large-text h5 { font-size: 1.25rem !important; }
+  .a11y-large-text h6 { font-size: 1.125rem !important; }
+  
+  /* Extra large text styles */
+  .a11y-xlarge-text {
+    font-size: 1.25rem !important;
+    line-height: 1.8 !important;
+  }
+  
+  .a11y-xlarge-text p,
+  .a11y-xlarge-text span,
+  .a11y-xlarge-text div,
+  .a11y-xlarge-text button,
+  .a11y-xlarge-text input,
+  .a11y-xlarge-text label {
+    font-size: 1.25rem !important;
+    line-height: 1.8 !important;
+  }
+  
+  .a11y-xlarge-text h1 { font-size: 2.5rem !important; }
+  .a11y-xlarge-text h2 { font-size: 2.25rem !important; }
+  .a11y-xlarge-text h3 { font-size: 2rem !important; }
+  .a11y-xlarge-text h4 { font-size: 1.75rem !important; }
+  .a11y-xlarge-text h5 { font-size: 1.5rem !important; }
+  .a11y-xlarge-text h6 { font-size: 1.25rem !important; }
+  
+  /* High contrast styles */
+  .a11y-high-contrast {
+    filter: contrast(150%) brightness(110%) !important;
+  }
+  
+  .a11y-high-contrast * {
+    background-color: var(--contrast-bg, inherit) !important;
+    color: var(--contrast-text, inherit) !important;
+    border-color: var(--contrast-border, inherit) !important;
+  }
+  
+  /* Override specific elements for high contrast */
+  .a11y-high-contrast button {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+  }
+  
+  .a11y-high-contrast button:hover {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+  
+  .a11y-high-contrast input,
+  .a11y-high-contrast textarea,
+  .a11y-high-contrast select {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border: 2px solid #000000 !important;
+  }
+  
+  /* Reduced motion styles */
+  .a11y-reduced-motion,
+  .a11y-reduced-motion * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transform: none !important;
+  }
+  
+  /* Dyslexia-friendly font */
+  .a11y-dyslexia-font,
+  .a11y-dyslexia-font * {
+    font-family: 'Comic Sans MS', 'Arial', sans-serif !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.05em !important;
+    word-spacing: 0.1em !important;
+  }
+  
+  /* Ensure focus is always visible in accessibility modes */
+  .a11y-large-text *:focus,
+  .a11y-xlarge-text *:focus,
+  .a11y-high-contrast *:focus {
+    outline: 3px solid #ffff00 !important;
+    outline-offset: 3px !important;
+  }
 `;
 
 export default GlobalStyle;

@@ -75,6 +75,12 @@ function getConfig() {
     firebaseStorageBucket: process.env.FIREBASE_STORAGE_BUCKET,
     firebaseMessagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
     firebaseAppId: process.env.FIREBASE_APP_ID,
+
+    // Modified Masters Configuration
+    featureModifiedMasters: process.env.FEATURE_MODIFIED_MASTERS === 'true',
+    modifiedMastersDonateUrl: process.env.MODIFIED_MASTERS_DONATE_URL || '',
+    modifiedMastersEnableSubdomain: process.env.MODIFIED_MASTERS_ENABLE_SUBDOMAIN === 'true',
+    modifiedMastersRequireReview: process.env.MODIFIED_MASTERS_REQUIRE_REVIEW === 'true',
   };
 
   // Validate required environment variables in production
@@ -123,12 +129,20 @@ function validateConfig(config) {
   
   // Log warnings
   warnings.forEach(warning => logger.warn(warning));
+
+  // Modified Masters specific validations
+  if (config.featureModifiedMasters && !config.modifiedMastersDonateUrl) {
+    logger.warn('[MM] Donation URL not set; Donate button will be hidden.');
+  }
   
   // Log configuration summary
   logger.info(`Configuration loaded for environment: ${config.nodeEnv}`);
   logger.info(`App brand: ${config.appBrandName}`);
   logger.info(`CORS origins: ${getCorsOrigins(config).join(', ')}`);
   logger.info(`Serve frontend: ${config.serveFrontend}`);
+  if (config.featureModifiedMasters) {
+    logger.info(`Modified Masters enabled with subdomain: ${config.modifiedMastersEnableSubdomain}`);
+  }
   
   return warnings;
 }

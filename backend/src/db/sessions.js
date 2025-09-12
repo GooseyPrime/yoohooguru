@@ -1,3 +1,4 @@
+
 const { getFirestore } = require('../firebase/admin');
 
 const getCollection = () => {
