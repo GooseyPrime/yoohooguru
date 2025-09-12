@@ -25,6 +25,7 @@ build/
 # Logs
 *.log
 npm-debug.log*
+logs/
 
 # OS files
 .DS_Store
@@ -39,3 +40,42 @@ Thumbs.db
 # Docker
 *.tar
 .vercel
+
+# Documentation files that don't belong in code repository
+*.pdf
+*.docx
+*.pptx
+*.xlsx
+
+# Large media files
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.svg
+*.webp
+*.mp4
+*.mov
+*.avi
+*.mkv
+
+# Backup and temporary files
+*.backup
+*.bak
+*.tmp
+*.temp
+*~
+*.orig
+deploy-fix.*
+*errors*
+
+# Duplicate content files
+merged-*
+*-duplicate.*
+*-copy.*
+
+# PR and design review files
+*pr-request*
+*PR-Request*
+*ui-pr*
+*design-system*
