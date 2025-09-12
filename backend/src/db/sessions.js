@@ -1,200 +1,140 @@
-/**
- * Session Database Adapter
- * Handles distance session storage and retrieval using Firestore
- */
 
-const { getFirestore } = require('../config/firebase');
-const { logger } = require('../utils/logger');
-const { createDistanceSession, validateSessionData } = require('../types/session');
+const { getFirestore } = require('../firebase/admin');
 
-/**
- * Create a new distance session
- * @param {Object} sessionData - Session data
- * @returns {Promise<Object>} Created session
- */
-async function create(sessionData) {
-  try {
-    const db = getFirestore();
-    if (!db) {
-      throw new Error('Database not available');
-    }
-
-    // Validate session data
-    const validation = validateSessionData(sessionData);
-    if (!validation.valid) {
-      throw new Error(`Invalid session data: ${validation.errors.join(', ')}`);
-    }
-
-    const session = createDistanceSession(sessionData);
-    
-    // Store in Firestore sessions collection
-    await db.collection('sessions').doc(session.id).set(session);
-
-    logger.info(`Distance session created: ${session.id} for skill ${session.skillId}`);
-    return session;
-  } catch (error) {
-    logger.error('Error creating distance session:', error);
-    throw error;
+const getCollection = () => {
+  const firestore = getFirestore();
+  if (!firestore) {
+    throw new Error('Firestore not initialized');
   }
+  return firestore.collection('sessions');
+};
+
+/**
+ * Create a new session document
+ * @param {Object} session - Session document data
+ * @returns {Object} Created session with ID
+ */
+async function create(session) {
+  const col = getCollection();
+  const ref = col.doc();
+  const now = Date.now();
+  const sessionData = {
+    ...session,
+    createdAt: now,
+    status: session.status || 'requested' // Default to requested
+  };
+  
+  await ref.set(sessionData);
+  return { id: ref.id, ...sessionData };
 }
 
 /**
- * Get a session by ID
- * @param {string} sessionId - Session ID
- * @returns {Promise<Object|null>} Session object or null if not found
- */
-async function get(sessionId) {
-  try {
-    const db = getFirestore();
-    if (!db) {
-      return null;
-    }
-
-    const docRef = db.collection('sessions').doc(sessionId);
-    const doc = await docRef.get();
-    
-    if (doc.exists) {
-      return { id: sessionId, ...doc.data() };
-    }
-    
-    return null;
-  } catch (error) {
-    logger.error('Error fetching session:', error);
-    throw error;
-  }
-}
-
-/**
- * Get sessions by user (as coach or learner)
+ * Get sessions for a user (either as coach or learner)
  * @param {string} userId - User ID
- * @param {string} role - Role: 'coach' or 'learner'
- * @returns {Promise<Array>} Array of sessions
+ * @param {string} role - 'coach' or 'learner'
+ * @returns {Array} Array of user's sessions
  */
-async function byUser(userId, role = 'coach') {
-  try {
-    const db = getFirestore();
-    if (!db) {
-      return [];
-    }
-
-    // Query sessions collection based on role
-    const fieldName = role === 'coach' ? 'coachId' : 'learnerId';
-    const querySnapshot = await db.collection('sessions')
-      .where(fieldName, '==', userId)
-      .get();
-
-    const sessions = [];
-    querySnapshot.forEach(doc => {
-      sessions.push({ id: doc.id, ...doc.data() });
-    });
-
-    // Sort by startTime (most recent first)
-    sessions.sort((a, b) => b.startTime - a.startTime);
-    
-    logger.info(`Found ${sessions.length} sessions for user ${userId} as ${role}`);
-    return sessions;
-  } catch (error) {
-    logger.error('Error fetching user sessions:', error);
-    throw error;
-  }
+async function byUser(userId, role) {
+  const col = getCollection();
+  const field = role === 'coach' ? 'coachId' : 'learnerId';
+  
+  const snap = await col
+    .where(field, '==', userId)
+    .orderBy('startTime', 'desc')
+    .limit(50)
+    .get();
+  
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
 /**
  * Update session status
- * @param {string} sessionId - Session ID
+ * @param {string} id - Session ID
  * @param {string} status - New status
- * @returns {Promise<Object|null>} Updated session
+ * @returns {Object} Updated session document
  */
-async function updateStatus(sessionId, status) {
-  try {
-    const db = getFirestore();
-    if (!db) {
-      throw new Error('Database not available');
-    }
-
-    const docRef = db.collection('sessions').doc(sessionId);
-    const doc = await docRef.get();
-    
-    if (!doc.exists) {
-      return null;
-    }
-
-    const updateData = {
-      status,
-      updatedAt: Date.now()
-    };
-    
-    await docRef.update(updateData);
-
-    // Get updated document
-    const updatedDoc = await docRef.get();
-    const session = { id: sessionId, ...updatedDoc.data() };
-    
-    logger.info(`Session ${sessionId} status updated to ${status}`);
-    return session;
-  } catch (error) {
-    logger.error('Error updating session status:', error);
-    throw error;
-  }
+async function updateStatus(id, status) {
+  const col = getCollection();
+  await col.doc(id).set({ 
+    status,
+    updatedAt: Date.now()
+  }, { merge: true });
+  
+  const doc = await col.doc(id).get();
+  return { id: doc.id, ...doc.data() };
 }
 
 /**
- * Get sessions by skill ID
+ * Get a session by ID
+ * @param {string} id - Session ID
+ * @returns {Object|null} Session document or null if not found
+ */
+async function get(id) {
+  const col = getCollection();
+  const doc = await col.doc(id).get();
+  return doc.exists ? { id: doc.id, ...doc.data() } : null;
+}
+
+/**
+ * Update a session document
+ * @param {string} id - Session ID
+ * @param {Object} patch - Fields to update
+ * @returns {Object} Updated session document
+ */
+async function update(id, patch) {
+  const col = getCollection();
+  const updateData = {
+    ...patch,
+    updatedAt: Date.now()
+  };
+  
+  await col.doc(id).set(updateData, { merge: true });
+  const doc = await col.doc(id).get();
+  return { id: doc.id, ...doc.data() };
+}
+
+/**
+ * Get sessions for a specific skill
  * @param {string} skillId - Skill ID
- * @returns {Promise<Array>} Array of sessions
+ * @returns {Array} Array of sessions for the skill
  */
-async function bySkill(skillId) {
-  try {
-    const db = getFirestore();
-    if (!db) {
-      return [];
-    }
-
-    const querySnapshot = await db.collection('sessions')
-      .where('skillId', '==', skillId)
-      .get();
-
-    const sessions = [];
-    querySnapshot.forEach(doc => {
-      sessions.push({ id: doc.id, ...doc.data() });
-    });
-
-    // Sort by startTime (most recent first)
-    sessions.sort((a, b) => b.startTime - a.startTime);
-    
-    return sessions;
-  } catch (error) {
-    logger.error('Error fetching sessions by skill:', error);
-    throw error;
-  }
+async function getBySkill(skillId) {
+  const col = getCollection();
+  const snap = await col
+    .where('skillId', '==', skillId)
+    .orderBy('startTime', 'desc')
+    .limit(50)
+    .get();
+  
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
 /**
- * Delete a session (soft delete by setting status to canceled)
- * @param {string} sessionId - Session ID
- * @returns {Promise<boolean>} Success status
+ * Get upcoming sessions (for reminders, etc.)
+ * @param {number} timeRange - Time range in milliseconds from now
+ * @returns {Array} Array of upcoming sessions
  */
-async function remove(sessionId) {
-  try {
-    const db = getFirestore();
-    if (!db) {
-      throw new Error('Database not available');
-    }
-
-    await updateStatus(sessionId, 'canceled');
-    logger.info(`Session ${sessionId} canceled (soft delete)`);
-    return true;
-  } catch (error) {
-    logger.error('Error canceling session:', error);
-    throw error;
-  }
+async function getUpcoming(timeRange = 24 * 60 * 60 * 1000) { // Default: 24 hours
+  const col = getCollection();
+  const now = Date.now();
+  const future = now + timeRange;
+  
+  const snap = await col
+    .where('startTime', '>', now)
+    .where('startTime', '<', future)
+    .where('status', '==', 'confirmed')
+    .orderBy('startTime', 'asc')
+    .get();
+  
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
 module.exports = {
   create,
-  get,
   byUser,
   updateStatus,
-  bySkill,
-  remove
+  get,
+  update,
+  getBySkill,
+  getUpcoming
 };

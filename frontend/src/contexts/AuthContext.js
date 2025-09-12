@@ -64,7 +64,7 @@ const validateProductionFirebaseConfig = () => {
 };
 
 // Initialize Firebase only if properly configured
-let auth, database;
+let auth, db;
 
 if (isFirebaseConfigured()) {
   try {
@@ -73,12 +73,12 @@ if (isFirebaseConfigured()) {
 
     const { initializeApp } = require('firebase/app');
     const { getAuth } = require('firebase/auth');
-    const { getDatabase } = require('firebase/database');
+    const { getFirestore } = require('firebase/firestore');
 
     const firebaseConfig = {
       apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
       authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-      databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL || process.env.REACT_APP_FIREBASE_DATABASE_, // Handle truncated secret name
+      // No databaseURL - Firestore only configuration
       projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
       storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
       messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
@@ -87,15 +87,17 @@ if (isFirebaseConfigured()) {
 
     const app = initializeApp(firebaseConfig);
     auth = getAuth(app);
-    database = getDatabase(app);
+    db = getFirestore(app);
     
-    console.log('✅ Firebase initialized successfully');
+    console.log('✅ Firebase initialized successfully (Firestore-only)');
     console.log(`🔥 Project: ${firebaseConfig.projectId}`);
     console.log(`🌐 Auth Domain: ${firebaseConfig.authDomain}`);
+    console.log('🗄️ Using Firestore for data storage');
   } catch (error) {
     console.warn('❌ Firebase initialization failed:', error.message);
     console.warn('🔄 Falling back to offline mode');
     auth = mockAuth;
+    db = null;
   }
 } else {
   const env = process.env.NODE_ENV || 'development';
@@ -106,18 +108,18 @@ if (isFirebaseConfigured()) {
     throw new Error('Firebase configuration is required in production. Mock authentication is prohibited.');
   } else {
     console.log('⚠️ Firebase not configured - using offline mode');
-    console.log('💡 To enable authentication, set these environment variables:');
+    console.log('💡 To enable authentication and data storage, set these environment variables:');
     console.log('   - REACT_APP_FIREBASE_API_KEY');
     console.log('   - REACT_APP_FIREBASE_PROJECT_ID');
     console.log('   - REACT_APP_FIREBASE_AUTH_DOMAIN');
     console.log('📝 Copy .env.example to .env and add your Firebase config');
-    console.log('   - REACT_APP_FIREBASE_AUTH_DOMAIN');
-    console.log('📝 Copy .env.example to .env and add your Firebase config');
+    console.log('🗄️ Firestore-only configuration (no Realtime Database)');
     auth = mockAuth;
+    db = null;
   }
 }
 
-export { auth, database };
+export { auth, db };
 
 const AuthContext = createContext();
 

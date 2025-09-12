@@ -1,6 +1,7 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
-const { getDatabase, getAuth } = require('../config/firebase');
+const { getAuth } = require('../firebase/admin');
+const usersDB = require('../db/users');
 const { authenticateUser } = require('../middleware/auth');
 const { logger } = require('../utils/logger');
 
@@ -43,14 +44,14 @@ router.post('/register', validateRegistration, async (req, res) => {
       displayName
     });
 
-    // Create user profile in database
-    const db = getDatabase();
+    // Create user profile in Firestore
     const userProfile = {
-      uid: userRecord.uid,
       email,
       displayName,
+      // Legacy skill fields for backward compatibility
       skillsOffered: skills.offered || [],
       skillsWanted: skills.wanted || [],
+      // User tier and metrics
       tier: 'Stone Dropper',
       exchangesCompleted: 0,
       averageRating: 0,
@@ -61,6 +62,23 @@ router.post('/register', validateRegistration, async (req, res) => {
       joinDate: new Date().toISOString(),
       isActive: true,
       lastLoginAt: new Date().toISOString(),
+      // Default accessibility preferences
+      accessibility: {
+        mobility: [],
+        vision: [],
+        hearing: [],
+        neurodiversity: [],
+        communicationPrefs: [],
+        assistiveTech: []
+      },
+      // Default Modified Masters preferences
+      modifiedMasters: {
+        wantsToTeach: false,
+        wantsToLearn: false,
+        tags: [],
+        visible: false,
+        coachingStyles: []
+      },
       liability: {
         termsAccepted: true,
         termsAcceptedAt: new Date().toISOString(),
@@ -70,7 +88,7 @@ router.post('/register', validateRegistration, async (req, res) => {
       }
     };
 
-    await db.ref(`users/${userRecord.uid}`).set(userProfile);
+    await usersDB.create(userRecord.uid, userProfile);
 
     logger.info(`User registered successfully: ${email}`);
 
@@ -106,9 +124,7 @@ router.post('/register', validateRegistration, async (req, res) => {
 // @access  Private
 router.get('/profile', authenticateUser, async (req, res) => {
   try {
-    const db = getDatabase();
-    const userSnapshot = await db.ref(`users/${req.user.uid}`).once('value');
-    const userData = userSnapshot.val();
+    const userData = await usersDB.get(req.user.uid);
 
     if (!userData) {
       return res.status(404).json({
@@ -138,7 +154,8 @@ router.put('/profile', authenticateUser, async (req, res) => {
   try {
     const allowedUpdates = [
       'displayName', 'skillsOffered', 'skillsWanted', 
-      'location', 'availability', 'purposeStory'
+      'location', 'availability', 'purposeStory',
+      'accessibility', 'modifiedMasters'
     ];
     
     const updates = {};
@@ -148,16 +165,15 @@ router.put('/profile', authenticateUser, async (req, res) => {
       }
     });
 
-    updates.updatedAt = new Date().toISOString();
+    updates.lastLoginAt = new Date().toISOString();
 
-    const db = getDatabase();
-    await db.ref(`users/${req.user.uid}`).update(updates);
+    const updatedUser = await usersDB.merge(req.user.uid, updates);
 
     logger.info(`Profile updated for user: ${req.user.uid}`);
 
     res.json({
       success: true,
-      data: { message: 'Profile updated successfully' }
+      data: updatedUser
     });
 
   } catch (error) {
