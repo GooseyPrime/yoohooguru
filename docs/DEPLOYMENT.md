@@ -4,13 +4,13 @@
 1. Project: `frontend/`
 2. Production domain: `https://yoohoo.guru`
 3. Env (Production):
-   - `VITE_API_URL=https://api.yoohoo.guru`
-   - `VITE_FIREBASE_API_KEY=...`
-   - `VITE_FIREBASE_AUTH_DOMAIN=...`
-   - `VITE_FIREBASE_PROJECT_ID=...`
-   - `VITE_FIREBASE_STORAGE_BUCKET=...`
-   - `VITE_FIREBASE_MESSAGING_SENDER_ID=...`
-   - `VITE_FIREBASE_APP_ID=...`
+   - `REACT_APP_API_URL=https://api.yoohoo.guru`
+   - `REACT_APP_FIREBASE_API_KEY=...`
+   - `REACT_APP_FIREBASE_AUTH_DOMAIN=...`
+   - `REACT_APP_FIREBASE_PROJECT_ID=...`
+   - `REACT_APP_FIREBASE_STORAGE_BUCKET=...`
+   - `REACT_APP_FIREBASE_MESSAGING_SENDER_ID=...`
+   - `REACT_APP_FIREBASE_APP_ID=...`
 4. `frontend/vercel.json` provides CSP headers.
 
 ## Backend (Railway)
