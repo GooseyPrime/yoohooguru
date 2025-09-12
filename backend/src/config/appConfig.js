@@ -23,9 +23,11 @@ function getConfig() {
     appContactAddress: process.env.APP_CONTACT_ADDRESS || 'yoohoo.guru, Legal Department',
     
     // CORS Configuration
-    corsOriginProduction: process.env.CORS_ORIGIN_PRODUCTION 
-      ? process.env.CORS_ORIGIN_PRODUCTION.split(',').map(origin => origin.trim())
-      : ['https://yoohoo.guru', 'https://www.yoohoo.guru'],
+    corsOriginProduction: (process.env.CORS_ORIGIN_PRODUCTION || '')
+      .split(',')
+      .map(s => s.trim())
+      .filter(Boolean)
+      || ['https://yoohoo.guru', 'https://www.yoohoo.guru'],
     corsOriginDevelopment: process.env.CORS_ORIGIN_DEVELOPMENT 
       ? process.env.CORS_ORIGIN_DEVELOPMENT.split(',').map(origin => origin.trim())
       : ['http://localhost:3000', 'http://127.0.0.1:3000'],
@@ -45,7 +47,10 @@ function getConfig() {
     apiDescription: process.env.API_DESCRIPTION || 'Skill-sharing platform backend',
     
     // Frontend Serving Configuration
-    serveFrontend: process.env.SERVE_FRONTEND === 'true' || process.env.SERVE_FRONTEND === undefined,
+    // Frontend is hosted on Vercel in production; API must not serve the SPA.
+    serveFrontend: process.env.SERVE_FRONTEND
+      ? String(process.env.SERVE_FRONTEND).toLowerCase() === 'true'
+      : (process.env.NODE_ENV === 'production' ? false : true),
     
     // External API Keys (with validation)
     jwtSecret: process.env.JWT_SECRET,
