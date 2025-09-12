@@ -29,36 +29,60 @@ curl -I https://www.yoohoo.guru/
 curl -I https://api.yoohoo.guru/health
 
 # Check response headers to identify the serving platform
-# Railway responses: server headers, JSON APIs
-# Vercel responses: HTML content, frontend assets
+# Railway responses: server: railway-edge, JSON content
+# Vercel responses: server: Vercel, HTML content, x-vercel-id headers
 ```
 
-### Step 3: Identify Architecture Discrepancies
+### Step 3: CRITICAL - Test Current Behavior Before Assuming Problems
 ```bash
-# Compare expected vs actual routing
+# NEVER assume DNS routing is wrong without testing
+# Check actual responses, not just assumptions
+curl -L https://yoohoo.guru/ | head -5      # Should show HTML from Vercel
+curl https://www.yoohoo.guru/ | head -5     # Should show HTML from Vercel  
+curl https://api.yoohoo.guru/ | head -5     # Should show JSON from Railway
+
+# Look for specific indicators:
+# - 307 redirects from apex to www (normal Vercel behavior)
+# - x-vercel-id headers (indicates Vercel serving)  
+# - server: railway-edge headers (indicates Railway serving)
+```
+
+### Step 4: Identify Architecture Discrepancies (IF THEY EXIST)
+```bash
+# Only proceed if there are ACTUAL discrepancies:
 # If yoohoo.guru returns JSON instead of HTML → DNS points to backend  
 # If api.yoohoo.guru returns HTML instead of JSON → DNS points to frontend
-# If CSP errors occur → wrong service serving content
+# If both domains return same content type but behave differently → investigate deeper
+
+# CRITICAL LESSON: DNS A records supersede CNAME records
+# An A record pointing to Vercel IP means the domain goes to Vercel, regardless of other CNAMEs
 ```
 
-### Step 4: Fix Root Cause (DNS/Routing)
+### Step 5: Fix Root Cause (ONLY if needed)
 ```markdown  
 **NEVER fix symptoms before addressing root cause:**
 - ❌ Don't modify CSP headers if wrong service is serving content
-- ❌ Don't modify build configs if DNS routing is wrong  
-- ✅ Fix DNS configuration first
-- ✅ Then fix environment variables  
-- ✅ Finally address build/deployment configs
+- ❌ Don't modify build configs if DNS routing is wrong
+- ❌ Don't assume problems exist without testing current behavior  
+- ✅ Test current state thoroughly first
+- ✅ Fix DNS configuration only if actually wrong
+- ✅ Then fix environment variables if needed
+- ✅ Finally address build/deployment configs if required
 ```
 
-### Step 5: Validate Complete Fix
+### Step 6: Validate Understanding vs Reality
 ```bash
-# Test all domains after fixes
-curl https://yoohoo.guru/ | grep -q "react" && echo "✅ Frontend" || echo "❌ Not frontend"
-curl https://api.yoohoo.guru/ | grep -q "API" && echo "✅ Backend" || echo "❌ Not backend"  
+# Test all domains after any fixes and BEFORE claiming success
+curl -I https://yoohoo.guru/ 2>&1 | grep -E "(server:|location:)"
+curl -I https://www.yoohoo.guru/ 2>&1 | grep "server:"  
+curl -I https://api.yoohoo.guru/ 2>&1 | grep "server:"
 ```
 
-**Remember**: If two domains serve the same content but display differently, they're hitting different services. Fix the routing, not the symptoms.
+**Critical Lessons Learned:**
+1. **DNS A records supersede CNAME records** - An A record to Vercel IP means traffic goes to Vercel
+2. **Test don't assume** - Always verify current behavior before "fixing" problems
+3. **Different symptoms ≠ different sources** - Same service can behave differently based on configuration
+4. **Redirects are normal** - 307 redirects from apex to www is standard Vercel behavior
 
 ## Current Project State - VALIDATED
 
