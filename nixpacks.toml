@@ -1,9 +1,19 @@
 # Nixpacks configuration for yoohoo.guru backend-only deployment
-[phases.install]
-cmds = ["npm install", "cd backend && npm install"]
+# CRITICAL: Only build backend components to prevent frontend files from being created
 
-[phases.build]
+[phases.install]
+# Install only backend dependencies - do NOT install frontend dependencies
+cmds = ["cd backend && npm install"]
+
+[phases.build]  
+# Build only backend components - frontend is deployed separately to Vercel
 cmds = ["cd backend && npm run build"]
 
 [start]
+# Start backend only - frontend served from Vercel
 cmd = "cd backend && npm start"
+
+# Environment defaults for Railway deployment
+[variables]
+SERVE_FRONTEND = "false"
+NODE_ENV = "production"

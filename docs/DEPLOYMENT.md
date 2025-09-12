@@ -33,9 +33,46 @@ Authorized domains:
 - Default Firebase auth domain (`<project>.firebaseapp.com`)
 Callbacks/redirects occur on the **frontend** domain (`https://yoohoo.guru`).
 
-## DNS
-- Apex `yoohoo.guru` → Vercel
-- `api.yoohoo.guru` → Railway service
+## DNS Configuration - CRITICAL ⚠️
+
+**Correct DNS routing is essential for proper deployment:**
+
+```
+✅ CORRECT CONFIGURATION:
+yoohoo.guru        → Vercel frontend (A/CNAME record)
+www.yoohoo.guru    → Vercel frontend (CNAME record) 
+api.yoohoo.guru    → Railway backend (CNAME record)
+
+❌ COMMON MISTAKE:
+yoohoo.guru        → Railway backend (causes CSP/routing issues)
+```
+
+### DNS Verification Commands
+```bash
+# Test DNS resolution
+dig yoohoo.guru
+dig www.yoohoo.guru  
+dig api.yoohoo.guru
+
+# Test actual routing
+curl -I https://yoohoo.guru/        # Should return HTML (Vercel)
+curl -I https://api.yoohoo.guru/    # Should return JSON (Railway)
+```
+
+### ⚠️ Troubleshooting DNS Issues
+
+**If yoohoo.guru serves JSON instead of HTML:**
+- DNS points to Railway instead of Vercel
+- Update A/CNAME record to point to Vercel
+
+**If api.yoohoo.guru serves HTML instead of JSON:**  
+- DNS points to Vercel instead of Railway
+- Update CNAME record to point to Railway
+
+**Verification Script:**
+```bash
+./scripts/verify-architecture.sh
+```
 
 # Deployment Guide
 

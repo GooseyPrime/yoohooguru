@@ -103,10 +103,22 @@ app.use(express.urlencoded({ extended: true, limit: config.expressUrlLimit }));
 let frontendDistPath;
 if (config.serveFrontend) {
   frontendDistPath = path.join(__dirname, '../../frontend/dist');
-  app.use(express.static(frontendDistPath));
-  logger.info(`🎨 Frontend static files will be served from: ${frontendDistPath}`);
+  
+  // Additional safety check: verify frontend files exist before serving
+  const fs = require('fs');
+  if (fs.existsSync(frontendDistPath)) {
+    app.use(express.static(frontendDistPath));
+    logger.info(`🎨 Frontend static files will be served from: ${frontendDistPath}`);
+  } else {
+    logger.warn(`🚨 Frontend serving enabled but dist directory not found: ${frontendDistPath}`);
+    logger.warn('🚨 Frontend serving will be disabled for this session');
+    config.serveFrontend = false; // Disable serving to prevent errors
+  }
 } else {
-  logger.info('🎨 Frontend serving disabled - frontend deployed separately');
+  logger.info('🎨 Frontend serving disabled - frontend deployed separately (Vercel)');
+  if (config.nodeEnv === 'production') {
+    logger.info('✅ Production mode: API-only server configuration active');
+  }
 }
 
 // --- Application Routes ---

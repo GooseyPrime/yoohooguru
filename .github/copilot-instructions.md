@@ -4,6 +4,62 @@ yoohoo.guru is a neighborhood-based skill-sharing platform where users exchange 
 
 **ALWAYS reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.**
 
+## Deployment Architecture Analysis Protocol - CRITICAL
+
+**ALWAYS follow this protocol before fixing deployment issues to avoid logical errors:**
+
+### Step 1: Map Expected Architecture
+```bash
+# Document what SHOULD be happening:
+# Domain → Service mapping
+# yoohoo.guru → Vercel frontend
+# www.yoohoo.guru → Vercel frontend  
+# api.yoohoo.guru → Railway backend
+
+# Data flow expectations
+# Frontend (Vercel) calls API (Railway)
+# No frontend content should be served by backend in production
+```
+
+### Step 2: Verify Actual Routing  
+```bash  
+# Test where domains actually point
+curl -I https://yoohoo.guru/
+curl -I https://www.yoohoo.guru/
+curl -I https://api.yoohoo.guru/health
+
+# Check response headers to identify the serving platform
+# Railway responses: server headers, JSON APIs
+# Vercel responses: HTML content, frontend assets
+```
+
+### Step 3: Identify Architecture Discrepancies
+```bash
+# Compare expected vs actual routing
+# If yoohoo.guru returns JSON instead of HTML → DNS points to backend  
+# If api.yoohoo.guru returns HTML instead of JSON → DNS points to frontend
+# If CSP errors occur → wrong service serving content
+```
+
+### Step 4: Fix Root Cause (DNS/Routing)
+```markdown  
+**NEVER fix symptoms before addressing root cause:**
+- ❌ Don't modify CSP headers if wrong service is serving content
+- ❌ Don't modify build configs if DNS routing is wrong  
+- ✅ Fix DNS configuration first
+- ✅ Then fix environment variables  
+- ✅ Finally address build/deployment configs
+```
+
+### Step 5: Validate Complete Fix
+```bash
+# Test all domains after fixes
+curl https://yoohoo.guru/ | grep -q "react" && echo "✅ Frontend" || echo "❌ Not frontend"
+curl https://api.yoohoo.guru/ | grep -q "API" && echo "✅ Backend" || echo "❌ Not backend"  
+```
+
+**Remember**: If two domains serve the same content but display differently, they're hitting different services. Fix the routing, not the symptoms.
+
 ## Current Project State - VALIDATED
 
 **CRITICAL**: This is an early-stage repository currently containing only README.md, LICENSE, and .github/copilot-instructions.md files. The actual application codebase has not been implemented yet.
