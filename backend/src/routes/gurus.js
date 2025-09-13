@@ -1,4 +1,8 @@
 const express = require('express');
+// TODO: MIGRATE FROM REALTIME DATABASE TO FIRESTORE
+// This route currently uses Firebase Realtime Database via getDatabase()
+// It should be migrated to use Firestore via getFirestore() instead
+// See liability.js for migration pattern examples
 const { getDatabase } = require('../config/firebase');
 const { requireGuru } = require('../middleware/subdomainHandler');
 const { logger } = require('../utils/logger');

@@ -1,6 +1,14 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
-const { getDatabase } = require('../config/firebase');
+// TODO: COMPLETE FIRESTORE MIGRATION
+// This route has been PARTIALLY migrated from Realtime Database to Firestore
+// The database imports have been changed, but many queries still use Realtime DB syntax
+// and need to be converted to Firestore collection/document operations
+// Example conversions needed:
+// - db.ref('table').once('value') -> db.collection('table').get()
+// - db.ref('table').orderByChild('field').equalTo(value) -> db.collection('table').where('field', '==', value)
+// - snapshot.forEach(child => child.val()) -> snapshot.forEach(doc => doc.data())
+const { getFirestore } = require('../config/firebase');
 const { authenticateUser } = require('../middleware/auth');
 const { logger } = require('../utils/logger');
 
@@ -46,7 +54,7 @@ router.post('/waiver', authenticateUser, validateWaiverAcceptance, async (req, r
       });
     }
 
-    const db = getDatabase();
+    const db = getFirestore();
     const waiverRecord = {
       userId: req.user.uid,
       skillCategory,
@@ -60,18 +68,22 @@ router.post('/waiver', authenticateUser, validateWaiverAcceptance, async (req, r
       version: '1.0'
     };
 
-    // Generate unique waiver ID
-    const waiverRef = db.ref('liability_waivers').push();
-    const waiverId = waiverRef.key;
-
-    await waiverRef.set(waiverRecord);
+    // Generate unique waiver ID and add to Firestore
+    const waiverRef = await db.collection('liability_waivers').add(waiverRecord);
+    const waiverId = waiverRef.id;
 
     // Update user profile with latest waiver acceptance
-    await db.ref(`users/${req.user.uid}/liability`).update({
+    const userLiabilityRef = db.collection('users').doc(req.user.uid).collection('liability').doc('summary');
+    
+    // Get current total waivers count
+    const currentLiabilityDoc = await userLiabilityRef.get();
+    const currentTotal = currentLiabilityDoc.exists ? (currentLiabilityDoc.data().totalWaivers || 0) : 0;
+    
+    await userLiabilityRef.set({
       lastWaiverAccepted: new Date().toISOString(),
       lastWaiverId: waiverId,
-      totalWaivers: ((await db.ref(`users/${req.user.uid}/liability/totalWaivers`).once('value')).val() || 0) + 1
-    });
+      totalWaivers: currentTotal + 1
+    }, { merge: true });
 
     logger.info(`Liability waiver accepted by user ${req.user.uid} for ${skillCategory} (${riskLevel} risk)`);
 
@@ -100,18 +112,18 @@ router.get('/waivers', authenticateUser, async (req, res) => {
   try {
     const { limit = 20 } = req.query;
     
-    const db = getDatabase();
-    const waiversSnapshot = await db.ref('liability_waivers')
-      .orderByChild('userId')
-      .equalTo(req.user.uid)
-      .limitToLast(parseInt(limit))
-      .once('value');
+    const db = getFirestore();
+    const waiversSnapshot = await db.collection('liability_waivers')
+      .where('userId', '==', req.user.uid)
+      .orderBy('acceptedAt', 'desc')
+      .limit(parseInt(limit))
+      .get();
 
     const waivers = [];
-    waiversSnapshot.forEach(childSnapshot => {
+    waiversSnapshot.forEach(doc => {
       waivers.push({
-        id: childSnapshot.key,
-        ...childSnapshot.val()
+        id: doc.id,
+        ...doc.data()
       });
     });
 
@@ -151,7 +163,7 @@ router.get('/check/:skillCategory', authenticateUser, async (req, res) => {
     const { skillCategory } = req.params;
     const { riskLevel = 'low' } = req.query;
 
-    const db = getDatabase();
+    const db = getFirestore();
     
     // Check for recent waiver (within last 30 days for high-risk, 90 days for others)
     const validityDays = riskLevel === 'high' ? 30 : 90;
@@ -285,7 +297,7 @@ router.get('/stats', authenticateUser, async (req, res) => {
       });
     }
 
-    const db = getDatabase();
+    const db = getFirestore();
     const waiversSnapshot = await db.ref('liability_waivers').once('value');
     
     const stats = {
@@ -332,7 +344,7 @@ router.get('/stats', authenticateUser, async (req, res) => {
 // @access  Private
 router.get('/terms-status', authenticateUser, async (req, res) => {
   try {
-    const db = getDatabase();
+    const db = getFirestore();
     const userSnapshot = await db.ref(`users/${req.user.uid}/liability`).once('value');
     const userLiability = userSnapshot.val() || {};
 
@@ -370,7 +382,7 @@ router.get('/compliance-check/:skillCategory', authenticateUser, async (req, res
   try {
     const { skillCategory } = req.params;
     const userId = req.user.uid;
-    const db = getDatabase();
+    const db = getFirestore();
 
     // Get compliance requirements
     const complianceResponse = await fetch(`http://localhost:${process.env.PORT || 3000}/api/compliance/status/${skillCategory}`, {
@@ -572,7 +584,7 @@ router.post('/accept-terms', authenticateUser, async (req, res) => {
   try {
     const { version = '2024-12-01' } = req.body;
 
-    const db = getDatabase();
+    const db = getFirestore();
     await db.ref(`users/${req.user.uid}/liability`).update({
       termsAccepted: true,
       termsAcceptedAt: new Date().toISOString(),
