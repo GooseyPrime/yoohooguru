@@ -1,5 +1,5 @@
 const express = require('express');
-const { getDatabase } = require('../config/firebase');
+const { getFirestore } = require('../config/firebase');
 const { authenticateUser, optionalAuth } = require('../middleware/auth');
 const { logger } = require('../utils/logger');
 
@@ -12,19 +12,19 @@ router.get('/', optionalAuth, async (req, res) => {
   try {
     const { tier, skills, location, limit = 50, offset = 0 } = req.query;
     
-    const db = getDatabase();
-    let usersRef = db.ref('users');
+    const db = getFirestore();
+    let usersQuery = db.collection('users');
     
-    // Apply basic ordering and limiting
+    // Apply basic limiting
     if (limit) {
-      usersRef = usersRef.limitToFirst(parseInt(limit));
+      usersQuery = usersQuery.limit(parseInt(limit));
     }
 
-    const snapshot = await usersRef.once('value');
+    const snapshot = await usersQuery.get();
     let users = [];
 
-    snapshot.forEach(childSnapshot => {
-      const user = { id: childSnapshot.key, ...childSnapshot.val() };
+    snapshot.forEach(doc => {
+      const user = { id: doc.id, ...doc.data() };
       
       // Remove sensitive information
       delete user.email;
@@ -77,9 +77,9 @@ router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     
-    const db = getDatabase();
-    const userSnapshot = await db.ref(`users/${id}`).once('value');
-    const userData = userSnapshot.val();
+    const db = getFirestore();
+    const userSnapshot = await db.collection('users').doc(id).get();
+    const userData = userSnapshot.exists ? userSnapshot.data() : null;
 
     if (!userData) {
       return res.status(404).json({
@@ -121,12 +121,12 @@ router.get('/search/skills', async (req, res) => {
     }
 
     const searchTerm = query.toLowerCase();
-    const db = getDatabase();
-    const snapshot = await db.ref('users').once('value');
+    const db = getFirestore();
+    const snapshot = await db.collection('users').get();
     const results = [];
 
-    snapshot.forEach(childSnapshot => {
-      const user = { id: childSnapshot.key, ...childSnapshot.val() };
+    snapshot.forEach(doc => {
+      const user = { id: doc.id, ...doc.data() };
       
       // Remove sensitive information
       delete user.email;
@@ -178,11 +178,11 @@ router.get('/:id/stats', async (req, res) => {
   try {
     const { id } = req.params;
     
-    const db = getDatabase();
+    const db = getFirestore();
     
     // Get user data
-    const userSnapshot = await db.ref(`users/${id}`).once('value');
-    const userData = userSnapshot.val();
+    const userSnapshot = await db.collection('users').doc(id).get();
+    const userData = userSnapshot.exists ? userSnapshot.data() : null;
 
     if (!userData) {
       return res.status(404).json({
@@ -192,17 +192,16 @@ router.get('/:id/stats', async (req, res) => {
     }
 
     // Get user's exchanges
-    const exchangesSnapshot = await db.ref('exchanges')
-      .orderByChild('teacherId')
-      .equalTo(id)
-      .once('value');
+    const exchangesSnapshot = await db.collection('exchanges')
+      .where('teacherId', '==', id)
+      .get();
     
     let totalExchanges = 0;
     let totalRating = 0;
     let ratingCount = 0;
 
-    exchangesSnapshot.forEach(childSnapshot => {
-      const exchange = childSnapshot.val();
+    exchangesSnapshot.forEach(doc => {
+      const exchange = doc.data();
       totalExchanges++;
       
       if (exchange.ratings && exchange.ratings.teacherRating) {
@@ -260,8 +259,8 @@ router.put('/:id/tier', authenticateUser, async (req, res) => {
       });
     }
 
-    const db = getDatabase();
-    await db.ref(`users/${id}`).update({
+    const db = getFirestore();
+    await db.collection('users').doc(id).update({
       tier,
       updatedAt: new Date().toISOString()
     });

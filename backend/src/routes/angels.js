@@ -1,5 +1,5 @@
 const express = require('express');
-const { getDatabase } = require('../config/firebase');
+const { getFirestore } = require('../config/firebase');
 const { requireAuth, optionalAuth } = require('../middleware/auth');
 const { logger } = require('../utils/logger');
 
@@ -30,11 +30,11 @@ router.post('/jobs', requireAuth, async (req, res) => {
       });
     }
 
-    const db = getDatabase();
-    const jobRef = db.ref('angel_jobs').push();
+    const db = getFirestore();
+    const jobRef = db.collection('angel_jobs').doc();
     
     const jobData = {
-      id: jobRef.key,
+      id: jobRef.id,
       title,
       description,
       category,
@@ -47,27 +47,27 @@ router.post('/jobs', requireAuth, async (req, res) => {
       postedBy: req.user.uid,
       status: 'open',
       applications: {},
-      createdAt: Date.now(),
-      updatedAt: Date.now()
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
 
     await jobRef.set(jobData);
 
     // Create activity log entry
-    await db.ref('activity_logs').push({
+    await db.collection('activity_logs').add({
       type: 'angel_job_posted',
       userId: req.user.uid,
-      jobId: jobRef.key,
+      jobId: jobRef.id,
       details: {
         title,
         category,
         location: location.city || location,
         featured: Boolean(featured)
       },
-      timestamp: Date.now()
+      timestamp: new Date().toISOString()
     });
 
-    logger.info(`Angel job posted: ${jobRef.key} by user ${req.user.uid}`);
+    logger.info(`Angel job posted: ${jobRef.id} by user ${req.user.uid}`);
 
     res.status(201).json({
       success: true,
@@ -101,12 +101,12 @@ router.get('/jobs', optionalAuth, async (req, res) => {
       page = 1
     } = req.query;
 
-    const db = getDatabase();
-    const jobsSnapshot = await db.ref('angel_jobs').once('value');
+    const db = getFirestore();
+    const jobsSnapshot = await db.collection('angel_jobs').get();
     let jobs = [];
 
-    jobsSnapshot.forEach(childSnapshot => {
-      const job = childSnapshot.val();
+    jobsSnapshot.forEach(doc => {
+      const job = doc.data();
       
       // Apply filters
       if (status && job.status !== status) return;
@@ -133,7 +133,7 @@ router.get('/jobs', optionalAuth, async (req, res) => {
       if (!a.featured && b.featured) return 1;
       
       // If both are featured or both are not featured, sort by creation date
-      return b.createdAt - a.createdAt;
+      return new Date(b.createdAt) - new Date(a.createdAt);
     });
 
     // Implement pagination
@@ -170,21 +170,21 @@ router.get('/jobs/:jobId', optionalAuth, async (req, res) => {
   try {
     const { jobId } = req.params;
 
-    const db = getDatabase();
-    const jobSnapshot = await db.ref(`angel_jobs/${jobId}`).once('value');
+    const db = getFirestore();
+    const jobSnapshot = await db.collection('angel_jobs').doc(jobId).get();
     
-    if (!jobSnapshot.exists()) {
+    if (!jobSnapshot.exists) {
       return res.status(404).json({
         success: false,
         error: { message: 'Angel job not found' }
       });
     }
 
-    const job = jobSnapshot.val();
+    const job = jobSnapshot.data();
     
     // Get poster information
-    const posterSnapshot = await db.ref(`users/${job.postedBy}`).once('value');
-    const poster = posterSnapshot.val();
+    const posterSnapshot = await db.collection('users').doc(job.postedBy).get();
+    const poster = posterSnapshot.exists ? posterSnapshot.data() : null;
 
     res.json({
       success: true,
@@ -219,18 +219,18 @@ router.post('/jobs/:jobId/apply', requireAuth, async (req, res) => {
     const { jobId } = req.params;
     const { message, proposedRate } = req.body;
 
-    const db = getDatabase();
+    const db = getFirestore();
     
     // Check if job exists
-    const jobSnapshot = await db.ref(`angel_jobs/${jobId}`).once('value');
-    if (!jobSnapshot.exists()) {
+    const jobSnapshot = await db.collection('angel_jobs').doc(jobId).get();
+    if (!jobSnapshot.exists) {
       return res.status(404).json({
         success: false,
         error: { message: 'Angel job not found' }
       });
     }
 
-    const job = jobSnapshot.val();
+    const job = jobSnapshot.data();
     
     // Check if user is trying to apply to their own job
     if (job.postedBy === req.user.uid) {
@@ -254,13 +254,15 @@ router.post('/jobs/:jobId/apply', requireAuth, async (req, res) => {
       message: message || '',
       proposedRate: proposedRate || null,
       status: 'pending',
-      appliedAt: Date.now()
+      appliedAt: new Date().toISOString()
     };
 
-    await db.ref(`angel_jobs/${jobId}/applications/${req.user.uid}`).set(application);
+    await db.collection('angel_jobs').doc(jobId).update({
+      [`applications.${req.user.uid}`]: application
+    });
 
     // Create activity log entry
-    await db.ref('activity_logs').push({
+    await db.collection('activity_logs').add({
       type: 'angel_job_application',
       userId: req.user.uid,
       jobId,
@@ -268,7 +270,7 @@ router.post('/jobs/:jobId/apply', requireAuth, async (req, res) => {
         jobTitle: job.title,
         proposedRate
       },
-      timestamp: Date.now()
+      timestamp: new Date().toISOString()
     });
 
     logger.info(`User ${req.user.uid} applied to angel job ${jobId}`);
@@ -297,18 +299,18 @@ router.get('/jobs/:jobId/applications', requireAuth, async (req, res) => {
   try {
     const { jobId } = req.params;
 
-    const db = getDatabase();
+    const db = getFirestore();
     
     // Check if job exists and user owns it
-    const jobSnapshot = await db.ref(`angel_jobs/${jobId}`).once('value');
-    if (!jobSnapshot.exists()) {
+    const jobSnapshot = await db.collection('angel_jobs').doc(jobId).get();
+    if (!jobSnapshot.exists) {
       return res.status(404).json({
         success: false,
         error: { message: 'Angel job not found' }
       });
     }
 
-    const job = jobSnapshot.val();
+    const job = jobSnapshot.data();
     if (job.postedBy !== req.user.uid) {
       return res.status(403).json({
         success: false,
@@ -321,8 +323,8 @@ router.get('/jobs/:jobId/applications', requireAuth, async (req, res) => {
     // Get applicant details for each application
     if (job.applications) {
       for (const [applicantId, application] of Object.entries(job.applications)) {
-        const userSnapshot = await db.ref(`users/${applicantId}`).once('value');
-        const user = userSnapshot.val();
+        const userSnapshot = await db.collection('users').doc(applicantId).get();
+        const user = userSnapshot.exists ? userSnapshot.data() : null;
         
         applications.push({
           ...application,
@@ -342,7 +344,7 @@ router.get('/jobs/:jobId/applications', requireAuth, async (req, res) => {
       data: {
         jobId,
         jobTitle: job.title,
-        applications: applications.sort((a, b) => b.appliedAt - a.appliedAt)
+        applications: applications.sort((a, b) => new Date(b.appliedAt) - new Date(a.appliedAt))
       }
     });
 
@@ -370,18 +372,18 @@ router.put('/jobs/:jobId/applications/:applicantId', requireAuth, async (req, re
       });
     }
 
-    const db = getDatabase();
+    const db = getFirestore();
     
     // Check if job exists and user owns it
-    const jobSnapshot = await db.ref(`angel_jobs/${jobId}`).once('value');
-    if (!jobSnapshot.exists()) {
+    const jobSnapshot = await db.collection('angel_jobs').doc(jobId).get();
+    if (!jobSnapshot.exists) {
       return res.status(404).json({
         success: false,
         error: { message: 'Angel job not found' }
       });
     }
 
-    const job = jobSnapshot.val();
+    const job = jobSnapshot.data();
     if (job.postedBy !== req.user.uid) {
       return res.status(403).json({
         success: false,
@@ -390,18 +392,18 @@ router.put('/jobs/:jobId/applications/:applicantId', requireAuth, async (req, re
     }
 
     // Update application status
-    await db.ref(`angel_jobs/${jobId}/applications/${applicantId}`).update({
-      status,
-      responseMessage: message || null,
-      respondedAt: Date.now()
+    await db.collection('angel_jobs').doc(jobId).update({
+      [`applications.${applicantId}.status`]: status,
+      [`applications.${applicantId}.responseMessage`]: message || null,
+      [`applications.${applicantId}.respondedAt`]: new Date().toISOString()
     });
 
     // If accepted, update job status and reject other applications
     if (status === 'accepted') {
-      await db.ref(`angel_jobs/${jobId}`).update({
+      await db.collection('angel_jobs').doc(jobId).update({
         status: 'assigned',
         assignedTo: applicantId,
-        updatedAt: Date.now()
+        updatedAt: new Date().toISOString()
       });
 
       // Reject all other pending applications
@@ -409,20 +411,20 @@ router.put('/jobs/:jobId/applications/:applicantId', requireAuth, async (req, re
         const updates = {};
         Object.keys(job.applications).forEach(otherApplicantId => {
           if (otherApplicantId !== applicantId && job.applications[otherApplicantId].status === 'pending') {
-            updates[`angel_jobs/${jobId}/applications/${otherApplicantId}/status`] = 'rejected';
-            updates[`angel_jobs/${jobId}/applications/${otherApplicantId}/responseMessage`] = 'Position filled';
-            updates[`angel_jobs/${jobId}/applications/${otherApplicantId}/respondedAt`] = Date.now();
+            updates[`applications.${otherApplicantId}.status`] = 'rejected';
+            updates[`applications.${otherApplicantId}.responseMessage`] = 'Position filled';
+            updates[`applications.${otherApplicantId}.respondedAt`] = new Date().toISOString();
           }
         });
         
         if (Object.keys(updates).length > 0) {
-          await db.ref().update(updates);
+          await db.collection('angel_jobs').doc(jobId).update(updates);
         }
       }
     }
 
     // Create activity log entry
-    await db.ref('activity_logs').push({
+    await db.collection('activity_logs').add({
       type: 'angel_application_response',
       userId: req.user.uid,
       jobId,
@@ -431,7 +433,7 @@ router.put('/jobs/:jobId/applications/:applicantId', requireAuth, async (req, re
         status,
         jobTitle: job.title
       },
-      timestamp: Date.now()
+      timestamp: new Date().toISOString()
     });
 
     logger.info(`Application ${status} for job ${jobId}, applicant ${applicantId}`);
@@ -460,18 +462,18 @@ router.put('/jobs/:jobId/complete', requireAuth, async (req, res) => {
     const { jobId } = req.params;
     const { rating, review } = req.body;
 
-    const db = getDatabase();
+    const db = getFirestore();
     
     // Check if job exists
-    const jobSnapshot = await db.ref(`angel_jobs/${jobId}`).once('value');
-    if (!jobSnapshot.exists()) {
+    const jobSnapshot = await db.collection('angel_jobs').doc(jobId).get();
+    if (!jobSnapshot.exists) {
       return res.status(404).json({
         success: false,
         error: { message: 'Angel job not found' }
       });
     }
 
-    const job = jobSnapshot.val();
+    const job = jobSnapshot.data();
     
     // Check if user is authorized (job poster or assigned angel)
     if (job.postedBy !== req.user.uid && job.assignedTo !== req.user.uid) {
@@ -482,17 +484,17 @@ router.put('/jobs/:jobId/complete', requireAuth, async (req, res) => {
     }
 
     // Update job status
-    await db.ref(`angel_jobs/${jobId}`).update({
+    await db.collection('angel_jobs').doc(jobId).update({
       status: 'completed',
-      completedAt: Date.now(),
+      completedAt: new Date().toISOString(),
       completedBy: req.user.uid,
       rating: rating || null,
       review: review || null,
-      updatedAt: Date.now()
+      updatedAt: new Date().toISOString()
     });
 
     // Create activity log entry
-    await db.ref('activity_logs').push({
+    await db.collection('activity_logs').add({
       type: 'angel_job_completed',
       userId: req.user.uid,
       jobId,
@@ -500,7 +502,7 @@ router.put('/jobs/:jobId/complete', requireAuth, async (req, res) => {
         jobTitle: job.title,
         rating: rating || null
       },
-      timestamp: Date.now()
+      timestamp: new Date().toISOString()
     });
 
     logger.info(`Angel job ${jobId} marked as completed by user ${req.user.uid}`);
@@ -526,17 +528,16 @@ router.put('/jobs/:jobId/complete', requireAuth, async (req, res) => {
 // @access  Private
 router.get('/my-activity', requireAuth, async (req, res) => {
   try {
-    const db = getDatabase();
+    const db = getFirestore();
     
     // Get user's posted jobs
-    const postedJobsSnapshot = await db.ref('angel_jobs')
-      .orderByChild('postedBy')
-      .equalTo(req.user.uid)
-      .once('value');
+    const postedJobsSnapshot = await db.collection('angel_jobs')
+      .where('postedBy', '==', req.user.uid)
+      .get();
     
     const postedJobs = [];
-    postedJobsSnapshot.forEach(childSnapshot => {
-      const job = childSnapshot.val();
+    postedJobsSnapshot.forEach(doc => {
+      const job = doc.data();
       postedJobs.push({
         ...job,
         applicationCount: Object.keys(job.applications || {}).length
@@ -544,11 +545,11 @@ router.get('/my-activity', requireAuth, async (req, res) => {
     });
 
     // Get user's applications
-    const allJobsSnapshot = await db.ref('angel_jobs').once('value');
+    const allJobsSnapshot = await db.collection('angel_jobs').get();
     const applications = [];
     
-    allJobsSnapshot.forEach(childSnapshot => {
-      const job = childSnapshot.val();
+    allJobsSnapshot.forEach(doc => {
+      const job = doc.data();
       if (job.applications && job.applications[req.user.uid]) {
         applications.push({
           jobId: job.id,
@@ -564,8 +565,8 @@ router.get('/my-activity', requireAuth, async (req, res) => {
     res.json({
       success: true,
       data: {
-        postedJobs: postedJobs.sort((a, b) => b.createdAt - a.createdAt),
-        applications: applications.sort((a, b) => b.application.appliedAt - a.application.appliedAt),
+        postedJobs: postedJobs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
+        applications: applications.sort((a, b) => new Date(b.application.appliedAt) - new Date(a.application.appliedAt)),
         statistics: {
           totalJobsPosted: postedJobs.length,
           totalApplications: applications.length,

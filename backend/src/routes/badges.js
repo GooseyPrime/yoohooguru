@@ -1,6 +1,6 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
-const { getDatabase } = require('../config/firebase');
+const { getFirestore } = require('../config/firebase');
 const { authenticateUser } = require('../middleware/auth');
 const { logger } = require('../utils/logger');
 
@@ -116,17 +116,16 @@ router.post('/request', authenticateUser, validateBadgeRequest, async (req, res)
     const { badgeType, documentIds, notes = '' } = req.body;
     const userId = req.user.uid;
     
-    const db = getDatabase();
+    const db = getFirestore();
     
     // Check if user already has this badge
-    const existingBadgeSnapshot = await db.ref('user_badges')
-      .orderByChild('userId')
-      .equalTo(userId)
-      .once('value');
+    const existingBadgeSnapshot = await db.collection('user_badges')
+      .where('userId', '==', userId)
+      .get();
       
     let hasExistingBadge = false;
-    existingBadgeSnapshot.forEach(childSnapshot => {
-      const badge = childSnapshot.val();
+    existingBadgeSnapshot.forEach(doc => {
+      const badge = doc.data();
       if (badge.badgeType === badgeType && ['approved', 'pending'].includes(badge.status)) {
         hasExistingBadge = true;
       }
@@ -142,8 +141,8 @@ router.post('/request', authenticateUser, validateBadgeRequest, async (req, res)
     // Verify documents exist and belong to user
     const documentsValid = await Promise.all(
       documentIds.map(async (docId) => {
-        const docSnapshot = await db.ref(`profile_documents/${userId}/${docId}`).once('value');
-        return docSnapshot.exists();
+        const docSnapshot = await db.collection('profile_documents').doc(userId).collection('documents').doc(docId).get();
+        return docSnapshot.exists;
       })
     );
     
@@ -155,8 +154,8 @@ router.post('/request', authenticateUser, validateBadgeRequest, async (req, res)
     }
 
     // Create badge request
-    const badgeRequestRef = db.ref('badge_requests').push();
-    const requestId = badgeRequestRef.key;
+    const badgeRequestRef = db.collection('badge_requests').doc();
+    const requestId = badgeRequestRef.id;
     
     const badgeRequest = {
       id: requestId,
@@ -175,7 +174,7 @@ router.post('/request', authenticateUser, validateBadgeRequest, async (req, res)
     await badgeRequestRef.set(badgeRequest);
     
     // Add to user's badge requests
-    await db.ref(`user_badge_requests/${userId}/${requestId}`).set({
+    await db.collection('user_badge_requests').doc(userId).collection('requests').doc(requestId).set({
       badgeType,
       status: 'pending',
       submittedAt: badgeRequest.submittedAt
@@ -209,20 +208,19 @@ router.post('/request', authenticateUser, validateBadgeRequest, async (req, res)
 router.get('/my-badges', authenticateUser, async (req, res) => {
   try {
     const userId = req.user.uid;
-    const db = getDatabase();
+    const db = getFirestore();
 
     // Get approved badges
-    const badgesSnapshot = await db.ref('user_badges')
-      .orderByChild('userId')
-      .equalTo(userId)
-      .once('value');
+    const badgesSnapshot = await db.collection('user_badges')
+      .where('userId', '==', userId)
+      .get();
       
     const approvedBadges = [];
-    badgesSnapshot.forEach(childSnapshot => {
-      const badge = childSnapshot.val();
+    badgesSnapshot.forEach(doc => {
+      const badge = doc.data();
       if (badge.status === 'approved') {
         approvedBadges.push({
-          id: childSnapshot.key,
+          id: doc.id,
           ...badge,
           badgeInfo: BADGE_CATEGORIES[badge.badgeType]
         });
@@ -230,17 +228,16 @@ router.get('/my-badges', authenticateUser, async (req, res) => {
     });
 
     // Get pending requests
-    const requestsSnapshot = await db.ref('badge_requests')
-      .orderByChild('userId')
-      .equalTo(userId)
-      .once('value');
+    const requestsSnapshot = await db.collection('badge_requests')
+      .where('userId', '==', userId)
+      .get();
       
     const pendingRequests = [];
-    requestsSnapshot.forEach(childSnapshot => {
-      const request = childSnapshot.val();
+    requestsSnapshot.forEach(doc => {
+      const request = doc.data();
       if (request.status === 'pending') {
         pendingRequests.push({
-          id: childSnapshot.key,
+          id: doc.id,
           ...request
         });
       }
@@ -271,16 +268,15 @@ router.get('/my-badges', authenticateUser, async (req, res) => {
 router.get('/user/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
-    const db = getDatabase();
+    const db = getFirestore();
 
-    const badgesSnapshot = await db.ref('user_badges')
-      .orderByChild('userId')
-      .equalTo(userId)
-      .once('value');
+    const badgesSnapshot = await db.collection('user_badges')
+      .where('userId', '==', userId)
+      .get();
       
     const publicBadges = [];
-    badgesSnapshot.forEach(childSnapshot => {
-      const badge = childSnapshot.val();
+    badgesSnapshot.forEach(doc => {
+      const badge = doc.data();
       if (badge.status === 'approved' && badge.public !== false) {
         publicBadges.push({
           badgeType: badge.badgeType,
@@ -315,7 +311,7 @@ router.get('/requirements/:skillCategory', async (req, res) => {
     const { skillCategory } = req.params;
     const { userId } = req.query;
     
-    const db = getDatabase();
+    const db = getFirestore();
     
     // Get required badges for this skill category
     const requiredBadges = Object.entries(BADGE_CATEGORIES)
@@ -332,13 +328,12 @@ router.get('/requirements/:skillCategory', async (req, res) => {
     let userBadgeStatus = {};
     
     if (userId) {
-      const userBadgesSnapshot = await db.ref('user_badges')
-        .orderByChild('userId')
-        .equalTo(userId)
-        .once('value');
+      const userBadgesSnapshot = await db.collection('user_badges')
+        .where('userId', '==', userId)
+        .get();
         
-      userBadgesSnapshot.forEach(childSnapshot => {
-        const badge = childSnapshot.val();
+      userBadgesSnapshot.forEach(doc => {
+        const badge = doc.data();
         if (badge.status === 'approved') {
           userBadgeStatus[badge.badgeType] = {
             status: 'earned',
@@ -348,13 +343,12 @@ router.get('/requirements/:skillCategory', async (req, res) => {
       });
       
       // Check pending requests
-      const requestsSnapshot = await db.ref('badge_requests')
-        .orderByChild('userId')
-        .equalTo(userId)
-        .once('value');
+      const requestsSnapshot = await db.collection('badge_requests')
+        .where('userId', '==', userId)
+        .get();
         
-      requestsSnapshot.forEach(childSnapshot => {
-        const request = childSnapshot.val();
+      requestsSnapshot.forEach(doc => {
+        const request = doc.data();
         if (request.status === 'pending' && !userBadgeStatus[request.badgeType]) {
           userBadgeStatus[request.badgeType] = {
             status: 'pending',
@@ -407,17 +401,17 @@ router.put('/admin/review/:requestId', authenticateUser, async (req, res) => {
       });
     }
 
-    const db = getDatabase();
-    const requestSnapshot = await db.ref(`badge_requests/${requestId}`).once('value');
+    const db = getFirestore();
+    const requestSnapshot = await db.collection('badge_requests').doc(requestId).get();
     
-    if (!requestSnapshot.exists()) {
+    if (!requestSnapshot.exists) {
       return res.status(404).json({
         success: false,
         error: { message: 'Badge request not found' }
       });
     }
 
-    const request = requestSnapshot.val();
+    const request = requestSnapshot.data();
     const reviewData = {
       status: action === 'approve' ? 'approved' : 'rejected',
       reviewedAt: new Date().toISOString(),
@@ -426,11 +420,11 @@ router.put('/admin/review/:requestId', authenticateUser, async (req, res) => {
     };
 
     // Update request
-    await db.ref(`badge_requests/${requestId}`).update(reviewData);
+    await db.collection('badge_requests').doc(requestId).update(reviewData);
     
     if (action === 'approve') {
       // Create approved badge
-      const badgeRef = db.ref('user_badges').push();
+      const badgeRef = db.collection('user_badges').doc();
       await badgeRef.set({
         userId: request.userId,
         badgeType: request.badgeType,
@@ -443,7 +437,7 @@ router.put('/admin/review/:requestId', authenticateUser, async (req, res) => {
       });
       
       // Update user badge requests
-      await db.ref(`user_badge_requests/${request.userId}/${requestId}`).update({
+      await db.collection('user_badge_requests').doc(request.userId).collection('requests').doc(requestId).update({
         status: 'approved',
         approvedAt: reviewData.reviewedAt
       });

@@ -1,14 +1,14 @@
 const express = require('express');
 const { stripe } = require('../lib/stripe');
-const { getDatabase } = require('../config/firebase');
+const { getFirestore } = require('../config/firebase');
 const { authenticateUser } = require('../middleware/auth');
 
 const router = express.Router();
 
 async function getAccountId(uid) {
-  const db = getDatabase();
-  const snap = await db.ref(`profiles/${uid}`).once('value');
-  const profile = snap.val() || {};
+  const db = getFirestore();
+  const snap = await db.collection('profiles').doc(uid).get();
+  const profile = snap.exists ? snap.data() : {};
   return profile.stripe_account_id || null;
 }
 

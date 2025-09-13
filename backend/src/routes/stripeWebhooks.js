@@ -1,6 +1,6 @@
 const express = require('express');
 const { stripe } = require('../lib/stripe');
-const { getDatabase } = require('../config/firebase');
+const { getFirestore } = require('../config/firebase');
 
 const router = express.Router();
 
@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    const db = getDatabase();
+    const db = getFirestore();
 
     switch (event.type) {
       case 'checkout.session.completed': {
@@ -33,11 +33,11 @@ router.post('/', async (req, res) => {
         // session.metadata could include jobId/listingId/etc.
         const jobId = session?.metadata?.jobId;
         if (jobId) {
-          await db.ref(`job_bookings/${jobId}`).update({
+          await db.collection('job_bookings').doc(jobId).update({
             status: 'paid',
             checkout_session_id: session.id,
             payment_intent_id: session.payment_intent || null,
-            updated_at: Date.now()
+            updated_at: new Date().toISOString()
           });
         }
         // Subscriptions will also come here if you sell Guru Pass.
@@ -48,14 +48,18 @@ router.post('/', async (req, res) => {
         const acct = event.data.object;
         // Find which profile has this accountId (store reverse index if you like)
         // Here we scan profiles once (ok for MVP scale). For scale, keep an index: accountId -> uid.
-        const profilesSnap = await db.ref('profiles').once('value');
-        profilesSnap.forEach(async (child) => {
-          const p = child.val() || {};
+        const profilesSnap = await db.collection('profiles').get();
+        const batch = db.batch();
+        
+        profilesSnap.forEach((doc) => {
+          const p = doc.data() || {};
           if (p.stripe_account_id === acct.id) {
             const ready = Boolean(acct.payouts_enabled && acct.charges_enabled && acct.details_submitted);
-            await db.ref(`profiles/${child.key}`).update({ payouts_ready: ready });
+            batch.update(db.collection('profiles').doc(doc.id), { payouts_ready: ready });
           }
         });
+        
+        await batch.commit();
         break;
       }
 

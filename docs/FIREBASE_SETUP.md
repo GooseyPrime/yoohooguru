@@ -11,7 +11,7 @@ This guide will help you set up Firebase authentication for the yoohoo.guru appl
 
 1. Go to the [Firebase Console](https://console.firebase.google.com/)
 2. Click "Add project" or "Create a project"
-3. Enter a project name (e.g., "yoohoo-guru-dev" for development)
+3. Enter a project name (e.g., "yoohooguru" for production)
 4. Choose whether to enable Google Analytics (optional)
 5. Click "Create project"
 
@@ -29,14 +29,13 @@ This guide will help you set up Firebase authentication for the yoohoo.guru appl
 1. Click on the gear icon (Project settings) in the left sidebar
 2. Scroll down to "Your apps" section
 3. Click on "Add app" and select the web icon `</>`
-4. Register your app with a nickname (e.g., "yoohoo-guru-web")
+4. Register your app with a nickname (e.g., "yoohooguru-web")
 5. Copy the configuration object that looks like this:
 
 ```javascript
 const firebaseConfig = {
   apiKey: "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXX",
   authDomain: "your-project.firebaseapp.com",
-  databaseURL: "https://your-project-default-rtdb.firebaseio.com/",
   projectId: "your-project-id",
   storageBucket: "your-project.appspot.com",
   messagingSenderId: "123456789012",
@@ -53,7 +52,6 @@ const firebaseConfig = {
 # Firebase Configuration
 FIREBASE_API_KEY=AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXX
 FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
-FIREBASE_DATABASE_URL=https://your-project-default-rtdb.firebaseio.com/
 FIREBASE_PROJECT_ID=your-project-id
 FIREBASE_STORAGE_BUCKET=your-project.appspot.com
 FIREBASE_MESSAGING_SENDER_ID=123456789012
@@ -62,19 +60,19 @@ FIREBASE_APP_ID=1:123456789012:web:abcdef1234567890
 # React App Firebase Variables (required for frontend)
 REACT_APP_FIREBASE_API_KEY=AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXX
 REACT_APP_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
-REACT_APP_FIREBASE_DATABASE_URL=https://your-project-default-rtdb.firebaseio.com/
 REACT_APP_FIREBASE_PROJECT_ID=your-project-id
 REACT_APP_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
 REACT_APP_FIREBASE_MESSAGING_SENDER_ID=123456789012
 REACT_APP_FIREBASE_APP_ID=1:123456789012:web:abcdef1234567890
 ```
 
-## Step 5: Set Up Realtime Database (for Backend)
+## Step 5: Set Up Firestore Database (for Backend)
 
-1. In Firebase Console, go to "Realtime Database"
-2. Click "Create Database"
-3. Choose a location close to your users
-4. Start in test mode (you can configure security rules later)
+1. In Firebase Console, go to "Firestore Database"
+2. Click "Create database"
+3. Choose "Start in production mode" (recommended for production project)
+4. Choose a location close to your users
+5. Configure security rules as needed (see security rules section below)
 
 ## Step 6: Generate Service Account Key (for Backend)
 
