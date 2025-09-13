@@ -481,8 +481,8 @@ railway domain add api.yourdomain.com
 
 **Step 1: Create Firebase Project**
 1. Go to [Firebase Console](https://console.firebase.google.com)
-2. Create new project: "yoohoo-guru-production"
-3. Enable Realtime Database and Firestore
+2. Create new project: "yoohooguru" (set to production mode)
+3. Enable Firestore database
 
 **Step 2: Security Rules**
 Set in Firebase Console → Database → Rules:

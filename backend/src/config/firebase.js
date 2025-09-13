@@ -75,10 +75,8 @@ const initializeFirebase = () => {
 
       const firebaseConfig = {
         projectId: process.env.FIREBASE_PROJECT_ID,
-        // The application uses both Firestore AND Realtime Database
-        // Routes like angels.js, skills.js, auth.js use Realtime Database via getDatabase()
-        // Routes like connect.js use Firestore via getFirestore()
-        databaseURL: process.env.FIREBASE_DATABASE_URL,
+        // The application uses Firestore for all data storage
+        // All routes use Firestore via getFirestore()
         
         // Conditionally add the credential object ONLY if the necessary secrets are present.
         // This ensures the code remains compatible with environments (like Railway)
@@ -143,6 +141,10 @@ const getDatabase = () => {
     }
     throw new Error('Firebase not initialized. Call initializeFirebase() first.');
   }
+  
+  // Deprecation warning
+  logger.warn('⚠️  DEPRECATION WARNING: getDatabase() is deprecated. Use getFirestore() instead.');
+  
   // This is a safety check. If the app was initialized without a databaseURL,
   // it means it's configured for Firestore only. This prevents silent failures.
   if (!firebaseApp.options.databaseURL) {
