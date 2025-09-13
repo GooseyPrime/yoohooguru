@@ -1,10 +1,6 @@
 const express = require('express');
-// TODO: MIGRATE FROM REALTIME DATABASE TO FIRESTORE
-// This route currently uses Firebase Realtime Database via getDatabase()
-// It should be migrated to use Firestore via getFirestore() instead
-// See liability.js for migration pattern examples
 const { authenticateUser } = require('../middleware/auth');
-const { getDatabase } = require('../config/firebase');
+const { getFirestore } = require('../config/firebase');
 const { logger } = require('../utils/logger');
 
 const router = express.Router();
@@ -13,17 +9,17 @@ const router = express.Router();
 router.get('/status', authenticateUser, async (req, res) => {
   try {
     const uid = req.user.uid;
-    const db = getDatabase();
+    const db = getFirestore();
 
     const [profileSnap, picksSnap, docsSnap] = await Promise.all([
-      db.ref(`profiles/${uid}`).once('value'),
-      db.ref(`profile_categories/${uid}`).once('value'),
-      db.ref(`profile_documents/${uid}`).once('value')
+      db.collection('profiles').doc(uid).get(),
+      db.collection('profile_categories').doc(uid).get(),
+      db.collection('profile_documents').doc(uid).get()
     ]);
 
-    const profile = profileSnap.val() || {};
-    const picks   = picksSnap.val()   || {};
-    const docs    = docsSnap.val()    || {};
+    const profile = profileSnap.exists ? profileSnap.data() : {};
+    const picks   = picksSnap.exists ? picksSnap.data() : {};
+    const docs    = docsSnap.exists ? docsSnap.data() : {};
 
     const step = {
       profileComplete: Boolean(profile.displayName && profile.city && profile.zip && profile.bio),
@@ -34,8 +30,11 @@ router.get('/status', authenticateUser, async (req, res) => {
     };
 
     // Check requirements for selected categories
-    const reqsSnap = await db.ref('category_requirements').once('value');
-    const reqs = reqsSnap.val() || {};
+    const reqsSnap = await db.collection('category_requirements').get();
+    const reqs = {};
+    reqsSnap.forEach(doc => {
+      reqs[doc.id] = doc.data();
+    });
     for (const slug of Object.keys(picks)) {
       const r = reqs[slug] || {};
       if (r.requires_license && !hasApproved(docs, 'license', slug)) step.requirementsComplete = false;
@@ -62,10 +61,10 @@ router.post('/profile', authenticateUser, async (req, res) => {
   try {
     const uid = req.user.uid;
     const { displayName, photoUrl, city, zip, bio } = req.body;
-    const db = getDatabase();
-    await db.ref(`profiles/${uid}`).update({
+    const db = getFirestore();
+    await db.collection('profiles').doc(uid).update({
       displayName, photoUrl, city, zip, bio,
-      updatedAt: Date.now(),
+      updatedAt: new Date().toISOString(),
       // surface badge placeholders
       is_id_verified: !!req.body.is_id_verified || false,
       insurance_status: 'unknown',
@@ -82,13 +81,13 @@ router.post('/categories', authenticateUser, async (req, res) => {
   try {
     const uid = req.user.uid;
     const { categories } = req.body; // array of slugs
-    const db = getDatabase();
+    const db = getFirestore();
 
     // Normalize to map for quick lookup
     const picks = {};
-    (categories || []).forEach(slug => picks[slug] = { selectedAt: Date.now() });
+    (categories || []).forEach(slug => picks[slug] = { selectedAt: new Date().toISOString() });
 
-    await db.ref(`profile_categories/${uid}`).set(picks);
+    await db.collection('profile_categories').doc(uid).set(picks);
     res.json({ success:true });
   } catch (e) {
     res.status(500).json({ success:false, error:{ message:'Failed to save categories' }});
@@ -99,13 +98,16 @@ router.post('/categories', authenticateUser, async (req, res) => {
 router.get('/requirements', authenticateUser, async (req, res) => {
   try {
     const uid = req.user.uid;
-    const db = getDatabase();
+    const db = getFirestore();
     const [picksSnap, reqsSnap] = await Promise.all([
-      db.ref(`profile_categories/${uid}`).once('value'),
-      db.ref('category_requirements').once('value')
+      db.collection('profile_categories').doc(uid).get(),
+      db.collection('category_requirements').get()
     ]);
-    const picks = Object.keys(picksSnap.val() || {});
-    const reqs  = reqsSnap.val() || {};
+    const picks = Object.keys(picksSnap.exists ? picksSnap.data() : {});
+    const reqs = {};
+    reqsSnap.forEach(doc => {
+      reqs[doc.id] = doc.data();
+    });
     const needed = picks.map(slug => ({ slug, requirements: reqs[slug] || {} }));
     res.json({ success:true, data:{ needed }});
   } catch (e) {
@@ -118,10 +120,10 @@ router.post('/documents', authenticateUser, async (req, res) => {
   try {
     const uid = req.user.uid;
     const { type, category, provider, number, issued_on, expires_on, file_url } = req.body;
-    const db = getDatabase();
-    const ref = db.ref(`profile_documents/${uid}`).push();
+    const db = getFirestore();
+    const ref = db.collection('profile_documents').doc(uid).collection('documents').doc();
     await ref.set({
-      id: ref.key,
+      id: ref.id,
       type, category: category || null,
       provider: provider || null,
       number: number || null,
@@ -129,7 +131,7 @@ router.post('/documents', authenticateUser, async (req, res) => {
       expires_on: expires_on || null,
       file_url: file_url || null,
       status: 'pending',
-      created_at: Date.now()
+      created_at: new Date().toISOString()
     });
     res.json({ success:true, data:{ id: ref.key }});
   } catch (e) {

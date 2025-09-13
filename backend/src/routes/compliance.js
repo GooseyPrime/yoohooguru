@@ -1,9 +1,5 @@
 const express = require('express');
-// TODO: MIGRATE FROM REALTIME DATABASE TO FIRESTORE
-// This route currently uses Firebase Realtime Database via getDatabase()
-// It should be migrated to use Firestore via getFirestore() instead
-// See liability.js for migration pattern examples
-const { getDatabase } = require('../config/firebase');
+const { getFirestore } = require('../config/firebase');
 const { authenticateUser } = require('../middleware/auth');
 const { logger } = require('../utils/logger');
 
@@ -234,23 +230,23 @@ router.get('/status/:skillCategory', authenticateUser, async (req, res) => {
       });
     }
 
-    const db = getDatabase();
+    const db = getFirestore();
     
     // Get user profile, documents, badges, and verification status
     const [profileSnap, docsSnap, badgesSnap, verificationSnap] = await Promise.all([
-      db.ref(`profiles/${userId}`).once('value'),
-      db.ref(`profile_documents/${userId}`).once('value'),
-      db.ref('user_badges').orderByChild('userId').equalTo(userId).once('value'),
-      db.ref(`user_verifications/${userId}`).once('value')
+      db.collection('profiles').doc(userId).get(),
+      db.collection('profile_documents').doc(userId).get(),
+      db.collection('user_badges').where('userId', '==', userId).get(),
+      db.collection('user_verifications').doc(userId).get()
     ]);
 
-    const profile = profileSnap.val() || {};
-    const documents = docsSnap.val() || {};
-    const verifications = verificationSnap.val() || {};
+    const profile = profileSnap.exists ? profileSnap.data() : {};
+    const documents = docsSnap.exists ? docsSnap.data() : {};
+    const verifications = verificationSnap.exists ? verificationSnap.data() : {};
     
     const userBadges = [];
-    badgesSnap.forEach(childSnapshot => {
-      const badge = childSnapshot.val();
+    badgesSnap.forEach(doc => {
+      const badge = doc.data();
       if (badge.status === 'approved') {
         userBadges.push(badge.badgeType);
       }
@@ -305,11 +301,11 @@ router.get('/status/:skillCategory', authenticateUser, async (req, res) => {
 router.get('/dashboard', authenticateUser, async (req, res) => {
   try {
     const userId = req.user.uid;
-    const db = getDatabase();
+    const db = getFirestore();
 
     // Get user's selected skill categories
-    const categoriesSnap = await db.ref(`profile_categories/${userId}`).once('value');
-    const userCategories = Object.keys(categoriesSnap.val() || {});
+    const categoriesSnap = await db.collection('profile_categories').doc(userId).get();
+    const userCategories = Object.keys(categoriesSnap.exists ? categoriesSnap.data() : {});
 
     // Check compliance for each category
     const complianceResults = await Promise.all(
@@ -319,19 +315,19 @@ router.get('/dashboard', authenticateUser, async (req, res) => {
         try {
           // Reuse the compliance checking logic
           const [profileSnap, docsSnap, badgesSnap, verificationSnap] = await Promise.all([
-            db.ref(`profiles/${userId}`).once('value'),
-            db.ref(`profile_documents/${userId}`).once('value'),
-            db.ref('user_badges').orderByChild('userId').equalTo(userId).once('value'),
-            db.ref(`user_verifications/${userId}`).once('value')
+            db.collection('profiles').doc(userId).get(),
+            db.collection('profile_documents').doc(userId).get(),
+            db.collection('user_badges').where('userId', '==', userId).get(),
+            db.collection('user_verifications').doc(userId).get()
           ]);
 
-          const profile = profileSnap.val() || {};
-          const documents = docsSnap.val() || {};
-          const verifications = verificationSnap.val() || {};
+          const profile = profileSnap.exists ? profileSnap.data() : {};
+          const documents = docsSnap.exists ? docsSnap.data() : {};
+          const verifications = verificationSnap.exists ? verificationSnap.data() : {};
           
           const userBadges = [];
-          badgesSnap.forEach(childSnapshot => {
-            const badge = childSnapshot.val();
+          badgesSnap.forEach(doc => {
+            const badge = doc.data();
             if (badge.status === 'approved') {
               userBadges.push(badge.badgeType);
             }
@@ -428,7 +424,7 @@ router.put('/verification/:userId', authenticateUser, async (req, res) => {
       });
     }
 
-    const db = getDatabase();
+    const db = getFirestore();
     const verificationUpdate = {
       [verificationType]: {
         status,
@@ -439,7 +435,7 @@ router.put('/verification/:userId', authenticateUser, async (req, res) => {
       }
     };
 
-    await db.ref(`user_verifications/${userId}`).update(verificationUpdate);
+    await db.collection('user_verifications').doc(userId).update(verificationUpdate);
 
     logger.info(`Verification ${verificationType} ${status} for user ${userId} by admin ${req.user.uid}`);
 
