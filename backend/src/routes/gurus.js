@@ -1,5 +1,6 @@
 const express = require('express');
 const { getFirestore } = require('../config/firebase');
+const admin = require('firebase-admin');
 const { requireGuru } = require('../middleware/subdomainHandler');
 const { logger } = require('../utils/logger');
 const { v4: uuidv4 } = require('uuid');
@@ -17,7 +18,7 @@ router.get('/:subdomain/home', async (req, res) => {
   try {
     const { subdomain } = req.params;
     const guru = req.guru;
-    const db = getDatabase();
+    const db = getFirestore();
     
     // Validate subdomain matches middleware
     if (guru.subdomain !== subdomain) {
@@ -28,30 +29,28 @@ router.get('/:subdomain/home', async (req, res) => {
     }
     
     // Get featured posts for the guru
-    const postsRef = db.ref(`gurus/${subdomain}/posts`);
-    const postsSnapshot = await postsRef
-      .orderByChild('featured')
-      .equalTo(true)
-      .limitToFirst(6)
-      .once('value');
+    const postsSnapshot = await db.collection('gurus').doc(subdomain).collection('posts')
+      .where('featured', '==', true)
+      .limit(6)
+      .get();
     
     const featuredPosts = [];
-    postsSnapshot.forEach(child => {
+    postsSnapshot.forEach(doc => {
       featuredPosts.push({
-        id: child.key,
-        ...child.val()
+        id: doc.id,
+        ...doc.data()
       });
     });
     
     // If we don't have enough featured posts, get recent ones
     if (featuredPosts.length < 6) {
-      const recentPostsSnapshot = await postsRef
-        .orderByChild('publishedAt')
-        .limitToFirst(6 - featuredPosts.length)
-        .once('value');
+      const recentPostsSnapshot = await db.collection('gurus').doc(subdomain).collection('posts')
+        .orderBy('publishedAt', 'desc')
+        .limit(6 - featuredPosts.length)
+        .get();
       
-      recentPostsSnapshot.forEach(child => {
-        const post = { id: child.key, ...child.val() };
+      recentPostsSnapshot.forEach(doc => {
+        const post = { id: doc.id, ...doc.data() };
         if (!featuredPosts.find(p => p.id === post.id)) {
           featuredPosts.push(post);
         }
@@ -59,14 +58,21 @@ router.get('/:subdomain/home', async (req, res) => {
     }
     
     // Get guru stats
-    const statsRef = db.ref(`gurus/${subdomain}/stats`);
-    const statsSnapshot = await statsRef.once('value');
-    const stats = statsSnapshot.val() || {
+    const statsSnapshot = await db.collection('gurus').doc(subdomain).collection('stats').get();
+    let stats = {
       totalPosts: 0,
       totalViews: 0,
       totalLeads: 0,
       monthlyVisitors: 0
     };
+    
+    if (!statsSnapshot.empty) {
+      // Get the first stats document or aggregate if multiple
+      statsSnapshot.forEach(doc => {
+        const data = doc.data();
+        stats = { ...stats, ...data };
+      });
+    }
     
     res.json({
       guru: guru.config,
@@ -102,7 +108,7 @@ router.get('/:subdomain/posts', async (req, res) => {
     } = req.query;
     
     const guru = req.guru;
-    const db = getDatabase();
+    const db = getFirestore();
     
     if (guru.subdomain !== subdomain) {
       return res.status(400).json({
@@ -111,16 +117,15 @@ router.get('/:subdomain/posts', async (req, res) => {
     }
     
     // Get all posts for the subdomain
-    const postsRef = db.ref(`gurus/${subdomain}/posts`);
-    const postsSnapshot = await postsRef
-      .orderByChild('publishedAt')
-      .once('value');
+    const postsSnapshot = await db.collection('gurus').doc(subdomain).collection('posts')
+      .orderBy('publishedAt', 'desc')
+      .get();
     
     let postsArray = [];
-    postsSnapshot.forEach(child => {
+    postsSnapshot.forEach(doc => {
       const post = {
-        id: child.key,
-        ...child.val()
+        id: doc.id,
+        ...doc.data()
       };
       
       // Only include published posts
@@ -211,7 +216,7 @@ router.get('/:subdomain/posts/:slug', async (req, res) => {
   try {
     const { subdomain, slug } = req.params;
     const guru = req.guru;
-    const db = getDatabase();
+    const db = getFirestore();
     
     if (guru.subdomain !== subdomain) {
       return res.status(400).json({
@@ -220,17 +225,15 @@ router.get('/:subdomain/posts/:slug', async (req, res) => {
     }
     
     // Find post by slug
-    const postsRef = db.ref(`gurus/${subdomain}/posts`);
-    const postsSnapshot = await postsRef
-      .orderByChild('slug')
-      .equalTo(slug)
-      .once('value');
+    const postsSnapshot = await db.collection('gurus').doc(subdomain).collection('posts')
+      .where('slug', '==', slug)
+      .get();
     
     let post = null;
-    postsSnapshot.forEach(child => {
+    postsSnapshot.forEach(doc => {
       post = {
-        id: child.key,
-        ...child.val()
+        id: doc.id,
+        ...doc.data()
       };
     });
     
@@ -248,33 +251,39 @@ router.get('/:subdomain/posts/:slug', async (req, res) => {
       });
     }
     
-    // Increment view count
-    const viewsRef = db.ref(`gurus/${subdomain}/posts/${post.id}/views`);
-    await viewsRef.transaction(currentViews => (currentViews || 0) + 1);
+    // Increment view count using batch update
+    const batch = db.batch();
+    const postRef = db.collection('gurus').doc(subdomain).collection('posts').doc(post.id);
+    const currentViews = post.views || 0;
+    batch.update(postRef, { views: currentViews + 1 });
     
     // Track analytics
-    const analyticsRef = db.ref(`analytics/post-views`);
-    await analyticsRef.push({
+    const analyticsRef = db.collection('analytics').doc('post-views');
+    const analyticsData = {
       subdomain,
       postId: post.id,
       slug,
-      timestamp: Date.now(),
+      timestamp: new Date().toISOString(),
       ip: req.ip,
       userAgent: req.get('User-Agent')
-    });
+    };
+    batch.set(analyticsRef.collection('views').doc(), analyticsData);
+    
+    await batch.commit();
     
     // Get related posts (same tags, excluding current post)
     const relatedPosts = [];
     if (post.tags && post.tags.length > 0) {
-      const allPostsSnapshot = await postsRef
-        .orderByChild('publishedAt')
-        .limitToLast(20)
-        .once('value');
+      const allPostsSnapshot = await db.collection('gurus').doc(subdomain).collection('posts')
+        .where('status', '==', 'published')
+        .orderBy('publishedAt', 'desc')
+        .limit(20)
+        .get();
       
-      allPostsSnapshot.forEach(child => {
+      allPostsSnapshot.forEach(doc => {
         const relatedPost = {
-          id: child.key,
-          ...child.val()
+          id: doc.id,
+          ...doc.data()
         };
         
         if (relatedPost.id !== post.id && 
@@ -314,7 +323,7 @@ router.post('/:subdomain/leads', async (req, res) => {
     const { subdomain } = req.params;
     const { name, email, service, message, phone } = req.body;
     const guru = req.guru;
-    const db = getDatabase();
+    const db = getFirestore();
     
     if (guru.subdomain !== subdomain) {
       return res.status(400).json({
@@ -348,24 +357,29 @@ router.post('/:subdomain/leads', async (req, res) => {
       phone: phone ? phone.trim() : null,
       subdomain,
       guruCharacter: guru.config.character,
-      createdAt: Date.now(),
+      createdAt: new Date().toISOString(),
       status: 'new',
       source: 'guru-website',
       ip: req.ip,
       userAgent: req.get('User-Agent')
     };
     
-    // Save lead to Firebase
-    const leadsRef = db.ref(`gurus/${subdomain}/leads/${leadId}`);
-    await leadsRef.set(leadData);
+    // Save lead to Firebase using batch operations
+    const batch = db.batch();
+    
+    // Save to guru-specific leads collection
+    const guruLeadRef = db.collection('gurus').doc(subdomain).collection('leads').doc(leadId);
+    batch.set(guruLeadRef, leadData);
     
     // Also save to global leads for admin dashboard
-    const globalLeadsRef = db.ref(`leads/${leadId}`);
-    await globalLeadsRef.set(leadData);
+    const globalLeadRef = db.collection('leads').doc(leadId);
+    batch.set(globalLeadRef, leadData);
     
     // Update guru stats
-    const statsRef = db.ref(`gurus/${subdomain}/stats/totalLeads`);
-    await statsRef.transaction(currentLeads => (currentLeads || 0) + 1);
+    const statsRef = db.collection('gurus').doc(subdomain).collection('stats').doc('metrics');
+    batch.set(statsRef, { totalLeads: admin.firestore.FieldValue.increment(1) }, { merge: true });
+    
+    await batch.commit();
     
     // Log lead for analytics
     logger.info(`New lead submitted for ${guru.config.character}`, {
@@ -399,7 +413,7 @@ router.get('/:subdomain/services', async (req, res) => {
   try {
     const { subdomain } = req.params;
     const guru = req.guru;
-    const db = getDatabase();
+    const db = getFirestore();
     
     if (guru.subdomain !== subdomain) {
       return res.status(400).json({
@@ -408,14 +422,13 @@ router.get('/:subdomain/services', async (req, res) => {
     }
     
     // Get services from Firebase
-    const servicesRef = db.ref(`gurus/${subdomain}/services`);
-    const servicesSnapshot = await servicesRef.once('value');
+    const servicesSnapshot = await db.collection('gurus').doc(subdomain).collection('services').get();
     
     const services = [];
-    servicesSnapshot.forEach(child => {
+    servicesSnapshot.forEach(doc => {
       services.push({
-        id: child.key,
-        ...child.val()
+        id: doc.id,
+        ...doc.data()
       });
     });
     
@@ -445,7 +458,7 @@ router.get('/:subdomain/about', async (req, res) => {
   try {
     const { subdomain } = req.params;
     const guru = req.guru;
-    const db = getDatabase();
+    const db = getFirestore();
     
     if (guru.subdomain !== subdomain) {
       return res.status(400).json({
@@ -454,21 +467,25 @@ router.get('/:subdomain/about', async (req, res) => {
     }
     
     // Get about page content
-    const aboutRef = db.ref(`gurus/${subdomain}/pages/about`);
-    const aboutSnapshot = await aboutRef.once('value');
+    const aboutSnapshot = await db.collection('gurus').doc(subdomain).collection('pages').doc('about').get();
     
-    const aboutContent = aboutSnapshot.val() || {
-      title: `About ${guru.config.character}`,
-      content: `Meet ${guru.config.character}, your expert guide in ${guru.config.category}. 
-                With years of experience and a passion for teaching, they're here to help you 
-                master ${guru.config.primarySkills.join(', ')} and achieve your goals.`,
-      cta: 'Book a Session',
-      ctaLink: '/contact',
-      features: guru.config.primarySkills.map(skill => ({
-        title: skill.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()),
-        description: `Expert guidance in ${skill}`
-      }))
-    };
+    let aboutContent;
+    if (aboutSnapshot.exists) {
+      aboutContent = aboutSnapshot.data();
+    } else {
+      aboutContent = {
+        title: `About ${guru.config.character}`,
+        content: `Meet ${guru.config.character}, your expert guide in ${guru.config.category}. 
+                  With years of experience and a passion for teaching, they're here to help you 
+                  master ${guru.config.primarySkills.join(', ')} and achieve your goals.`,
+        cta: 'Book a Session',
+        ctaLink: '/contact',
+        features: guru.config.primarySkills.map(skill => ({
+          title: skill.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+          description: `Expert guidance in ${skill}`
+        }))
+      };
+    }
     
     res.json({
       about: aboutContent,

@@ -1,10 +1,6 @@
 const express = require('express');
-// TODO: MIGRATE FROM REALTIME DATABASE TO FIRESTORE
-// This route currently uses Firebase Realtime Database via getDatabase()
-// It should be migrated to use Firestore via getFirestore() instead
-// See liability.js for migration pattern examples
 const { body, validationResult } = require('express-validator');
-const { getDatabase } = require('../config/firebase');
+const { getFirestore } = require('../config/firebase');
 const { authenticateUser } = require('../middleware/auth');
 const { logger } = require('../utils/logger');
 
@@ -167,13 +163,13 @@ router.post('/submit', authenticateUser, validateInsuranceSubmission, async (req
       });
     }
 
-    const db = getDatabase();
+    const db = getFirestore();
     
     // Verify documents exist and belong to user
     const documentsValid = await Promise.all(
       documentIds.map(async (docId) => {
-        const docSnapshot = await db.ref(`profile_documents/${userId}/${docId}`).once('value');
-        return docSnapshot.exists();
+        const docSnapshot = await db.collection('profile_documents').doc(userId).collection('documents').doc(docId).get();
+        return docSnapshot.exists;
       })
     );
     
@@ -185,8 +181,7 @@ router.post('/submit', authenticateUser, validateInsuranceSubmission, async (req
     }
 
     // Create insurance record
-    const insuranceRef = db.ref('user_insurance').push();
-    const insuranceId = insuranceRef.key;
+    const insuranceId = db.collection('user_insurance').doc().id;
     
     const insuranceRecord = {
       id: insuranceId,
@@ -206,10 +201,16 @@ router.post('/submit', authenticateUser, validateInsuranceSubmission, async (req
       insuranceInfo
     };
 
-    await insuranceRef.set(insuranceRecord);
+    // Use batch operations for consistency
+    const batch = db.batch();
+    
+    // Save insurance record
+    const insuranceRef = db.collection('user_insurance').doc(insuranceId);
+    batch.set(insuranceRef, insuranceRecord);
 
     // Update user's insurance status
-    await db.ref(`user_insurance_status/${userId}/${insuranceType}`).set({
+    const statusRef = db.collection('user_insurance_status').doc(userId).collection('types').doc(insuranceType);
+    batch.set(statusRef, {
       status: insuranceRecord.status,
       insuranceId,
       expirationDate,
@@ -221,7 +222,8 @@ router.post('/submit', authenticateUser, validateInsuranceSubmission, async (req
     reminderDate.setDate(reminderDate.getDate() - 30);
     
     if (reminderDate > now) {
-      await db.ref(`insurance_reminders/${insuranceId}`).set({
+      const reminderRef = db.collection('insurance_reminders').doc(insuranceId);
+      batch.set(reminderRef, {
         userId,
         insuranceType,
         expirationDate,
@@ -229,6 +231,8 @@ router.post('/submit', authenticateUser, validateInsuranceSubmission, async (req
         status: 'scheduled'
       });
     }
+
+    await batch.commit();
 
     logger.info(`Insurance submitted by user ${userId} for ${insuranceType}`);
 
@@ -258,25 +262,27 @@ router.post('/submit', authenticateUser, validateInsuranceSubmission, async (req
 router.get('/status', authenticateUser, async (req, res) => {
   try {
     const userId = req.user.uid;
-    const db = getDatabase();
+    const db = getFirestore();
 
     // Get all insurance records for user
-    const insuranceSnapshot = await db.ref('user_insurance')
-      .orderByChild('userId')
-      .equalTo(userId)
-      .once('value');
+    const insuranceSnapshot = await db.collection('user_insurance')
+      .where('userId', '==', userId)
+      .get();
 
     const insuranceRecords = [];
-    insuranceSnapshot.forEach(childSnapshot => {
+    insuranceSnapshot.forEach(doc => {
       insuranceRecords.push({
-        id: childSnapshot.key,
-        ...childSnapshot.val()
+        id: doc.id,
+        ...doc.data()
       });
     });
 
     // Get current status summary
-    const statusSnapshot = await db.ref(`user_insurance_status/${userId}`).once('value');
-    const statusSummary = statusSnapshot.val() || {};
+    const statusSnapshot = await db.collection('user_insurance_status').doc(userId).collection('types').get();
+    const statusSummary = {};
+    statusSnapshot.forEach(doc => {
+      statusSummary[doc.id] = doc.data();
+    });
 
     // Check for expiring insurance (next 30 days)
     const thirtyDaysFromNow = new Date();
@@ -334,9 +340,11 @@ router.get('/requirements/:skillCategory', async (req, res) => {
     let userInsuranceStatus = {};
     
     if (userId) {
-      const db = getDatabase();
-      const statusSnapshot = await db.ref(`user_insurance_status/${userId}`).once('value');
-      userInsuranceStatus = statusSnapshot.val() || {};
+      const db = getFirestore();
+      const statusSnapshot = await db.collection('user_insurance_status').doc(userId).collection('types').get();
+      statusSnapshot.forEach(doc => {
+        userInsuranceStatus[doc.id] = doc.data();
+      });
     }
 
     // Calculate compliance
@@ -392,17 +400,17 @@ router.put('/admin/verify/:insuranceId', authenticateUser, async (req, res) => {
       });
     }
 
-    const db = getDatabase();
-    const insuranceSnapshot = await db.ref(`user_insurance/${insuranceId}`).once('value');
+    const db = getFirestore();
+    const insuranceSnapshot = await db.collection('user_insurance').doc(insuranceId).get();
     
-    if (!insuranceSnapshot.exists()) {
+    if (!insuranceSnapshot.exists) {
       return res.status(404).json({
         success: false,
         error: { message: 'Insurance record not found' }
       });
     }
 
-    const insurance = insuranceSnapshot.val();
+    const insurance = insuranceSnapshot.data();
     const verificationData = {
       status: action === 'approve' ? 'approved' : 'rejected',
       verifiedAt: new Date().toISOString(),
@@ -410,15 +418,22 @@ router.put('/admin/verify/:insuranceId', authenticateUser, async (req, res) => {
       verificationNotes: notes
     };
 
+    // Use batch for consistency
+    const batch = db.batch();
+    
     // Update insurance record
-    await db.ref(`user_insurance/${insuranceId}`).update(verificationData);
+    const insuranceRef = db.collection('user_insurance').doc(insuranceId);
+    batch.update(insuranceRef, verificationData);
     
     // Update user status
-    await db.ref(`user_insurance_status/${insurance.userId}/${insurance.insuranceType}`).update({
+    const statusRef = db.collection('user_insurance_status').doc(insurance.userId).collection('types').doc(insurance.insuranceType);
+    batch.update(statusRef, {
       status: verificationData.status,
       verifiedAt: verificationData.verifiedAt,
       lastUpdated: verificationData.verifiedAt
     });
+
+    await batch.commit();
 
     logger.info(`Insurance ${insuranceId} ${action}d by admin ${req.user.uid}`);
 
@@ -448,23 +463,22 @@ router.get('/expiring', authenticateUser, async (req, res) => {
   try {
     const { days = 30 } = req.query;
     const userId = req.user.uid;
-    const db = getDatabase();
+    const db = getFirestore();
 
     const alertDate = new Date();
     alertDate.setDate(alertDate.getDate() + parseInt(days));
 
-    const insuranceSnapshot = await db.ref('user_insurance')
-      .orderByChild('userId')
-      .equalTo(userId)
-      .once('value');
+    const insuranceSnapshot = await db.collection('user_insurance')
+      .where('userId', '==', userId)
+      .get();
 
     const expiringInsurance = [];
-    insuranceSnapshot.forEach(childSnapshot => {
-      const insurance = childSnapshot.val();
+    insuranceSnapshot.forEach(doc => {
+      const insurance = doc.data();
       if (insurance.status === 'approved' && 
           new Date(insurance.expirationDate) <= alertDate) {
         expiringInsurance.push({
-          id: childSnapshot.key,
+          id: doc.id,
           ...insurance,
           daysUntilExpiration: Math.ceil(
             (new Date(insurance.expirationDate) - new Date()) / (1000 * 60 * 60 * 24)
@@ -504,7 +518,7 @@ router.put('/reminder-preferences', authenticateUser, async (req, res) => {
   try {
     const { emailReminders = true, smsReminders = false, reminderDays = [30, 14, 7] } = req.body;
     const userId = req.user.uid;
-    const db = getDatabase();
+    const db = getFirestore();
 
     const preferences = {
       emailReminders,
@@ -513,7 +527,9 @@ router.put('/reminder-preferences', authenticateUser, async (req, res) => {
       updatedAt: new Date().toISOString()
     };
 
-    await db.ref(`user_preferences/${userId}/insurance_reminders`).set(preferences);
+    await db.collection('user_preferences').doc(userId).set({
+      insurance_reminders: preferences
+    }, { merge: true });
 
     res.json({
       success: true,
@@ -544,8 +560,8 @@ router.get('/stats', authenticateUser, async (req, res) => {
       });
     }
 
-    const db = getDatabase();
-    const insuranceSnapshot = await db.ref('user_insurance').once('value');
+    const db = getFirestore();
+    const insuranceSnapshot = await db.collection('user_insurance').get();
     
     const stats = {
       totalRecords: 0,
@@ -562,8 +578,8 @@ router.get('/stats', authenticateUser, async (req, res) => {
     const thirtyDaysFromNow = new Date();
     thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
 
-    insuranceSnapshot.forEach(childSnapshot => {
-      const insurance = childSnapshot.val();
+    insuranceSnapshot.forEach(doc => {
+      const insurance = doc.data();
       stats.totalRecords++;
       
       // Count by type
