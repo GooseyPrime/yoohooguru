@@ -57,12 +57,7 @@ const StatLabel = styled.div`
   font-size: 0.9rem;
 `;
 
-const SectionTitle = styled.h2`
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin: 2rem 0 1rem 0;
-  color: ${props => props.theme.colors.text || '#ffffff'};
-`;
+
 
 const SessionsList = styled.div`
   display: flex;

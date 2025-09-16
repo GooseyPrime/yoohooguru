@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../../contexts/AuthContext';
 import BadgeDisplay from './BadgeDisplay';
@@ -235,7 +235,7 @@ function ComplianceSetup({ skillCategory, onComplete }) {
   const [showWaiverModal, setShowWaiverModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  const steps = [
+  const steps = useMemo(() => [
     {
       id: 'profile',
       title: 'Complete Profile',
@@ -266,7 +266,7 @@ function ComplianceSetup({ skillCategory, onComplete }) {
       description: 'Read and accept liability waiver for this activity',
       checkCompliance: () => false // Always show waiver step
     }
-  ];
+  ], []);
 
   useEffect(() => {
     if (skillCategory && user) {
@@ -280,7 +280,7 @@ function ComplianceSetup({ skillCategory, onComplete }) {
       const firstIncomplete = steps.findIndex(step => !step.checkCompliance(complianceData));
       setCurrentStep(firstIncomplete === -1 ? steps.length - 1 : firstIncomplete);
     }
-  }, [complianceData, steps]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [complianceData, steps]);
 
   const fetchComplianceData = async () => {
     try {
