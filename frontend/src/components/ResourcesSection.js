@@ -3,7 +3,7 @@
  * Displays popular resources, links, and files for subdomain communities
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { get } from '../utils/http';
 
@@ -142,9 +142,9 @@ function ResourcesSection({ subdomain }) {
 
   useEffect(() => {
     fetchResources();
-  }, [subdomain]);
+  }, [fetchResources]);
 
-  const fetchResources = async () => {
+  const fetchResources = useCallback(async () => {
     try {
       setLoading(true);
       const data = await get(`/resources/${subdomain || 'general'}`);
@@ -158,7 +158,7 @@ function ResourcesSection({ subdomain }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [subdomain]);
 
   const getDefaultResources = (domain) => {
     const defaultResources = {

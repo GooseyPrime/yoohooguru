@@ -4,7 +4,7 @@
  */
 
 const express = require('express');
-const { getFirestore } = require('firebase-admin/firestore');
+// const { getFirestore } = require('firebase-admin/firestore');
 const { logger } = require('../utils/logger');
 const { authenticateUser } = require('../middleware/auth');
 

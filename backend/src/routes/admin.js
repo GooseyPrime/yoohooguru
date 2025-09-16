@@ -317,5 +317,6 @@ router.post('/update-credentials', async (req, res) => {
       error: { message: 'Failed to update admin credentials' }
     });
   }
+});
 
 module.exports = router;
