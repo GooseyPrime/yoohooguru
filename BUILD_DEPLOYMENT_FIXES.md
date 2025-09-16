@@ -2,7 +2,27 @@
 
 ## ✅ Fixed Issues
 
-### 1. Build Bundle Size Optimization
+### 0. **CRITICAL Dockerfile Build Error (Primary Issue from PDF)**
+**Problem**: Railway/Cloud build failing with error:
+```
+ERROR: failed to build: failed to solve: failed to compute cache key:
+failed to calculate checksum of ref ... "/backend": not found
+```
+
+**Root Cause**: Inconsistent Docker build context paths in `backend/Dockerfile`:
+- Line 3: `COPY backend/package*.json ./backend/` expected backend subdirectory in wrong location
+- Line 10: `COPY backend/ .` failed due to context path mismatch when build context is repository root
+
+**Solution**: Fixed Dockerfile using Option 1 from the PDF (adjust copy paths):
+- Changed `WORKDIR /app` to `WORKDIR /app/backend` in deps stage  
+- Fixed `COPY backend/package*.json ./` to copy to current working directory
+- Updated `COPY backend/ .` to `COPY backend/. .` for consistent path handling
+- Switched from `npm ci --only=production` to `npm install --omit=dev` (modern npm syntax)
+- Improved health check with `wget` and proper timeout values per PDF recommendations
+
+**Result**: ✅ Docker build now completes successfully - the "/backend not found" error is resolved.
+
+### 1. Bundle Size Optimization
 **Problem**: Webpack warnings about large bundle size (1.43 MiB entrypoint exceeding 488 KiB limit)  
 **Solution**: 
 - Implemented code splitting with multiple cache groups
