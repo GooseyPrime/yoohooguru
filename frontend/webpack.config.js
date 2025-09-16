@@ -7,6 +7,7 @@ require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 module.exports = (env, argv) => {
   const isDevelopment = argv.mode === 'development';
+  const isFastBuild = process.env.FAST_BUILD === 'true';
 
   return {
     entry: './src/index.js',
@@ -204,7 +205,7 @@ module.exports = (env, argv) => {
         },
       },
       // Optimize build performance
-      ...(isDevelopment
+      ...(isDevelopment || isFastBuild
         ? {}
         : {
             usedExports: true,
@@ -224,7 +225,7 @@ module.exports = (env, argv) => {
       },
     },
     // Improve performance in production builds
-    ...(isDevelopment
+    ...(isDevelopment || isFastBuild
       ? {}
       : {
           performance: {
