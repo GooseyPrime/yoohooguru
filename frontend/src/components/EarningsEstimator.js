@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { Calculator, TrendingUp, MapPin, Star } from 'lucide-react';
+import { Calculator, TrendingUp } from 'lucide-react';
 import { EARNINGS_DATA } from '../config/pricing';
 import Button from './Button';
 
@@ -222,11 +222,7 @@ function EarningsEstimator() {
     yearly: 0
   });
 
-  useEffect(() => {
-    calculateEarnings();
-  }, [selectedCategory, hoursPerWeek, experience, locationType]);
-
-  const calculateEarnings = () => {
+  const calculateEarnings = useCallback(() => {
     const category = EARNINGS_DATA.categories.find(cat => cat.id === selectedCategory);
     if (!category) return;
 
@@ -246,7 +242,11 @@ function EarningsEstimator() {
       monthly: Math.round(monthlyEarnings),
       yearly: Math.round(yearlyEarnings)
     });
-  };
+  }, [selectedCategory, hoursPerWeek, experience, locationType]);
+
+  useEffect(() => {
+    calculateEarnings();
+  }, [calculateEarnings]);
 
   const selectedCategoryData = EARNINGS_DATA.categories.find(cat => cat.id === selectedCategory);
   const formatCurrency = (amount) => `$${amount.toLocaleString()}`;
