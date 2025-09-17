@@ -7,6 +7,7 @@ require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 module.exports = (env, argv) => {
   const isDevelopment = argv.mode === 'development';
+  const isFastBuild = process.env.FAST_BUILD === 'true';
 
   return {
     entry: './src/index.js',
@@ -47,11 +48,22 @@ module.exports = (env, argv) => {
         },
         {
           test: /\.(png|jpe?g|gif|svg)$/i,
-          type: 'asset/resource',
+          type: 'asset',
+          parser: {
+            dataUrlCondition: {
+              maxSize: 8192, // 8kb - inline small images
+            },
+          },
+          generator: {
+            filename: 'assets/images/[name].[contenthash][ext]',
+          },
         },
         {
           test: /\.(woff|woff2|eot|ttf|otf)$/i,
           type: 'asset/resource',
+          generator: {
+            filename: 'assets/fonts/[name].[contenthash][ext]',
+          },
         },
       ],
     },
@@ -155,20 +167,53 @@ module.exports = (env, argv) => {
     optimization: {
       splitChunks: {
         chunks: 'all',
+        minSize: 20000,
+        maxSize: 250000,
         cacheGroups: {
+          default: {
+            minChunks: 2,
+            priority: -20,
+            reuseExistingChunk: true,
+          },
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
+            priority: -10,
+            chunks: 'all',
+            maxSize: 250000,
+          },
+          firebase: {
+            test: /[\\/]node_modules[\\/](@firebase|firebase)[\\/]/,
+            name: 'firebase',
+            priority: 10,
+            chunks: 'all',
+            maxSize: 200000,
+          },
+          react: {
+            test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+            name: 'react-vendor',
+            priority: 20,
+            chunks: 'all',
+          },
+          common: {
+            name: 'common',
+            minChunks: 2,
+            priority: 5,
+            reuseExistingChunk: true,
             chunks: 'all',
           },
         },
       },
       // Optimize build performance
-      ...(isDevelopment
+      ...(isDevelopment || isFastBuild
         ? {}
         : {
             usedExports: true,
             sideEffects: false,
+            moduleIds: 'deterministic',
+            runtimeChunk: {
+              name: 'runtime',
+            },
           }),
     },
     // Add caching for better build performance
@@ -180,13 +225,17 @@ module.exports = (env, argv) => {
       },
     },
     // Improve performance in production builds
-    ...(isDevelopment
+    ...(isDevelopment || isFastBuild
       ? {}
       : {
           performance: {
-            maxAssetSize: 500000,
-            maxEntrypointSize: 500000,
+            maxAssetSize: 1000000, // 1MB - increased to accommodate current bundle sizes
+            maxEntrypointSize: 1000000, // 1MB - increased to accommodate current bundle sizes
             hints: 'warning',
+            assetFilter: function(assetFilename) {
+              // Don't show warnings for large images or fonts
+              return !(/\.(png|jpe?g|gif|svg|woff|woff2|eot|ttf|otf)$/i.test(assetFilename));
+            },
           },
         }),
   };

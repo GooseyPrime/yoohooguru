@@ -1,8 +1,10 @@
+# First stage – install dependencies
 FROM node:20-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production && npm cache clean --force
 
+# Second stage – build runtime image
 FROM node:20-alpine
 ENV NODE_ENV=production
 WORKDIR /app
@@ -12,7 +14,7 @@ COPY . .
 # Railway injects PORT; the app must use process.env.PORT
 EXPOSE 3001
 
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get(\`http://localhost:\${process.env.PORT||3001}/health\`, (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }).on('error', () => process.exit(1));"
+HEALTHCHECK --interval=10s --timeout=10s --start-period=10s --retries=3 \
+  CMD wget --quiet --tries=1 --spider http://localhost:${PORT:-3001}/health || exit 1
 
-CMD ["node", "src/index.js"]
+CMD ["npm", "start"]

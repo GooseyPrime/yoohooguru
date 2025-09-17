@@ -1,55 +1,102 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useGuru } from '../hooks/useGuru';
 import Layout from './Layout';
+import LoadingScreen from './LoadingScreen';
+
+// Eagerly loaded components (critical for initial render)
 import HomePage from '../screens/HomePage';
-import GuruHomePage from '../screens/guru/GuruHomePage';
 import LoginPage from '../screens/LoginPage';
 import SignupPage from '../screens/SignupPage';
-import DashboardPage from '../screens/DashboardPage';
-import ProfilePage from '../screens/ProfilePage';
-import SkillsPage from '../screens/SkillsPage';
-import AngelsListPage from '../screens/AngelsListPage';
-import AboutPage from '../screens/AboutPage';
-import HowItWorksPage from '../screens/HowItWorksPage';
-import PricingPage from '../screens/PricingPage';
-import { 
-  HelpCenterPage,
-  ContactUsPage,
-  SafetyPage,
-  BlogPage,
-  SuccessStoriesPage,
-  EventsPage,
-  ForumPage,
-  MentorshipPage
-} from '../screens/ComingSoonPages';
-import PrivacyPolicyPage from '../screens/PrivacyPolicyPage';
-import TermsAndConditionsPage from '../screens/TermsAndConditionsPage';
-import AdminLoginPage from '../screens/AdminLoginPage';
-import AdminDashboardPage from '../screens/AdminDashboardPage';
-import LoadingScreen from './LoadingScreen';
-import LiabilityEnhancementDemo from './LiabilityEnhancementDemo';
 
-// Onboarding screens
-import OnboardingStart from '../screens/onboarding/OnboardingStart';
-import OnboardingProfile from '../screens/onboarding/OnboardingProfile';
-import OnboardingCategories from '../screens/onboarding/OnboardingCategories';
-import OnboardingRequirements from '../screens/onboarding/OnboardingRequirements';
-import OnboardingDocuments from '../screens/onboarding/OnboardingDocuments';
-import OnboardingPayout from '../screens/onboarding/OnboardingPayout';
-import OnboardingReview from '../screens/onboarding/OnboardingReview';
+// Lazy loaded components
+const GuruHomePage = React.lazy(() => import('../screens/guru/GuruHomePage'));
+const DashboardPage = React.lazy(() => import('../screens/DashboardPage'));
+const ProfilePage = React.lazy(() => import('../screens/ProfilePage'));
+const SkillsPage = React.lazy(() => import('../screens/SkillsPage'));
+const AngelsListPage = React.lazy(() => import('../screens/AngelsListPage'));
+const AboutPage = React.lazy(() => import('../screens/AboutPage'));
+const HowItWorksPage = React.lazy(() => import('../screens/HowItWorksPage'));
+const PricingPage = React.lazy(() => import('../screens/PricingPage'));
 
-// Account screens
-import PayoutsPanel from '../screens/account/PayoutsPanel';
+// Individual lazy loaded Coming Soon page components
+const HelpCenterPage = () => (
+  <Suspense fallback={<LoadingScreen />}>
+    {React.createElement(React.lazy(() => import('../screens/ComingSoonPages').then(module => ({ default: module.HelpCenterPage }))))}
+  </Suspense>
+);
 
-// Modified Masters screens
-import ModifiedMasters from '../screens/ModifiedMasters';
-import DashboardCoach from '../screens/DashboardCoach';
-import DashboardUnderstudy from '../screens/DashboardUnderstudy';
+const ContactUsPage = () => (
+  <Suspense fallback={<LoadingScreen />}>
+    {React.createElement(React.lazy(() => import('../screens/ComingSoonPages').then(module => ({ default: module.ContactUsPage }))))}
+  </Suspense>
+);
 
-// Host routing
-import HostSubdomainRouterGate from './HostSubdomainRouterGate';
+const SafetyPage = () => (
+  <Suspense fallback={<LoadingScreen />}>
+    {React.createElement(React.lazy(() => import('../screens/ComingSoonPages').then(module => ({ default: module.SafetyPage }))))}
+  </Suspense>
+);
+
+const BlogPage = () => (
+  <Suspense fallback={<LoadingScreen />}>
+    {React.createElement(React.lazy(() => import('../screens/ComingSoonPages').then(module => ({ default: module.BlogPage }))))}
+  </Suspense>
+);
+
+const SuccessStoriesPage = () => (
+  <Suspense fallback={<LoadingScreen />}>
+    {React.createElement(React.lazy(() => import('../screens/ComingSoonPages').then(module => ({ default: module.SuccessStoriesPage }))))}
+  </Suspense>
+);
+
+const EventsPage = () => (
+  <Suspense fallback={<LoadingScreen />}>
+    {React.createElement(React.lazy(() => import('../screens/ComingSoonPages').then(module => ({ default: module.EventsPage }))))}
+  </Suspense>
+);
+
+const ForumPage = () => (
+  <Suspense fallback={<LoadingScreen />}>
+    {React.createElement(React.lazy(() => import('../screens/ComingSoonPages').then(module => ({ default: module.ForumPage }))))}
+  </Suspense>
+);
+
+const MentorshipPage = () => (
+  <Suspense fallback={<LoadingScreen />}>
+    {React.createElement(React.lazy(() => import('../screens/ComingSoonPages').then(module => ({ default: module.MentorshipPage }))))}
+  </Suspense>
+);
+
+// Legal pages - lazy loaded
+const PrivacyPolicyPage = React.lazy(() => import('../screens/PrivacyPolicyPage'));
+const TermsAndConditionsPage = React.lazy(() => import('../screens/TermsAndConditionsPage'));
+
+// Admin pages - lazy loaded
+const AdminLoginPage = React.lazy(() => import('../screens/AdminLoginPage'));
+const AdminDashboardPage = React.lazy(() => import('../screens/AdminDashboardPage'));
+const LiabilityEnhancementDemo = React.lazy(() => import('./LiabilityEnhancementDemo'));
+
+// Onboarding screens - lazy loaded as a group
+const OnboardingStart = React.lazy(() => import('../screens/onboarding/OnboardingStart'));
+const OnboardingProfile = React.lazy(() => import('../screens/onboarding/OnboardingProfile'));
+const OnboardingCategories = React.lazy(() => import('../screens/onboarding/OnboardingCategories'));
+const OnboardingRequirements = React.lazy(() => import('../screens/onboarding/OnboardingRequirements'));
+const OnboardingDocuments = React.lazy(() => import('../screens/onboarding/OnboardingDocuments'));
+const OnboardingPayout = React.lazy(() => import('../screens/onboarding/OnboardingPayout'));
+const OnboardingReview = React.lazy(() => import('../screens/onboarding/OnboardingReview'));
+
+// Account screens - lazy loaded
+const PayoutsPanel = React.lazy(() => import('../screens/account/PayoutsPanel'));
+
+// Modified Masters screens - lazy loaded
+const ModifiedMasters = React.lazy(() => import('../screens/ModifiedMasters'));
+const DashboardCoach = React.lazy(() => import('../screens/DashboardCoach'));
+const DashboardUnderstudy = React.lazy(() => import('../screens/DashboardUnderstudy'));
+
+// Host routing - lazy loaded
+const HostSubdomainRouterGate = React.lazy(() => import('./HostSubdomainRouterGate'));
 
 // Protected Route Component
 function ProtectedRoute({ children }) {
@@ -112,12 +159,36 @@ function AppRouter() {
     return (
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<GuruHomePage />} />
-          <Route path="about" element={<GuruHomePage />} />
-          <Route path="blog" element={<GuruHomePage />} />
-          <Route path="blog/:slug" element={<GuruHomePage />} />
-          <Route path="services" element={<GuruHomePage />} />
-          <Route path="contact" element={<GuruHomePage />} />
+          <Route index element={
+            <Suspense fallback={<LoadingScreen />}>
+              <GuruHomePage />
+            </Suspense>
+          } />
+          <Route path="about" element={
+            <Suspense fallback={<LoadingScreen />}>
+              <GuruHomePage />
+            </Suspense>
+          } />
+          <Route path="blog" element={
+            <Suspense fallback={<LoadingScreen />}>
+              <GuruHomePage />
+            </Suspense>
+          } />
+          <Route path="blog/:slug" element={
+            <Suspense fallback={<LoadingScreen />}>
+              <GuruHomePage />
+            </Suspense>
+          } />
+          <Route path="services" element={
+            <Suspense fallback={<LoadingScreen />}>
+              <GuruHomePage />
+            </Suspense>
+          } />
+          <Route path="contact" element={
+            <Suspense fallback={<LoadingScreen />}>
+              <GuruHomePage />
+            </Suspense>
+          } />
           
           {/* Redirect guru subdomain users to main site for these pages */}
           <Route path="login" element={<RedirectToMainSite path="/login" />} />
@@ -140,11 +211,31 @@ function AppRouter() {
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
         {/* SkillShare (public label) – technical route remains /skills */}
-        <Route path="skills" element={<SkillsPage />} />
-        <Route path="angels-list" element={<AngelsListPage />} />
-        <Route path="about" element={<AboutPage />} />
-        <Route path="how-it-works" element={<HowItWorksPage />} />
-        <Route path="pricing" element={<PricingPage />} />
+        <Route path="skills" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <SkillsPage />
+          </Suspense>
+        } />
+        <Route path="angels-list" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <AngelsListPage />
+          </Suspense>
+        } />
+        <Route path="about" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <AboutPage />
+          </Suspense>
+        } />
+        <Route path="how-it-works" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <HowItWorksPage />
+          </Suspense>
+        } />
+        <Route path="pricing" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <PricingPage />
+          </Suspense>
+        } />
         
         {/* Coming Soon pages */}
         <Route path="help" element={<HelpCenterPage />} />
@@ -156,13 +247,33 @@ function AppRouter() {
         <Route path="forum" element={<ForumPage />} />
         <Route path="mentorship" element={<MentorshipPage />} />
         
-        <Route path="liability-demo" element={<LiabilityEnhancementDemo />} />
+        <Route path="liability-demo" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <LiabilityEnhancementDemo />
+          </Suspense>
+        } />
         
         {/* Legal pages - supporting both new and existing URLs */}
-        <Route path="privacy_policy" element={<PrivacyPolicyPage />} />
-        <Route path="privacy" element={<PrivacyPolicyPage />} />
-        <Route path="terms_and_conditions" element={<TermsAndConditionsPage />} />
-        <Route path="terms" element={<TermsAndConditionsPage />} />
+        <Route path="privacy_policy" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <PrivacyPolicyPage />
+          </Suspense>
+        } />
+        <Route path="privacy" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <PrivacyPolicyPage />
+          </Suspense>
+        } />
+        <Route path="terms_and_conditions" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <TermsAndConditionsPage />
+          </Suspense>
+        } />
+        <Route path="terms" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <TermsAndConditionsPage />
+          </Suspense>
+        } />
         
         {/* Authentication routes */}
         <Route 
@@ -187,7 +298,9 @@ function AppRouter() {
           path="dashboard" 
           element={
             <ProtectedRoute>
-              <DashboardPage />
+              <Suspense fallback={<LoadingScreen />}>
+                <DashboardPage />
+              </Suspense>
             </ProtectedRoute>
           } 
         />
@@ -195,7 +308,9 @@ function AppRouter() {
           path="profile" 
           element={
             <ProtectedRoute>
-              <ProfilePage />
+              <Suspense fallback={<LoadingScreen />}>
+                <ProfilePage />
+              </Suspense>
             </ProtectedRoute>
           } 
         />
@@ -205,7 +320,9 @@ function AppRouter() {
           path="onboarding" 
           element={
             <ProtectedRoute>
-              <OnboardingStart />
+              <Suspense fallback={<LoadingScreen />}>
+                <OnboardingStart />
+              </Suspense>
             </ProtectedRoute>
           } 
         />
@@ -213,7 +330,9 @@ function AppRouter() {
           path="onboarding/profile" 
           element={
             <ProtectedRoute>
-              <OnboardingProfile />
+              <Suspense fallback={<LoadingScreen />}>
+                <OnboardingProfile />
+              </Suspense>
             </ProtectedRoute>
           } 
         />
@@ -221,7 +340,9 @@ function AppRouter() {
           path="onboarding/categories" 
           element={
             <ProtectedRoute>
-              <OnboardingCategories />
+              <Suspense fallback={<LoadingScreen />}>
+                <OnboardingCategories />
+              </Suspense>
             </ProtectedRoute>
           } 
         />
@@ -229,7 +350,9 @@ function AppRouter() {
           path="onboarding/requirements" 
           element={
             <ProtectedRoute>
-              <OnboardingRequirements />
+              <Suspense fallback={<LoadingScreen />}>
+                <OnboardingRequirements />
+              </Suspense>
             </ProtectedRoute>
           } 
         />
@@ -237,7 +360,9 @@ function AppRouter() {
           path="onboarding/documents" 
           element={
             <ProtectedRoute>
-              <OnboardingDocuments />
+              <Suspense fallback={<LoadingScreen />}>
+                <OnboardingDocuments />
+              </Suspense>
             </ProtectedRoute>
           } 
         />
@@ -245,7 +370,9 @@ function AppRouter() {
           path="onboarding/payout" 
           element={
             <ProtectedRoute>
-              <OnboardingPayout />
+              <Suspense fallback={<LoadingScreen />}>
+                <OnboardingPayout />
+              </Suspense>
             </ProtectedRoute>
           } 
         />
@@ -253,7 +380,9 @@ function AppRouter() {
           path="onboarding/review" 
           element={
             <ProtectedRoute>
-              <OnboardingReview />
+              <Suspense fallback={<LoadingScreen />}>
+                <OnboardingReview />
+              </Suspense>
             </ProtectedRoute>
           } 
         />
@@ -263,18 +392,26 @@ function AppRouter() {
           path="account/payouts" 
           element={
             <ProtectedRoute>
-              <PayoutsPanel />
+              <Suspense fallback={<LoadingScreen />}>
+                <PayoutsPanel />
+              </Suspense>
             </ProtectedRoute>
           } 
         />
 
         {/* Modified Masters routes */}
-        <Route path="modified" element={<ModifiedMasters />} />
+        <Route path="modified" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <ModifiedMasters />
+          </Suspense>
+        } />
         <Route 
           path="dashboard/coach" 
           element={
             <ProtectedRoute>
-              <DashboardCoach />
+              <Suspense fallback={<LoadingScreen />}>
+                <DashboardCoach />
+              </Suspense>
             </ProtectedRoute>
           } 
         />
@@ -282,17 +419,29 @@ function AppRouter() {
           path="dashboard/understudy" 
           element={
             <ProtectedRoute>
-              <DashboardUnderstudy />
+              <Suspense fallback={<LoadingScreen />}>
+                <DashboardUnderstudy />
+              </Suspense>
             </ProtectedRoute>
           } 
         />
 
         {/* Host Subdomain Router Gate - handles subdomain routing */}
-        <HostSubdomainRouterGate />
+        <Suspense fallback={<LoadingScreen />}>
+          <HostSubdomainRouterGate />
+        </Suspense>
 
         {/* Admin routes (outside of Layout) */}
-        <Route path="admin/login" element={<AdminLoginPage />} />
-        <Route path="admin" element={<AdminDashboardPage />} />
+        <Route path="admin/login" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <AdminLoginPage />
+          </Suspense>
+        } />
+        <Route path="admin" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <AdminDashboardPage />
+          </Suspense>
+        } />
 
         {/* Catch-all route */}
         <Route path="*" element={<Navigate to="/" replace />} />
