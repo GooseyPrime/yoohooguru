@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import SEOMetadata from '../components/SEOMetadata';
 
 const Container = styled.div`
   min-height: calc(100vh - 140px);
@@ -87,8 +88,16 @@ const ContactInfo = styled.div`
 `;
 
 function PrivacyPolicyPage() {
+  const seoData = {
+    title: 'Privacy Policy - yoohoo.guru', 
+    description: 'Learn how yoohoo.guru protects your privacy and handles your personal information on our skill-sharing platform.',
+    keywords: 'privacy policy, data protection, personal information, yoohoo.guru',
+    canonicalUrl: window.location.href
+  };
+
   return (
     <Container>
+      <SEOMetadata {...seoData} />
       <Content>
         <Title>Privacy Policy</Title>
         <LastUpdated>Last updated: December 2024</LastUpdated>
