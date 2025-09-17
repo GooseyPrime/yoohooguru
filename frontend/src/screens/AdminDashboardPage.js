@@ -146,6 +146,9 @@ function AdminDashboardPage() {
   const [featureFlags, setFeatureFlags] = useState({});
   const [loading, setLoading] = useState(true);
   const [pendingDocuments, setPendingDocuments] = useState([]);
+  const [actionHistory, setActionHistory] = useState([]);
+  const [liveStats, setLiveStats] = useState(null);
+  const [credentials, setCredentials] = useState({ username: '', password: '', email: '' });
   const navigate = useNavigate();
 
   const tabs = [
@@ -155,12 +158,17 @@ function AdminDashboardPage() {
     { id: 'sessions', label: 'Sessions' },
     { id: 'reports', label: 'Reports' },
     { id: 'flags', label: 'Feature Flags' },
-    { id: 'documents', label: 'Documents' }
+    { id: 'documents', label: 'Documents' },
+    { id: 'actions', label: 'Action History' },
+    { id: 'stats', label: 'Live Stats' },
+    { id: 'credentials', label: 'Admin Setup' }
   ];
 
   useEffect(() => {
     loadDashboardData();
     loadFeatureFlags();
+    loadActionHistory();
+    loadLiveStats();
   }, []);
 
   const loadDashboardData = async () => {
@@ -245,6 +253,82 @@ function AdminDashboardPage() {
       console.error('Logout error:', error);
     } finally {
       navigate('/', { replace: true });
+    }
+  };
+
+  const loadActionHistory = async () => {
+    try {
+      const response = await fetch('/api/admin/action-history', {
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setActionHistory(data.data.recentActions || []);
+      }
+    } catch (error) {
+      console.error('Error loading action history:', error);
+    }
+  };
+
+  const loadLiveStats = async () => {
+    try {
+      const response = await fetch('/api/admin/live-stats', {
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setLiveStats(data.data);
+      }
+    } catch (error) {
+      console.error('Error loading live stats:', error);
+    }
+  };
+
+  const handleCredentialsSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!credentials.username || !credentials.password || !credentials.email) {
+      alert('All fields are required');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/admin/update-credentials', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(credentials)
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        alert(`Credentials updated successfully! Email notification sent to ${data.data.email}`);
+        setCredentials({ username: '', password: '', email: '' });
+      } else {
+        const error = await response.json();
+        alert(`Failed to update credentials: ${error.error.message}`);
+      }
+    } catch (error) {
+      console.error('Error updating credentials:', error);
+      alert('Error updating credentials');
+    }
+  };
+
+  const formatTimestamp = (timestamp) => {
+    return new Date(timestamp).toLocaleString();
+  };
+
+  const getActionIcon = (type) => {
+    switch (type) {
+      case 'deployment': return '🚀';
+      case 'upload': return '📄';
+      case 'git_push': return '💻';
+      case 'system': return '⚙️';
+      default: return '📋';
     }
   };
 
@@ -428,6 +512,228 @@ function AdminDashboardPage() {
                 ))}
               </div>
             )}
+          </div>
+        );
+      
+      case 'actions':
+        return (
+          <div>
+            <h2 style={{ color: 'var(--text)', marginBottom: '1rem' }}>
+              Action History
+            </h2>
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid var(--border)' }}>
+                    <th style={{ padding: '0.75rem', textAlign: 'left', color: 'var(--text)' }}>Time</th>
+                    <th style={{ padding: '0.75rem', textAlign: 'left', color: 'var(--text)' }}>Type</th>
+                    <th style={{ padding: '0.75rem', textAlign: 'left', color: 'var(--text)' }}>Action</th>
+                    <th style={{ padding: '0.75rem', textAlign: 'left', color: 'var(--text)' }}>User</th>
+                    <th style={{ padding: '0.75rem', textAlign: 'left', color: 'var(--text)' }}>Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {actionHistory.map(action => (
+                    <tr key={action.id} style={{ borderBottom: '1px solid var(--border)' }}>
+                      <td style={{ padding: '0.75rem', color: 'var(--text-secondary)' }}>
+                        {formatTimestamp(action.timestamp)}
+                      </td>
+                      <td style={{ padding: '0.75rem' }}>
+                        <span style={{ marginRight: '0.5rem' }}>{getActionIcon(action.type)}</span>
+                        <span style={{ color: 'var(--text)' }}>{action.type}</span>
+                      </td>
+                      <td style={{ padding: '0.75rem', color: 'var(--text)' }}>{action.action}</td>
+                      <td style={{ padding: '0.75rem', color: 'var(--text-secondary)' }}>{action.user}</td>
+                      <td style={{ padding: '0.75rem', color: 'var(--text-secondary)' }}>
+                        {action.branch && <span>Branch: {action.branch} </span>}
+                        {action.commit && <span>({action.commit}) </span>}
+                        <span>{action.details}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+
+      case 'stats':
+        return (
+          <div>
+            <h2 style={{ color: 'var(--text)', marginBottom: '1rem' }}>
+              Live Statistics
+            </h2>
+            {liveStats && (
+              <div>
+                <StatsGrid>
+                  <StatCard>
+                    <StatValue style={{ color: '#4CAF50' }}>{liveStats.realTimeVisitors}</StatValue>
+                    <StatLabel>Live Visitors</StatLabel>
+                  </StatCard>
+                  <StatCard>
+                    <StatValue>{liveStats.todayVisitors}</StatValue>
+                    <StatLabel>Today&apos;s Visitors</StatLabel>
+                  </StatCard>
+                </StatsGrid>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginTop: '2rem' }}>
+                  <div>
+                    <h3 style={{ color: 'var(--text)', marginBottom: '1rem' }}>Page Statistics</h3>
+                    <div>
+                      {Object.entries(liveStats.pageStats || {}).map(([page, stats]) => (
+                        <div key={page} style={{ 
+                          display: 'flex', 
+                          justifyContent: 'space-between', 
+                          padding: '0.5rem',
+                          borderBottom: '1px solid var(--border)',
+                          color: 'var(--text)'
+                        }}>
+                          <span>{page}</span>
+                          <span>{stats.visits} visits</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 style={{ color: 'var(--text)', marginBottom: '1rem' }}>Subdomain Traffic</h3>
+                    <div>
+                      {Object.entries(liveStats.subdomainStats || {}).map(([subdomain, stats]) => (
+                        <div key={subdomain} style={{ 
+                          display: 'flex', 
+                          justifyContent: 'space-between', 
+                          padding: '0.5rem',
+                          borderBottom: '1px solid var(--border)',
+                          color: 'var(--text)'
+                        }}>
+                          <span>{subdomain}</span>
+                          <span>{stats.visits} visits ({stats.visitors} visitors)</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ marginTop: '2rem' }}>
+                  <h3 style={{ color: 'var(--text)', marginBottom: '1rem' }}>Top Locations</h3>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                    {liveStats.topLocations?.map((location, index) => (
+                      <div key={index} style={{
+                        background: 'var(--surface)',
+                        padding: '1rem',
+                        borderRadius: '8px',
+                        border: '1px solid var(--border)',
+                        textAlign: 'center'
+                      }}>
+                        <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{location.flag}</div>
+                        <div style={{ color: 'var(--text)', fontWeight: 'bold' }}>{location.country}</div>
+                        <div style={{ color: 'var(--text-secondary)' }}>{location.visitors}% of visitors</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+
+      case 'credentials':
+        return (
+          <div>
+            <h2 style={{ color: 'var(--text)', marginBottom: '1rem' }}>
+              Admin Credentials Setup
+            </h2>
+            <form onSubmit={handleCredentialsSubmit} style={{ maxWidth: '500px' }}>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', color: 'var(--text)', marginBottom: '0.5rem' }}>
+                  Username:
+                </label>
+                <input
+                  type="text"
+                  value={credentials.username}
+                  onChange={(e) => setCredentials({...credentials, username: e.target.value})}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '1px solid var(--border)',
+                    borderRadius: '6px',
+                    background: 'var(--surface)',
+                    color: 'var(--text)'
+                  }}
+                  required
+                />
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', color: 'var(--text)', marginBottom: '0.5rem' }}>
+                  Password:
+                </label>
+                <input
+                  type="password"
+                  value={credentials.password}
+                  onChange={(e) => setCredentials({...credentials, password: e.target.value})}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '1px solid var(--border)',
+                    borderRadius: '6px',
+                    background: 'var(--surface)',
+                    color: 'var(--text)'
+                  }}
+                  required
+                />
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', color: 'var(--text)', marginBottom: '0.5rem' }}>
+                  Email (for notifications):
+                </label>
+                <input
+                  type="email"
+                  value={credentials.email}
+                  onChange={(e) => setCredentials({...credentials, email: e.target.value})}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '1px solid var(--border)',
+                    borderRadius: '6px',
+                    background: 'var(--surface)',
+                    color: 'var(--text)'
+                  }}
+                  placeholder="brandonlane1977@gmail.com"
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                style={{
+                  background: 'var(--primary)',
+                  color: 'white',
+                  border: 'none',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontSize: '1rem'
+                }}
+              >
+                Update Credentials & Send Email
+              </button>
+            </form>
+
+            <div style={{
+              marginTop: '2rem',
+              padding: '1rem',
+              background: 'rgba(76, 175, 80, 0.1)',
+              border: '1px solid rgba(76, 175, 80, 0.3)',
+              borderRadius: '8px',
+              color: 'var(--text)'
+            }}>
+              <h4 style={{ margin: '0 0 0.5rem 0' }}>📧 Email Notification</h4>
+              <p style={{ margin: 0, color: 'var(--text-secondary)' }}>
+                When you update credentials, an email with the access details will be sent to brandonlane1977@gmail.com
+              </p>
+            </div>
           </div>
         );
       
