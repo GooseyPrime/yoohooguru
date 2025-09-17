@@ -195,13 +195,11 @@ For backend deployment, you'll need a Firebase service account:
    ```json
    {
      "buildCommand": "npm run build",
-     "outputDirectory": "dist",
-     "env": {
-       "REACT_APP_API_URL": "@react_app_api_url",
-       "REACT_APP_FIREBASE_API_KEY": "@react_app_firebase_api_key"
-     }
+     "outputDirectory": "dist"
    }
    ```
+
+   **Note**: Environment variables should be configured directly in the Vercel dashboard under Project Settings → Environment Variables, not in vercel.json.
 
 ### Firebase Hosting
 
