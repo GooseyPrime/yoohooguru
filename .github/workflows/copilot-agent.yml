@@ -1,0 +1,57 @@
+name: Copilot Agent Automation
+
+on:
+  issue_comment:
+    types: [created, edited]
+  pull_request_review_comment:
+    types: [created, edited]
+  issues:
+    types: [opened, edited]
+
+jobs:
+  process-comment:
+    runs-on: ubuntu-latest
+    # Only run if the comment is addressed to @copilot or contains actionable instructions
+    if: |
+      (contains(github.event.comment.body, '@copilot') || 
+       contains(github.event.comment.body, '<comment_new>') ||
+       contains(github.event.comment.body, 'fix') ||
+       contains(github.event.comment.body, 'implement') ||
+       contains(github.event.comment.body, 'add') ||
+       contains(github.event.comment.body, 'update') ||
+       contains(github.event.comment.body, 'create')) &&
+      github.event.comment.user.login != 'Copilot'
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18.x
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Process comment with Copilot Agent
+      run: node scripts/copilot-agent.js
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+        COMMENT_BODY: ${{ github.event.comment.body }}
+        COMMENT_USER: ${{ github.event.comment.user.login }}
+        REPOSITORY: ${{ github.repository }}
+        PR_NUMBER: ${{ github.event.issue.number || github.event.pull_request.number }}
+        
+    - name: Upload processing logs (if they exist)
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: copilot-agent-logs
+        path: |
+          logs/
+          /tmp/copilot-agent-*
+        if-no-files-found: ignore
+      continue-on-error: true

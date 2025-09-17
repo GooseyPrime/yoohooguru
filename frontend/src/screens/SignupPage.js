@@ -116,6 +116,69 @@ const ErrorMessage = styled.div`
   margin-top: 0.25rem;
 `;
 
+const UserTypeGroup = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+`;
+
+const UserTypeOption = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.75rem;
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: var(--r-md);
+  background: ${props => props.theme.colors.surface};
+  transition: all var(--t-fast);
+  flex: 1;
+  
+  &:hover {
+    border-color: ${props => props.theme.colors.pri};
+  }
+  
+  input[type="radio"] {
+    margin: 0;
+  }
+  
+  input[type="radio"]:checked + span {
+    color: ${props => props.theme.colors.pri};
+    font-weight: 500;
+  }
+`;
+
+const CheckboxGroup = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+`;
+
+const CheckboxLabel = styled.label`
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: var(--text-sm);
+  line-height: 1.4;
+  
+  input[type="checkbox"] {
+    margin: 0;
+    margin-top: 0.125rem;
+    flex-shrink: 0;
+  }
+  
+  a {
+    color: ${props => props.theme.colors.pri};
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
+
 const LoginLink = styled.div`
   text-align: center;
   margin-top: 1.5rem;
@@ -297,8 +360,9 @@ function SignupPage() {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    const newValue = type === 'checkbox' ? checked : value;
+    setFormData(prev => ({ ...prev, [name]: newValue }));
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
@@ -342,6 +406,10 @@ function SignupPage() {
 
     if (!acceptedPrivacy) {
       newErrors.privacy = 'You must accept the Privacy Policy';
+    }
+    
+    if (!formData.acceptTerms) {
+      newErrors.acceptTerms = 'You must accept the Terms and Conditions to proceed';
     }
     
     return newErrors;

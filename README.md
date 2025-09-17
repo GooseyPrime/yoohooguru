@@ -396,7 +396,6 @@ Create `frontend/vercel.json`:
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "devCommand": "npm run dev",
-  "functions": {},
   "routes": [
     {
       "src": "/static/(.*)",
@@ -405,14 +404,7 @@ Create `frontend/vercel.json`:
     },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
-  ],
-  "env": {
-    "REACT_APP_API_URL": "@react_app_api_url",
-    "REACT_APP_FIREBASE_API_KEY": "@react_app_firebase_api_key",
-    "REACT_APP_FIREBASE_PROJECT_ID": "@react_app_firebase_project_id",
-    "REACT_APP_FIREBASE_AUTH_DOMAIN": "@react_app_firebase_auth_domain",
-    "REACT_APP_BRAND_NAME": "@react_app_brand_name"
-  }
+  ]
 }
 ```
 
