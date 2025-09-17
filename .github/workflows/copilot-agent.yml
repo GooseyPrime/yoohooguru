@@ -46,7 +46,7 @@ jobs:
         PR_NUMBER: ${{ github.event.issue.number || github.event.pull_request.number }}
         
     - name: Upload processing logs (if they exist)
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: copilot-agent-logs

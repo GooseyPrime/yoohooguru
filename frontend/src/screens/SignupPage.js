@@ -294,7 +294,7 @@ const CustomCheckbox = styled.label`
   }
 `;
 
-const CheckboxLabel = styled.label`
+const CheckboxText = styled.label`
   font-size: var(--text-sm);
   color: ${props => props.theme.colors.text};
   cursor: pointer;
@@ -652,12 +652,12 @@ function SignupPage() {
               >
                 {acceptedTerms && <CheckCircle2 size={12} />}
               </CustomCheckbox>
-              <CheckboxLabel htmlFor="acceptTerms">
+              <CheckboxText htmlFor="acceptTerms">
                 I agree to the{' '}
                 <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">
                   Terms and Conditions
                 </a>
-              </CheckboxLabel>
+              </CheckboxText>
             </CheckboxWrapper>
             {errors.terms && <ErrorMessage>{errors.terms}</ErrorMessage>}
 
@@ -679,12 +679,12 @@ function SignupPage() {
               >
                 {acceptedPrivacy && <CheckCircle2 size={12} />}
               </CustomCheckbox>
-              <CheckboxLabel htmlFor="acceptPrivacy">
+              <CheckboxText htmlFor="acceptPrivacy">
                 I agree to the{' '}
                 <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">
                   Privacy Policy
                 </a>
-              </CheckboxLabel>
+              </CheckboxText>
             </CheckboxWrapper>
             {errors.privacy && <ErrorMessage>{errors.privacy}</ErrorMessage>}
           </TermsSection>
