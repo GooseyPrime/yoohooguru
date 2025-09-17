@@ -196,7 +196,6 @@ For backend deployment, you'll need a Firebase service account:
    {
      "buildCommand": "npm run build",
      "outputDirectory": "dist",
-     "framework": "webpack",
      "env": {
        "REACT_APP_API_URL": "@react_app_api_url",
        "REACT_APP_FIREBASE_API_KEY": "@react_app_firebase_api_key"
