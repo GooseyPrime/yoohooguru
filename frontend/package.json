@@ -63,11 +63,6 @@
     "webpack-dev-server": "^5.2.2",
     "workbox-webpack-plugin": "^7.0.0"
   },
-  "jest": {
-    "transform": {
-      "^.+\\.(js|jsx)$": "babel-jest"
-    }
-  },
   "keywords": [
     "react",
     "react-native-web",
