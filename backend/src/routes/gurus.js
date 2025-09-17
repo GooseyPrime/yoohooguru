@@ -56,6 +56,43 @@ router.get('/:subdomain/home', async (req, res) => {
         }
       });
     }
+
+    // If still no posts, try to load from seeded content files
+    if (featuredPosts.length === 0) {
+      const path = require('path');
+      const fs = require('fs');
+      
+      try {
+        const mockDataPath = path.join(__dirname, '../../mock-data', `${subdomain}.json`);
+        if (fs.existsSync(mockDataPath)) {
+          const mockData = JSON.parse(fs.readFileSync(mockDataPath, 'utf8'));
+          if (mockData.posts && mockData.posts.length > 0) {
+            // Use the pre-generated blog posts
+            mockData.posts.forEach(post => {
+              featuredPosts.push({
+                id: post.id,
+                title: post.title,
+                slug: post.slug,
+                excerpt: post.excerpt,
+                content: post.content,
+                author: post.author,
+                category: post.category,
+                tags: post.tags,
+                publishedAt: post.publishedAt,
+                readTime: post.readTime,
+                views: post.views,
+                likes: post.likes,
+                status: post.status,
+                featured: post.featured
+              });
+            });
+            logger.info(`📝 Serving ${featuredPosts.length} seeded blog posts for ${subdomain}`);
+          }
+        }
+      } catch (fileError) {
+        logger.warn(`Could not load seeded blog content for ${subdomain}:`, fileError.message);
+      }
+    }
     
     // Get guru stats
     const statsSnapshot = await db.collection('gurus').doc(subdomain).collection('stats').get();
@@ -72,6 +109,25 @@ router.get('/:subdomain/home', async (req, res) => {
         const data = doc.data();
         stats = { ...stats, ...data };
       });
+    }
+
+    // If no stats in database, try to load from seeded content
+    if (stats.totalPosts === 0 && stats.totalViews === 0) {
+      const path = require('path');
+      const fs = require('fs');
+      
+      try {
+        const mockDataPath = path.join(__dirname, '../../mock-data', `${subdomain}.json`);
+        if (fs.existsSync(mockDataPath)) {
+          const mockData = JSON.parse(fs.readFileSync(mockDataPath, 'utf8'));
+          if (mockData.stats) {
+            stats = { ...stats, ...mockData.stats };
+            logger.info(`📊 Serving seeded stats for ${subdomain}:`, stats);
+          }
+        }
+      } catch (fileError) {
+        logger.warn(`Could not load seeded stats for ${subdomain}:`, fileError.message);
+      }
     }
     
     // Format large numbers (show as "K+" when >= 1000)
@@ -558,7 +614,36 @@ router.get('/news/:subdomain', async (req, res) => {
       }
     });
     
-    // If no articles found, return placeholder data for development
+    // If no articles found, try to load from seeded content files
+    if (newsArticles.length === 0) {
+      const path = require('path');
+      const fs = require('fs');
+      
+      try {
+        const mockDataPath = path.join(__dirname, '../../mock-data', `${subdomain}.json`);
+        if (fs.existsSync(mockDataPath)) {
+          const mockData = JSON.parse(fs.readFileSync(mockDataPath, 'utf8'));
+          if (mockData.news && mockData.news.length > 0) {
+            // Use the pre-generated news content
+            mockData.news.forEach(article => {
+              newsArticles.push({
+                id: article.id,
+                title: article.title,
+                summary: article.summary,
+                url: article.url,
+                publishedAt: article.publishedAt,
+                source: article.source
+              });
+            });
+            logger.info(`📰 Serving ${newsArticles.length} seeded news articles for ${subdomain}`);
+          }
+        }
+      } catch (fileError) {
+        logger.warn(`Could not load seeded content for ${subdomain}:`, fileError.message);
+      }
+    }
+    
+    // If still no articles, fall back to generated placeholder content
     if (newsArticles.length === 0) {
       const skills = guru.config.primarySkills.join(', ');
       newsArticles.push(
