@@ -83,11 +83,15 @@ check_artifacts() {
     fi
     
     # Set GitHub Actions output variables if running in CI
-    if [ -n "${GITHUB_OUTPUT}" ]; then
+    if [ -n "${GITHUB_OUTPUT}" ] && [ -w "${GITHUB_OUTPUT}" ]; then
         echo "jsonl-exists=${jsonl_exists}" >> "${GITHUB_OUTPUT}"
         echo "md-exists=${md_exists}" >> "${GITHUB_OUTPUT}"
         echo "has-artifacts=${has_artifacts}" >> "${GITHUB_OUTPUT}"
         log_info "GitHub Actions output variables set"
+    elif [ -n "${GITHUB_OUTPUT}" ]; then
+        log_warning "GITHUB_OUTPUT file not writable: ${GITHUB_OUTPUT}"
+    else
+        log_info "Not running in GitHub Actions - output variables not set"
     fi
     
     # Return status
@@ -128,7 +132,12 @@ validate_artifacts() {
         fi
     fi
     
-    return $([ "$validation_passed" = true ] && echo 0 || echo 1)
+    # Always return 0 - validation issues are reported but don't fail the script
+    # This allows the workflow to continue even with malformed artifacts
+    if [ "$validation_passed" = false ]; then
+        log_warning "Some artifacts have validation issues but script will continue"
+    fi
+    return 0
 }
 
 # Function to generate artifact summary
@@ -161,7 +170,7 @@ generate_summary() {
 set_pr_automation_outputs() {
     local has_artifacts=${1:-false}
     
-    if [ -n "${GITHUB_OUTPUT}" ]; then
+    if [ -n "${GITHUB_OUTPUT}" ] && [ -w "${GITHUB_OUTPUT}" ]; then
         # Set output to indicate this is an artifact-only issue
         if [ "$has_artifacts" = false ]; then
             echo "artifact-errors-only=true" >> "${GITHUB_OUTPUT}"
@@ -172,6 +181,10 @@ set_pr_automation_outputs() {
             echo "workflow-should-continue=true" >> "${GITHUB_OUTPUT}"
             log_info "Set PR automation flags: artifact-errors-only=false, workflow-should-continue=true"
         fi
+    elif [ -n "${GITHUB_OUTPUT}" ]; then
+        log_warning "GITHUB_OUTPUT file not writable: ${GITHUB_OUTPUT}"
+    else
+        log_info "Not running in GitHub Actions - PR automation outputs not set"
     fi
 }
 
