@@ -1,5 +1,6 @@
 const express = require('express');
 const { logger } = require('../utils/logger');
+const { triggerManualCuration } = require('../agents/curationAgents');
 
 const router = express.Router();
 
@@ -317,6 +318,58 @@ router.post('/update-credentials', async (req, res) => {
       error: { message: 'Failed to update admin credentials' }
     });
   }
+});
+
+/**
+ * POST /api/admin/curate
+ * Manually trigger content curation for all subdomains
+ * For testing and manual triggering
+ */
+router.post('/curate', async (req, res) => {
+  try {
+    logger.info('🔄 Manual curation triggered via API');
+    
+    await triggerManualCuration();
+    
+    res.json({
+      success: true,
+      message: 'Content curation completed successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('Error during manual curation:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to complete content curation',
+      message: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/admin/agents-status
+ * Get status of curation agents
+ */
+router.get('/agents-status', (req, res) => {
+  const adminCookie = req.cookies?.yoohoo_admin;
+  
+  if (adminCookie !== '1') {
+    return res.status(401).json({ 
+      success: false, 
+      error: { message: 'Admin authentication required' } 
+    });
+  }
+  
+  res.json({
+    success: true,
+    agents: {
+      news: 'Running - Daily at 6 AM',
+      blog: 'Running - Bi-weekly on Mondays at 8 AM'
+    },
+    environment: process.env.NODE_ENV || 'development',
+    timestamp: new Date().toISOString()
+  });
 });
 
 module.exports = router;

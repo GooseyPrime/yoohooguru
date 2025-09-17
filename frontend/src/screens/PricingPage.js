@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Button from '../components/Button';
+import EarningsEstimator from '../components/EarningsEstimator';
+import SEOMetadata from '../components/SEOMetadata';
+import { PRICING_CONFIG } from '../config/pricing';
+import { Check, Star, Zap } from 'lucide-react';
 
 const Container = styled.div`
   min-height: calc(100vh - 140px);
@@ -9,7 +13,7 @@ const Container = styled.div`
 `;
 
 const Content = styled.div`
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
 `;
@@ -26,119 +30,130 @@ const Subtitle = styled.p`
   color: ${props => props.theme.colors.muted};
   text-align: center;
   margin-bottom: 3rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
 `;
 
-const PricingGrid = styled.div`
+const PlansGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2rem;
-  margin-bottom: 3rem;
+  margin: 3rem 0;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
-const PricingCard = styled.div`
+const PlanCard = styled.div`
   background: ${props => props.theme.colors.surface};
+  border: ${props => props.popular ? '2px solid ' + props.theme.colors.pri : '1px solid ' + props.theme.colors.border};
   border-radius: var(--r-lg);
   padding: 2rem;
-  border: 1px solid ${props => props.theme.colors.border};
-  text-align: center;
   position: relative;
+  transition: all 0.3s ease;
   
-  &.featured {
-    border-color: ${props => props.theme.colors.pri};
-    transform: scale(1.05);
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: ${props => props.theme.shadow.lg};
   }
-  
+
+  ${props => props.popular && `
+    transform: scale(1.05);
+    box-shadow: ${props.theme.shadow.lg};
+    
+    &:hover {
+      transform: scale(1.05) translateY(-4px);
+    }
+  `}
+`;
+
+const PopularBadge = styled.div`
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, ${props => props.theme.colors.pri} 0%, #6c5ce7 100%);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: var(--r-full);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  box-shadow: 0 4px 12px rgba(124, 140, 255, 0.3);
+`;
+
+const PlanHeader = styled.div`
+  text-align: center;
+  margin-bottom: 2rem;
+
   h3 {
     font-size: var(--text-xl);
-    margin-bottom: 1rem;
     color: ${props => props.theme.colors.text};
+    margin-bottom: 0.5rem;
+    font-weight: 600;
   }
-  
+
+  .description {
+    color: ${props => props.theme.colors.muted};
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+  }
+
   .price {
     font-size: var(--text-3xl);
     font-weight: bold;
-    color: ${props => props.theme.colors.pri};
-    margin-bottom: 0.5rem;
+    color: ${props => props.theme.colors.text};
+    margin-bottom: 0.25rem;
+    
+    .currency {
+      font-size: var(--text-lg);
+      vertical-align: top;
+    }
   }
-  
-  .period {
-    font-size: var(--text-sm);
+
+  .interval {
     color: ${props => props.theme.colors.muted};
-    margin-bottom: 2rem;
+    font-size: var(--text-sm);
   }
 `;
 
 const FeatureList = styled.ul`
   list-style: none;
-  margin-bottom: 2rem;
-  
+  padding: 0;
+  margin: 2rem 0;
+
   li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
     padding: 0.5rem 0;
     color: ${props => props.theme.colors.text};
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    
-    &:before {
-      content: "✓";
-      color: ${props => props.theme.colors.succ};
-      font-weight: bold;
+    font-size: var(--text-sm);
+    line-height: 1.5;
+
+    .check-icon {
+      color: ${props => props.theme.colors.suc};
+      flex-shrink: 0;
+      margin-top: 0.125rem;
+    }
+
+    &.limitation {
+      opacity: 0.7;
+      
+      .check-icon {
+        color: ${props => props.theme.colors.muted};
+      }
     }
   }
 `;
 
-const EarningSection = styled.div`
-  background: ${props => props.theme.colors.surface};
-  border-radius: var(--r-lg);
-  padding: 2rem;
-  margin-top: 3rem;
-  border: 1px solid ${props => props.theme.colors.border};
-  
-  h2 {
-    font-size: var(--text-2xl);
-    margin-bottom: 1rem;
-    color: ${props => props.theme.colors.text};
-    text-align: center;
-  }
-  
-  p {
-    font-size: var(--text-base);
-    color: ${props => props.theme.colors.muted};
-    line-height: 1.6;
-    margin-bottom: 1rem;
-  }
-`;
-
-const EarningGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
+const PlanCTA = styled.div`
   margin-top: 2rem;
-`;
-
-const EarningCard = styled.div`
-  background: ${props => props.theme.colors.elev};
-  border-radius: var(--r-md);
-  padding: 1.5rem;
-  text-align: center;
-  
-  h4 {
-    font-size: var(--text-lg);
-    margin-bottom: 0.5rem;
-    color: ${props => props.theme.colors.text};
-  }
-  
-  .amount {
-    font-size: var(--text-xl);
-    font-weight: bold;
-    color: ${props => props.theme.colors.pri};
-    margin-bottom: 0.5rem;
-  }
-  
-  .description {
-    font-size: var(--text-sm);
-    color: ${props => props.theme.colors.muted};
-  }
 `;
 
 const StripePricingSection = styled.div`
@@ -206,110 +221,184 @@ function PricingPage() {
     };
   }, []);
 
+  const seoData = {
+    title: 'Pricing Plans - yoohoo.guru',
+    description: 'Choose the perfect plan for your skill-sharing journey. From free community access to premium professional tools.',
+    keywords: 'pricing, plans, subscription, skill sharing, community, premium',
+    ogTitle: 'yoohoo.guru Pricing - Find Your Perfect Plan',
+    ogDescription: 'Start free or upgrade to premium features. Flexible plans for every type of skill sharer.',
+    canonicalUrl: window.location.href
+  };
+
+  const handlePlanSelect = (plan) => {
+    if (plan.id === 'community') {
+      // Free plan - go to signup
+      window.location.href = '/signup';
+    } else {
+      // Paid plans - integrate with Stripe
+      // This would normally trigger Stripe Checkout
+      console.log(`Selected plan: ${plan.id}`);
+      // For now, redirect to signup with plan parameter
+      window.location.href = `/signup?plan=${plan.id}`;
+    }
+  };
+
   return (
     <Container>
+      <SEOMetadata {...seoData} />
       <Content>
-        <Title>Pricing</Title>
+        <Title>Choose Your Plan</Title>
         <Subtitle>
-          Start earning money by sharing your skills and helping your neighbors
+          Start free and upgrade as you grow. All plans include our core community features 
+          with additional tools to help you succeed.
         </Subtitle>
-        
+
+        <PlansGrid>
+          {PRICING_CONFIG.plans.map((plan) => (
+            <PlanCard key={plan.id} popular={plan.popular}>
+              {plan.popular && (
+                <PopularBadge>
+                  <Star size={14} />
+                  Most Popular
+                </PopularBadge>
+              )}
+              
+              <PlanHeader>
+                <h3>{plan.name}</h3>
+                <div className="description">{plan.description}</div>
+                <div className="price">
+                  {plan.price === 0 ? (
+                    'Free'
+                  ) : (
+                    <>
+                      <span className="currency">$</span>
+                      {plan.price}
+                    </>
+                  )}
+                </div>
+                <div className="interval">
+                  {plan.interval === 'forever' ? 'Forever' : `per ${plan.interval}`}
+                </div>
+              </PlanHeader>
+
+              <FeatureList>
+                {plan.features.map((feature, index) => (
+                  <li key={index}>
+                    <Check size={16} className="check-icon" />
+                    {feature}
+                  </li>
+                ))}
+                {plan.limitations.map((limitation, index) => (
+                  <li key={`limitation-${index}`} className="limitation">
+                    <Check size={16} className="check-icon" />
+                    {limitation}
+                  </li>
+                ))}
+              </FeatureList>
+
+              <PlanCTA>
+                <Button
+                  variant={plan.ctaVariant}
+                  size="lg"
+                  onClick={() => handlePlanSelect(plan)}
+                  style={{ width: '100%' }}
+                >
+                  {plan.cta}
+                </Button>
+              </PlanCTA>
+            </PlanCard>
+          ))}
+        </PlansGrid>
+
+        {/* Stripe Pricing Table Fallback */}
         <StripePricingSection>
-          <h2>Choose Your Plan</h2>
+          <h2>Secure Payment Processing</h2>
           <p>
-            Select the plan that best fits your needs. All plans include promo code support and monthly recurring billing.
+            All payments are processed securely through Stripe. You can cancel or change 
+            your plan at any time.
           </p>
-          <stripe-pricing-table 
-            pricing-table-id="prctbl_1S44QQJF6bibA8neW22850S2"
-            publishable-key="pk_live_uDtqCIG6cqKBt1QeIrGVHglz">
-          </stripe-pricing-table>
-          {!stripeLoaded && (
+          
+          {stripeLoaded && PRICING_CONFIG.stripe.publishableKey !== 'pk_test_your_stripe_publishable_key' ? (
+            <stripe-pricing-table
+              pricing-table-id={PRICING_CONFIG.stripe.pricingTableId}
+              publishable-key={PRICING_CONFIG.stripe.publishableKey}
+            ></stripe-pricing-table>
+          ) : (
             <div className="fallback-message">
-              Loading Stripe pricing table... If this doesn&apos;t load, please disable ad blockers or use the pricing options below.
+              🔧 <strong>Development Mode:</strong> Stripe pricing table will appear here when 
+              configured with your publishable key and pricing table ID. 
+              <br />
+              <small>
+                Set REACT_APP_STRIPE_PUBLISHABLE_KEY and REACT_APP_STRIPE_PRICING_TABLE_ID 
+                in your environment variables.
+              </small>
             </div>
           )}
         </StripePricingSection>
-        
-        <PricingGrid>
-          <PricingCard>
-            <h3>Community Member</h3>
-            <div className="price">Free</div>
-            <div className="period">Always</div>
-            <FeatureList>
-              <li>Browse skills and services</li>
-              <li>Create basic profile</li>
-              <li>Message other members</li>
-              <li>Join community discussions</li>
-              <li>Access safety resources</li>
-            </FeatureList>
-            <Button variant="outline">Get Started</Button>
-          </PricingCard>
 
-          <PricingCard className="featured">
-            <h3>Skill Sharer</h3>
-            <div className="price">$9</div>
-            <div className="period">per month</div>
-            <FeatureList>
-              <li>Everything in Community</li>
-              <li>Offer skills and services</li>
-              <li>AI-powered session matching</li>
-              <li>Calendar integration</li>
-              <li>Payment processing</li>
-              <li>Enhanced profile features</li>
-            </FeatureList>
-            <Button variant="primary">Start Earning</Button>
-          </PricingCard>
+        {/* Interactive Earnings Estimator */}
+        <EarningsEstimator />
 
-          <PricingCard>
-            <h3>Premium Angel</h3>
-            <div className="price">$19</div>
-            <div className="period">per month</div>
-            <FeatureList>
-              <li>Everything in Skill Sharer</li>
-              <li>Priority listing placement</li>
-              <li>Advanced analytics</li>
-              <li>Custom branding</li>
-              <li>Multiple skill categories</li>
-              <li>Dedicated support</li>
-            </FeatureList>
-            <Button variant="primary">Go Premium</Button>
-          </PricingCard>
-        </PricingGrid>
+        {/* Trust and Security Section */}
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(124, 140, 255, 0.05) 0%, rgba(46, 213, 115, 0.05) 100%)',
+          borderRadius: 'var(--r-lg)',
+          padding: '2rem',
+          textAlign: 'center',
+          margin: '3rem 0',
+          border: '1px solid var(--border)'
+        }}>
+          <h3 style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+            <Zap size={20} />
+            Why Choose yoohoo.guru?
+          </h3>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gap: '2rem',
+            marginTop: '2rem'
+          }}>
+            <div>
+              <h4>🔒 Secure & Trusted</h4>
+              <p>All payments processed through Stripe with bank-level security.</p>
+            </div>
+            <div>
+              <h4>🤝 Community First</h4>
+              <p>Built for neighbors helping neighbors with local connections.</p>
+            </div>
+            <div>
+              <h4>📈 Grow Your Income</h4>
+              <p>Tools and features designed to help you maximize your earnings.</p>
+            </div>
+            <div>
+              <h4>💡 AI-Powered</h4>
+              <p>Smart matching technology connects you with the right opportunities.</p>
+            </div>
+          </div>
+        </div>
 
-        <EarningSection>
-          <h2>Start Earning Today</h2>
-          <p>
-            yoohoo.guru makes it easy to monetize your skills and help your community. 
-            Whether you&apos;re teaching a hobby, offering professional services, or helping with odd jobs, 
-            our platform connects you with neighbors who need your expertise.
+        {/* Call to Action */}
+        <div style={{ textAlign: 'center', margin: '3rem 0' }}>
+          <h2>Ready to Start Sharing Skills?</h2>
+          <p style={{ marginBottom: '2rem', color: 'var(--muted)' }}>
+            Join thousands of community members already earning and learning on yoohoo.guru
           </p>
-
-          <EarningGrid>
-            <EarningCard>
-              <h4>Tutoring</h4>
-              <div className="amount">$25-50/hr</div>
-              <div className="description">Teaching skills like languages, music, coding</div>
-            </EarningCard>
-
-            <EarningCard>
-              <h4>Handyman Services</h4>
-              <div className="amount">$30-60/hr</div>
-              <div className="description">Home repairs, assembly, maintenance</div>
-            </EarningCard>
-
-            <EarningCard>
-              <h4>Creative Services</h4>
-              <div className="amount">$20-40/hr</div>
-              <div className="description">Art, design, photography, crafts</div>
-            </EarningCard>
-
-            <EarningCard>
-              <h4>Pet Care</h4>
-              <div className="amount">$15-25/hr</div>
-              <div className="description">Walking, sitting, grooming, training</div>
-            </EarningCard>
-          </EarningGrid>
-        </EarningSection>
+          <Button 
+            variant="primary" 
+            size="lg" 
+            onClick={() => window.location.href = '/signup'}
+            style={{ marginRight: '1rem' }}
+          >
+            Get Started Free
+          </Button>
+          <Button 
+            variant="outline" 
+            size="lg" 
+            onClick={() => window.location.href = '/how-it-works'}
+          >
+            Learn More
+          </Button>
+        </div>
       </Content>
     </Container>
   );

@@ -15,6 +15,7 @@ const { getConfig, getCorsOrigins, validateConfig } = require('./config/appConfi
 const { logger } = require('./utils/logger');
 const errorHandler = require('./middleware/errorHandler');
 const { subdomainHandler } = require('./middleware/subdomainHandler');
+const { startCurationAgents } = require('./agents/curationAgents');
 
 // Route Imports
 const authRoutes = require('./routes/auth');
@@ -235,6 +236,13 @@ if (require.main === module) {
     logger.info(`🎯 ${config.appBrandName} Backend server running on port ${PORT}`);
     logger.info(`Environment: ${config.nodeEnv}`);
     logger.info(`Health check: http://localhost:${PORT}/health`);
+    
+    // Start curation agents after server is running
+    try {
+      startCurationAgents();
+    } catch (error) {
+      logger.warn('Failed to start curation agents:', error.message);
+    }
   });
 }
 

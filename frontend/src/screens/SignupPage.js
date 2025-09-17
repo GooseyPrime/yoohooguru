@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
-import { Eye, EyeOff } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff, Users, Briefcase, CheckCircle2 } from 'lucide-react';
 import Button from '../components/Button';
 import toast from 'react-hot-toast';
+import SEOMetadata from '../components/SEOMetadata';
 
 const Container = styled.div`
   min-height: calc(100vh - 140px);
@@ -115,69 +116,6 @@ const ErrorMessage = styled.div`
   margin-top: 0.25rem;
 `;
 
-const UserTypeGroup = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-top: 0.5rem;
-`;
-
-const UserTypeOption = styled.label`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  padding: 0.75rem;
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: var(--r-md);
-  background: ${props => props.theme.colors.surface};
-  transition: all var(--t-fast);
-  flex: 1;
-  
-  &:hover {
-    border-color: ${props => props.theme.colors.pri};
-  }
-  
-  input[type="radio"] {
-    margin: 0;
-  }
-  
-  input[type="radio"]:checked + span {
-    color: ${props => props.theme.colors.pri};
-    font-weight: 500;
-  }
-`;
-
-const CheckboxGroup = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  margin-top: 0.5rem;
-`;
-
-const CheckboxLabel = styled.label`
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-  cursor: pointer;
-  font-size: var(--text-sm);
-  line-height: 1.4;
-  
-  input[type="checkbox"] {
-    margin: 0;
-    margin-top: 0.125rem;
-    flex-shrink: 0;
-  }
-  
-  a {
-    color: ${props => props.theme.colors.pri};
-    text-decoration: none;
-    
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-`;
-
 const LoginLink = styled.div`
   text-align: center;
   margin-top: 1.5rem;
@@ -193,6 +131,151 @@ const LoginLink = styled.div`
   }
 `;
 
+const UserTypeSection = styled.div`
+  margin-bottom: 1.5rem;
+
+  h3 {
+    font-size: var(--text-md);
+    color: ${props => props.theme.colors.text};
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+`;
+
+const UserTypeGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const UserTypeCard = styled.div`
+  border: 2px solid ${props => props.selected ? props.theme.colors.pri : props.theme.colors.border};
+  border-radius: var(--r-md);
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: ${props => props.selected ? 'rgba(124, 140, 255, 0.05)' : props.theme.colors.surface};
+  
+  &:hover {
+    border-color: ${props => props.theme.colors.pri};
+    background: ${props => props.selected ? 'rgba(124, 140, 255, 0.05)' : 'rgba(124, 140, 255, 0.02)'};
+  }
+
+  .icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--r-md);
+    background: ${props => props.selected ? props.theme.colors.pri : 'rgba(124, 140, 255, 0.1)'};
+    color: ${props => props.selected ? 'white' : props.theme.colors.pri};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.75rem;
+  }
+
+  h4 {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: ${props => props.theme.colors.text};
+    margin-bottom: 0.25rem;
+  }
+
+  p {
+    font-size: var(--text-xs);
+    color: ${props => props.theme.colors.muted};
+    line-height: 1.4;
+    margin: 0;
+  }
+`;
+
+const TermsSection = styled.div`
+  margin: 1.5rem 0;
+`;
+
+const CheckboxWrapper = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  
+  input[type="checkbox"] {
+    display: none;
+  }
+`;
+
+const CustomCheckbox = styled.label`
+  width: 20px;
+  height: 20px;
+  border: 2px solid ${props => props.theme.colors.border};
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+  
+  ${props => props.checked && `
+    background: ${props.theme.colors.pri};
+    border-color: ${props.theme.colors.pri};
+    color: white;
+  `}
+  
+  &:hover {
+    border-color: ${props => props.theme.colors.pri};
+  }
+`;
+
+const CheckboxText = styled.label`
+  font-size: var(--text-sm);
+  color: ${props => props.theme.colors.text};
+  cursor: pointer;
+  line-height: 1.5;
+  
+  a {
+    color: ${props => props.theme.colors.pri};
+    text-decoration: underline;
+    
+    &:hover {
+      text-decoration: none;
+    }
+  }
+`;
+
+const StepIndicator = styled.div`
+  text-align: center;
+  margin-bottom: 2rem;
+  
+  .steps {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .step {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: ${props => props.theme.colors.muted};
+    
+    &.active {
+      background: ${props => props.theme.colors.pri};
+    }
+  }
+  
+  .step-text {
+    font-size: var(--text-sm);
+    color: ${props => props.theme.colors.muted};
+  }
+`;
+
 function SignupPage() {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -200,12 +283,13 @@ function SignupPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    userType: 'skill-sharer', // Default to skill sharer
-    acceptTerms: false
+    userType: '' // 'skill_sharer' or 'service_poster'
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -248,6 +332,18 @@ function SignupPage() {
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
+
+    if (!formData.userType) {
+      newErrors.userType = 'Please select how you plan to use yoohoo.guru';
+    }
+
+    if (!acceptedTerms) {
+      newErrors.terms = 'You must accept the Terms and Conditions';
+    }
+
+    if (!acceptedPrivacy) {
+      newErrors.privacy = 'You must accept the Privacy Policy';
+    }
     
     if (!formData.acceptTerms) {
       newErrors.acceptTerms = 'You must accept the Terms and Conditions to proceed';
@@ -271,11 +367,23 @@ function SignupPage() {
         firstName: formData.firstName,
         lastName: formData.lastName,
         displayName: `${formData.firstName} ${formData.lastName}`,
-        userType: formData.userType
+        userType: formData.userType,
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+        termsAcceptedAt: new Date().toISOString(),
+        privacyAcceptedAt: new Date().toISOString()
       });
       
       toast.success('Account created successfully! Please check your email to verify your account.');
-      navigate('/dashboard');
+      
+      // Guide user to complete their profile based on their type
+      if (formData.userType === 'skill_sharer') {
+        navigate('/profile/onboarding?type=sharer');
+      } else if (formData.userType === 'service_poster') {
+        navigate('/profile/onboarding?type=poster');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (error) {
       toast.error(error.message || 'Failed to create account');
       console.error('Signup error:', error);
@@ -285,10 +393,16 @@ function SignupPage() {
   };
 
   const handleGoogleSignup = async () => {
+    if (!acceptedTerms || !acceptedPrivacy) {
+      toast.error('Please accept the Terms and Privacy Policy to continue');
+      return;
+    }
+
     setIsGoogleLoading(true);
     try {
       await loginWithGoogle();
-      navigate('/dashboard');
+      // For Google signup, redirect to onboarding to select user type
+      navigate('/profile/onboarding?type=select');
     } catch (error) {
       // Error handling is done in AuthContext
     } finally {
@@ -296,15 +410,70 @@ function SignupPage() {
     }
   };
 
+  const handleUserTypeSelect = (type) => {
+    setFormData(prev => ({ ...prev, userType: type }));
+    if (errors.userType) {
+      setErrors(prev => ({ ...prev, userType: '' }));
+    }
+  };
+
+  const seoData = {
+    title: 'Join yoohoo.guru - Create Your Account',
+    description: 'Join our skill-sharing community. Create an account to offer your skills or find local services and expertise.',
+    keywords: 'join, signup, create account, skill sharing, community',
+    ogTitle: 'Join the yoohoo.guru Community',
+    ogDescription: 'Start sharing skills and connecting with your neighbors today.',
+    canonicalUrl: window.location.href
+  };
+
   return (
     <Container>
+      <SEOMetadata {...seoData} />
       <Content>
+        <StepIndicator>
+          <div className="steps">
+            <div className="step active"></div>
+            <div className="step"></div>
+            <div className="step"></div>
+          </div>
+          <div className="step-text">Step 1 of 3: Create Account</div>
+        </StepIndicator>
+
         <Title>Join {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}</Title>
         <Description>
           Create your account to start sharing skills and building meaningful connections.
         </Description>
         
         <Form onSubmit={handleSubmit}>
+          {/* User Type Selection */}
+          <UserTypeSection>
+            <h3>How do you plan to use yoohoo.guru?</h3>
+            <UserTypeGrid>
+              <UserTypeCard 
+                selected={formData.userType === 'skill_sharer'}
+                onClick={() => handleUserTypeSelect('skill_sharer')}
+              >
+                <div className="icon">
+                  <Users size={20} />
+                </div>
+                <h4>Skill Sharer</h4>
+                <p>Teach skills, offer services, and help your community</p>
+              </UserTypeCard>
+              
+              <UserTypeCard 
+                selected={formData.userType === 'service_poster'}
+                onClick={() => handleUserTypeSelect('service_poster')}
+              >
+                <div className="icon">
+                  <Briefcase size={20} />
+                </div>
+                <h4>Service Seeker</h4>
+                <p>Find local help, learn new skills, and post job opportunities</p>
+              </UserTypeCard>
+            </UserTypeGrid>
+            {errors.userType && <ErrorMessage>{errors.userType}</ErrorMessage>}
+          </UserTypeSection>
+
           <InputGroup>
             <Label htmlFor="firstName">First Name</Label>
             <Input
@@ -367,6 +536,7 @@ function SignupPage() {
               <PasswordToggle
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </PasswordToggle>
@@ -399,54 +569,62 @@ function SignupPage() {
             {errors.confirmPassword && <ErrorMessage>{errors.confirmPassword}</ErrorMessage>}
           </InputGroup>
 
-          <InputGroup>
-            <Label>I want to:</Label>
-            <UserTypeGroup>
-              <UserTypeOption>
-                <input
-                  type="radio"
-                  id="skill-sharer"
-                  name="userType"
-                  value="skill-sharer"
-                  checked={formData.userType === 'skill-sharer'}
-                  onChange={handleChange}
-                />
-                <span>Share Skills & Learn</span>
-              </UserTypeOption>
-              <UserTypeOption>
-                <input
-                  type="radio"
-                  id="job-poster"
-                  name="userType"
-                  value="job-poster"
-                  checked={formData.userType === 'job-poster'}
-                  onChange={handleChange}
-                />
-                <span>Post Jobs & Find Help</span>
-              </UserTypeOption>
-            </UserTypeGroup>
-          </InputGroup>
+          {/* Terms and Privacy Acceptance */}
+          <TermsSection>
+            <CheckboxWrapper>
+              <input
+                type="checkbox"
+                id="acceptTerms"
+                checked={acceptedTerms}
+                onChange={(e) => {
+                  setAcceptedTerms(e.target.checked);
+                  if (errors.terms) {
+                    setErrors(prev => ({ ...prev, terms: '' }));
+                  }
+                }}
+              />
+              <CustomCheckbox 
+                htmlFor="acceptTerms" 
+                checked={acceptedTerms}
+              >
+                {acceptedTerms && <CheckCircle2 size={12} />}
+              </CustomCheckbox>
+              <CheckboxText htmlFor="acceptTerms">
+                I agree to the{' '}
+                <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">
+                  Terms and Conditions
+                </a>
+              </CheckboxText>
+            </CheckboxWrapper>
+            {errors.terms && <ErrorMessage>{errors.terms}</ErrorMessage>}
 
-          <InputGroup>
-            <CheckboxGroup>
-              <CheckboxLabel>
-                <input
-                  type="checkbox"
-                  name="acceptTerms"
-                  checked={formData.acceptTerms}
-                  onChange={handleChange}
-                  required
-                />
-                <span>
-                  I agree to the{' '}
-                  <Link to="/terms-and-conditions" target="_blank">Terms and Conditions</Link>
-                  {' '}and{' '}
-                  <Link to="/privacy-policy" target="_blank">Privacy Policy</Link>
-                </span>
-              </CheckboxLabel>
-            </CheckboxGroup>
-            {errors.acceptTerms && <ErrorMessage>{errors.acceptTerms}</ErrorMessage>}
-          </InputGroup>
+            <CheckboxWrapper>
+              <input
+                type="checkbox"
+                id="acceptPrivacy"
+                checked={acceptedPrivacy}
+                onChange={(e) => {
+                  setAcceptedPrivacy(e.target.checked);
+                  if (errors.privacy) {
+                    setErrors(prev => ({ ...prev, privacy: '' }));
+                  }
+                }}
+              />
+              <CustomCheckbox 
+                htmlFor="acceptPrivacy" 
+                checked={acceptedPrivacy}
+              >
+                {acceptedPrivacy && <CheckCircle2 size={12} />}
+              </CustomCheckbox>
+              <CheckboxText htmlFor="acceptPrivacy">
+                I agree to the{' '}
+                <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">
+                  Privacy Policy
+                </a>
+              </CheckboxText>
+            </CheckboxWrapper>
+            {errors.privacy && <ErrorMessage>{errors.privacy}</ErrorMessage>}
+          </TermsSection>
 
           <Button 
             type="submit" 
@@ -474,10 +652,12 @@ function SignupPage() {
         <Button 
           variant="outline" 
           size="lg"
-          disabled={!isFirebaseConfigured}
+          disabled={!isFirebaseConfigured || !acceptedTerms || !acceptedPrivacy}
           loading={isGoogleLoading}
           onClick={handleGoogleSignup}
-          title={!isFirebaseConfigured ? "Google Sign-up requires Firebase configuration" : "Sign up with Google"}
+          title={!isFirebaseConfigured ? "Google Sign-up requires Firebase configuration" : 
+                 (!acceptedTerms || !acceptedPrivacy) ? "Please accept Terms and Privacy Policy first" : 
+                 "Sign up with Google"}
           style={{ width: '100%' }}
         >
           Continue with Google
