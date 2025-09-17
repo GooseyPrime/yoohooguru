@@ -286,7 +286,6 @@ const subdomainConfigs = {
 };
 
 // Lazy loaded components
-const GuruHomePage = React.lazy(() => import('../screens/guru/GuruHomePage'));
 const DashboardPage = React.lazy(() => import('../screens/DashboardPage'));
 const ProfilePage = React.lazy(() => import('../screens/ProfilePage'));
 const SkillsPage = React.lazy(() => import('../screens/SkillsPage'));
