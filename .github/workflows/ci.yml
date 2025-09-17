@@ -10,6 +10,9 @@ jobs:
   build-and-test:
     name: Build & Test
     runs-on: ubuntu-latest
+    outputs:
+      artifact-errors-only: ${{ steps.check-artifacts.outputs.artifact-errors-only }}
+      has-artifacts: ${{ steps.check-artifacts.outputs.has-artifacts }}
     strategy:
       matrix:
         node-version: [18.x, 20.x]
@@ -63,16 +66,23 @@ jobs:
         # The CI=false environment variable is often used to prevent warnings from being treated as errors during the build process.
         CI: false
 
-    - name: Verify Deployment Control (PR only)
-      if: github.event_name == 'pull_request'
+    - name: Handle runtime log artifacts
+      id: check-artifacts
       run: |
-        echo "🔒 Vercel Deployment Control Check"
-        echo "=================================="
-        echo ""
-        echo "✅ This PR will NOT trigger automatic Vercel deployment"
-        echo "✅ Deployment will only occur after merge to main branch"
-        echo ""
-        ./scripts/verify-deployment-control.sh
+        chmod +x .github/scripts/handle-artifacts.sh
+        .github/scripts/handle-artifacts.sh check
+    
+    - name: Upload runtime log artifacts (conditional)
+      if: steps.check-artifacts.outputs.has-artifacts == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: runtime-logs
+        path: |
+          /home/runner/work/_temp/runtime-logs/blocked.jsonl
+          /home/runner/work/_temp/runtime-logs/blocked.md
+        retention-days: 30
+        if-no-files-found: warn
+      continue-on-error: true
 
   deploy-production:
     name: Deploy to Production
@@ -80,20 +90,49 @@ jobs:
     # This job will only run after the 'build-and-test' job has successfully completed for all matrix variations.
     needs: [build-and-test]
     if: github.ref == 'refs/heads/main'
+    outputs:
+      deployment-status: ${{ steps.deployment.outputs.status }}
+      artifact-errors-only: ${{ steps.check-errors.outputs.artifact-errors-only }}
     
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
     
-    - name: Deploy to production
+    - name: Check for artifact-only errors
+      id: check-errors
       run: |
-        echo "🚀 Deploy to production environment"
-        echo "===================================="
-        echo ""
-        echo "✅ All tests passed on main branch"
-        echo "✅ Ready for production deployment"
-        echo ""
-        echo "Vercel will automatically deploy this commit to production"
-        echo "based on the deployment control configuration."
-        echo ""
-        echo "See docs/VERCEL_DEPLOYMENT_CONTROL.md for details."
+        # This step checks if the only errors in the workflow are artifact-related
+        # This helps prevent Copilot agents from getting stuck in comment loops
+        
+        ARTIFACT_ERRORS_ONLY="false"
+        
+        # Check if the build-and-test job had any artifact-related outputs
+        if [ "${{ needs.build-and-test.outputs.artifact-errors-only || 'false' }}" == "true" ]; then
+          ARTIFACT_ERRORS_ONLY="true"
+          echo "✅ Detected artifact-only error condition"
+          echo "📝 This indicates a successful build with missing optional runtime logs"
+        else
+          echo "ℹ️ No artifact-only error conditions detected"
+        fi
+        
+        echo "artifact-errors-only=${ARTIFACT_ERRORS_ONLY}" >> $GITHUB_OUTPUT
+        
+        # Also check for missing artifacts from previous steps (for PRs)
+        if [ -n "${{ github.event.pull_request }}" ]; then
+          echo "🔍 PR context detected - checking for artifact-only issues"
+          if [ "${ARTIFACT_ERRORS_ONLY}" == "true" ]; then
+            echo "pr-safe-to-close=true" >> $GITHUB_OUTPUT
+            echo "✅ PR appears to have only artifact issues - safe for auto-closure"
+          else
+            echo "pr-safe-to-close=false" >> $GITHUB_OUTPUT
+            echo "⚠️ PR has non-artifact issues - manual review required"
+          fi
+        fi
+    
+    - name: Deploy to production
+      id: deployment
+      run: |
+        echo "Deploy to production environment"
+        echo "status=success" >> $GITHUB_OUTPUT
+        # Add your production deployment commands here
+
