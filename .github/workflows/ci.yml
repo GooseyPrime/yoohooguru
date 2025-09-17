@@ -31,7 +31,7 @@ jobs:
     - name: Install all dependencies
       # Install root dependencies first, then workspace dependencies
       run: |
-        npm ci
+        npm install
         npm run install:all
 
     - name: Lint backend code

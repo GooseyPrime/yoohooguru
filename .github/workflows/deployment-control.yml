@@ -48,17 +48,8 @@ jobs:
           echo "⚠️  Root vercel.json not found"
         fi
         
-        # Check frontend vercel.json  
-        if [ -f "frontend/vercel.json" ]; then
-          echo "✅ Frontend vercel.json found"
-          if grep -q '"deploymentEnabled"' frontend/vercel.json; then
-            echo "✅ Deployment control configured in frontend"
-          else
-            echo "⚠️  Deployment control not found in frontend/vercel.json"
-          fi
-        else
-          echo "⚠️  Frontend vercel.json not found"
-        fi
+        # Note: Frontend vercel.json removed - configuration consolidated to root
+        echo "ℹ️  Frontend vercel.json consolidated into root configuration"
         
         echo ""
         echo "Configuration verification complete."
