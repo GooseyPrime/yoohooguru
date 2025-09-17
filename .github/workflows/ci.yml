@@ -63,6 +63,17 @@ jobs:
         # The CI=false environment variable is often used to prevent warnings from being treated as errors during the build process.
         CI: false
 
+    - name: Verify Deployment Control (PR only)
+      if: github.event_name == 'pull_request'
+      run: |
+        echo "🔒 Vercel Deployment Control Check"
+        echo "=================================="
+        echo ""
+        echo "✅ This PR will NOT trigger automatic Vercel deployment"
+        echo "✅ Deployment will only occur after merge to main branch"
+        echo ""
+        ./scripts/verify-deployment-control.sh
+
   deploy-production:
     name: Deploy to Production
     runs-on: ubuntu-latest
@@ -75,6 +86,14 @@ jobs:
       uses: actions/checkout@v4
     
     - name: Deploy to production
-      run: echo "Deploy to production environment"
-      # Add your production deployment commands here
-
+      run: |
+        echo "🚀 Deploy to production environment"
+        echo "===================================="
+        echo ""
+        echo "✅ All tests passed on main branch"
+        echo "✅ Ready for production deployment"
+        echo ""
+        echo "Vercel will automatically deploy this commit to production"
+        echo "based on the deployment control configuration."
+        echo ""
+        echo "See docs/VERCEL_DEPLOYMENT_CONTROL.md for details."

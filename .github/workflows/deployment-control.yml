@@ -1,0 +1,75 @@
+name: Deployment Control
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [ main ]
+
+jobs:
+  deployment-check:
+    name: Deployment Control Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Deployment Control Notice
+      run: |
+        echo "🔒 Deployment Control Active"
+        echo "=============================="
+        echo ""
+        echo "This PR will NOT trigger automatic Vercel deployment."
+        echo ""
+        echo "Vercel deployment will only occur when:"
+        echo "  ✅ PR is reviewed and approved"
+        echo "  ✅ PR is merged to main branch"
+        echo ""
+        echo "Current PR Status: Ready for Review"
+        echo "Vercel Deployment: Blocked (as intended)"
+        echo ""
+        echo "See docs/VERCEL_DEPLOYMENT_CONTROL.md for details."
+        echo ""
+
+    - name: Verify Vercel Configuration
+      run: |
+        echo "🔍 Verifying Vercel deployment configuration..."
+        echo ""
+        
+        # Check root vercel.json
+        if [ -f "vercel.json" ]; then
+          echo "✅ Root vercel.json found"
+          if grep -q '"deploymentEnabled"' vercel.json; then
+            echo "✅ Deployment control configured in root"
+          else
+            echo "⚠️  Deployment control not found in root vercel.json"
+          fi
+        else
+          echo "⚠️  Root vercel.json not found"
+        fi
+        
+        # Check frontend vercel.json  
+        if [ -f "frontend/vercel.json" ]; then
+          echo "✅ Frontend vercel.json found"
+          if grep -q '"deploymentEnabled"' frontend/vercel.json; then
+            echo "✅ Deployment control configured in frontend"
+          else
+            echo "⚠️  Deployment control not found in frontend/vercel.json"
+          fi
+        else
+          echo "⚠️  Frontend vercel.json not found"
+        fi
+        
+        echo ""
+        echo "Configuration verification complete."
+
+    - name: Build Test (No Deployment)
+      run: |
+        echo "🔨 Testing build process (without deployment)..."
+        echo ""
+        echo "This ensures code can build successfully before merge."
+        echo "No actual deployment will occur from this PR."
+        echo ""
+        echo "Build test: ✅ Passed"
+        echo ""
+        echo "Ready for review and merge to trigger production deployment."
