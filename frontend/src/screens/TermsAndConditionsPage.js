@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import SEOMetadata from '../components/SEOMetadata';
 
 const Container = styled.div`
   min-height: calc(100vh - 140px);
@@ -100,8 +101,16 @@ const ContactInfo = styled.div`
 `;
 
 function TermsAndConditionsPage() {
+  const seoData = {
+    title: 'Terms and Conditions - yoohoo.guru',
+    description: 'Read our Terms and Conditions for using the yoohoo.guru skill-sharing platform. Understand your rights and responsibilities as a community member.',
+    keywords: 'terms, conditions, legal, agreements, yoohoo.guru, skill sharing',
+    canonicalUrl: window.location.href
+  };
+
   return (
     <Container>
+      <SEOMetadata {...seoData} />
       <Content>
         <Title>Terms and Conditions</Title>
         <LastUpdated>Last updated: December 2024</LastUpdated>
