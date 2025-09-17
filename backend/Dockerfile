@@ -1,17 +1,15 @@
 # First stage – install dependencies
 FROM node:20-alpine AS deps
-WORKDIR /app/backend
-# Copy only package files to install dependencies
-COPY backend/package*.json ./
-RUN npm install --omit=dev && npm cache clean --force
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production && npm cache clean --force
 
 # Second stage – build runtime image
 FROM node:20-alpine
 ENV NODE_ENV=production
-WORKDIR /app/backend
-COPY --from=deps /app/backend/node_modules ./node_modules
-# Copy the backend source code from the repository
-COPY backend/. .
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
 
 # Railway injects PORT; the app must use process.env.PORT
 EXPOSE 3001
