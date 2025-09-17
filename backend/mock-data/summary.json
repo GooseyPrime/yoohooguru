@@ -1,0 +1,23 @@
+{
+  "generatedAt": "2025-09-17T06:33:37.373Z",
+  "totalSubdomains": 15,
+  "totalNews": 45,
+  "totalPosts": 45,
+  "subdomains": [
+    "cooking",
+    "music",
+    "fitness",
+    "tech",
+    "art",
+    "language",
+    "business",
+    "design",
+    "writing",
+    "photography",
+    "gardening",
+    "crafts",
+    "wellness",
+    "finance",
+    "home"
+  ]
+}

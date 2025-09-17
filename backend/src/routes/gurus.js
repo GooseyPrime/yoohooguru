@@ -56,6 +56,43 @@ router.get('/:subdomain/home', async (req, res) => {
         }
       });
     }
+
+    // If still no posts, try to load from seeded content files
+    if (featuredPosts.length === 0) {
+      const path = require('path');
+      const fs = require('fs');
+      
+      try {
+        const mockDataPath = path.join(__dirname, '../../mock-data', `${subdomain}.json`);
+        if (fs.existsSync(mockDataPath)) {
+          const mockData = JSON.parse(fs.readFileSync(mockDataPath, 'utf8'));
+          if (mockData.posts && mockData.posts.length > 0) {
+            // Use the pre-generated blog posts
+            mockData.posts.forEach(post => {
+              featuredPosts.push({
+                id: post.id,
+                title: post.title,
+                slug: post.slug,
+                excerpt: post.excerpt,
+                content: post.content,
+                author: post.author,
+                category: post.category,
+                tags: post.tags,
+                publishedAt: post.publishedAt,
+                readTime: post.readTime,
+                views: post.views,
+                likes: post.likes,
+                status: post.status,
+                featured: post.featured
+              });
+            });
+            logger.info(`📝 Serving ${featuredPosts.length} seeded blog posts for ${subdomain}`);
+          }
+        }
+      } catch (fileError) {
+        logger.warn(`Could not load seeded blog content for ${subdomain}:`, fileError.message);
+      }
+    }
     
     // Get guru stats
     const statsSnapshot = await db.collection('gurus').doc(subdomain).collection('stats').get();
@@ -73,11 +110,47 @@ router.get('/:subdomain/home', async (req, res) => {
         stats = { ...stats, ...data };
       });
     }
+
+    // If no stats in database, try to load from seeded content
+    if (stats.totalPosts === 0 && stats.totalViews === 0) {
+      const path = require('path');
+      const fs = require('fs');
+      
+      try {
+        const mockDataPath = path.join(__dirname, '../../mock-data', `${subdomain}.json`);
+        if (fs.existsSync(mockDataPath)) {
+          const mockData = JSON.parse(fs.readFileSync(mockDataPath, 'utf8'));
+          if (mockData.stats) {
+            stats = { ...stats, ...mockData.stats };
+            logger.info(`📊 Serving seeded stats for ${subdomain}:`, stats);
+          }
+        }
+      } catch (fileError) {
+        logger.warn(`Could not load seeded stats for ${subdomain}:`, fileError.message);
+      }
+    }
+    
+    // Format large numbers (show as "K+" when >= 1000)
+    const formatStat = (value) => {
+      if (!value || value === 0) return null;
+      if (value >= 1000) {
+        return `${Math.floor(value / 1000)}K+`;
+      }
+      return value.toString();
+    };
+    
+    // Only include stats that are greater than zero
+    const formattedStats = {};
+    if (stats.totalPosts > 0) formattedStats.totalPosts = formatStat(stats.totalPosts);
+    if (stats.totalViews > 0) formattedStats.totalViews = formatStat(stats.totalViews);
+    if (stats.monthlyVisitors > 0) formattedStats.monthlyVisitors = formatStat(stats.monthlyVisitors);
+    if (stats.totalLeads > 0) formattedStats.totalLeads = formatStat(stats.totalLeads);
     
     res.json({
       guru: guru.config,
       featuredPosts,
-      stats,
+      stats: formattedStats,
+      rawStats: stats, // Keep raw stats for internal use
       subdomain,
       success: true
     });
@@ -497,6 +570,120 @@ router.get('/:subdomain/about', async (req, res) => {
     logger.error('Error fetching guru about content:', error);
     res.status(500).json({
       error: 'Failed to fetch about content',
+      message: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/news/:subdomain
+ * Get curated news articles for a subdomain
+ */
+router.get('/news/:subdomain', async (req, res) => {
+  try {
+    const { subdomain } = req.params;
+    const guru = req.guru;
+    const db = getFirestore();
+    
+    if (guru.subdomain !== subdomain) {
+      return res.status(400).json({
+        error: 'Subdomain mismatch'
+      });
+    }
+    
+    // Get curated news articles for the subdomain
+    const newsSnapshot = await db.collection('gurus').doc(subdomain).collection('news')
+      .orderBy('publishedAt', 'desc')
+      .limit(3)
+      .get();
+    
+    const newsArticles = [];
+    newsSnapshot.forEach(doc => {
+      const article = doc.data();
+      // Only include articles from last 24 hours or existing ones if no new ones
+      const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
+      if (article.publishedAt >= oneDayAgo || newsArticles.length === 0) {
+        newsArticles.push({
+          id: doc.id,
+          title: article.title,
+          summary: article.summary,
+          url: article.url,
+          publishedAt: article.publishedAt,
+          source: article.source || 'News Source'
+        });
+      }
+    });
+    
+    // If no articles found, try to load from seeded content files
+    if (newsArticles.length === 0) {
+      const path = require('path');
+      const fs = require('fs');
+      
+      try {
+        const mockDataPath = path.join(__dirname, '../../mock-data', `${subdomain}.json`);
+        if (fs.existsSync(mockDataPath)) {
+          const mockData = JSON.parse(fs.readFileSync(mockDataPath, 'utf8'));
+          if (mockData.news && mockData.news.length > 0) {
+            // Use the pre-generated news content
+            mockData.news.forEach(article => {
+              newsArticles.push({
+                id: article.id,
+                title: article.title,
+                summary: article.summary,
+                url: article.url,
+                publishedAt: article.publishedAt,
+                source: article.source
+              });
+            });
+            logger.info(`📰 Serving ${newsArticles.length} seeded news articles for ${subdomain}`);
+          }
+        }
+      } catch (fileError) {
+        logger.warn(`Could not load seeded content for ${subdomain}:`, fileError.message);
+      }
+    }
+    
+    // If still no articles, fall back to generated placeholder content
+    if (newsArticles.length === 0) {
+      const skills = guru.config.primarySkills.join(', ');
+      newsArticles.push(
+        {
+          id: 'placeholder-1',
+          title: `Latest Trends in ${guru.config.category.charAt(0).toUpperCase() + guru.config.category.slice(1)}`,
+          summary: `Discover the newest developments and innovations in ${skills} that are shaping the industry.`,
+          url: '#',
+          publishedAt: Date.now(),
+          source: 'Industry News'
+        },
+        {
+          id: 'placeholder-2', 
+          title: `Expert Tips for ${guru.config.primarySkills[0].replace('-', ' ')} Success`,
+          summary: `Professional insights and proven strategies to excel in ${guru.config.primarySkills[0].replace('-', ' ')}.`,
+          url: '#',
+          publishedAt: Date.now() - 2 * 60 * 60 * 1000,
+          source: 'Expert Network'
+        },
+        {
+          id: 'placeholder-3',
+          title: `Market Analysis: ${guru.config.category.charAt(0).toUpperCase() + guru.config.category.slice(1)} Industry Growth`,
+          summary: `Current market trends and growth opportunities in the ${guru.config.category} sector.`,
+          url: '#',
+          publishedAt: Date.now() - 4 * 60 * 60 * 1000,
+          source: 'Market Research'
+        }
+      );
+    }
+    
+    res.json({
+      success: true,
+      subdomain,
+      articles: newsArticles.slice(0, 3)
+    });
+    
+  } catch (error) {
+    logger.error('Error fetching news articles:', error);
+    res.status(500).json({
+      error: 'Failed to fetch news articles',
       message: error.message
     });
   }
