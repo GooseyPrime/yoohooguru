@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import Button from '../components/Button';
 import toast from 'react-hot-toast';
@@ -115,6 +115,69 @@ const ErrorMessage = styled.div`
   margin-top: 0.25rem;
 `;
 
+const UserTypeGroup = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+`;
+
+const UserTypeOption = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.75rem;
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: var(--r-md);
+  background: ${props => props.theme.colors.surface};
+  transition: all var(--t-fast);
+  flex: 1;
+  
+  &:hover {
+    border-color: ${props => props.theme.colors.pri};
+  }
+  
+  input[type="radio"] {
+    margin: 0;
+  }
+  
+  input[type="radio"]:checked + span {
+    color: ${props => props.theme.colors.pri};
+    font-weight: 500;
+  }
+`;
+
+const CheckboxGroup = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+`;
+
+const CheckboxLabel = styled.label`
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: var(--text-sm);
+  line-height: 1.4;
+  
+  input[type="checkbox"] {
+    margin: 0;
+    margin-top: 0.125rem;
+    flex-shrink: 0;
+  }
+  
+  a {
+    color: ${props => props.theme.colors.pri};
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
+
 const LoginLink = styled.div`
   text-align: center;
   margin-top: 1.5rem;
@@ -136,7 +199,9 @@ function SignupPage() {
     lastName: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    userType: 'skill-sharer', // Default to skill sharer
+    acceptTerms: false
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -148,8 +213,9 @@ function SignupPage() {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    const newValue = type === 'checkbox' ? checked : value;
+    setFormData(prev => ({ ...prev, [name]: newValue }));
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
@@ -183,6 +249,10 @@ function SignupPage() {
       newErrors.confirmPassword = 'Passwords do not match';
     }
     
+    if (!formData.acceptTerms) {
+      newErrors.acceptTerms = 'You must accept the Terms and Conditions to proceed';
+    }
+    
     return newErrors;
   };
 
@@ -200,7 +270,8 @@ function SignupPage() {
       await signup(formData.email, formData.password, {
         firstName: formData.firstName,
         lastName: formData.lastName,
-        displayName: `${formData.firstName} ${formData.lastName}`
+        displayName: `${formData.firstName} ${formData.lastName}`,
+        userType: formData.userType
       });
       
       toast.success('Account created successfully! Please check your email to verify your account.');
@@ -326,6 +397,55 @@ function SignupPage() {
               </PasswordToggle>
             </InputWrapper>
             {errors.confirmPassword && <ErrorMessage>{errors.confirmPassword}</ErrorMessage>}
+          </InputGroup>
+
+          <InputGroup>
+            <Label>I want to:</Label>
+            <UserTypeGroup>
+              <UserTypeOption>
+                <input
+                  type="radio"
+                  id="skill-sharer"
+                  name="userType"
+                  value="skill-sharer"
+                  checked={formData.userType === 'skill-sharer'}
+                  onChange={handleChange}
+                />
+                <span>Share Skills & Learn</span>
+              </UserTypeOption>
+              <UserTypeOption>
+                <input
+                  type="radio"
+                  id="job-poster"
+                  name="userType"
+                  value="job-poster"
+                  checked={formData.userType === 'job-poster'}
+                  onChange={handleChange}
+                />
+                <span>Post Jobs & Find Help</span>
+              </UserTypeOption>
+            </UserTypeGroup>
+          </InputGroup>
+
+          <InputGroup>
+            <CheckboxGroup>
+              <CheckboxLabel>
+                <input
+                  type="checkbox"
+                  name="acceptTerms"
+                  checked={formData.acceptTerms}
+                  onChange={handleChange}
+                  required
+                />
+                <span>
+                  I agree to the{' '}
+                  <Link to="/terms-and-conditions" target="_blank">Terms and Conditions</Link>
+                  {' '}and{' '}
+                  <Link to="/privacy-policy" target="_blank">Privacy Policy</Link>
+                </span>
+              </CheckboxLabel>
+            </CheckboxGroup>
+            {errors.acceptTerms && <ErrorMessage>{errors.acceptTerms}</ErrorMessage>}
           </InputGroup>
 
           <Button 
