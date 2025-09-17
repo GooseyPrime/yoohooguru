@@ -2,16 +2,7 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "installCommand": "npm install",
-  "framework": "webpack",
-  "routes": [
-    {
-      "src": "/static/(.*)",
-      "headers": { "cache-control": "s-maxage=31536000,immutable" },
-      "dest": "/static/$1"
-    },
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/index.html" }
-  ],
+  "devCommand": "npm run dev",
   "headers": [
     {
       "source": "/(.*)",
@@ -22,5 +13,14 @@
         }
       ]
     }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "headers": { "cache-control": "s-maxage=31536000,immutable" },
+      "dest": "/static/$1"
+    },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
