@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from 'styled-components';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { AuthProvider } from './contexts/AuthContext';
 import AppRouter from './components/AppRouter';
 import theme from './theme/tokens';
@@ -14,6 +15,7 @@ function App() {
         <Router>
           <GlobalStyle />
           <AppRouter />
+          <SpeedInsights />
           <Toaster
             position="top-right"
             toastOptions={{
