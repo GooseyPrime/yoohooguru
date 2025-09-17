@@ -29,18 +29,19 @@ jobs:
         cache: 'npm'
 
     - name: Install all dependencies
-      # 'npm ci' is recommended for CI as it uses the lockfile for faster, more reliable installs across all workspaces
-      run: npm ci
+      # Install root dependencies first, then workspace dependencies
+      run: |
+        npm ci
+        npm run install:all
 
     - name: Lint backend code
-      run: npm run lint --workspace=backend
+      run: cd backend && npm run lint
 
     - name: Run frontend tests
-      run: npm test --workspace=frontend
+      run: cd frontend && npm test
 
     - name: Run backend tests
-      # Corrected command: --workspace flag moved before the '--' to be interpreted by npm
-      run: npm test --workspace=backend -- --detectOpenHandles --verbose
+      run: cd backend && npm test -- --detectOpenHandles --verbose
       env:
         NODE_ENV: test
         FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
@@ -61,9 +62,9 @@ jobs:
         STRIPE_TRUST_SAFETY_PRICE_ID: ${{ secrets.STRIPE_TRUST_SAFETY_PRICE_ID }}
 
     - name: Build frontend
-      run: npm run build --workspace=frontend
+      run: cd frontend && npm run build
       env:
-        # The CI=false environment variable is often used to prevent warnings from being treated as errors during the build process.
+        # The CI=false environment variable prevents warnings from being treated as errors during the build process.
         CI: false
 
     - name: Handle runtime log artifacts
