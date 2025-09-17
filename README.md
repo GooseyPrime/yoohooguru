@@ -377,7 +377,6 @@ Create `frontend/vercel.json`:
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "devCommand": "npm run dev",
-  "functions": {},
   "routes": [
     {
       "src": "/static/(.*)",
