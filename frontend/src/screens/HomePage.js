@@ -225,9 +225,38 @@ function HomePage() {
         },
         (error) => {
           console.log('Geolocation error:', error);
-          // User denied or error occurred, graceful fallback
+          let errorMessage = 'Location access unavailable';
+          
+          switch(error.code) {
+            case error.PERMISSION_DENIED:
+              errorMessage = 'Location access denied. Click "Change" to set manually.';
+              break;
+            case error.POSITION_UNAVAILABLE:
+              errorMessage = 'Location information unavailable';
+              break;
+            case error.TIMEOUT:
+              errorMessage = 'Location request timed out';
+              break;
+            default:
+              errorMessage = 'Unknown error occurred while getting location';
+              break;
+          }
+          
+          // Show fallback location and option to set manually
+          setLocation('Location Not Found');
+          console.log(errorMessage);
+          setShowLocationInput(true); // Auto-show input for manual entry
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000 // Cache for 5 minutes
         }
       );
+    } else {
+      // Geolocation not supported
+      setLocation('Geolocation Not Supported');
+      setShowLocationInput(true);
     }
   }, [getLocationFromCoords]);
 

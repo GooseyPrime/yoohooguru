@@ -1,13 +1,13 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
-COPY backend/package*.json ./backend/
-RUN cd backend && npm ci --only=production && npm cache clean --force
+COPY package*.json ./
+RUN npm ci --only=production && npm cache clean --force
 
 FROM node:20-alpine
 ENV NODE_ENV=production
-WORKDIR /app/backend
-COPY --from=deps /app/backend/node_modules ./node_modules
-COPY backend/ .
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
 
 # Railway injects PORT; the app must use process.env.PORT
 EXPOSE 3001
