@@ -159,6 +159,25 @@ npm start
 
 The platform supports multiple deployment architectures with complete environment configuration:
 
+### 🔒 **Deployment Control & Security**
+
+**Important**: This repository implements **deployment control** to prevent premature deployments:
+
+✅ **Secure Deployment Flow:**
+- PRs **do NOT** trigger automatic Vercel deployments
+- Production deployments **only** occur after merge to `main` branch
+- All deployments require code review and approval
+
+📋 **Verify Deployment Control:**
+```bash
+# Check deployment configuration
+./scripts/verify-deployment-control.sh
+
+# Expected output: "Deployment control is properly configured!"
+```
+
+📖 **Details:** See [Vercel Deployment Control Guide](docs/VERCEL_DEPLOYMENT_CONTROL.md)
+
 ### 📁 **Standardized Deployment Configuration**
 
 **Critical**: This monorepo requires **consistent service initialization and platform configuration** to avoid deployment failures. Follow this exact process:
@@ -373,7 +392,6 @@ vercel --prod
 Create `frontend/vercel.json`:
 ```json
 {
-  "framework": "webpack",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "installCommand": "npm install",

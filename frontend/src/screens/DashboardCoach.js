@@ -5,8 +5,10 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { get, patch, del } from '../utils/http';
+import { get, patch, del, post } from '../utils/http';
 import SessionCard from '../components/SessionCard';
+import VideoChat from '../components/VideoChat';
+import LocationMap from '../components/LocationMap';
 
 const Container = styled.div`
   max-width: 1200px;
@@ -130,9 +132,12 @@ function DashboardCoach() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('upcoming');
+  const [activeVideoSession, setActiveVideoSession] = useState(null);
+  const [localMarkers, setLocalMarkers] = useState([]);
 
   useEffect(() => {
     fetchSessions();
+    fetchLocalMarkers();
   }, []);
 
   const fetchSessions = async () => {
@@ -186,6 +191,32 @@ function DashboardCoach() {
     // Additional analytics or logging can be added here
   };
 
+  const fetchLocalMarkers = async () => {
+    try {
+      const data = await get('/guru/locations');
+      setLocalMarkers(data.locations || []);
+    } catch (error) {
+      console.error('Failed to fetch local markers:', error);
+    }
+  };
+
+  const handleLocationTag = async (locationData) => {
+    try {
+      await post('/guru/locations', locationData);
+      fetchLocalMarkers(); // Refresh markers
+    } catch (error) {
+      console.error('Failed to tag location:', error);
+    }
+  };
+
+  const startVideoSession = (sessionId) => {
+    setActiveVideoSession(sessionId);
+  };
+
+  const endVideoSession = () => {
+    setActiveVideoSession(null);
+  };
+
   // Filter sessions based on active tab
   const filteredSessions = sessions.filter(session => {
     const now = Date.now();
@@ -202,6 +233,10 @@ function DashboardCoach() {
         return isPast || session.status === 'completed';
       case 'requests':
         return session.status === 'requested';
+      case 'video':
+        return session.mode === 'video' && (isToday || isUpcoming) && session.status !== 'canceled';
+      case 'local':
+        return false; // This tab shows map, not sessions
       default:
         return true;
     }
@@ -280,36 +315,85 @@ function DashboardCoach() {
         >
           Past
         </Tab>
+        <Tab 
+          active={activeTab === 'video'} 
+          onClick={() => setActiveTab('video')}
+        >
+          🎥 Video Sessions
+        </Tab>
+        <Tab 
+          active={activeTab === 'local'} 
+          onClick={() => setActiveTab('local')}
+        >
+          📍 Local Map
+        </Tab>
       </TabContainer>
 
-      <SessionsList role="list" aria-label={`${activeTab} sessions`}>
-        {filteredSessions.length > 0 ? (
-          filteredSessions.map(session => (
-            <SessionCard
-              key={session.id}
-              session={session}
-              onJoin={handleJoinSession}
-              onCancel={handleCancelSession}
-              onStatusChange={handleStatusChange}
-            />
-          ))
-        ) : (
-          <EmptyState>
-            <EmptyStateIcon>
-              {activeTab === 'requests' ? '📋' : 
-               activeTab === 'today' ? '📅' :
-               activeTab === 'past' ? '📚' : '🎯'}
-            </EmptyStateIcon>
-            <h3>No {activeTab} sessions</h3>
-            <p>
-              {activeTab === 'requests' && 'New session requests will appear here'}
-              {activeTab === 'upcoming' && 'Your confirmed upcoming sessions will appear here'}
-              {activeTab === 'today' && 'Sessions happening today will appear here'}
-              {activeTab === 'past' && 'Completed and past sessions will appear here'}
-            </p>
-          </EmptyState>
-        )}
-      </SessionsList>
+      {/* Content based on active tab */}
+      {activeTab === 'local' ? (
+        <div>
+          <h2 style={{ color: 'white', marginBottom: '1rem' }}>Local Session Locations</h2>
+          <LocationMap 
+            markers={localMarkers}
+            onTagLocation={handleLocationTag}
+            allowTagging={true}
+            category="guru"
+          />
+        </div>
+      ) : activeTab === 'video' && activeVideoSession ? (
+        <div>
+          <h2 style={{ color: 'white', marginBottom: '1rem' }}>Video Session</h2>
+          <VideoChat 
+            sessionId={activeVideoSession}
+            onEnd={endVideoSession}
+          />
+        </div>
+      ) : (
+        <SessionsList role="list" aria-label={`${activeTab} sessions`}>
+          {activeTab === 'video' && !activeVideoSession && (
+            <div style={{ 
+              background: '#2a2a2a', 
+              padding: '2rem', 
+              borderRadius: '12px', 
+              textAlign: 'center', 
+              marginBottom: '2rem',
+              color: '#ccc' 
+            }}>
+              <h3>Video Sessions</h3>
+              <p>Select a video session below to start the video chat interface</p>
+            </div>
+          )}
+          
+          {filteredSessions.length > 0 ? (
+            filteredSessions.map(session => (
+              <SessionCard
+                key={session.id}
+                session={session}
+                onJoin={activeTab === 'video' ? startVideoSession : handleJoinSession}
+                onCancel={handleCancelSession}
+                onStatusChange={handleStatusChange}
+              />
+            ))
+          ) : (
+            <EmptyState>
+              <EmptyStateIcon>
+                {activeTab === 'requests' ? '📋' : 
+                 activeTab === 'today' ? '📅' :
+                 activeTab === 'past' ? '📚' :
+                 activeTab === 'video' ? '🎥' : '🎯'}
+              </EmptyStateIcon>
+              <h3>No {activeTab} sessions</h3>
+              <p>
+                {activeTab === 'requests' && 'New session requests will appear here'}
+                {activeTab === 'upcoming' && 'Your confirmed upcoming sessions will appear here'}
+                {activeTab === 'today' && 'Sessions happening today will appear here'}
+                {activeTab === 'past' && 'Completed and past sessions will appear here'}
+                {activeTab === 'video' && 'Video sessions will appear here when available'}
+              </p>
+            </EmptyState>
+          )}
+        </SessionsList>
+      )}
     </Container>
   );
 }

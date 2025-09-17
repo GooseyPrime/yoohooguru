@@ -6,7 +6,12 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { get, patch, del } from '../utils/http';
+// TODO: Re-enable post import when implementing location features
+// import { get, patch, del, post } from '../utils/http';
 import SessionCard from '../components/SessionCard';
+// TODO: Re-enable these when implementing video/location features for understudy
+// import VideoChat from '../components/VideoChat';
+// import LocationMap from '../components/LocationMap';
 
 const Container = styled.div`
   max-width: 1200px;
@@ -187,9 +192,14 @@ function DashboardUnderstudy() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('upcoming');
+  // TODO: Re-enable these when implementing video/location features for understudy
+  // const [activeVideoSession, setActiveVideoSession] = useState(null);
+  // const [localMarkers, setLocalMarkers] = useState([]);
 
   useEffect(() => {
     fetchSessions();
+    // TODO: Re-enable when implementing location features
+    // fetchLocalMarkers();
   }, []);
 
   const fetchSessions = async () => {
@@ -246,6 +256,35 @@ function DashboardUnderstudy() {
   const navigateToModified = () => {
     window.location.href = '/modified';
   };
+
+  // TODO: Re-enable these functions when implementing video/location features for understudy
+  /*
+  const fetchLocalMarkers = async () => {
+    try {
+      const data = await get('/understudy/locations');
+      setLocalMarkers(data.locations || []);
+    } catch (error) {
+      console.error('Failed to fetch local markers:', error);
+    }
+  };
+
+  const handleLocationTag = async (locationData) => {
+    try {
+      await post('/understudy/locations', locationData);
+      fetchLocalMarkers(); // Refresh markers
+    } catch (error) {
+      console.error('Failed to tag location:', error);
+    }
+  };
+
+  const startVideoSession = (sessionId) => {
+    setActiveVideoSession(sessionId);
+  };
+
+  const endVideoSession = () => {
+    setActiveVideoSession(null);
+  };
+  */
 
   // Filter sessions based on active tab
   const filteredSessions = sessions.filter(session => {
