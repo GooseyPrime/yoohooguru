@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { ArrowRight, GraduationCap, Wrench } from 'lucide-react';
+import { ArrowRight, GraduationCap, Wrench, MapPin, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import HeroArt from '../components/HeroArt';
+import CitySelectionModal from '../components/CitySelectionModal';
+import SEOMetadata from '../components/SEOMetadata';
 
 const HeroSection = styled.section`
   padding: 72px 0 24px; 
@@ -47,24 +49,48 @@ const LocationDisplay = styled.div`
   top: 1rem;
   right: 1rem;
   background: rgba(255, 255, 255, 0.9);
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
   border-radius: var(--r-md);
   font-size: 0.875rem;
   color: var(--text);
   backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   
   .location-text {
     margin-bottom: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
   }
   
   .change-link {
     color: var(--pri);
     cursor: pointer;
     text-decoration: underline;
+    font-size: 0.8rem;
     
     &:hover {
       opacity: 0.8;
     }
+  }
+
+  .location-error {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--warning);
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 768px) {
+    position: relative;
+    top: 0;
+    right: 0;
+    margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.95);
   }
 `;
 
@@ -163,6 +189,9 @@ function HomePage() {
   const [backgroundImage, setBackgroundImage] = useState('');
   const [showLocationInput, setShowLocationInput] = useState(false);
   const [locationInput, setLocationInput] = useState('');
+  const [showCityModal, setShowCityModal] = useState(false);
+  const [locationError, setLocationError] = useState('');
+  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
 
   // Unsplash API - using demo/development key, should be moved to env var for production
   // const UNSPLASH_ACCESS_KEY = 'YOUR_UNSPLASH_ACCESS_KEY'; // This would be in env vars
@@ -218,16 +247,50 @@ function HomePage() {
 
   const requestLocation = useCallback(() => {
     if (navigator.geolocation) {
+      setIsLoadingLocation(true);
+      setLocationError('');
+      
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
           getLocationFromCoords(latitude, longitude);
+          setIsLoadingLocation(false);
         },
         (error) => {
           console.log('Geolocation error:', error);
-          // User denied or error occurred, graceful fallback
+          setIsLoadingLocation(false);
+          
+          let errorMessage = 'Location access unavailable';
+          
+          switch(error.code) {
+            case error.PERMISSION_DENIED:
+              errorMessage = 'Location access denied. Please set your location manually.';
+              break;
+            case error.POSITION_UNAVAILABLE:
+              errorMessage = 'Location information unavailable.';
+              break;
+            case error.TIMEOUT:
+              errorMessage = 'Location request timed out.';
+              break;
+            default:
+              errorMessage = 'Unknown error occurred while getting location.';
+              break;
+          }
+          
+          setLocationError(errorMessage);
+          setLocation('Location Not Available');
+          setShowLocationInput(true);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000
         }
       );
+    } else {
+      setLocationError('Geolocation is not supported by this browser.');
+      setLocation('Geolocation Not Supported');
+      setShowLocationInput(true);
     }
   }, [getLocationFromCoords]);
 
@@ -237,8 +300,39 @@ function HomePage() {
       fetchCityImage(locationInput.trim());
       setShowLocationInput(false);
       setLocationInput('');
+      setLocationError('');
     }
   }, [locationInput, fetchCityImage]);
+
+  const handleCitySelect = useCallback((city) => {
+    setLocation(city);
+    fetchCityImage(city.split(',')[0]); // Extract city name for image
+    setLocationError('');
+    setShowLocationInput(false);
+  }, [fetchCityImage]);
+
+  const seoData = {
+    title: `yoohoo.guru - Skill Sharing Platform${location ? ` in ${location}` : ''}`,
+    description: 'Exchange skills, discover purpose, and create exponential community impact through our trusted neighborhood-based skill-sharing platform.',
+    keywords: 'skill sharing, community, local services, tutoring, handyman, pet care, skill exchange, neighborhood help',
+    ogTitle: `Find Local Skills & Services${location ? ` in ${location}` : ''} - yoohoo.guru`,
+    ogDescription: 'Connect with your neighbors to exchange skills, book services, and build meaningful community connections.',
+    ogImage: backgroundImage || `${process.env.PUBLIC_URL || ''}/assets/images/yoohooguruyetiman.png`,
+    ogUrl: window.location.href,
+    canonicalUrl: window.location.href,
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "yoohoo.guru",
+      "url": "https://yoohoo.guru",
+      "description": "Community skill-sharing platform for local connections",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://yoohoo.guru/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+  };
 
   useEffect(() => {
     requestLocation();
@@ -246,16 +340,39 @@ function HomePage() {
 
   return (
     <>
+      <SEOMetadata {...seoData} />
+      
       <HeroSection backgroundImage={backgroundImage}>
-        {location && (
+        {(location || isLoadingLocation || locationError) && (
           <LocationDisplay>
-            <div className="location-text">{location}</div>
+            {isLoadingLocation && (
+              <div className="location-text">
+                <MapPin size={16} />
+                Getting your location...
+              </div>
+            )}
+            
+            {locationError && (
+              <div className="location-error">
+                <AlertCircle size={14} />
+                {locationError}
+              </div>
+            )}
+            
+            {location && !isLoadingLocation && (
+              <div className="location-text">
+                <MapPin size={16} />
+                {location}
+              </div>
+            )}
+            
             <span 
               className="change-link" 
-              onClick={() => setShowLocationInput(!showLocationInput)}
+              onClick={() => setShowCityModal(true)}
             >
-              Change
+              {location && !isLoadingLocation ? 'Change' : 'Set Location'}
             </span>
+            
             {showLocationInput && (
               <LocationInput>
                 <input
@@ -264,6 +381,7 @@ function HomePage() {
                   value={locationInput}
                   onChange={(e) => setLocationInput(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleManualLocation()}
+                  autoComplete="address-level2"
                 />
                 <button onClick={handleManualLocation}>Set</button>
               </LocationInput>
@@ -326,6 +444,12 @@ function HomePage() {
           </Button>
         </Tile>
       </WelcomeTiles>
+      
+      <CitySelectionModal
+        isOpen={showCityModal}
+        onClose={() => setShowCityModal(false)}
+        onSelectCity={handleCitySelect}
+      />
     </>
   );
 }
