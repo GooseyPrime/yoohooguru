@@ -36,6 +36,8 @@ const documentsRoutes = require('./routes/documents');
 const gurusRoutes = require('./routes/gurus');
 const sessionsRoutes = require('./routes/sessions');
 const modifiedMastersRoutes = require('./routes/modifiedMasters');
+const resourcesRoutes = require('./routes/resources');
+const locationsRoutes = require('./routes/locations');
 
 
 const app = express();
@@ -154,6 +156,8 @@ app.use('/api/gurus', gurusRoutes);
 app.use('/api/badges', require('./routes/badges'));
 app.use('/api/compliance', require('./routes/compliance'));
 app.use('/api/insurance', require('./routes/insurance'));
+app.use('/api/resources', resourcesRoutes);
+app.use('/api', locationsRoutes);
 
 // Modified Masters routes (conditionally mounted)
 if (config.featureModifiedMasters) {

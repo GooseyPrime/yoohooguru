@@ -3,7 +3,7 @@
  * Accessibility-first skill sharing marketplace for disability communities
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { get, post } from '../utils/http';
 import AccessibilityToolbar from '../components/AccessibilityToolbar';
@@ -249,7 +249,7 @@ function ModifiedMasters() {
   useEffect(() => {
     fetchConfig();
     fetchSkills();
-  }, []);
+  }, [fetchSkills]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -257,7 +257,7 @@ function ModifiedMasters() {
     }, 300);
 
     return () => clearTimeout(timeoutId);
-  }, [filters]);
+  }, [fetchSkills]);
 
   const fetchConfig = async () => {
     try {
@@ -268,7 +268,7 @@ function ModifiedMasters() {
     }
   };
 
-  const fetchSkills = async () => {
+  const fetchSkills = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -289,7 +289,7 @@ function ModifiedMasters() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters.search, filters.tag, filters.style]);
 
   const handleFilterChange = (key, value) => {
     setFilters(prev => ({

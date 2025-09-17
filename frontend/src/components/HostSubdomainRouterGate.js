@@ -5,7 +5,7 @@
 
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { isMastersHost, getSubdomainRoute } from '../hosting/hostRules';
+import { getSubdomainRoute } from '../hosting/hostRules';
 
 export function HostSubdomainRouterGate() {
   const navigate = useNavigate();

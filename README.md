@@ -373,7 +373,6 @@ vercel --prod
 Create `frontend/vercel.json`:
 ```json
 {
-  "framework": "webpack",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "installCommand": "npm install",
