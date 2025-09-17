@@ -55,7 +55,10 @@ jest.mock('./contexts/AuthContext', () => ({
   useAuth: () => ({
     signup: mockSignup,
     loginWithGoogle: mockLoginWithGoogle,
-    isFirebaseConfigured: false
+    isFirebaseConfigured: false,
+    currentUser: null,
+    loading: false,
+    error: null
   }),
   AuthProvider: ({ children }) => children
 }));
@@ -130,5 +133,24 @@ describe('SignupPage', () => {
     
     expect(screen.getByPlaceholderText('Create a password')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Confirm your password')).toBeInTheDocument();
+  });
+
+  test('AuthContext mock provides all required fields', () => {
+    // This test ensures our mock includes all the fields that could be accessed
+    const { useAuth } = require('./contexts/AuthContext');
+    const mockAuthContext = useAuth();
+    
+    expect(mockAuthContext).toHaveProperty('signup');
+    expect(mockAuthContext).toHaveProperty('loginWithGoogle');
+    expect(mockAuthContext).toHaveProperty('isFirebaseConfigured');
+    expect(mockAuthContext).toHaveProperty('currentUser');
+    expect(mockAuthContext).toHaveProperty('loading');
+    expect(mockAuthContext).toHaveProperty('error');
+    
+    // Verify the values match our mock
+    expect(mockAuthContext.currentUser).toBeNull();
+    expect(mockAuthContext.loading).toBe(false);
+    expect(mockAuthContext.error).toBeNull();
+    expect(mockAuthContext.isFirebaseConfigured).toBe(false);
   });
 });
