@@ -47,7 +47,7 @@ class ErrorBoundary extends React.Component {
     this.state = { hasError: false, error: null, errorInfo: null };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError() {
     // Update state so the next render will show the fallback UI
     return { hasError: true };
   }
@@ -63,10 +63,10 @@ class ErrorBoundary extends React.Component {
     });
   }
 
-  handleRetry = () => {
+  handleRetry() {
     // Clear the error state and try to re-render
     this.setState({ hasError: false, error: null, errorInfo: null });
-  };
+  }
 
   render() {
     if (this.state.hasError) {
@@ -75,9 +75,9 @@ class ErrorBoundary extends React.Component {
         <ErrorContainer>
           <ErrorTitle>Oops! Something went wrong</ErrorTitle>
           <ErrorMessage>
-            We encountered an unexpected error. Don't worry, this has been logged and our team will look into it.
+            We encountered an unexpected error. Don&apos;t worry, this has been logged and our team will look into it.
           </ErrorMessage>
-          <RetryButton onClick={this.handleRetry}>
+          <RetryButton onClick={this.handleRetry.bind(this)}>
             Try Again
           </RetryButton>
           {process.env.NODE_ENV === 'development' && (
