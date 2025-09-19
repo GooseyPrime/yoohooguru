@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Logo from './Logo';
 
@@ -114,34 +115,34 @@ function Footer() {
           <FooterSection>
             <h3>Quick Links</h3>
             <FooterLinks>
-              <li><a href="/skills">Browse Skills</a></li>
-              <li><a href="/angels-list">Angel&apos;s List</a></li>
-              <li><a href="/dashboard">Dashboard</a></li>
-              <li><a href="/about">About Us</a></li>
-              <li><a href="/how-it-works">How It Works</a></li>
-              <li><a href="/pricing">Pricing</a></li>
+              <li><Link to="/skills">Browse Skills</Link></li>
+              <li><Link to="/angels-list">Angel&apos;s List</Link></li>
+              <li><Link to="/dashboard">Dashboard</Link></li>
+              <li><Link to="/about">About Us</Link></li>
+              <li><Link to="/how-it-works">How It Works</Link></li>
+              <li><Link to="/pricing">Pricing</Link></li>
             </FooterLinks>
           </FooterSection>
 
           <FooterSection>
             <h3>Community</h3>
             <FooterLinks>
-              <li><a href="/blog">Blog <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></a></li>
-              <li><a href="/success-stories">Success Stories <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></a></li>
-              <li><a href="/events">Community Events <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></a></li>
-              <li><a href="/forum">Discussion Forum <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></a></li>
-              <li><a href="/mentorship">Mentorship Program <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></a></li>
+              <li><Link to="/blog">Blog <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></Link></li>
+              <li><Link to="/success-stories">Success Stories <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></Link></li>
+              <li><Link to="/events">Community Events <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></Link></li>
+              <li><Link to="/forum">Discussion Forum <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></Link></li>
+              <li><Link to="/mentorship">Mentorship Program <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></Link></li>
             </FooterLinks>
           </FooterSection>
 
           <FooterSection>
             <h3>Support</h3>
             <FooterLinks>
-              <li><a href="/help">Help Center <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></a></li>
-              <li><a href="/contact">Contact Us <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></a></li>
-              <li><a href="/safety">Safety & Trust <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></a></li>
-              <li><a href="/privacy">Privacy Policy</a></li>
-              <li><a href="/terms">Terms of Service</a></li>
+              <li><Link to="/help">Help Center <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></Link></li>
+              <li><Link to="/contact">Contact Us <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></Link></li>
+              <li><Link to="/safety">Safety & Trust <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></Link></li>
+              <li><Link to="/privacy">Privacy Policy</Link></li>
+              <li><Link to="/terms">Terms of Service</Link></li>
             </FooterLinks>
           </FooterSection>
         </FooterGrid>

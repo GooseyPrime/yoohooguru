@@ -136,7 +136,8 @@ const StatItem = styled.div`
 
 const Section = styled.section`
   padding: 4rem 2rem;
-  background: ${props => props.background || 'white'};
+  background: ${props => props.background || 'var(--background)'};
+  color: var(--text);
 `;
 
 const Container = styled.div`
@@ -174,13 +175,14 @@ const PostsGrid = styled.div`
 `;
 
 const PostCard = styled.article`
-  background: white;
+  background: var(--card-bg);
+  color: var(--text);
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
 
   &:hover {
     transform: translateY(-4px);
@@ -218,10 +220,11 @@ const NewsGrid = styled.div`
 `;
 
 const NewsCard = styled.article`
-  background: white;
+  background: var(--card-bg);
+  color: var(--text);
   border-radius: 8px;
   padding: 1.25rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   border-left: 4px solid ${props => props.primaryColor};
 `;
 
@@ -254,11 +257,12 @@ const CrossDomainGrid = styled.div`
 `;
 
 const DomainCard = styled.div`
-  background: white;
+  background: var(--card-bg);
+  color: var(--text);
   border-radius: 8px;
   padding: 1rem;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   cursor: pointer;
   transition: transform 0.2s ease;
   text-decoration: none;

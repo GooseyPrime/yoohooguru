@@ -12,7 +12,8 @@ const PageContainer = styled.div`
 
 const ServicesSection = styled.section`
   padding: 4rem 2rem;
-  background: white;
+  background: var(--background);
+  color: var(--text);
   
   .container {
     max-width: 1200px;
@@ -49,11 +50,12 @@ const ServicesGrid = styled.div`
 `;
 
 const ServiceCard = styled.div`
-  background: white;
+  background: var(--card-bg);
+  color: var(--text);
   border-radius: 12px;
   padding: 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid #f0f0f0;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
   transition: transform 0.3s ease, border-color 0.3s ease;
   position: relative;
   overflow: hidden;
