@@ -38,7 +38,7 @@ jobs:
       run: cd backend && npm run lint
 
     - name: Run frontend tests
-      if: matrix.node-version == '18.x'
+      if: matrix.node-version == '20.x'
       run: cd frontend && npm test
 
     - name: Run backend tests
@@ -63,7 +63,7 @@ jobs:
         STRIPE_TRUST_SAFETY_PRICE_ID: ${{ secrets.STRIPE_TRUST_SAFETY_PRICE_ID }}
 
     - name: Build frontend
-      if: matrix.node-version == '18.x'
+      if: matrix.node-version == '20.x'
       run: cd frontend && npm run build
       env:
         # The CI=false environment variable prevents warnings from being treated as errors during the build process.
