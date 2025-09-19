@@ -1,39 +1,39 @@
 {
   "news": [
     {
-      "id": "news-wellness-meditation-1758090817368-0",
+      "id": "news-wellness-meditation-1758263042592-0",
       "title": "Breaking: New Advances in Meditation",
       "summary": "Industry experts reveal groundbreaking developments in meditation that could transform the health sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/wellness/meditation",
       "source": "Industry News Network",
-      "publishedAt": 1758090817368,
+      "publishedAt": 1758263042592,
       "category": "health",
       "subdomain": "wellness"
     },
     {
-      "id": "news-wellness-mindfulness-1758090817368-1",
+      "id": "news-wellness-mindfulness-1758263042592-1",
       "title": "Breaking: New Advances in Mindfulness",
       "summary": "Industry experts reveal groundbreaking developments in mindfulness that could transform the health sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/wellness/mindfulness",
       "source": "Industry News Network",
-      "publishedAt": 1758083617368,
+      "publishedAt": 1758255842592,
       "category": "health",
       "subdomain": "wellness"
     },
     {
-      "id": "news-wellness-stress-management-1758090817368-2",
+      "id": "news-wellness-stress-management-1758263042592-2",
       "title": "Breaking: New Advances in Stress Management",
       "summary": "Industry experts reveal groundbreaking developments in stress management that could transform the health sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/wellness/stress-management",
       "source": "Industry News Network",
-      "publishedAt": 1758076417368,
+      "publishedAt": 1758248642592,
       "category": "health",
       "subdomain": "wellness"
     }
   ],
   "posts": [
     {
-      "id": "post-wellness-meditation-1758090817368-0",
+      "id": "post-wellness-meditation-1758263042592-0",
       "title": "Master Meditation: A Complete Guide for Beginners",
       "slug": "master-meditation-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in meditation. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -46,17 +46,17 @@
         "guide",
         "health"
       ],
-      "publishedAt": 1758090817368,
+      "publishedAt": 1758263042592,
       "featuredImage": null,
-      "readTime": 14,
-      "views": 440,
-      "likes": 53,
+      "readTime": 8,
+      "views": 779,
+      "likes": 54,
       "status": "published",
       "featured": true,
       "subdomain": "wellness"
     },
     {
-      "id": "post-wellness-mindfulness-1758090817368-1",
+      "id": "post-wellness-mindfulness-1758263042592-1",
       "title": "Master Mindfulness: A Complete Guide for Beginners",
       "slug": "master-mindfulness-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in mindfulness. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -69,17 +69,17 @@
         "guide",
         "health"
       ],
-      "publishedAt": 1758004417368,
+      "publishedAt": 1758176642592,
       "featuredImage": null,
-      "readTime": 10,
-      "views": 113,
-      "likes": 26,
+      "readTime": 14,
+      "views": 103,
+      "likes": 19,
       "status": "published",
       "featured": true,
       "subdomain": "wellness"
     },
     {
-      "id": "post-wellness-stress-management-1758090817368-2",
+      "id": "post-wellness-stress-management-1758263042592-2",
       "title": "Master Stress Management: A Complete Guide for Beginners",
       "slug": "master-stress-management-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in stress management. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -92,21 +92,21 @@
         "guide",
         "health"
       ],
-      "publishedAt": 1757918017368,
+      "publishedAt": 1758090242592,
       "featuredImage": null,
       "readTime": 7,
-      "views": 475,
-      "likes": 50,
+      "views": 513,
+      "likes": 20,
       "status": "published",
       "featured": true,
       "subdomain": "wellness"
     }
   ],
   "stats": {
-    "totalPosts": 21,
-    "totalViews": 4095,
-    "monthlyVisitors": 267,
-    "totalLeads": 100
+    "totalPosts": 29,
+    "totalViews": 5315,
+    "monthlyVisitors": 335,
+    "totalLeads": 42
   },
   "config": {
     "character": "Wellness Guru",

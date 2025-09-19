@@ -1,39 +1,39 @@
 {
   "news": [
     {
-      "id": "news-crafts-woodworking-1758090817367-0",
+      "id": "news-crafts-woodworking-1758263042592-0",
       "title": "Breaking: New Advances in Woodworking",
       "summary": "Industry experts reveal groundbreaking developments in woodworking that could transform the creative sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/crafts/woodworking",
       "source": "Industry News Network",
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042592,
       "category": "creative",
       "subdomain": "crafts"
     },
     {
-      "id": "news-crafts-knitting-1758090817367-1",
+      "id": "news-crafts-knitting-1758263042592-1",
       "title": "Breaking: New Advances in Knitting",
       "summary": "Industry experts reveal groundbreaking developments in knitting that could transform the creative sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/crafts/knitting",
       "source": "Industry News Network",
-      "publishedAt": 1758083617367,
+      "publishedAt": 1758255842592,
       "category": "creative",
       "subdomain": "crafts"
     },
     {
-      "id": "news-crafts-pottery-1758090817368-2",
+      "id": "news-crafts-pottery-1758263042592-2",
       "title": "Breaking: New Advances in Pottery",
       "summary": "Industry experts reveal groundbreaking developments in pottery that could transform the creative sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/crafts/pottery",
       "source": "Industry News Network",
-      "publishedAt": 1758076417368,
+      "publishedAt": 1758248642592,
       "category": "creative",
       "subdomain": "crafts"
     }
   ],
   "posts": [
     {
-      "id": "post-crafts-woodworking-1758090817368-0",
+      "id": "post-crafts-woodworking-1758263042592-0",
       "title": "Master Woodworking: A Complete Guide for Beginners",
       "slug": "master-woodworking-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in woodworking. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -46,17 +46,17 @@
         "guide",
         "creative"
       ],
-      "publishedAt": 1758090817368,
+      "publishedAt": 1758263042592,
       "featuredImage": null,
       "readTime": 13,
-      "views": 731,
-      "likes": 37,
+      "views": 198,
+      "likes": 45,
       "status": "published",
       "featured": true,
       "subdomain": "crafts"
     },
     {
-      "id": "post-crafts-knitting-1758090817368-1",
+      "id": "post-crafts-knitting-1758263042592-1",
       "title": "Master Knitting: A Complete Guide for Beginners",
       "slug": "master-knitting-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in knitting. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -69,17 +69,17 @@
         "guide",
         "creative"
       ],
-      "publishedAt": 1758004417368,
+      "publishedAt": 1758176642592,
       "featuredImage": null,
-      "readTime": 11,
-      "views": 802,
-      "likes": 40,
+      "readTime": 8,
+      "views": 514,
+      "likes": 27,
       "status": "published",
       "featured": true,
       "subdomain": "crafts"
     },
     {
-      "id": "post-crafts-pottery-1758090817368-2",
+      "id": "post-crafts-pottery-1758263042592-2",
       "title": "Master Pottery: A Complete Guide for Beginners",
       "slug": "master-pottery-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in pottery. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -92,21 +92,21 @@
         "guide",
         "creative"
       ],
-      "publishedAt": 1757918017368,
+      "publishedAt": 1758090242592,
       "featuredImage": null,
-      "readTime": 13,
-      "views": 829,
-      "likes": 31,
+      "readTime": 14,
+      "views": 809,
+      "likes": 57,
       "status": "published",
       "featured": true,
       "subdomain": "crafts"
     }
   ],
   "stats": {
-    "totalPosts": 55,
-    "totalViews": 2405,
-    "monthlyVisitors": 535,
-    "totalLeads": 112
+    "totalPosts": 37,
+    "totalViews": 5543,
+    "monthlyVisitors": 969,
+    "totalLeads": 109
   },
   "config": {
     "character": "Crafts Guru",

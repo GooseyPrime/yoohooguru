@@ -1,39 +1,39 @@
 {
   "news": [
     {
-      "id": "news-art-drawing-1758090817367-0",
+      "id": "news-art-drawing-1758263042592-0",
       "title": "Breaking: New Advances in Drawing",
       "summary": "Industry experts reveal groundbreaking developments in drawing that could transform the creative sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/art/drawing",
       "source": "Industry News Network",
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042592,
       "category": "creative",
       "subdomain": "art"
     },
     {
-      "id": "news-art-painting-1758090817367-1",
+      "id": "news-art-painting-1758263042592-1",
       "title": "Breaking: New Advances in Painting",
       "summary": "Industry experts reveal groundbreaking developments in painting that could transform the creative sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/art/painting",
       "source": "Industry News Network",
-      "publishedAt": 1758083617367,
+      "publishedAt": 1758255842592,
       "category": "creative",
       "subdomain": "art"
     },
     {
-      "id": "news-art-digital-art-1758090817367-2",
+      "id": "news-art-digital-art-1758263042592-2",
       "title": "Breaking: New Advances in Digital Art",
       "summary": "Industry experts reveal groundbreaking developments in digital art that could transform the creative sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/art/digital-art",
       "source": "Industry News Network",
-      "publishedAt": 1758076417367,
+      "publishedAt": 1758248642592,
       "category": "creative",
       "subdomain": "art"
     }
   ],
   "posts": [
     {
-      "id": "post-art-drawing-1758090817367-0",
+      "id": "post-art-drawing-1758263042592-0",
       "title": "Master Drawing: A Complete Guide for Beginners",
       "slug": "master-drawing-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in drawing. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -46,17 +46,17 @@
         "guide",
         "creative"
       ],
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042592,
       "featuredImage": null,
-      "readTime": 8,
-      "views": 922,
-      "likes": 45,
+      "readTime": 13,
+      "views": 888,
+      "likes": 17,
       "status": "published",
       "featured": true,
       "subdomain": "art"
     },
     {
-      "id": "post-art-painting-1758090817367-1",
+      "id": "post-art-painting-1758263042592-1",
       "title": "Master Painting: A Complete Guide for Beginners",
       "slug": "master-painting-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in painting. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -69,17 +69,17 @@
         "guide",
         "creative"
       ],
-      "publishedAt": 1758004417367,
+      "publishedAt": 1758176642592,
       "featuredImage": null,
-      "readTime": 9,
-      "views": 253,
-      "likes": 45,
+      "readTime": 7,
+      "views": 859,
+      "likes": 55,
       "status": "published",
       "featured": true,
       "subdomain": "art"
     },
     {
-      "id": "post-art-digital-art-1758090817367-2",
+      "id": "post-art-digital-art-1758263042592-2",
       "title": "Master Digital Art: A Complete Guide for Beginners",
       "slug": "master-digital-art-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in digital art. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -92,21 +92,21 @@
         "guide",
         "creative"
       ],
-      "publishedAt": 1757918017367,
+      "publishedAt": 1758090242592,
       "featuredImage": null,
-      "readTime": 13,
-      "views": 830,
-      "likes": 40,
+      "readTime": 10,
+      "views": 401,
+      "likes": 21,
       "status": "published",
       "featured": true,
       "subdomain": "art"
     }
   ],
   "stats": {
-    "totalPosts": 58,
-    "totalViews": 3291,
-    "monthlyVisitors": 1117,
-    "totalLeads": 55
+    "totalPosts": 43,
+    "totalViews": 5190,
+    "monthlyVisitors": 378,
+    "totalLeads": 27
   },
   "config": {
     "character": "Art Guru",

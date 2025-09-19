@@ -1,39 +1,39 @@
 {
   "news": [
     {
-      "id": "news-design-graphic-design-1758090817367-0",
+      "id": "news-design-graphic-design-1758263042592-0",
       "title": "Breaking: New Advances in Graphic Design",
       "summary": "Industry experts reveal groundbreaking developments in graphic design that could transform the creative sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/design/graphic-design",
       "source": "Industry News Network",
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042592,
       "category": "creative",
       "subdomain": "design"
     },
     {
-      "id": "news-design-ui-ux-1758090817367-1",
+      "id": "news-design-ui-ux-1758263042592-1",
       "title": "Breaking: New Advances in Ui Ux",
       "summary": "Industry experts reveal groundbreaking developments in ui ux that could transform the creative sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/design/ui-ux",
       "source": "Industry News Network",
-      "publishedAt": 1758083617367,
+      "publishedAt": 1758255842592,
       "category": "creative",
       "subdomain": "design"
     },
     {
-      "id": "news-design-branding-1758090817367-2",
+      "id": "news-design-branding-1758263042592-2",
       "title": "Breaking: New Advances in Branding",
       "summary": "Industry experts reveal groundbreaking developments in branding that could transform the creative sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/design/branding",
       "source": "Industry News Network",
-      "publishedAt": 1758076417367,
+      "publishedAt": 1758248642592,
       "category": "creative",
       "subdomain": "design"
     }
   ],
   "posts": [
     {
-      "id": "post-design-graphic-design-1758090817367-0",
+      "id": "post-design-graphic-design-1758263042592-0",
       "title": "Master Graphic Design: A Complete Guide for Beginners",
       "slug": "master-graphic-design-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in graphic design. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -46,17 +46,17 @@
         "guide",
         "creative"
       ],
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042592,
       "featuredImage": null,
-      "readTime": 12,
-      "views": 880,
-      "likes": 48,
+      "readTime": 10,
+      "views": 680,
+      "likes": 47,
       "status": "published",
       "featured": true,
       "subdomain": "design"
     },
     {
-      "id": "post-design-ui-ux-1758090817367-1",
+      "id": "post-design-ui-ux-1758263042592-1",
       "title": "Master Ui Ux: A Complete Guide for Beginners",
       "slug": "master-ui-ux-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in ui ux. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -69,17 +69,17 @@
         "guide",
         "creative"
       ],
-      "publishedAt": 1758004417367,
+      "publishedAt": 1758176642592,
       "featuredImage": null,
-      "readTime": 14,
-      "views": 968,
-      "likes": 57,
+      "readTime": 6,
+      "views": 1023,
+      "likes": 47,
       "status": "published",
       "featured": true,
       "subdomain": "design"
     },
     {
-      "id": "post-design-branding-1758090817367-2",
+      "id": "post-design-branding-1758263042592-2",
       "title": "Master Branding: A Complete Guide for Beginners",
       "slug": "master-branding-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in branding. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -92,21 +92,21 @@
         "guide",
         "creative"
       ],
-      "publishedAt": 1757918017367,
+      "publishedAt": 1758090242592,
       "featuredImage": null,
-      "readTime": 12,
-      "views": 618,
-      "likes": 32,
+      "readTime": 6,
+      "views": 847,
+      "likes": 48,
       "status": "published",
       "featured": true,
       "subdomain": "design"
     }
   ],
   "stats": {
-    "totalPosts": 59,
-    "totalViews": 2678,
-    "monthlyVisitors": 254,
-    "totalLeads": 39
+    "totalPosts": 52,
+    "totalViews": 5020,
+    "monthlyVisitors": 387,
+    "totalLeads": 40
   },
   "config": {
     "character": "Design Guru",

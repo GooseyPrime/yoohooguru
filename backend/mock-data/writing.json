@@ -1,39 +1,39 @@
 {
   "news": [
     {
-      "id": "news-writing-creative-writing-1758090817367-0",
+      "id": "news-writing-creative-writing-1758263042592-0",
       "title": "Breaking: New Advances in Creative Writing",
       "summary": "Industry experts reveal groundbreaking developments in creative writing that could transform the creative sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/writing/creative-writing",
       "source": "Industry News Network",
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042592,
       "category": "creative",
       "subdomain": "writing"
     },
     {
-      "id": "news-writing-copywriting-1758090817367-1",
+      "id": "news-writing-copywriting-1758263042592-1",
       "title": "Breaking: New Advances in Copywriting",
       "summary": "Industry experts reveal groundbreaking developments in copywriting that could transform the creative sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/writing/copywriting",
       "source": "Industry News Network",
-      "publishedAt": 1758083617367,
+      "publishedAt": 1758255842592,
       "category": "creative",
       "subdomain": "writing"
     },
     {
-      "id": "news-writing-blogging-1758090817367-2",
+      "id": "news-writing-blogging-1758263042592-2",
       "title": "Breaking: New Advances in Blogging",
       "summary": "Industry experts reveal groundbreaking developments in blogging that could transform the creative sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/writing/blogging",
       "source": "Industry News Network",
-      "publishedAt": 1758076417367,
+      "publishedAt": 1758248642592,
       "category": "creative",
       "subdomain": "writing"
     }
   ],
   "posts": [
     {
-      "id": "post-writing-creative-writing-1758090817367-0",
+      "id": "post-writing-creative-writing-1758263042592-0",
       "title": "Master Creative Writing: A Complete Guide for Beginners",
       "slug": "master-creative-writing-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in creative writing. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -46,17 +46,17 @@
         "guide",
         "creative"
       ],
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042592,
       "featuredImage": null,
-      "readTime": 9,
-      "views": 615,
-      "likes": 53,
+      "readTime": 7,
+      "views": 329,
+      "likes": 54,
       "status": "published",
       "featured": true,
       "subdomain": "writing"
     },
     {
-      "id": "post-writing-copywriting-1758090817367-1",
+      "id": "post-writing-copywriting-1758263042592-1",
       "title": "Master Copywriting: A Complete Guide for Beginners",
       "slug": "master-copywriting-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in copywriting. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -69,17 +69,17 @@
         "guide",
         "creative"
       ],
-      "publishedAt": 1758004417367,
+      "publishedAt": 1758176642592,
       "featuredImage": null,
-      "readTime": 11,
-      "views": 187,
-      "likes": 12,
+      "readTime": 14,
+      "views": 606,
+      "likes": 34,
       "status": "published",
       "featured": true,
       "subdomain": "writing"
     },
     {
-      "id": "post-writing-blogging-1758090817367-2",
+      "id": "post-writing-blogging-1758263042592-2",
       "title": "Master Blogging: A Complete Guide for Beginners",
       "slug": "master-blogging-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in blogging. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -92,21 +92,21 @@
         "guide",
         "creative"
       ],
-      "publishedAt": 1757918017367,
+      "publishedAt": 1758090242592,
       "featuredImage": null,
       "readTime": 9,
-      "views": 342,
-      "likes": 38,
+      "views": 902,
+      "likes": 21,
       "status": "published",
       "featured": true,
       "subdomain": "writing"
     }
   ],
   "stats": {
-    "totalPosts": 44,
-    "totalViews": 4568,
-    "monthlyVisitors": 709,
-    "totalLeads": 87
+    "totalPosts": 16,
+    "totalViews": 4727,
+    "monthlyVisitors": 626,
+    "totalLeads": 71
   },
   "config": {
     "character": "Writing Guru",

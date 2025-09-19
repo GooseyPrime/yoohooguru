@@ -1,39 +1,39 @@
 {
   "news": [
     {
-      "id": "news-language-english-1758090817367-0",
+      "id": "news-language-english-1758263042592-0",
       "title": "Breaking: New Advances in English",
       "summary": "Industry experts reveal groundbreaking developments in english that could transform the education sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/language/english",
       "source": "Industry News Network",
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042592,
       "category": "education",
       "subdomain": "language"
     },
     {
-      "id": "news-language-spanish-1758090817367-1",
+      "id": "news-language-spanish-1758263042592-1",
       "title": "Breaking: New Advances in Spanish",
       "summary": "Industry experts reveal groundbreaking developments in spanish that could transform the education sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/language/spanish",
       "source": "Industry News Network",
-      "publishedAt": 1758083617367,
+      "publishedAt": 1758255842592,
       "category": "education",
       "subdomain": "language"
     },
     {
-      "id": "news-language-french-1758090817367-2",
+      "id": "news-language-french-1758263042592-2",
       "title": "Breaking: New Advances in French",
       "summary": "Industry experts reveal groundbreaking developments in french that could transform the education sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/language/french",
       "source": "Industry News Network",
-      "publishedAt": 1758076417367,
+      "publishedAt": 1758248642592,
       "category": "education",
       "subdomain": "language"
     }
   ],
   "posts": [
     {
-      "id": "post-language-english-1758090817367-0",
+      "id": "post-language-english-1758263042592-0",
       "title": "Master English: A Complete Guide for Beginners",
       "slug": "master-english-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in english. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -46,17 +46,17 @@
         "guide",
         "education"
       ],
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042592,
       "featuredImage": null,
-      "readTime": 14,
-      "views": 177,
-      "likes": 50,
+      "readTime": 13,
+      "views": 889,
+      "likes": 46,
       "status": "published",
       "featured": true,
       "subdomain": "language"
     },
     {
-      "id": "post-language-spanish-1758090817367-1",
+      "id": "post-language-spanish-1758263042592-1",
       "title": "Master Spanish: A Complete Guide for Beginners",
       "slug": "master-spanish-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in spanish. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -69,17 +69,17 @@
         "guide",
         "education"
       ],
-      "publishedAt": 1758004417367,
+      "publishedAt": 1758176642592,
       "featuredImage": null,
-      "readTime": 10,
-      "views": 803,
-      "likes": 16,
+      "readTime": 9,
+      "views": 891,
+      "likes": 52,
       "status": "published",
       "featured": true,
       "subdomain": "language"
     },
     {
-      "id": "post-language-french-1758090817367-2",
+      "id": "post-language-french-1758263042592-2",
       "title": "Master French: A Complete Guide for Beginners",
       "slug": "master-french-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in french. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -92,21 +92,21 @@
         "guide",
         "education"
       ],
-      "publishedAt": 1757918017367,
+      "publishedAt": 1758090242592,
       "featuredImage": null,
-      "readTime": 6,
-      "views": 985,
-      "likes": 10,
+      "readTime": 14,
+      "views": 185,
+      "likes": 43,
       "status": "published",
       "featured": true,
       "subdomain": "language"
     }
   ],
   "stats": {
-    "totalPosts": 21,
-    "totalViews": 1806,
-    "monthlyVisitors": 1048,
-    "totalLeads": 35
+    "totalPosts": 45,
+    "totalViews": 2508,
+    "monthlyVisitors": 247,
+    "totalLeads": 89
   },
   "config": {
     "character": "Language Guru",

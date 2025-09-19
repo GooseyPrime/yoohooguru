@@ -1,39 +1,39 @@
 {
   "news": [
     {
-      "id": "news-cooking-cooking-1758090817367-0",
+      "id": "news-cooking-cooking-1758263042591-0",
       "title": "Breaking: New Advances in Cooking",
       "summary": "Industry experts reveal groundbreaking developments in cooking that could transform the culinary sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/cooking/cooking",
       "source": "Industry News Network",
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042591,
       "category": "culinary",
       "subdomain": "cooking"
     },
     {
-      "id": "news-cooking-baking-1758090817367-1",
+      "id": "news-cooking-baking-1758263042591-1",
       "title": "Breaking: New Advances in Baking",
       "summary": "Industry experts reveal groundbreaking developments in baking that could transform the culinary sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/cooking/baking",
       "source": "Industry News Network",
-      "publishedAt": 1758083617367,
+      "publishedAt": 1758255842591,
       "category": "culinary",
       "subdomain": "cooking"
     },
     {
-      "id": "news-cooking-nutrition-1758090817367-2",
+      "id": "news-cooking-nutrition-1758263042591-2",
       "title": "Breaking: New Advances in Nutrition",
       "summary": "Industry experts reveal groundbreaking developments in nutrition that could transform the culinary sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/cooking/nutrition",
       "source": "Industry News Network",
-      "publishedAt": 1758076417367,
+      "publishedAt": 1758248642591,
       "category": "culinary",
       "subdomain": "cooking"
     }
   ],
   "posts": [
     {
-      "id": "post-cooking-cooking-1758090817367-0",
+      "id": "post-cooking-cooking-1758263042592-0",
       "title": "Master Cooking: A Complete Guide for Beginners",
       "slug": "master-cooking-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in cooking. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -46,17 +46,17 @@
         "guide",
         "culinary"
       ],
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042592,
       "featuredImage": null,
-      "readTime": 8,
-      "views": 646,
-      "likes": 36,
+      "readTime": 10,
+      "views": 1039,
+      "likes": 29,
       "status": "published",
       "featured": true,
       "subdomain": "cooking"
     },
     {
-      "id": "post-cooking-baking-1758090817367-1",
+      "id": "post-cooking-baking-1758263042592-1",
       "title": "Master Baking: A Complete Guide for Beginners",
       "slug": "master-baking-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in baking. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -69,17 +69,17 @@
         "guide",
         "culinary"
       ],
-      "publishedAt": 1758004417367,
+      "publishedAt": 1758176642592,
       "featuredImage": null,
-      "readTime": 12,
-      "views": 1027,
-      "likes": 31,
+      "readTime": 14,
+      "views": 953,
+      "likes": 56,
       "status": "published",
       "featured": true,
       "subdomain": "cooking"
     },
     {
-      "id": "post-cooking-nutrition-1758090817367-2",
+      "id": "post-cooking-nutrition-1758263042592-2",
       "title": "Master Nutrition: A Complete Guide for Beginners",
       "slug": "master-nutrition-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in nutrition. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -92,21 +92,21 @@
         "guide",
         "culinary"
       ],
-      "publishedAt": 1757918017367,
+      "publishedAt": 1758090242592,
       "featuredImage": null,
-      "readTime": 11,
-      "views": 568,
-      "likes": 24,
+      "readTime": 5,
+      "views": 766,
+      "likes": 47,
       "status": "published",
       "featured": true,
       "subdomain": "cooking"
     }
   ],
   "stats": {
-    "totalPosts": 46,
-    "totalViews": 2115,
-    "monthlyVisitors": 919,
-    "totalLeads": 107
+    "totalPosts": 33,
+    "totalViews": 3142,
+    "monthlyVisitors": 366,
+    "totalLeads": 21
   },
   "config": {
     "character": "Chef Guru",

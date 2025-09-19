@@ -1,0 +1,107 @@
+[
+  {
+    "title": "JavaScript Fundamentals",
+    "description": "Learn the basics of JavaScript programming including variables, functions, and DOM manipulation",
+    "category": "Programming",
+    "subcategory": "Web Development",
+    "level": "Beginner",
+    "duration": "4 weeks",
+    "format": "One-on-one sessions",
+    "tags": [
+      "javascript",
+      "programming",
+      "web-development"
+    ],
+    "teacherId": "guru_001",
+    "status": "published",
+    "isModifiedMasters": false
+  },
+  {
+    "title": "React Component Design",
+    "description": "Master React component architecture, hooks, and state management for modern web apps",
+    "category": "Programming",
+    "subcategory": "Frontend Development",
+    "level": "Intermediate",
+    "duration": "6 weeks",
+    "format": "One-on-one sessions",
+    "tags": [
+      "react",
+      "javascript",
+      "components",
+      "hooks"
+    ],
+    "teacherId": "guru_001",
+    "status": "published",
+    "isModifiedMasters": false
+  },
+  {
+    "title": "Strength Training Foundations",
+    "description": "Build muscle and strength with proper form, programming, and progression techniques",
+    "category": "Fitness",
+    "subcategory": "Strength Training",
+    "level": "Beginner",
+    "duration": "8 weeks",
+    "format": "In-person sessions",
+    "tags": [
+      "strength-training",
+      "fitness",
+      "muscle-building"
+    ],
+    "teacherId": "guru_002",
+    "status": "published",
+    "isModifiedMasters": false
+  },
+  {
+    "title": "Spanish Conversation Practice",
+    "description": "Improve your Spanish speaking skills through structured conversation practice",
+    "category": "Languages",
+    "subcategory": "Spanish",
+    "level": "Intermediate",
+    "duration": "12 weeks",
+    "format": "One-on-one sessions",
+    "tags": [
+      "spanish",
+      "conversation",
+      "language-learning"
+    ],
+    "teacherId": "guru_003",
+    "status": "published",
+    "isModifiedMasters": false
+  },
+  {
+    "title": "Jazz Piano Improvisation",
+    "description": "Learn jazz piano techniques, chord progressions, and improvisation skills",
+    "category": "Music",
+    "subcategory": "Piano",
+    "level": "Intermediate",
+    "duration": "10 weeks",
+    "format": "One-on-one sessions",
+    "tags": [
+      "piano",
+      "jazz",
+      "improvisation",
+      "music-theory"
+    ],
+    "teacherId": "guru_004",
+    "status": "published",
+    "isModifiedMasters": false
+  },
+  {
+    "title": "UI/UX Design Principles",
+    "description": "Learn user-centered design principles, wireframing, and prototyping",
+    "category": "Design",
+    "subcategory": "UI/UX",
+    "level": "Beginner",
+    "duration": "8 weeks",
+    "format": "One-on-one sessions",
+    "tags": [
+      "ui-ux",
+      "design",
+      "user-experience",
+      "prototyping"
+    ],
+    "teacherId": "guru_005",
+    "status": "published",
+    "isModifiedMasters": false
+  }
+]

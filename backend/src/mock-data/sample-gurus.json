@@ -1,0 +1,179 @@
+[
+  {
+    "id": "guru_001",
+    "displayName": "Sarah Chen",
+    "email": "sarah.chen@example.com",
+    "photoURL": "https://images.unsplash.com/photo-1494790108755-2616b169b479?w=150",
+    "role": "guru",
+    "skillsOffered": [
+      "JavaScript",
+      "React",
+      "Node.js",
+      "Web Development"
+    ],
+    "skillsWanted": [
+      "Python",
+      "Data Science"
+    ],
+    "experience": "Senior Software Engineer with 8 years experience",
+    "location": "Denver, CO",
+    "rating": 4.9,
+    "totalSessions": 156,
+    "verified": true,
+    "certifications": [
+      "AWS Certified Developer",
+      "Google Cloud Professional"
+    ],
+    "bio": "Passionate full-stack developer helping others master modern web technologies. I specialize in React, Node.js, and cloud architecture.",
+    "availability": [
+      "weekday_evenings",
+      "weekend_mornings"
+    ],
+    "price": {
+      "min": 45,
+      "max": 75,
+      "currency": "USD"
+    }
+  },
+  {
+    "id": "guru_002",
+    "displayName": "Marcus Thompson",
+    "email": "marcus.t@example.com",
+    "photoURL": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
+    "role": "guru",
+    "skillsOffered": [
+      "Personal Training",
+      "Nutrition",
+      "Weight Loss",
+      "Strength Training"
+    ],
+    "skillsWanted": [
+      "Business Development",
+      "Marketing"
+    ],
+    "experience": "Certified Personal Trainer and Nutritionist",
+    "location": "Boulder, CO",
+    "rating": 4.8,
+    "totalSessions": 89,
+    "verified": true,
+    "certifications": [
+      "NASM-CPT",
+      "Precision Nutrition Level 1"
+    ],
+    "bio": "Helping people transform their health and fitness. 6 years of experience in personal training and nutrition coaching.",
+    "availability": [
+      "weekend_mornings",
+      "weekday_mornings"
+    ],
+    "price": {
+      "min": 35,
+      "max": 60,
+      "currency": "USD"
+    }
+  },
+  {
+    "id": "guru_003",
+    "displayName": "Isabella Rodriguez",
+    "email": "isabella.r@example.com",
+    "photoURL": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150",
+    "role": "guru",
+    "skillsOffered": [
+      "Spanish",
+      "French",
+      "Language Teaching",
+      "Translation"
+    ],
+    "skillsWanted": [
+      "Guitar",
+      "Music Theory"
+    ],
+    "experience": "Native Spanish speaker, fluent in 4 languages",
+    "location": "Denver, CO",
+    "rating": 4.9,
+    "totalSessions": 203,
+    "verified": true,
+    "certifications": [
+      "DELE Spanish Teaching Certificate"
+    ],
+    "bio": "Polyglot language instructor with 10+ years experience. I make language learning fun and practical!",
+    "availability": [
+      "weekday_afternoons",
+      "weekend_afternoons"
+    ],
+    "price": {
+      "min": 30,
+      "max": 50,
+      "currency": "USD"
+    }
+  },
+  {
+    "id": "guru_004",
+    "displayName": "David Kim",
+    "email": "david.kim@example.com",
+    "photoURL": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
+    "role": "guru",
+    "skillsOffered": [
+      "Piano",
+      "Music Theory",
+      "Composition",
+      "Jazz"
+    ],
+    "skillsWanted": [
+      "Photography",
+      "Video Editing"
+    ],
+    "experience": "Professional jazz pianist and music educator",
+    "location": "Denver, CO",
+    "rating": 4.8,
+    "totalSessions": 134,
+    "verified": true,
+    "certifications": [
+      "Berklee College of Music Graduate"
+    ],
+    "bio": "Professional musician with 15 years of teaching experience. Specializing in jazz piano and music theory.",
+    "availability": [
+      "weekday_evenings",
+      "weekend_afternoons"
+    ],
+    "price": {
+      "min": 40,
+      "max": 70,
+      "currency": "USD"
+    }
+  },
+  {
+    "id": "guru_005",
+    "displayName": "Emily Watson",
+    "email": "emily.watson@example.com",
+    "photoURL": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150",
+    "role": "guru",
+    "skillsOffered": [
+      "Digital Art",
+      "Photoshop",
+      "UI/UX Design",
+      "Illustration"
+    ],
+    "skillsWanted": [
+      "3D Modeling",
+      "Animation"
+    ],
+    "experience": "Senior UI/UX Designer at tech startup",
+    "location": "Boulder, CO",
+    "rating": 4.9,
+    "totalSessions": 78,
+    "verified": true,
+    "certifications": [
+      "Adobe Certified Expert"
+    ],
+    "bio": "Creative designer passionate about helping others develop their artistic skills and design thinking.",
+    "availability": [
+      "weekday_evenings",
+      "weekend_mornings"
+    ],
+    "price": {
+      "min": 50,
+      "max": 80,
+      "currency": "USD"
+    }
+  }
+]
