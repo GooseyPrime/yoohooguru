@@ -221,10 +221,15 @@ test_repository_rules() {
                                -H "Accept: application/vnd.github.v3+json" \
                                "https://api.github.com/repos/$REPO/rulesets/$ruleset_id")
             
-            if echo "$ruleset_detail" | jq -e '.rules[]? | select(.type == "deletion")' &>/dev/null; then
+            # Check if ruleset is active and has deletion rules
+            ruleset_status=$(echo "$ruleset_detail" | jq -r '.enforcement')
+            if [[ "$ruleset_status" == "active" ]] && echo "$ruleset_detail" | jq -e '.rules[]? | select(.type == "deletion")' &>/dev/null; then
                 ruleset_name=$(echo "$ruleset_detail" | jq -r '.name')
-                echo "⚠️  Ruleset '$ruleset_name' contains deletion restrictions!"
+                echo "⚠️  Ruleset '$ruleset_name' contains deletion restrictions and is ACTIVE!"
                 has_deletion_rules=true
+            elif echo "$ruleset_detail" | jq -e '.rules[]? | select(.type == "deletion")' &>/dev/null; then
+                ruleset_name=$(echo "$ruleset_detail" | jq -r '.name')
+                echo "ℹ️  Ruleset '$ruleset_name' contains deletion restrictions but is DISABLED"
             fi
         done
         
