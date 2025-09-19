@@ -1,39 +1,39 @@
 {
   "news": [
     {
-      "id": "news-business-entrepreneurship-1758090817367-0",
+      "id": "news-business-entrepreneurship-1758263042592-0",
       "title": "Breaking: New Advances in Entrepreneurship",
       "summary": "Industry experts reveal groundbreaking developments in entrepreneurship that could transform the professional sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/business/entrepreneurship",
       "source": "Industry News Network",
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042592,
       "category": "professional",
       "subdomain": "business"
     },
     {
-      "id": "news-business-marketing-1758090817367-1",
+      "id": "news-business-marketing-1758263042592-1",
       "title": "Breaking: New Advances in Marketing",
       "summary": "Industry experts reveal groundbreaking developments in marketing that could transform the professional sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/business/marketing",
       "source": "Industry News Network",
-      "publishedAt": 1758083617367,
+      "publishedAt": 1758255842592,
       "category": "professional",
       "subdomain": "business"
     },
     {
-      "id": "news-business-sales-1758090817367-2",
+      "id": "news-business-sales-1758263042592-2",
       "title": "Breaking: New Advances in Sales",
       "summary": "Industry experts reveal groundbreaking developments in sales that could transform the professional sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/business/sales",
       "source": "Industry News Network",
-      "publishedAt": 1758076417367,
+      "publishedAt": 1758248642592,
       "category": "professional",
       "subdomain": "business"
     }
   ],
   "posts": [
     {
-      "id": "post-business-entrepreneurship-1758090817367-0",
+      "id": "post-business-entrepreneurship-1758263042592-0",
       "title": "Master Entrepreneurship: A Complete Guide for Beginners",
       "slug": "master-entrepreneurship-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in entrepreneurship. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -46,17 +46,17 @@
         "guide",
         "professional"
       ],
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042592,
       "featuredImage": null,
-      "readTime": 8,
-      "views": 435,
-      "likes": 14,
+      "readTime": 14,
+      "views": 707,
+      "likes": 51,
       "status": "published",
       "featured": true,
       "subdomain": "business"
     },
     {
-      "id": "post-business-marketing-1758090817367-1",
+      "id": "post-business-marketing-1758263042592-1",
       "title": "Master Marketing: A Complete Guide for Beginners",
       "slug": "master-marketing-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in marketing. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -69,17 +69,17 @@
         "guide",
         "professional"
       ],
-      "publishedAt": 1758004417367,
+      "publishedAt": 1758176642592,
       "featuredImage": null,
-      "readTime": 14,
-      "views": 379,
-      "likes": 28,
+      "readTime": 9,
+      "views": 723,
+      "likes": 11,
       "status": "published",
       "featured": true,
       "subdomain": "business"
     },
     {
-      "id": "post-business-sales-1758090817367-2",
+      "id": "post-business-sales-1758263042592-2",
       "title": "Master Sales: A Complete Guide for Beginners",
       "slug": "master-sales-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in sales. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -92,21 +92,21 @@
         "guide",
         "professional"
       ],
-      "publishedAt": 1757918017367,
+      "publishedAt": 1758090242592,
       "featuredImage": null,
-      "readTime": 9,
-      "views": 919,
-      "likes": 21,
+      "readTime": 12,
+      "views": 555,
+      "likes": 45,
       "status": "published",
       "featured": true,
       "subdomain": "business"
     }
   ],
   "stats": {
-    "totalPosts": 21,
-    "totalViews": 1008,
-    "monthlyVisitors": 524,
-    "totalLeads": 26
+    "totalPosts": 12,
+    "totalViews": 3833,
+    "monthlyVisitors": 1177,
+    "totalLeads": 117
   },
   "config": {
     "character": "Business Guru",

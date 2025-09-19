@@ -1,39 +1,39 @@
 {
   "news": [
     {
-      "id": "news-fitness-personal-training-1758090817367-0",
+      "id": "news-fitness-personal-training-1758263042592-0",
       "title": "Breaking: New Advances in Personal Training",
       "summary": "Industry experts reveal groundbreaking developments in personal training that could transform the health sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/fitness/personal-training",
       "source": "Industry News Network",
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042592,
       "category": "health",
       "subdomain": "fitness"
     },
     {
-      "id": "news-fitness-yoga-1758090817367-1",
+      "id": "news-fitness-yoga-1758263042592-1",
       "title": "Breaking: New Advances in Yoga",
       "summary": "Industry experts reveal groundbreaking developments in yoga that could transform the health sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/fitness/yoga",
       "source": "Industry News Network",
-      "publishedAt": 1758083617367,
+      "publishedAt": 1758255842592,
       "category": "health",
       "subdomain": "fitness"
     },
     {
-      "id": "news-fitness-strength-training-1758090817367-2",
+      "id": "news-fitness-strength-training-1758263042592-2",
       "title": "Breaking: New Advances in Strength Training",
       "summary": "Industry experts reveal groundbreaking developments in strength training that could transform the health sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/fitness/strength-training",
       "source": "Industry News Network",
-      "publishedAt": 1758076417367,
+      "publishedAt": 1758248642592,
       "category": "health",
       "subdomain": "fitness"
     }
   ],
   "posts": [
     {
-      "id": "post-fitness-personal-training-1758090817367-0",
+      "id": "post-fitness-personal-training-1758263042592-0",
       "title": "Master Personal Training: A Complete Guide for Beginners",
       "slug": "master-personal-training-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in personal training. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -46,17 +46,17 @@
         "guide",
         "health"
       ],
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042592,
       "featuredImage": null,
-      "readTime": 13,
-      "views": 588,
-      "likes": 52,
+      "readTime": 10,
+      "views": 165,
+      "likes": 21,
       "status": "published",
       "featured": true,
       "subdomain": "fitness"
     },
     {
-      "id": "post-fitness-yoga-1758090817367-1",
+      "id": "post-fitness-yoga-1758263042592-1",
       "title": "Master Yoga: A Complete Guide for Beginners",
       "slug": "master-yoga-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in yoga. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -69,17 +69,17 @@
         "guide",
         "health"
       ],
-      "publishedAt": 1758004417367,
+      "publishedAt": 1758176642592,
       "featuredImage": null,
-      "readTime": 5,
-      "views": 576,
-      "likes": 12,
+      "readTime": 13,
+      "views": 877,
+      "likes": 45,
       "status": "published",
       "featured": true,
       "subdomain": "fitness"
     },
     {
-      "id": "post-fitness-strength-training-1758090817367-2",
+      "id": "post-fitness-strength-training-1758263042592-2",
       "title": "Master Strength Training: A Complete Guide for Beginners",
       "slug": "master-strength-training-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in strength training. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -92,21 +92,21 @@
         "guide",
         "health"
       ],
-      "publishedAt": 1757918017367,
+      "publishedAt": 1758090242592,
       "featuredImage": null,
       "readTime": 6,
-      "views": 443,
-      "likes": 34,
+      "views": 265,
+      "likes": 40,
       "status": "published",
       "featured": true,
       "subdomain": "fitness"
     }
   ],
   "stats": {
-    "totalPosts": 58,
-    "totalViews": 5581,
-    "monthlyVisitors": 232,
-    "totalLeads": 67
+    "totalPosts": 41,
+    "totalViews": 5699,
+    "monthlyVisitors": 385,
+    "totalLeads": 99
   },
   "config": {
     "character": "Fitness Guru",

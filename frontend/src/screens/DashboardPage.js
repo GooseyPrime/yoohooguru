@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
 import { User, BookOpen, Star, MessageSquare, Calendar, TrendingUp, Users, Award } from 'lucide-react';
 import Button from '../components/Button';
+import SkillMatching from '../components/SkillMatching';
 
 const Container = styled.div`
   min-height: calc(100vh - 140px);
@@ -200,6 +201,8 @@ function DashboardPage() {
             Get Started
           </Button>
         </WelcomeCard>
+
+        <SkillMatching />
 
         <StatsGrid>
           <StatCard>

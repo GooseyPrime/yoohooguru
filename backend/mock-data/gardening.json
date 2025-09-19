@@ -1,39 +1,39 @@
 {
   "news": [
     {
-      "id": "news-gardening-vegetable-gardening-1758090817367-0",
+      "id": "news-gardening-vegetable-gardening-1758263042592-0",
       "title": "Breaking: New Advances in Vegetable Gardening",
       "summary": "Industry experts reveal groundbreaking developments in vegetable gardening that could transform the lifestyle sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/gardening/vegetable-gardening",
       "source": "Industry News Network",
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042592,
       "category": "lifestyle",
       "subdomain": "gardening"
     },
     {
-      "id": "news-gardening-flower-gardening-1758090817367-1",
+      "id": "news-gardening-flower-gardening-1758263042592-1",
       "title": "Breaking: New Advances in Flower Gardening",
       "summary": "Industry experts reveal groundbreaking developments in flower gardening that could transform the lifestyle sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/gardening/flower-gardening",
       "source": "Industry News Network",
-      "publishedAt": 1758083617367,
+      "publishedAt": 1758255842592,
       "category": "lifestyle",
       "subdomain": "gardening"
     },
     {
-      "id": "news-gardening-landscaping-1758090817367-2",
+      "id": "news-gardening-landscaping-1758263042592-2",
       "title": "Breaking: New Advances in Landscaping",
       "summary": "Industry experts reveal groundbreaking developments in landscaping that could transform the lifestyle sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/gardening/landscaping",
       "source": "Industry News Network",
-      "publishedAt": 1758076417367,
+      "publishedAt": 1758248642592,
       "category": "lifestyle",
       "subdomain": "gardening"
     }
   ],
   "posts": [
     {
-      "id": "post-gardening-vegetable-gardening-1758090817367-0",
+      "id": "post-gardening-vegetable-gardening-1758263042592-0",
       "title": "Master Vegetable Gardening: A Complete Guide for Beginners",
       "slug": "master-vegetable-gardening-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in vegetable gardening. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -46,17 +46,17 @@
         "guide",
         "lifestyle"
       ],
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042592,
       "featuredImage": null,
-      "readTime": 5,
-      "views": 984,
-      "likes": 45,
+      "readTime": 14,
+      "views": 674,
+      "likes": 14,
       "status": "published",
       "featured": true,
       "subdomain": "gardening"
     },
     {
-      "id": "post-gardening-flower-gardening-1758090817367-1",
+      "id": "post-gardening-flower-gardening-1758263042592-1",
       "title": "Master Flower Gardening: A Complete Guide for Beginners",
       "slug": "master-flower-gardening-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in flower gardening. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -69,17 +69,17 @@
         "guide",
         "lifestyle"
       ],
-      "publishedAt": 1758004417367,
+      "publishedAt": 1758176642592,
       "featuredImage": null,
-      "readTime": 7,
-      "views": 985,
-      "likes": 15,
+      "readTime": 10,
+      "views": 332,
+      "likes": 14,
       "status": "published",
       "featured": true,
       "subdomain": "gardening"
     },
     {
-      "id": "post-gardening-landscaping-1758090817367-2",
+      "id": "post-gardening-landscaping-1758263042592-2",
       "title": "Master Landscaping: A Complete Guide for Beginners",
       "slug": "master-landscaping-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in landscaping. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -92,21 +92,21 @@
         "guide",
         "lifestyle"
       ],
-      "publishedAt": 1757918017367,
+      "publishedAt": 1758090242592,
       "featuredImage": null,
-      "readTime": 10,
-      "views": 756,
-      "likes": 59,
+      "readTime": 6,
+      "views": 366,
+      "likes": 54,
       "status": "published",
       "featured": true,
       "subdomain": "gardening"
     }
   ],
   "stats": {
-    "totalPosts": 28,
-    "totalViews": 1299,
-    "monthlyVisitors": 1052,
-    "totalLeads": 44
+    "totalPosts": 29,
+    "totalViews": 5688,
+    "monthlyVisitors": 330,
+    "totalLeads": 38
   },
   "config": {
     "character": "Garden Guru",

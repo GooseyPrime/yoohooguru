@@ -1,39 +1,39 @@
 {
   "news": [
     {
-      "id": "news-music-guitar-1758090817367-0",
+      "id": "news-music-guitar-1758263042592-0",
       "title": "Breaking: New Advances in Guitar",
       "summary": "Industry experts reveal groundbreaking developments in guitar that could transform the audio sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/music/guitar",
       "source": "Industry News Network",
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042592,
       "category": "audio",
       "subdomain": "music"
     },
     {
-      "id": "news-music-piano-1758090817367-1",
+      "id": "news-music-piano-1758263042592-1",
       "title": "Breaking: New Advances in Piano",
       "summary": "Industry experts reveal groundbreaking developments in piano that could transform the audio sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/music/piano",
       "source": "Industry News Network",
-      "publishedAt": 1758083617367,
+      "publishedAt": 1758255842592,
       "category": "audio",
       "subdomain": "music"
     },
     {
-      "id": "news-music-vocals-1758090817367-2",
+      "id": "news-music-vocals-1758263042592-2",
       "title": "Breaking: New Advances in Vocals",
       "summary": "Industry experts reveal groundbreaking developments in vocals that could transform the audio sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/music/vocals",
       "source": "Industry News Network",
-      "publishedAt": 1758076417367,
+      "publishedAt": 1758248642592,
       "category": "audio",
       "subdomain": "music"
     }
   ],
   "posts": [
     {
-      "id": "post-music-guitar-1758090817367-0",
+      "id": "post-music-guitar-1758263042592-0",
       "title": "Master Guitar: A Complete Guide for Beginners",
       "slug": "master-guitar-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in guitar. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -46,17 +46,17 @@
         "guide",
         "audio"
       ],
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042592,
       "featuredImage": null,
-      "readTime": 10,
-      "views": 953,
-      "likes": 23,
+      "readTime": 11,
+      "views": 1034,
+      "likes": 37,
       "status": "published",
       "featured": true,
       "subdomain": "music"
     },
     {
-      "id": "post-music-piano-1758090817367-1",
+      "id": "post-music-piano-1758263042592-1",
       "title": "Master Piano: A Complete Guide for Beginners",
       "slug": "master-piano-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in piano. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -69,17 +69,17 @@
         "guide",
         "audio"
       ],
-      "publishedAt": 1758004417367,
+      "publishedAt": 1758176642592,
       "featuredImage": null,
-      "readTime": 9,
-      "views": 1011,
-      "likes": 25,
+      "readTime": 13,
+      "views": 601,
+      "likes": 10,
       "status": "published",
       "featured": true,
       "subdomain": "music"
     },
     {
-      "id": "post-music-vocals-1758090817367-2",
+      "id": "post-music-vocals-1758263042592-2",
       "title": "Master Vocals: A Complete Guide for Beginners",
       "slug": "master-vocals-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in vocals. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -92,21 +92,21 @@
         "guide",
         "audio"
       ],
-      "publishedAt": 1757918017367,
+      "publishedAt": 1758090242592,
       "featuredImage": null,
-      "readTime": 13,
-      "views": 496,
-      "likes": 53,
+      "readTime": 12,
+      "views": 1094,
+      "likes": 50,
       "status": "published",
       "featured": true,
       "subdomain": "music"
     }
   ],
   "stats": {
-    "totalPosts": 18,
-    "totalViews": 5160,
-    "monthlyVisitors": 1112,
-    "totalLeads": 57
+    "totalPosts": 59,
+    "totalViews": 2590,
+    "monthlyVisitors": 1087,
+    "totalLeads": 22
   },
   "config": {
     "character": "Music Guru",

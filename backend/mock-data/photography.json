@@ -1,39 +1,39 @@
 {
   "news": [
     {
-      "id": "news-photography-portrait-1758090817367-0",
+      "id": "news-photography-portrait-1758263042592-0",
       "title": "Breaking: New Advances in Portrait",
       "summary": "Industry experts reveal groundbreaking developments in portrait that could transform the creative sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/photography/portrait",
       "source": "Industry News Network",
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042592,
       "category": "creative",
       "subdomain": "photography"
     },
     {
-      "id": "news-photography-landscape-1758090817367-1",
+      "id": "news-photography-landscape-1758263042592-1",
       "title": "Breaking: New Advances in Landscape",
       "summary": "Industry experts reveal groundbreaking developments in landscape that could transform the creative sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/photography/landscape",
       "source": "Industry News Network",
-      "publishedAt": 1758083617367,
+      "publishedAt": 1758255842592,
       "category": "creative",
       "subdomain": "photography"
     },
     {
-      "id": "news-photography-wedding-1758090817367-2",
+      "id": "news-photography-wedding-1758263042592-2",
       "title": "Breaking: New Advances in Wedding",
       "summary": "Industry experts reveal groundbreaking developments in wedding that could transform the creative sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/photography/wedding",
       "source": "Industry News Network",
-      "publishedAt": 1758076417367,
+      "publishedAt": 1758248642592,
       "category": "creative",
       "subdomain": "photography"
     }
   ],
   "posts": [
     {
-      "id": "post-photography-portrait-1758090817367-0",
+      "id": "post-photography-portrait-1758263042592-0",
       "title": "Master Portrait: A Complete Guide for Beginners",
       "slug": "master-portrait-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in portrait. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -46,17 +46,17 @@
         "guide",
         "creative"
       ],
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042592,
       "featuredImage": null,
-      "readTime": 9,
-      "views": 934,
-      "likes": 49,
+      "readTime": 11,
+      "views": 762,
+      "likes": 11,
       "status": "published",
       "featured": true,
       "subdomain": "photography"
     },
     {
-      "id": "post-photography-landscape-1758090817367-1",
+      "id": "post-photography-landscape-1758263042592-1",
       "title": "Master Landscape: A Complete Guide for Beginners",
       "slug": "master-landscape-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in landscape. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -69,17 +69,17 @@
         "guide",
         "creative"
       ],
-      "publishedAt": 1758004417367,
+      "publishedAt": 1758176642592,
       "featuredImage": null,
-      "readTime": 14,
-      "views": 903,
-      "likes": 33,
+      "readTime": 8,
+      "views": 406,
+      "likes": 40,
       "status": "published",
       "featured": true,
       "subdomain": "photography"
     },
     {
-      "id": "post-photography-wedding-1758090817367-2",
+      "id": "post-photography-wedding-1758263042592-2",
       "title": "Master Wedding: A Complete Guide for Beginners",
       "slug": "master-wedding-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in wedding. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -92,21 +92,21 @@
         "guide",
         "creative"
       ],
-      "publishedAt": 1757918017367,
+      "publishedAt": 1758090242592,
       "featuredImage": null,
-      "readTime": 14,
-      "views": 943,
-      "likes": 41,
+      "readTime": 12,
+      "views": 851,
+      "likes": 49,
       "status": "published",
       "featured": true,
       "subdomain": "photography"
     }
   ],
   "stats": {
-    "totalPosts": 43,
-    "totalViews": 5817,
-    "monthlyVisitors": 248,
-    "totalLeads": 21
+    "totalPosts": 35,
+    "totalViews": 5244,
+    "monthlyVisitors": 1089,
+    "totalLeads": 64
   },
   "config": {
     "character": "Photography Guru",

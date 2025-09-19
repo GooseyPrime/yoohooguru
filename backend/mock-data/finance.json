@@ -1,39 +1,39 @@
 {
   "news": [
     {
-      "id": "news-finance-investing-1758090817368-0",
+      "id": "news-finance-investing-1758263042592-0",
       "title": "Breaking: New Advances in Investing",
       "summary": "Industry experts reveal groundbreaking developments in investing that could transform the professional sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/finance/investing",
       "source": "Industry News Network",
-      "publishedAt": 1758090817368,
+      "publishedAt": 1758263042592,
       "category": "professional",
       "subdomain": "finance"
     },
     {
-      "id": "news-finance-budgeting-1758090817368-1",
+      "id": "news-finance-budgeting-1758263042592-1",
       "title": "Breaking: New Advances in Budgeting",
       "summary": "Industry experts reveal groundbreaking developments in budgeting that could transform the professional sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/finance/budgeting",
       "source": "Industry News Network",
-      "publishedAt": 1758083617368,
+      "publishedAt": 1758255842592,
       "category": "professional",
       "subdomain": "finance"
     },
     {
-      "id": "news-finance-tax-planning-1758090817368-2",
+      "id": "news-finance-tax-planning-1758263042592-2",
       "title": "Breaking: New Advances in Tax Planning",
       "summary": "Industry experts reveal groundbreaking developments in tax planning that could transform the professional sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/finance/tax-planning",
       "source": "Industry News Network",
-      "publishedAt": 1758076417368,
+      "publishedAt": 1758248642592,
       "category": "professional",
       "subdomain": "finance"
     }
   ],
   "posts": [
     {
-      "id": "post-finance-investing-1758090817368-0",
+      "id": "post-finance-investing-1758263042592-0",
       "title": "Master Investing: A Complete Guide for Beginners",
       "slug": "master-investing-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in investing. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -46,17 +46,17 @@
         "guide",
         "professional"
       ],
-      "publishedAt": 1758090817368,
+      "publishedAt": 1758263042592,
       "featuredImage": null,
-      "readTime": 5,
-      "views": 665,
-      "likes": 10,
+      "readTime": 7,
+      "views": 112,
+      "likes": 21,
       "status": "published",
       "featured": true,
       "subdomain": "finance"
     },
     {
-      "id": "post-finance-budgeting-1758090817368-1",
+      "id": "post-finance-budgeting-1758263042592-1",
       "title": "Master Budgeting: A Complete Guide for Beginners",
       "slug": "master-budgeting-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in budgeting. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -69,17 +69,17 @@
         "guide",
         "professional"
       ],
-      "publishedAt": 1758004417368,
+      "publishedAt": 1758176642592,
       "featuredImage": null,
-      "readTime": 13,
-      "views": 905,
-      "likes": 36,
+      "readTime": 6,
+      "views": 668,
+      "likes": 48,
       "status": "published",
       "featured": true,
       "subdomain": "finance"
     },
     {
-      "id": "post-finance-tax-planning-1758090817368-2",
+      "id": "post-finance-tax-planning-1758263042592-2",
       "title": "Master Tax Planning: A Complete Guide for Beginners",
       "slug": "master-tax-planning-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in tax planning. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -92,21 +92,21 @@
         "guide",
         "professional"
       ],
-      "publishedAt": 1757918017368,
+      "publishedAt": 1758090242592,
       "featuredImage": null,
-      "readTime": 7,
-      "views": 627,
-      "likes": 47,
+      "readTime": 6,
+      "views": 1085,
+      "likes": 12,
       "status": "published",
       "featured": true,
       "subdomain": "finance"
     }
   ],
   "stats": {
-    "totalPosts": 31,
-    "totalViews": 4883,
-    "monthlyVisitors": 1146,
-    "totalLeads": 93
+    "totalPosts": 40,
+    "totalViews": 5615,
+    "monthlyVisitors": 1002,
+    "totalLeads": 47
   },
   "config": {
     "character": "Finance Guru",

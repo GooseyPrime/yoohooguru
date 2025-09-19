@@ -1,39 +1,39 @@
 {
   "news": [
     {
-      "id": "news-home-organization-1758090817368-0",
+      "id": "news-home-organization-1758263042592-0",
       "title": "Breaking: New Advances in Organization",
       "summary": "Industry experts reveal groundbreaking developments in organization that could transform the lifestyle sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/home/organization",
       "source": "Industry News Network",
-      "publishedAt": 1758090817368,
+      "publishedAt": 1758263042592,
       "category": "lifestyle",
       "subdomain": "home"
     },
     {
-      "id": "news-home-cleaning-1758090817368-1",
+      "id": "news-home-cleaning-1758263042592-1",
       "title": "Breaking: New Advances in Cleaning",
       "summary": "Industry experts reveal groundbreaking developments in cleaning that could transform the lifestyle sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/home/cleaning",
       "source": "Industry News Network",
-      "publishedAt": 1758083617368,
+      "publishedAt": 1758255842592,
       "category": "lifestyle",
       "subdomain": "home"
     },
     {
-      "id": "news-home-home-improvement-1758090817368-2",
+      "id": "news-home-home-improvement-1758263042592-2",
       "title": "Breaking: New Advances in Home Improvement",
       "summary": "Industry experts reveal groundbreaking developments in home improvement that could transform the lifestyle sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/home/home-improvement",
       "source": "Industry News Network",
-      "publishedAt": 1758076417368,
+      "publishedAt": 1758248642592,
       "category": "lifestyle",
       "subdomain": "home"
     }
   ],
   "posts": [
     {
-      "id": "post-home-organization-1758090817368-0",
+      "id": "post-home-organization-1758263042592-0",
       "title": "Master Organization: A Complete Guide for Beginners",
       "slug": "master-organization-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in organization. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -46,17 +46,17 @@
         "guide",
         "lifestyle"
       ],
-      "publishedAt": 1758090817368,
+      "publishedAt": 1758263042592,
       "featuredImage": null,
-      "readTime": 13,
-      "views": 778,
-      "likes": 49,
+      "readTime": 9,
+      "views": 179,
+      "likes": 59,
       "status": "published",
       "featured": true,
       "subdomain": "home"
     },
     {
-      "id": "post-home-cleaning-1758090817368-1",
+      "id": "post-home-cleaning-1758263042592-1",
       "title": "Master Cleaning: A Complete Guide for Beginners",
       "slug": "master-cleaning-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in cleaning. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -69,17 +69,17 @@
         "guide",
         "lifestyle"
       ],
-      "publishedAt": 1758004417368,
+      "publishedAt": 1758176642592,
       "featuredImage": null,
-      "readTime": 6,
-      "views": 575,
-      "likes": 30,
+      "readTime": 12,
+      "views": 698,
+      "likes": 38,
       "status": "published",
       "featured": true,
       "subdomain": "home"
     },
     {
-      "id": "post-home-home-improvement-1758090817368-2",
+      "id": "post-home-home-improvement-1758263042592-2",
       "title": "Master Home Improvement: A Complete Guide for Beginners",
       "slug": "master-home-improvement-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in home improvement. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -92,11 +92,11 @@
         "guide",
         "lifestyle"
       ],
-      "publishedAt": 1757918017368,
+      "publishedAt": 1758090242592,
       "featuredImage": null,
       "readTime": 13,
-      "views": 122,
-      "likes": 15,
+      "views": 289,
+      "likes": 17,
       "status": "published",
       "featured": true,
       "subdomain": "home"
@@ -104,9 +104,9 @@
   ],
   "stats": {
     "totalPosts": 20,
-    "totalViews": 3305,
-    "monthlyVisitors": 795,
-    "totalLeads": 21
+    "totalViews": 5897,
+    "monthlyVisitors": 777,
+    "totalLeads": 30
   },
   "config": {
     "character": "Home Guru",

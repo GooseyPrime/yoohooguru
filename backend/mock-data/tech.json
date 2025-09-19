@@ -1,39 +1,39 @@
 {
   "news": [
     {
-      "id": "news-tech-programming-1758090817367-0",
+      "id": "news-tech-programming-1758263042592-0",
       "title": "Breaking: New Advances in Programming",
       "summary": "Industry experts reveal groundbreaking developments in programming that could transform the technology sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/tech/programming",
       "source": "Industry News Network",
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042592,
       "category": "technology",
       "subdomain": "tech"
     },
     {
-      "id": "news-tech-web-development-1758090817367-1",
+      "id": "news-tech-web-development-1758263042592-1",
       "title": "Breaking: New Advances in Web Development",
       "summary": "Industry experts reveal groundbreaking developments in web development that could transform the technology sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/tech/web-development",
       "source": "Industry News Network",
-      "publishedAt": 1758083617367,
+      "publishedAt": 1758255842592,
       "category": "technology",
       "subdomain": "tech"
     },
     {
-      "id": "news-tech-mobile-apps-1758090817367-2",
+      "id": "news-tech-mobile-apps-1758263042592-2",
       "title": "Breaking: New Advances in Mobile Apps",
       "summary": "Industry experts reveal groundbreaking developments in mobile apps that could transform the technology sector. Leading professionals share insights on emerging trends and best practices.",
       "url": "https://example.com/news/tech/mobile-apps",
       "source": "Industry News Network",
-      "publishedAt": 1758076417367,
+      "publishedAt": 1758248642592,
       "category": "technology",
       "subdomain": "tech"
     }
   ],
   "posts": [
     {
-      "id": "post-tech-programming-1758090817367-0",
+      "id": "post-tech-programming-1758263042592-0",
       "title": "Master Programming: A Complete Guide for Beginners",
       "slug": "master-programming-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in programming. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -46,17 +46,17 @@
         "guide",
         "technology"
       ],
-      "publishedAt": 1758090817367,
+      "publishedAt": 1758263042592,
       "featuredImage": null,
-      "readTime": 6,
-      "views": 265,
-      "likes": 25,
+      "readTime": 13,
+      "views": 961,
+      "likes": 48,
       "status": "published",
       "featured": true,
       "subdomain": "tech"
     },
     {
-      "id": "post-tech-web-development-1758090817367-1",
+      "id": "post-tech-web-development-1758263042592-1",
       "title": "Master Web Development: A Complete Guide for Beginners",
       "slug": "master-web-development-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in web development. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -69,17 +69,17 @@
         "guide",
         "technology"
       ],
-      "publishedAt": 1758004417367,
+      "publishedAt": 1758176642592,
       "featuredImage": null,
-      "readTime": 13,
-      "views": 315,
-      "likes": 37,
+      "readTime": 14,
+      "views": 507,
+      "likes": 49,
       "status": "published",
       "featured": true,
       "subdomain": "tech"
     },
     {
-      "id": "post-tech-mobile-apps-1758090817367-2",
+      "id": "post-tech-mobile-apps-1758263042592-2",
       "title": "Master Mobile Apps: A Complete Guide for Beginners",
       "slug": "master-mobile-apps-complete-guide-beginners",
       "excerpt": "Discover the essential techniques and strategies to excel in mobile apps. This comprehensive guide covers everything from basic fundamentals to advanced practices that will help you succeed.",
@@ -92,21 +92,21 @@
         "guide",
         "technology"
       ],
-      "publishedAt": 1757918017367,
+      "publishedAt": 1758090242592,
       "featuredImage": null,
-      "readTime": 12,
-      "views": 356,
-      "likes": 52,
+      "readTime": 7,
+      "views": 155,
+      "likes": 21,
       "status": "published",
       "featured": true,
       "subdomain": "tech"
     }
   ],
   "stats": {
-    "totalPosts": 25,
-    "totalViews": 5169,
-    "monthlyVisitors": 229,
-    "totalLeads": 30
+    "totalPosts": 53,
+    "totalViews": 5711,
+    "monthlyVisitors": 1031,
+    "totalLeads": 116
   },
   "config": {
     "character": "Tech Guru",

@@ -1,0 +1,117 @@
+[
+  {
+    "guruId": "guru_001",
+    "understudyId": "student_001",
+    "matchScore": 95,
+    "type": "perfect_match",
+    "details": {
+      "guruOffers": [
+        "JavaScript",
+        "React",
+        "Web Development"
+      ],
+      "understudyWants": [
+        "JavaScript",
+        "Web Development",
+        "React"
+      ],
+      "sharedInterests": [
+        "Programming",
+        "Web Technologies"
+      ],
+      "complementarySkills": {
+        "guru_teaches": "Web Development",
+        "understudy_teaches": "Photography"
+      }
+    },
+    "status": "suggested",
+    "createdAt": 1758263381083
+  },
+  {
+    "guruId": "guru_002",
+    "understudyId": "student_002",
+    "matchScore": 90,
+    "type": "skill_exchange",
+    "details": {
+      "guruOffers": [
+        "Personal Training",
+        "Nutrition"
+      ],
+      "understudyWants": [
+        "Personal Training",
+        "Fitness"
+      ],
+      "complementarySkills": {
+        "guru_teaches": "Fitness",
+        "understudy_teaches": "Business Strategy"
+      }
+    },
+    "status": "suggested",
+    "createdAt": 1758263381083
+  },
+  {
+    "guruId": "guru_003",
+    "understudyId": "student_003",
+    "matchScore": 92,
+    "type": "skill_exchange",
+    "details": {
+      "guruOffers": [
+        "Spanish",
+        "French"
+      ],
+      "understudyWants": [
+        "Spanish",
+        "Language Learning"
+      ],
+      "complementarySkills": {
+        "guru_teaches": "Spanish",
+        "understudy_teaches": "Guitar"
+      }
+    },
+    "status": "suggested",
+    "createdAt": 1758263381083
+  },
+  {
+    "guruId": "guru_004",
+    "understudyId": "student_004",
+    "matchScore": 88,
+    "type": "creative_match",
+    "details": {
+      "guruOffers": [
+        "Piano",
+        "Music Theory"
+      ],
+      "understudyWants": [
+        "Piano",
+        "Music Theory"
+      ],
+      "complementarySkills": {
+        "guru_teaches": "Music",
+        "understudy_teaches": "3D Modeling"
+      }
+    },
+    "status": "suggested",
+    "createdAt": 1758263381083
+  },
+  {
+    "guruId": "guru_005",
+    "understudyId": "student_004",
+    "matchScore": 85,
+    "type": "creative_match",
+    "details": {
+      "guruOffers": [
+        "Digital Art",
+        "UI/UX Design"
+      ],
+      "understudyWants": [
+        "Digital Art"
+      ],
+      "complementarySkills": {
+        "guru_teaches": "Digital Art",
+        "understudy_teaches": "3D Animation"
+      }
+    },
+    "status": "suggested",
+    "createdAt": 1758263381083
+  }
+]

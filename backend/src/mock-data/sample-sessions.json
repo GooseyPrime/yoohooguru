@@ -1,0 +1,30 @@
+[
+  {
+    "id": "session_001",
+    "guruId": "guru_001",
+    "understudyId": "student_001",
+    "skillId": "skill_001",
+    "title": "JavaScript Fundamentals - Session 1",
+    "description": "Introduction to variables, data types, and basic syntax",
+    "scheduledFor": 1758349781083,
+    "duration": 60,
+    "format": "video_call",
+    "status": "scheduled",
+    "price": 50,
+    "createdAt": 1758263381083
+  },
+  {
+    "id": "session_002",
+    "guruId": "guru_002",
+    "understudyId": "student_002",
+    "skillId": "skill_003",
+    "title": "Strength Training Assessment",
+    "description": "Initial fitness assessment and goal setting",
+    "scheduledFor": 1758436181083,
+    "duration": 90,
+    "format": "in_person",
+    "status": "scheduled",
+    "price": 60,
+    "createdAt": 1758263381083
+  }
+]
