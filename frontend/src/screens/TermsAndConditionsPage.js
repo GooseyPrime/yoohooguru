@@ -131,15 +131,19 @@ function TermsAndConditionsPage() {
         <Section>
           <h2>2. Description of Service</h2>
           <p>
-            {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'} is a platform that enables users to share skills, discover purpose, and create positive 
-            community impact through neighborhood-based connections. Our services include:
+            {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'} is a comprehensive neighborhood-based skill-sharing platform that enables users to share skills, discover purpose, and create exponential 
+            community impact through local connections. Our services include:
           </p>
           <ul>
-            <li>Skill-sharing marketplace connecting community members</li>
-            <li>User profiles and skill discovery tools</li>
-            <li>Communication and coordination features</li>
-            <li>Community events and mentorship programs</li>
-            <li>Safety and trust features</li>
+            <li><strong>Skill-sharing marketplace</strong> - Connect with community members to teach or learn skills</li>
+            <li><strong>Guru dashboard</strong> - Tools for teachers and coaches to manage their offerings</li>
+            <li><strong>Angel's List</strong> - Service marketplace for professional services</li>
+            <li><strong>Specialized subdomains</strong> - Domain-specific communities (cooking.yoohoo.guru, tech.yoohoo.guru, etc.)</li>
+            <li><strong>User profiles and skill discovery</strong> - Advanced matching and discovery tools</li>
+            <li><strong>Communication and coordination features</strong> - Safe messaging and scheduling</li>
+            <li><strong>Community events and mentorship programs</strong> - Local workshops and ongoing mentorships</li>
+            <li><strong>Safety and trust features</strong> - Background checks, ratings, and verification systems</li>
+            <li><strong>Premium features</strong> - Enhanced tools for professional skill providers</li>
           </ul>
         </Section>
 
@@ -169,16 +173,28 @@ function TermsAndConditionsPage() {
           <h3>User-to-User Transactions</h3>
           <p>
             Skill exchanges occur directly between community members. {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'} facilitates connections but 
-            is not a party to any agreements between users.
+            is not a party to any agreements between users. We provide the platform infrastructure including specialized subdomains, 
+            Guru dashboards, and the Angel's List marketplace.
           </p>
+
+          <h3>Types of Exchanges</h3>
+          <ul>
+            <li><strong>Skill Swaps:</strong> Direct exchanges where members teach each other different skills</li>
+            <li><strong>Paid Services:</strong> Professional services offered through the Angel's List marketplace</li>
+            <li><strong>Mentorship Programs:</strong> Ongoing learning relationships between experienced gurus and understudies</li>
+            <li><strong>Community Workshops:</strong> Group learning sessions and events</li>
+            <li><strong>Subdomain Specializations:</strong> Category-specific exchanges on dedicated subdomains</li>
+          </ul>
 
           <h3>Your Responsibilities</h3>
           <ul>
-            <li>Accurately represent your skills and availability</li>
+            <li>Accurately represent your skills, qualifications, and availability</li>
+            <li>Maintain appropriate certifications for professional services on Angel's List</li>
             <li>Fulfill commitments made to other community members</li>
-            <li>Respect others&apos; time and expertise</li>
-            <li>Provide feedback and ratings honestly</li>
-            <li>Report any issues or conflicts promptly</li>
+            <li>Respect others&apos; time, expertise, and property</li>
+            <li>Provide honest feedback and ratings after exchanges</li>
+            <li>Report any issues, conflicts, or safety concerns promptly</li>
+            <li>Follow subdomain-specific guidelines and community standards</li>
           </ul>
         </Section>
 
@@ -238,7 +254,38 @@ function TermsAndConditionsPage() {
         </Section>
 
         <Section>
-          <h2>9. Termination</h2>
+          <h2>9. Platform-Specific Features</h2>
+          <h3>Specialized Subdomains</h3>
+          <p>
+            Our platform includes specialized subdomains (e.g., cooking.yoohoo.guru, tech.yoohoo.guru) that provide 
+            category-specific experiences. Each subdomain maintains the same core safety and community standards 
+            while offering specialized tools and content for that skill area.
+          </p>
+
+          <h3>Angel's List Marketplace</h3>
+          <p>
+            The Angel's List is our professional services marketplace where certified providers offer premium services. 
+            Participation requires additional verification and may involve background checks, insurance requirements, 
+            and professional certifications depending on the service category.
+          </p>
+
+          <h3>Guru Dashboard and Premium Features</h3>
+          <p>
+            Certified Gurus gain access to enhanced dashboard features including analytics, advanced scheduling, 
+            priority support, and promotional tools. Premium features may require subscription fees and additional 
+            terms of service.
+          </p>
+
+          <h3>AI-Powered Matching</h3>
+          <p>
+            Our platform uses AI algorithms to suggest skill matches and learning opportunities. While we strive for 
+            accuracy, you are responsible for evaluating the suitability of suggested matches and making your own 
+            decisions about skill exchanges.
+          </p>
+        </Section>
+
+        <Section>
+          <h2>10. Termination</h2>
           <h3>By You</h3>
           <p>You may delete your account at any time through your account settings.</p>
 
@@ -253,7 +300,7 @@ function TermsAndConditionsPage() {
         </Section>
 
         <Section>
-          <h2>10. Disclaimers and Limitations</h2>
+          <h2>11. Disclaimers and Limitations</h2>
           <h3>Service Availability</h3>
           <p>
             We strive to maintain platform availability but cannot guarantee uninterrupted service. We may 
@@ -347,7 +394,7 @@ function TermsAndConditionsPage() {
         </Section>
 
         <Section>
-          <h2>11. Dispute Resolution</h2>
+          <h2>12. Dispute Resolution</h2>
           <p>
             We encourage users to resolve disputes directly. If you have a dispute with another user or with 
             {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}, please contact us first to seek resolution.
@@ -355,7 +402,7 @@ function TermsAndConditionsPage() {
         </Section>
 
         <Section>
-          <h2>12. Changes to Terms</h2>
+          <h2>13. Changes to Terms</h2>
           <p>
             We may update these Terms periodically. Material changes will be communicated through the platform 
             or via email. Continued use after changes constitutes acceptance of the new Terms.
@@ -363,7 +410,7 @@ function TermsAndConditionsPage() {
         </Section>
 
         <Section>
-          <h2>13. Governing Law</h2>
+          <h2>14. Governing Law</h2>
           <p>
             These Terms are governed by applicable local laws. Any disputes will be resolved in accordance 
             with the jurisdiction where {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'} is based.

@@ -1,6 +1,75 @@
 import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import { api } from '../../lib/api';
 import Button from '../../components/Button';
+
+const Container = styled.div`
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: ${props => props.theme.colors.bg};
+  min-height: calc(100vh - 140px);
+`;
+
+const Title = styled.h2`
+  color: ${props => props.theme.colors.text};
+  margin-bottom: 2rem;
+`;
+
+const Section = styled.div`
+  margin-bottom: 2rem;
+`;
+
+const SectionTitle = styled.h3`
+  color: ${props => props.theme.colors.text};
+  margin-bottom: 1rem;
+`;
+
+const InfoBox = styled.div`
+  background: ${props => props.theme.colors.surface};
+  border: 1px solid ${props => props.theme.colors.border};
+  padding: 1rem;
+  border-radius: ${props => props.theme.radius.md}px;
+  margin-bottom: 1rem;
+
+  p {
+    color: ${props => props.theme.colors.muted};
+    margin-bottom: 0.5rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  strong {
+    color: ${props => props.theme.colors.text};
+  }
+
+  ul {
+    color: ${props => props.theme.colors.muted};
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+  }
+
+  li {
+    margin-bottom: 0.25rem;
+  }
+`;
+
+const ErrorMessage = styled.div`
+  padding: 2rem;
+  color: ${props => props.theme.colors.err};
+  background: ${props => props.theme.colors.surface};
+  border: 1px solid ${props => props.theme.colors.err};
+  border-radius: ${props => props.theme.radius.md}px;
+  margin: 1rem;
+`;
+
+const LoadingMessage = styled.div`
+  padding: 2rem;
+  color: ${props => props.theme.colors.text};
+  text-align: center;
+`;
 
 export default function OnboardingReview() {
   const [data, setData] = useState();
@@ -15,8 +84,8 @@ export default function OnboardingReview() {
       });
   }, []);
 
-  if (error) return <div style={{padding: '2rem', color: '#dc2626'}}>{error}</div>;
-  if (!data) return <div style={{padding: '2rem'}}>Loading…</div>;
+  if (error) return <ErrorMessage>{error}</ErrorMessage>;
+  if (!data) return <LoadingMessage>Loading…</LoadingMessage>;
 
   const publish = async () => {
     try {
@@ -29,19 +98,19 @@ export default function OnboardingReview() {
   };
 
   return (
-    <div style={{maxWidth: '800px', margin: '0 auto', padding: '2rem'}}>
-      <h2>Review & Publish</h2>
+    <Container>
+      <Title>Review & Publish</Title>
       
-      <div style={{marginBottom: '2rem'}}>
-        <h3>Profile Summary</h3>
-        <div style={{background: '#f9fafb', padding: '1rem', borderRadius: '8px', marginBottom: '1rem'}}>
+      <Section>
+        <SectionTitle>Profile Summary</SectionTitle>
+        <InfoBox>
           <p><strong>Name:</strong> {data.profile?.displayName || 'Not set'}</p>
           <p><strong>Location:</strong> {data.profile?.city || 'Not set'}, {data.profile?.zip || 'Not set'}</p>
           <p><strong>Bio:</strong> {data.profile?.bio || 'Not set'}</p>
-        </div>
+        </InfoBox>
         
-        <h3>Selected Categories</h3>
-        <div style={{background: '#f9fafb', padding: '1rem', borderRadius: '8px', marginBottom: '1rem'}}>
+        <SectionTitle>Selected Categories</SectionTitle>
+        <InfoBox>
           {Object.keys(data.picks || {}).length > 0 ? (
             <ul>
               {Object.keys(data.picks || {}).map(slug => (
@@ -51,10 +120,10 @@ export default function OnboardingReview() {
           ) : (
             <p>No categories selected</p>
           )}
-        </div>
+        </InfoBox>
         
-        <h3>Documents Uploaded</h3>
-        <div style={{background: '#f9fafb', padding: '1rem', borderRadius: '8px', marginBottom: '1rem'}}>
+        <SectionTitle>Documents Uploaded</SectionTitle>
+        <InfoBox>
           {Object.keys(data.docs || {}).length > 0 ? (
             <ul>
               {Object.values(data.docs || {}).map(doc => (
@@ -67,16 +136,16 @@ export default function OnboardingReview() {
           ) : (
             <p>No documents uploaded</p>
           )}
-        </div>
+        </InfoBox>
         
-        <h3>Status Check</h3>
-        <div style={{background: '#f9fafb', padding: '1rem', borderRadius: '8px', marginBottom: '2rem'}}>
+        <SectionTitle>Status Check</SectionTitle>
+        <InfoBox>
           <p>✓ Profile: {data.step.profileComplete ? 'Complete' : 'Incomplete'}</p>
           <p>✓ Categories: {data.step.categoriesComplete ? 'Complete' : 'Incomplete'}</p>
           <p>✓ Requirements: {data.step.requirementsComplete ? 'Complete' : 'Incomplete'}</p>
           <p>✓ Payout: {data.step.payoutConnected ? 'Complete' : 'Incomplete'}</p>
-        </div>
-      </div>
+        </InfoBox>
+      </Section>
       
       <Button 
         onClick={publish} 
@@ -87,10 +156,12 @@ export default function OnboardingReview() {
         Publish Profile
       </Button>
       {!data.step.reviewReady && (
-        <p style={{color: '#dc2626', marginTop: '1rem'}}>
-          Complete all steps first.
-        </p>
+        <InfoBox style={{marginTop: '1rem', borderColor: 'var(--err)'}}>
+          <p style={{color: 'var(--err)'}}>
+            Complete all steps first.
+          </p>
+        </InfoBox>
       )}
-    </div>
+    </Container>
   );
 }
