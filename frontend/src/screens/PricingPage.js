@@ -199,8 +199,16 @@ function PricingPage() {
   useEffect(() => {
     // Check if Stripe pricing table script is loaded
     const checkStripeLoaded = () => {
-      if (typeof window !== 'undefined' && window.customElements && window.customElements.get('stripe-pricing-table')) {
-        setStripeLoaded(true);
+      try {
+        if (typeof window !== 'undefined' && 
+            window.customElements && 
+            typeof window.customElements.get === 'function' && 
+            window.customElements.get('stripe-pricing-table')) {
+          setStripeLoaded(true);
+        }
+      } catch (error) {
+        // Silently handle any errors when checking for custom elements
+        console.debug('Stripe pricing table check error:', error);
       }
     };
 
