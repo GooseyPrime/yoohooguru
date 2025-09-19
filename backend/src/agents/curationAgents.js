@@ -521,7 +521,14 @@ const newsCurationAgent = new NewsCurationAgent();
 const blogCurationAgent = new BlogCurationAgent();
 
 /**
- * Start all curation agents
+ * Start all curation agents with comprehensive error handling and logging
+ * 
+ * This function:
+ * 1. Checks if agents are disabled via environment variable
+ * 2. Validates dependencies for each agent individually 
+ * 3. Starts each agent with detailed error logging
+ * 4. Tracks agent status for health reporting
+ * 5. Continues startup even if some agents fail (configurable in production)
  */
 function startCurationAgents() {
   const environment = process.env.NODE_ENV || 'development';
@@ -540,7 +547,7 @@ function startCurationAgents() {
   
   const startupErrors = [];
   
-  // Start news curation agent
+  // Start news curation agent with individual error handling
   try {
     newsCurationAgent.start();
     logger.info('✅ News curation agent started successfully');
@@ -553,7 +560,7 @@ function startCurationAgents() {
     });
   }
   
-  // Start blog curation agent
+  // Start blog curation agent with individual error handling
   try {
     blogCurationAgent.start();
     logger.info('✅ Blog curation agent started successfully');
@@ -566,7 +573,7 @@ function startCurationAgents() {
     });
   }
   
-  // Report overall status
+  // Report overall startup status
   if (startupErrors.length === 0) {
     logger.info('🤖 All AI curation agents started successfully');
   } else {
@@ -574,6 +581,7 @@ function startCurationAgents() {
     logger.error('❌ Curation agent startup completed with errors: ' + errorSummary);
     
     // In production, we might want to throw to prevent the app from starting
+    // This is configurable via FAIL_ON_AGENT_ERROR environment variable
     if (environment === 'production' && process.env.FAIL_ON_AGENT_ERROR === 'true') {
       throw new Error('Critical curation agents failed to start: ' + errorSummary);
     }
@@ -582,6 +590,11 @@ function startCurationAgents() {
 
 /**
  * Get the current status of all curation agents
+ * 
+ * This function provides real-time status information for monitoring
+ * and health check purposes. Used by the /health endpoint and admin dashboard.
+ * 
+ * @returns {Object} Current status of all agents with timestamps
  */
 function getCurationAgentStatus() {
   return {
