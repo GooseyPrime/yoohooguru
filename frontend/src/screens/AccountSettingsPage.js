@@ -13,7 +13,6 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import Button from '../components/Button';
-import { api } from '../lib/api';
 import SEOMetadata from '../components/SEOMetadata';
 
 const Container = styled.div`
@@ -162,7 +161,14 @@ const BackLink = styled.button`
 `;
 
 function AccountSettingsPage() {
-  const { user, logout } = useAuth();
+  const { 
+    user, 
+    logout, 
+    hideProfile, 
+    deleteAccount, 
+    restoreAccount, 
+    requestAccountMerge 
+  } = useAuth();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [profileHidden, setProfileHidden] = useState(false);
@@ -178,11 +184,7 @@ function AccountSettingsPage() {
   const handleProfileVisibility = async () => {
     setIsLoading(true);
     try {
-      await api('/auth/profile/visibility', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ hidden: !profileHidden })
-      });
+      await hideProfile(!profileHidden);
       setProfileHidden(!profileHidden);
     } catch (error) {
       console.error('Failed to update profile visibility:', error);
@@ -198,11 +200,7 @@ function AccountSettingsPage() {
 
     setIsLoading(true);
     try {
-      await api('/auth/account', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ confirmEmail: deleteConfirmEmail })
-      });
+      await deleteAccount(deleteConfirmEmail);
       // Logout and redirect to home
       await logout();
       navigate('/', { replace: true });
@@ -218,14 +216,7 @@ function AccountSettingsPage() {
 
     setIsLoading(true);
     try {
-      await api('/auth/merge/request', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          targetEmail: mergeTargetEmail,
-          provider: 'google.com' // Assuming merging with Google account
-        })
-      });
+      await requestAccountMerge(mergeTargetEmail, 'google.com');
       setMergeTargetEmail('');
     } catch (error) {
       console.error('Failed to request account merge:', error);
