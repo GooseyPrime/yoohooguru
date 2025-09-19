@@ -105,25 +105,53 @@ echo "Repository: $REPO"
 echo "Total branches to delete: ${#BRANCHES[@]}"
 echo ""
 
-# Function to delete branch using GitHub CLI
-delete_with_gh() {
-    echo "Using GitHub CLI to delete branches..."
-    echo "⚠️  This will permanently delete all copilot/fix-* branches!"
-    read -p "Are you sure you want to proceed? (y/N): " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo "❌ Operation cancelled."
-        exit 1
-    fi
+# Function to delete branch using GitHub CLI or API
+delete_with_auth() {
+    echo "Using authenticated methods to delete branches..."
     
-    for branch in "${BRANCHES[@]}"; do
-        echo "🗑️  Deleting $branch..."
-        if gh api --method DELETE "/repos/$REPO/git/refs/heads/$branch" &>/dev/null; then
-            echo "✅ Deleted $branch"
-        else
-            echo "❌ Failed to delete $branch (may already be deleted)"
+    # Check if we have COPILOT_PAT token
+    if [[ -n "${COPILOT_PAT}" ]]; then
+        echo "Using COPILOT_PAT token for authentication"
+        
+        # Test repository rules first
+        if ! test_repository_rules; then
+            echo "❌ Repository rules are blocking deletion. Please resolve rules first."
+            echo "See execution plan for details: BRANCH_CLEANUP_EXECUTION_PLAN.md"
+            return 1
         fi
-    done
+        
+        echo "⚠️  This will permanently delete all copilot/fix-* branches!"
+        read -p "Are you sure you want to proceed? (y/N): " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo "❌ Operation cancelled."
+            return 1
+        fi
+        
+        for branch in "${BRANCHES[@]}"; do
+            echo "🗑️  Deleting $branch..."
+            response=$(curl -s -w "%{http_code}" -X DELETE \
+                         -H "Authorization: token ${COPILOT_PAT}" \
+                         -H "Accept: application/vnd.github.v3+json" \
+                         "https://api.github.com/repos/$REPO/git/refs/heads/$branch")
+            
+            http_code="${response: -3}"
+            if [[ "$http_code" == "204" ]]; then
+                echo "✅ Deleted $branch"
+            else
+                echo "❌ Failed to delete $branch (HTTP: $http_code)"
+                echo "${response%???}" | jq -r '.message // "Unknown error"' 2>/dev/null || echo "${response%???}"
+            fi
+        done
+        
+    elif command -v gh &> /dev/null; then
+        echo "Using GitHub CLI for authentication"
+        delete_with_gh
+    else
+        echo "❌ No authentication method available."
+        echo "Either set COPILOT_PAT environment variable or install GitHub CLI"
+        return 1
+    fi
     
     echo ""
     echo "✨ Cleanup completed!"
@@ -167,10 +195,71 @@ generate_git_commands() {
     done
 }
 
+# Function to test repository rules
+test_repository_rules() {
+    echo "🔍 Testing repository rules..."
+    
+    if [[ -z "${COPILOT_PAT}" ]]; then
+        echo "❌ COPILOT_PAT environment variable not found"
+        echo "Cannot test repository rules without authentication token"
+        return 1
+    fi
+    
+    echo "Checking repository rulesets..."
+    rulesets=$(curl -s -H "Authorization: token ${COPILOT_PAT}" \
+                  -H "Accept: application/vnd.github.v3+json" \
+                  "https://api.github.com/repos/$REPO/rulesets")
+    
+    if echo "$rulesets" | jq -e '.[0]' &>/dev/null; then
+        echo "Found active rulesets:"
+        echo "$rulesets" | jq -r '.[] | "- \(.name) (ID: \(.id)) - \(.enforcement)"'
+        
+        # Check each ruleset for deletion rules
+        local has_deletion_rules=false
+        for ruleset_id in $(echo "$rulesets" | jq -r '.[] | .id'); do
+            ruleset_detail=$(curl -s -H "Authorization: token ${COPILOT_PAT}" \
+                               -H "Accept: application/vnd.github.v3+json" \
+                               "https://api.github.com/repos/$REPO/rulesets/$ruleset_id")
+            
+            if echo "$ruleset_detail" | jq -e '.rules[]? | select(.type == "deletion")' &>/dev/null; then
+                ruleset_name=$(echo "$ruleset_detail" | jq -r '.name')
+                echo "⚠️  Ruleset '$ruleset_name' contains deletion restrictions!"
+                has_deletion_rules=true
+            fi
+        done
+        
+        if [[ "$has_deletion_rules" == "true" ]]; then
+            echo ""
+            echo "❌ Repository rules are blocking branch deletion!"
+            echo "Manage rulesets at: https://github.com/$REPO/rules"
+            return 1
+        else
+            echo "✅ No deletion-blocking rules found in rulesets"
+            return 0
+        fi
+    else
+        echo "✅ No active repository rulesets found"
+        return 0
+    fi
+}
+
 # Function to verify cleanup
 verify_cleanup() {
     echo "🔍 Verifying cleanup..."
-    if command -v gh &> /dev/null; then
+    if [[ -n "${COPILOT_PAT}" ]]; then
+        echo "Checking remaining copilot/fix-* branches via API..."
+        response=$(curl -s -H "Authorization: token ${COPILOT_PAT}" \
+                      -H "Accept: application/vnd.github.v3+json" \
+                      "https://api.github.com/repos/$REPO/branches?per_page=100")
+        
+        copilot_branches=$(echo "$response" | jq -r '.[] | select(.name | startswith("copilot/fix")) | .name' 2>/dev/null)
+        if [[ -z "$copilot_branches" ]]; then
+            echo "✅ No copilot/fix-* branches remaining"
+        else
+            echo "⚠️  Remaining copilot/fix-* branches:"
+            echo "$copilot_branches"
+        fi
+    elif command -v gh &> /dev/null; then
         echo "Checking remaining copilot/fix-* branches:"
         gh api "/repos/$REPO/branches" --paginate | jq -r '.[] | select(.name | startswith("copilot/fix")) | .name' || echo "No copilot/fix-* branches remaining ✅"
     else
@@ -182,14 +271,10 @@ verify_cleanup() {
 # Main script logic
 case "${1:-help}" in
     "delete")
-        if command -v gh &> /dev/null; then
-            delete_with_gh
-        else
-            echo "❌ GitHub CLI (gh) is not installed."
-            echo "Please install it first: https://cli.github.com/"
-            echo ""
-            echo "Or use the 'generate' option to get curl commands."
-        fi
+        delete_with_auth
+        ;;
+    "test-rules")
+        test_repository_rules
         ;;
     "generate")
         generate_curl_commands > copilot-branch-cleanup-commands.txt
@@ -207,18 +292,19 @@ case "${1:-help}" in
         printf '%s\n' "${BRANCHES[@]}"
         ;;
     *)
-        echo "Usage: $0 {delete|generate|git|verify|list}"
+        echo "Usage: $0 {delete|generate|git|verify|list|test-rules}"
         echo ""
         echo "Commands:"
-        echo "  delete   - Delete all copilot/fix-* branches using GitHub CLI"
-        echo "  generate - Generate curl commands for manual execution" 
-        echo "  git      - Generate git commands for authenticated deletion"
-        echo "  verify   - Check if cleanup was successful"
-        echo "  list     - List all branches scheduled for deletion"
+        echo "  delete     - Delete all copilot/fix-* branches using available authentication"
+        echo "  generate   - Generate curl commands for manual execution" 
+        echo "  git        - Generate git commands for authenticated deletion"
+        echo "  verify     - Check if cleanup was successful"
+        echo "  list       - List all branches scheduled for deletion"
+        echo "  test-rules - Test repository rules that might block deletion"
         echo ""
         echo "Requirements:"
-        echo "  - GitHub CLI (gh) authenticated for delete command"
+        echo "  - COPILOT_PAT environment variable (recommended) or GitHub CLI (gh)"
         echo "  - Repository admin permissions"
-        echo "  - Personal access token for curl commands"
+        echo "  - Resolved repository rules (use 'test-rules' to check)"
         ;;
 esac
