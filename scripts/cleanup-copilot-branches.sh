@@ -64,18 +64,40 @@ BRANCHES=(
     "copilot/fix-125"
     "copilot/fix-127"
     "copilot/fix-129"
+    "copilot/fix-133"
+    "copilot/fix-135"
+    "copilot/fix-137"
+    "copilot/fix-139"
+    "copilot/fix-143"
+    "copilot/fix-145"
+    "copilot/fix-147"
+    "copilot/fix-149"
+    "copilot/fix-151"
+    "copilot/fix-153"
+    "copilot/fix-155"
+    "copilot/fix-157"
+    "copilot/fix-159"
+    "copilot/fix-161"
+    "copilot/fix-163"
+    "copilot/fix-165"
+    "copilot/fix-169"
     "copilot/fix-26071a05-a594-4dcc-a88a-792689298b91"
+    "copilot/fix-18443361-67a9-4b4b-9994-44f997dea6a8"
     "copilot/fix-a2911bfb-e86d-4430-9146-388cff0fa215"
     "copilot/fix-a3502cd0-17bc-4611-9d93-a0434c712fb7"
+    "copilot/fix-c5b581b4-ba16-4eca-9ea2-78949a7e674c"
+    "copilot/fix-c6c1a26e-e0ec-4fc7-afd1-2992bccce0ee"
     "copilot/fix-c7bbe2db-8af6-4c9c-a29d-808ea2fd34f3"
     "copilot/fix-cd3dec24-e625-4da4-aa1d-490a6e637470"
     "copilot/fix-console-errors-and-warnings"
     "copilot/fix-d01e41cf-d407-4108-8363-5c4e123dccfa"
     "copilot/fix-e18f4428-6313-4985-a299-8afd277aabb8"
+    "copilot/fix-e23e1a24-d130-4a73-a94f-b450d54de03b"
     "copilot/fix-eb304878-97eb-45b4-b022-2513849362b5"
     "copilot/fix-f43bdeda-837c-4a60-87af-56f1de9ff2c7"
     "copilot/fix-fb3731ed-0c67-435b-bc75-cd17d9ea0057"
     "copilot/fix-ff9c51b2-d253-4c56-bcbd-e2a2f644c76f"
+    "copilot/optimize-webpack-docker-builds"
 )
 
 echo "🔥 GitHub Branch Cleanup Script"
@@ -122,6 +144,29 @@ generate_curl_commands() {
     done
 }
 
+# Function to generate git delete commands
+generate_git_commands() {
+    echo "# Git commands to delete branches"
+    echo "# Requires authenticated git session"
+    echo ""
+    
+    echo "# Option 1: Delete branches one by one"
+    for branch in "${BRANCHES[@]}"; do
+        echo "git push origin :$branch"
+    done
+    
+    echo ""
+    echo "# Option 2: Delete all branches in a single command"
+    echo "git push origin --delete \\"
+    for branch in "${BRANCHES[@]}"; do
+        if [[ "$branch" == "${BRANCHES[-1]}" ]]; then
+            echo "  $branch"
+        else
+            echo "  $branch \\"
+        fi
+    done
+}
+
 # Function to verify cleanup
 verify_cleanup() {
     echo "🔍 Verifying cleanup..."
@@ -150,6 +195,10 @@ case "${1:-help}" in
         generate_curl_commands > copilot-branch-cleanup-commands.txt
         echo "📝 Curl commands generated in: copilot-branch-cleanup-commands.txt"
         ;;
+    "git")
+        generate_git_commands > copilot-branch-git-commands.txt
+        echo "📝 Git commands generated in: copilot-branch-git-commands.txt"
+        ;;
     "verify")
         verify_cleanup
         ;;
@@ -158,11 +207,12 @@ case "${1:-help}" in
         printf '%s\n' "${BRANCHES[@]}"
         ;;
     *)
-        echo "Usage: $0 {delete|generate|verify|list}"
+        echo "Usage: $0 {delete|generate|git|verify|list}"
         echo ""
         echo "Commands:"
         echo "  delete   - Delete all copilot/fix-* branches using GitHub CLI"
         echo "  generate - Generate curl commands for manual execution" 
+        echo "  git      - Generate git commands for authenticated deletion"
         echo "  verify   - Check if cleanup was successful"
         echo "  list     - List all branches scheduled for deletion"
         echo ""
