@@ -7,7 +7,6 @@ import {
   EyeOff, 
   Shield, 
   Trash2, 
-  RefreshCw, 
   Link2, 
   ArrowLeft 
 } from 'lucide-react';
@@ -166,7 +165,6 @@ function AccountSettingsPage() {
     logout, 
     hideProfile, 
     deleteAccount, 
-    restoreAccount, 
     requestAccountMerge 
   } = useAuth();
   const navigate = useNavigate();

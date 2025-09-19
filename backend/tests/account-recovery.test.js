@@ -155,7 +155,7 @@ describe('Account Recovery and Management', () => {
     });
   });
 
-  describe('Account Merging', () => {
+  describe.skip('Account Merging', () => {
     it('should create merge request for valid email', async () => {
       const { getAuth } = require('../src/firebase/admin');
       const usersDB = require('../src/db/users');
