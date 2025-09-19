@@ -108,14 +108,31 @@ class NewsCurationAgent {
 
   /**
    * Fetch news articles for given category and skills
-   * TODO: Integrate with actual news API (GDELT, Google News, etc.)
+   * Uses OpenRouter AI with web search capabilities
    */
   async fetchNewsArticles(category, skills) {
-    // Placeholder implementation
-    // In production, this would query external news APIs
-    const placeholderArticles = this.generatePlaceholderArticles(category, skills);
-    
-    return placeholderArticles;
+    try {
+      const axios = require('axios');
+      const { getConfig } = require('../config/appConfig');
+      const config = getConfig();
+      
+      // Use AI service to generate current news
+      const response = await axios.post(`${config.apiUrl}/api/ai/generate-news`, {
+        category,
+        skills: skills.slice(0, 3), // Use top 3 skills
+        limit: 5
+      });
+
+      if (response.data.success) {
+        return response.data.data;
+      } else {
+        logger.warn('AI news generation failed, falling back to placeholder content');
+        return this.generatePlaceholderArticles(category, skills);
+      }
+    } catch (error) {
+      logger.warn('Error fetching AI news, falling back to placeholder content:', error.message);
+      return this.generatePlaceholderArticles(category, skills);
+    }
   }
 
   /**
@@ -258,12 +275,58 @@ class BlogCurationAgent {
 
   /**
    * Generate blog posts for given subdomain config
-   * TODO: Integrate with AI content generation APIs
+   * Uses OpenRouter AI for content generation
    */
   async generateBlogPosts(config) {
-    // Placeholder implementation
-    // In production, this would use AI APIs to generate content
-    return this.generatePlaceholderBlogPosts(config);
+    try {
+      const axios = require('axios');
+      const { getConfig } = require('../config/appConfig');
+      const appConfig = getConfig();
+      
+      const posts = [];
+      
+      // Generate posts for each primary skill
+      for (const skill of config.primarySkills.slice(0, 2)) {
+        try {
+          const skillTitle = skill.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+          const topic = `${skillTitle} for Beginners: A Complete Guide`;
+          
+          const response = await axios.post(`${appConfig.apiUrl}/api/ai/generate-blog-post`, {
+            topic,
+            category: config.category,
+            targetAudience: 'beginners to intermediate learners',
+            keywords: [skill, config.category, 'guide', 'tutorial']
+          });
+
+          if (response.data.success) {
+            const aiPost = response.data.data;
+            posts.push({
+              ...aiPost,
+              id: `${config.category}-${skill}-${Date.now()}`,
+              author: config.character,
+              subdomain: config.subdomain || skill,
+              featured: true,
+              viewCount: Math.floor(Math.random() * 1000) + 100,
+              relevanceScore: 0.9
+            });
+          }
+        } catch (skillError) {
+          logger.warn(`Failed to generate AI post for ${skill}:`, skillError.message);
+        }
+      }
+      
+      // If no AI posts generated, fall back to placeholder
+      if (posts.length === 0) {
+        logger.warn('No AI posts generated, falling back to placeholder content');
+        return this.generatePlaceholderBlogPosts(config);
+      }
+      
+      return posts;
+      
+    } catch (error) {
+      logger.warn('Error generating AI blog content, falling back to placeholder:', error.message);
+      return this.generatePlaceholderBlogPosts(config);
+    }
   }
 
   /**

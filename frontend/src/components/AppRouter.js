@@ -309,37 +309,33 @@ const ContactUsPage = () => (
 
 const SafetyPage = () => (
   <Suspense fallback={<LoadingScreen />}>
-    {React.createElement(React.lazy(() => import('../screens/ComingSoonPages').then(module => ({ default: module.SafetyPage }))))}
+    {React.createElement(React.lazy(() => import('../screens/SafetyPage')))}
   </Suspense>
 );
 
-const BlogPage = () => (
-  <Suspense fallback={<LoadingScreen />}>
-    {React.createElement(React.lazy(() => import('../screens/ComingSoonPages').then(module => ({ default: module.BlogPage }))))}
-  </Suspense>
-);
+const BlogPage = React.lazy(() => import('../screens/BlogPage'));
 
 const SuccessStoriesPage = () => (
   <Suspense fallback={<LoadingScreen />}>
-    {React.createElement(React.lazy(() => import('../screens/ComingSoonPages').then(module => ({ default: module.SuccessStoriesPage }))))}
+    {React.createElement(React.lazy(() => import('../screens/SuccessStoriesPage')))}
   </Suspense>
 );
 
 const EventsPage = () => (
   <Suspense fallback={<LoadingScreen />}>
-    {React.createElement(React.lazy(() => import('../screens/ComingSoonPages').then(module => ({ default: module.EventsPage }))))}
+    {React.createElement(React.lazy(() => import('../screens/EventsPage')))}
   </Suspense>
 );
 
 const ForumPage = () => (
   <Suspense fallback={<LoadingScreen />}>
-    {React.createElement(React.lazy(() => import('../screens/ComingSoonPages').then(module => ({ default: module.ForumPage }))))}
+    {React.createElement(React.lazy(() => import('../screens/ForumPage')))}
   </Suspense>
 );
 
 const MentorshipPage = () => (
   <Suspense fallback={<LoadingScreen />}>
-    {React.createElement(React.lazy(() => import('../screens/ComingSoonPages').then(module => ({ default: module.MentorshipPage }))))}
+    {React.createElement(React.lazy(() => import('../screens/MentorshipPage')))}
   </Suspense>
 );
 
@@ -505,7 +501,16 @@ function AppRouter() {
         <Route path="help" element={<HelpCenterPage />} />
         <Route path="contact" element={<ContactUsPage />} />
         <Route path="safety" element={<SafetyPage />} />
-        <Route path="blog" element={<BlogPage />} />
+        <Route path="blog" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <BlogPage />
+          </Suspense>
+        } />
+        <Route path="blog/:slug" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <BlogPage />
+          </Suspense>
+        } />
         <Route path="success-stories" element={<SuccessStoriesPage />} />
         <Route path="events" element={<EventsPage />} />
         <Route path="forum" element={<ForumPage />} />
