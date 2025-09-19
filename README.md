@@ -389,13 +389,13 @@ vercel --prod
 ```
 
 **Step 2: Project Configuration**
-Create `frontend/vercel.json`:
+The project configuration is consolidated in the root `vercel.json`:
 ```json
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "installCommand": "npm install",
-  "devCommand": "npm run dev",
+  "buildCommand": "cd frontend && npm run build",
+  "outputDirectory": "frontend/dist",
+  "installCommand": "npm install && cd frontend && npm install",
+  "devCommand": "cd frontend && npm run dev",
   "rewrites": [
     {
       "source": "/((?!static/).*)",
@@ -412,7 +412,12 @@ Create `frontend/vercel.json`:
         }
       ]
     }
-  ]
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "main": true
+    }
+  }
 }
 ```
 
