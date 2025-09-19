@@ -219,4 +219,215 @@ router.post('/verify', async (req, res) => {
   }
 });
 
+// @desc    Hide/unhide user profile
+// @route   PUT /api/auth/profile/visibility
+// @access  Private
+router.put('/profile/visibility', authenticateUser, async (req, res) => {
+  try {
+    const { hidden } = req.body;
+    
+    if (typeof hidden !== 'boolean') {
+      return res.status(400).json({
+        success: false,
+        error: { message: 'Hidden must be a boolean value' }
+      });
+    }
+
+    const updates = { 
+      isHidden: hidden,
+      hiddenAt: hidden ? new Date().toISOString() : null
+    };
+
+    const updatedUser = await usersDB.merge(req.user.uid, updates);
+
+    logger.info(`Profile visibility updated for user: ${req.user.uid} - Hidden: ${hidden}`);
+
+    res.json({
+      success: true,
+      data: { isHidden: hidden },
+      message: hidden ? 'Profile hidden from public view' : 'Profile restored to public view'
+    });
+
+  } catch (error) {
+    logger.error('Profile visibility update error:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: 'Failed to update profile visibility' }
+    });
+  }
+});
+
+// @desc    Request account deletion (soft delete with 30-day retention)
+// @route   DELETE /api/auth/account
+// @access  Private
+router.delete('/account', authenticateUser, async (req, res) => {
+  try {
+    const { confirmEmail } = req.body;
+    
+    // Security: require email confirmation
+    if (!confirmEmail || confirmEmail !== req.user.email) {
+      return res.status(400).json({
+        success: false,
+        error: { message: 'Email confirmation is required for account deletion' }
+      });
+    }
+
+    const deleteScheduledDate = new Date();
+    deleteScheduledDate.setDate(deleteScheduledDate.getDate() + 30); // 30 days from now
+    
+    const updates = {
+      deletionScheduled: true,
+      deletionScheduledAt: new Date().toISOString(),
+      deletionScheduledDate: deleteScheduledDate.toISOString(),
+      isActive: false,
+      isHidden: true, // Hide profile immediately
+      hiddenAt: new Date().toISOString()
+    };
+
+    await usersDB.merge(req.user.uid, updates);
+
+    logger.info(`Account deletion scheduled for user: ${req.user.uid} - Scheduled for: ${deleteScheduledDate.toISOString()}`);
+
+    res.json({
+      success: true,
+      data: {
+        deletionScheduledDate: deleteScheduledDate.toISOString(),
+        daysUntilDeletion: 30
+      },
+      message: 'Account deletion scheduled. Your account will be permanently deleted in 30 days. You can cancel this request by logging in before then.'
+    });
+
+  } catch (error) {
+    logger.error('Account deletion scheduling error:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: 'Failed to schedule account deletion' }
+    });
+  }
+});
+
+// @desc    Cancel account deletion
+// @route   PUT /api/auth/account/restore
+// @access  Private
+router.put('/account/restore', authenticateUser, async (req, res) => {
+  try {
+    const userData = await usersDB.get(req.user.uid);
+    
+    if (!userData || !userData.deletionScheduled) {
+      return res.status(400).json({
+        success: false,
+        error: { message: 'No account deletion request found' }
+      });
+    }
+
+    const updates = {
+      deletionScheduled: false,
+      deletionScheduledAt: null,
+      deletionScheduledDate: null,
+      isActive: true,
+      isHidden: false, // Restore visibility
+      hiddenAt: null,
+      restoredAt: new Date().toISOString()
+    };
+
+    await usersDB.merge(req.user.uid, updates);
+
+    logger.info(`Account deletion cancelled for user: ${req.user.uid}`);
+
+    res.json({
+      success: true,
+      message: 'Account deletion cancelled successfully. Your account has been restored.'
+    });
+
+  } catch (error) {
+    logger.error('Account restoration error:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: 'Failed to restore account' }
+    });
+  }
+});
+
+// @desc    Initiate account merge request (link Google account to email/password account)
+// @route   POST /api/auth/merge/request
+// @access  Private
+router.post('/merge/request', authenticateUser, async (req, res) => {
+  try {
+    const { targetEmail, provider } = req.body;
+
+    if (!targetEmail || !provider) {
+      return res.status(400).json({
+        success: false,
+        error: { message: 'Target email and provider are required' }
+      });
+    }
+
+    if (!['google.com', 'password'].includes(provider)) {
+      return res.status(400).json({
+        success: false,
+        error: { message: 'Invalid provider. Only google.com and password are supported for merging.' }
+      });
+    }
+
+    // Check if target account exists
+    try {
+      const targetUser = await getAuth().getUserByEmail(targetEmail);
+      
+      // Prevent merging with self
+      if (targetUser.uid === req.user.uid) {
+        return res.status(400).json({
+          success: false,
+          error: { message: 'Cannot merge account with itself' }
+        });
+      }
+
+      // Store merge request in database
+      const mergeRequest = {
+        fromUid: req.user.uid,
+        fromEmail: req.user.email,
+        toEmail: targetEmail,
+        toUid: targetUser.uid,
+        provider,
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours
+      };
+
+      // In a real implementation, you'd store this in a dedicated collection
+      // For now, we'll add it to the user's profile
+      await usersDB.merge(req.user.uid, { 
+        pendingMergeRequest: mergeRequest 
+      });
+
+      logger.info(`Account merge requested: ${req.user.uid} -> ${targetEmail}`);
+
+      res.json({
+        success: true,
+        data: {
+          mergeRequestId: req.user.uid + '_' + Date.now(),
+          targetEmail,
+          expiresAt: mergeRequest.expiresAt
+        },
+        message: 'Account merge request created. Please verify your access to the target account to complete the merge.'
+      });
+
+    } catch (error) {
+      if (error.code === 'auth/user-not-found') {
+        return res.status(404).json({
+          success: false,
+          error: { message: 'Target email account not found' }
+        });
+      }
+      throw error;
+    }
+
+  } catch (error) {
+    logger.error('Account merge request error:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: 'Failed to create merge request' }
+    });
+  }
+});
+
 module.exports = router;

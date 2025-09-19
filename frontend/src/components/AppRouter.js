@@ -10,6 +10,7 @@ import SubdomainLandingPage from './SubdomainLandingPage';
 import HomePage from '../screens/HomePage';
 import LoginPage from '../screens/LoginPage';
 import SignupPage from '../screens/SignupPage';
+import ForgotPasswordPage from '../screens/ForgotPasswordPage';
 
 // Subdomain configuration for landing pages
 const subdomainConfigs = {
@@ -348,6 +349,9 @@ const AdminLoginPage = React.lazy(() => import('../screens/AdminLoginPage'));
 const AdminDashboardPage = React.lazy(() => import('../screens/AdminDashboardPage'));
 const LiabilityEnhancementDemo = React.lazy(() => import('./LiabilityEnhancementDemo'));
 
+// Account Settings Page
+const AccountSettingsPage = React.lazy(() => import('../screens/AccountSettingsPage'));
+
 // Onboarding screens - lazy loaded as a group
 const OnboardingStart = React.lazy(() => import('../screens/onboarding/OnboardingStart'));
 const OnboardingProfile = React.lazy(() => import('../screens/onboarding/OnboardingProfile'));
@@ -561,6 +565,14 @@ function AppRouter() {
             </PublicRoute>
           } 
         />
+        <Route 
+          path="forgot-password" 
+          element={
+            <PublicRoute>
+              <ForgotPasswordPage />
+            </PublicRoute>
+          } 
+        />
 
         {/* Protected routes */}
         <Route 
@@ -579,6 +591,16 @@ function AppRouter() {
             <ProtectedRoute>
               <Suspense fallback={<LoadingScreen />}>
                 <ProfilePage />
+              </Suspense>
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="account/settings" 
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<LoadingScreen />}>
+                <AccountSettingsPage />
               </Suspense>
             </ProtectedRoute>
           } 
