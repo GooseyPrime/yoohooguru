@@ -1,5 +1,77 @@
 
 import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import Button from '../../components/Button';
+
+const Container = styled.div`
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: ${props => props.theme.colors.bg};
+  min-height: calc(100vh - 140px);
+`;
+
+const Title = styled.h2`
+  color: ${props => props.theme.colors.text};
+  margin-bottom: 1rem;
+`;
+
+const Description = styled.p`
+  color: ${props => props.theme.colors.muted};
+  margin-bottom: 2rem;
+  line-height: 1.6;
+`;
+
+const StatusCard = styled.div`
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.radius.lg}px;
+  padding: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  background: ${props => props.theme.colors.surface};
+`;
+
+const StatusTitle = styled.h3`
+  color: ${props => props.success ? props.theme.colors.succ : props.theme.colors.text};
+  margin-bottom: 1rem;
+`;
+
+const StatusText = styled.p`
+  color: ${props => props.theme.colors.muted};
+  margin-bottom: 1rem;
+  line-height: 1.6;
+`;
+
+const StatusDetails = styled.p`
+  font-size: 0.875rem;
+  color: ${props => props.theme.colors.muted};
+  margin-bottom: 0.5rem;
+`;
+
+const ErrorText = styled.p`
+  font-size: 0.875rem;
+  color: ${props => props.theme.colors.err};
+  margin-bottom: 1rem;
+`;
+
+const SecondaryButton = styled.button`
+  background: ${props => props.theme.colors.surface};
+  color: ${props => props.theme.colors.text};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.radius.md}px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: ${props => props.theme.colors.pri};
+  }
+`;
+
+const ContinueSection = styled.div`
+  text-align: center;
+`;
 
 export default function OnboardingPayout() {
   const [status, setStatus] = useState(null);
@@ -31,89 +103,61 @@ export default function OnboardingPayout() {
   const ready = status?.connected && status?.charges_enabled && status?.payouts_enabled && status?.details_submitted;
 
   return (
-    <div style={{maxWidth: '720px', margin: '0 auto', padding: '2rem'}}>
-      <h2>Setup Payout Method</h2>
-      <p>Connect your bank account to receive payments for your services.</p>
+    <Container>
+      <Title>Setup Payout Method</Title>
+      <Description>Connect your bank account to receive payments for your services.</Description>
       
-      <div style={{border: '1px solid #e5e7eb', borderRadius: '8px', padding: '2rem', textAlign: 'center', marginBottom: '2rem'}}>
+      <StatusCard>
         {ready ? (
           <div>
-            <h3 style={{color: '#059669'}}>✅ Payouts Connected</h3>
-            <p>Your payout method is ready to receive payments.</p>
-            <button 
-              onClick={fetchStatus}
-              style={{
-                backgroundColor: '#f3f4f6',
-                color: '#374151',
-                border: '1px solid #d1d5db',
-                borderRadius: '6px',
-                padding: '0.5rem 1rem',
-                cursor: 'pointer'
-              }}
-            >
+            <StatusTitle success>✅ Payouts Connected</StatusTitle>
+            <StatusText>Your payout method is ready to receive payments.</StatusText>
+            <SecondaryButton onClick={fetchStatus}>
               Refresh Status
-            </button>
+            </SecondaryButton>
           </div>
         ) : (
           <div>
-            <h3>Connect Your Payout Method</h3>
+            <StatusTitle>Connect Your Payout Method</StatusTitle>
             {status?.connected ? (
               <div>
-                <p>Your Stripe account needs additional setup.</p>
-                <p style={{fontSize: '0.875rem', color: '#6b7280'}}>
+                <StatusText>Your Stripe account needs additional setup.</StatusText>
+                <StatusDetails>
                   Charges: {status?.charges_enabled ? '✅' : '❌'} | 
                   Payouts: {status?.payouts_enabled ? '✅' : '❌'} | 
                   Details: {status?.details_submitted ? '✅' : '❌'}
-                </p>
+                </StatusDetails>
                 {status?.currently_due?.length > 0 && (
-                  <p style={{fontSize: '0.875rem', color: '#dc2626'}}>
+                  <ErrorText>
                     Missing: {status.currently_due.join(', ')}
-                  </p>
+                  </ErrorText>
                 )}
               </div>
             ) : (
-              <p>Connect your bank account through Stripe to receive payments.</p>
+              <StatusText>Connect your bank account through Stripe to receive payments.</StatusText>
             )}
-            <button 
+            <Button 
               onClick={start}
               disabled={loading}
-              style={{
-                backgroundColor: '#3b82f6',
-                color: 'white',
-                border: 'none',
-                borderRadius: '6px',
-                padding: '0.75rem 1.5rem',
-                fontSize: '1rem',
-                fontWeight: '500',
-                cursor: loading ? 'not-allowed' : 'pointer',
-                opacity: loading ? 0.6 : 1,
-                marginTop: '1rem'
-              }}
+              variant="primary"
+              style={{marginTop: '1rem'}}
             >
               {loading ? 'Connecting...' : 'Connect Payouts'}
-            </button>
+            </Button>
           </div>
         )}
-      </div>
+      </StatusCard>
 
-      <div style={{textAlign: 'center'}}>
-        <button 
+      <ContinueSection>
+        <Button 
           onClick={() => window.location.href = '/onboarding/review'}
           disabled={!ready}
-          style={{
-            backgroundColor: ready ? '#059669' : '#9ca3af',
-            color: 'white',
-            border: 'none',
-            borderRadius: '6px',
-            padding: '0.75rem 2rem',
-            fontSize: '1rem',
-            fontWeight: '600',
-            cursor: ready ? 'pointer' : 'not-allowed'
-          }}
+          variant={ready ? "primary" : "secondary"}
+          size="lg"
         >
           Continue to Review
-        </button>
-      </div>
-    </div>
+        </Button>
+      </ContinueSection>
+    </Container>
   );
 }
