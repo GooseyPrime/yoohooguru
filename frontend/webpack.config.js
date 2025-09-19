@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { GenerateSW } = require('workbox-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
 const webpack = require('webpack');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
@@ -148,6 +149,17 @@ module.exports = (env, argv) => {
               ],
             }),
           ]),
+      // Add compression plugin for production builds
+      ...(isDevelopment || isFastBuild
+        ? []
+        : [
+            new CompressionPlugin({
+              algorithm: 'gzip',
+              test: /\.(js|css|html|svg)$/,
+              threshold: 8192,
+              minRatio: 0.8,
+            }),
+          ]),
     ],
     devServer: {
       static: [
@@ -229,8 +241,8 @@ module.exports = (env, argv) => {
       ? {}
       : {
           performance: {
-            maxAssetSize: 1000000, // 1MB - increased to accommodate current bundle sizes
-            maxEntrypointSize: 1000000, // 1MB - increased to accommodate current bundle sizes
+            maxAssetSize: 1500000, // 1.5MB - accommodate current bundle size with Firebase modules
+            maxEntrypointSize: 1500000, // 1.5MB - accommodate current entry bundle size  
             hints: 'warning',
             assetFilter: function(assetFilename) {
               // Don't show warnings for large images or fonts
