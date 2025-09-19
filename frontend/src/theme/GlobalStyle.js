@@ -235,6 +235,67 @@ const GlobalStyle = createGlobalStyle`
     outline: 3px solid #ffff00 !important;
     outline-offset: 3px !important;
   }
+
+  /* 
+   * Accessibility fixes for third-party components
+   * These override low-contrast elements from external libraries like Stripe
+   */
+  
+  /* Fix contrast for cursor pointer labels */
+  label[class*="aiinhbfoop"][class*="cursor-pointer"] {
+    color: #212529 !important; /* Dark text for better contrast */
+    font-weight: 500 !important; /* Slightly bolder for better readability */
+  }
+  
+  /* Fix contrast for pricing buttons */
+  button[id*="aiinhbfoop-pricing"],
+  button[class*="aiinhbfoop"][class*="text-neutral"] {
+    background-color: #198754 !important; /* High contrast green background */
+    color: #ffffff !important; /* White text for maximum contrast */
+    border: 1px solid #146c43 !important; /* Darker border */
+  }
+  
+  button[id*="aiinhbfoop-pricing"]:hover,
+  button[class*="aiinhbfoop"][class*="text-neutral"]:hover {
+    background-color: #146c43 !important; /* Darker on hover */
+    color: #ffffff !important;
+  }
+  
+  /* Fix contrast for small text spans */
+  span[class*="aiinhbfoop"][class*="text-xs"],
+  span[class*="aiinhbfoop"][class*="font-medium"][class*="opacity-60"] {
+    color: #212529 !important; /* Dark text instead of low opacity */
+    opacity: 1 !important; /* Remove problematic opacity */
+    font-weight: 600 !important; /* Bolder font for better readability */
+  }
+  
+  /* General fix for any low-contrast aiinhbfoop elements */
+  [class*="aiinhbfoop"][class*="text-neutral-500"] {
+    color: #343a40 !important; /* Darker neutral color */
+  }
+  
+  [class*="aiinhbfoop"][class*="opacity-60"] {
+    opacity: 0.9 !important; /* Less transparent for better readability */
+  }
+  
+  /* Ensure sufficient contrast for any third-party pricing components */
+  stripe-pricing-table * {
+    color: inherit;
+  }
+  
+  stripe-pricing-table button,
+  stripe-pricing-table [role="button"] {
+    background-color: #198754 !important;
+    color: #ffffff !important;
+    border: 1px solid #146c43 !important;
+    font-weight: 500 !important;
+  }
+  
+  stripe-pricing-table button:hover,
+  stripe-pricing-table [role="button"]:hover {
+    background-color: #146c43 !important;
+    color: #ffffff !important;
+  }
 `;
 
 export default GlobalStyle;
