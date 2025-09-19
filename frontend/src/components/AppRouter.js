@@ -309,7 +309,7 @@ const ContactUsPage = () => (
 
 const SafetyPage = () => (
   <Suspense fallback={<LoadingScreen />}>
-    {React.createElement(React.lazy(() => import('../screens/ComingSoonPages').then(module => ({ default: module.SafetyPage }))))}
+    {React.createElement(React.lazy(() => import('../screens/SafetyPage')))}
   </Suspense>
 );
 
@@ -321,25 +321,25 @@ const BlogPage = () => (
 
 const SuccessStoriesPage = () => (
   <Suspense fallback={<LoadingScreen />}>
-    {React.createElement(React.lazy(() => import('../screens/ComingSoonPages').then(module => ({ default: module.SuccessStoriesPage }))))}
+    {React.createElement(React.lazy(() => import('../screens/SuccessStoriesPage')))}
   </Suspense>
 );
 
 const EventsPage = () => (
   <Suspense fallback={<LoadingScreen />}>
-    {React.createElement(React.lazy(() => import('../screens/ComingSoonPages').then(module => ({ default: module.EventsPage }))))}
+    {React.createElement(React.lazy(() => import('../screens/EventsPage')))}
   </Suspense>
 );
 
 const ForumPage = () => (
   <Suspense fallback={<LoadingScreen />}>
-    {React.createElement(React.lazy(() => import('../screens/ComingSoonPages').then(module => ({ default: module.ForumPage }))))}
+    {React.createElement(React.lazy(() => import('../screens/ForumPage')))}
   </Suspense>
 );
 
 const MentorshipPage = () => (
   <Suspense fallback={<LoadingScreen />}>
-    {React.createElement(React.lazy(() => import('../screens/ComingSoonPages').then(module => ({ default: module.MentorshipPage }))))}
+    {React.createElement(React.lazy(() => import('../screens/MentorshipPage')))}
   </Suspense>
 );
 
