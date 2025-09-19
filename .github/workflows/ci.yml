@@ -83,7 +83,7 @@ jobs:
           /home/runner/work/_temp/runtime-logs/blocked.jsonl
           /home/runner/work/_temp/runtime-logs/blocked.md
         retention-days: 30
-        if-no-files-found: warn
+        if-no-files-found: ignore
       continue-on-error: true
 
   deploy-production:
