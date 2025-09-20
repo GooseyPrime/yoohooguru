@@ -1,7 +1,13 @@
 const cron = require('node-cron');
-const { getFirestore } = require('../config/firebase');
+const { getFirestore } = require('../firebase/admin');
 const { getAllSubdomains, getSubdomainConfig } = require('../config/subdomains');
 const { logger } = require('../utils/logger');
+
+// Agent status tracking
+const agentStatus = {
+  newsAgent: { status: 'stopped', error: null, lastStarted: null },
+  blogAgent: { status: 'stopped', error: null, lastStarted: null }
+};
 
 /**
  * News Curation Agent
@@ -16,13 +22,60 @@ class NewsCurationAgent {
    * Start the news curation cron job
    */
   start() {
-    // Run every day at 6 AM
-    cron.schedule('0 6 * * *', () => {
-      logger.info('🔄 Starting daily news curation...');
-      this.curateDailyNews();
-    });
+    try {
+      // Validate dependencies before starting
+      this.validateDependencies();
+      
+      // Run every day at 6 AM
+      cron.schedule('0 6 * * *', () => {
+        logger.info('🔄 Starting daily news curation...');
+        this.curateDailyNews();
+      });
 
-    logger.info('📰 News curation agent started - runs daily at 6 AM');
+      agentStatus.newsAgent = { 
+        status: 'running', 
+        error: null, 
+        lastStarted: new Date().toISOString() 
+      };
+      logger.info('📰 News curation agent started - runs daily at 6 AM');
+    } catch (error) {
+      agentStatus.newsAgent = { 
+        status: 'error', 
+        error: error.message, 
+        lastStarted: new Date().toISOString() 
+      };
+      logger.error('❌ Failed to start news curation agent:', {
+        message: error.message,
+        stack: error.stack
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Validate required dependencies for the agent
+   */
+  validateDependencies() {
+    try {
+      // Check if Firebase is available
+      const { getFirestore } = require('../firebase/admin');
+      const db = getFirestore();
+      if (!db) {
+        throw new Error('Firestore is not available');
+      }
+      
+      // Check if subdomains config is available
+      const { getAllSubdomains } = require('../config/subdomains');
+      const subdomains = getAllSubdomains();
+      if (!subdomains || subdomains.length === 0) {
+        throw new Error('No subdomains configured for news curation');
+      }
+      
+      logger.info(`✅ News agent dependencies validated - ${subdomains.length} subdomains configured`);
+    } catch (error) {
+      logger.error('❌ News agent dependency validation failed:', error.message);
+      throw new Error(`News curation agent dependency validation failed: ${error.message}`);
+    }
   }
 
   /**
@@ -191,13 +244,61 @@ class BlogCurationAgent {
    * Start the blog curation cron job
    */
   start() {
-    // Run every two weeks on Monday at 8 AM
-    cron.schedule('0 8 * * 1/2', () => {
-      logger.info('🔄 Starting bi-weekly blog curation...');
-      this.curateBlogContent();
-    });
+    try {
+      // Validate dependencies before starting
+      this.validateDependencies();
+      
+      // Run every two weeks on Monday at 8 AM (first and third Monday of each month)
+      // Using '0 8 1-7,15-21 * 1' to target first and third Monday
+      cron.schedule('0 8 1-7,15-21 * 1', () => {
+        logger.info('🔄 Starting bi-weekly blog curation...');
+        this.curateBlogContent();
+      });
 
-    logger.info('📝 Blog curation agent started - runs bi-weekly on Mondays at 8 AM');
+      agentStatus.blogAgent = { 
+        status: 'running', 
+        error: null, 
+        lastStarted: new Date().toISOString() 
+      };
+      logger.info('📝 Blog curation agent started - runs bi-weekly on Mondays at 8 AM');
+    } catch (error) {
+      agentStatus.blogAgent = { 
+        status: 'error', 
+        error: error.message, 
+        lastStarted: new Date().toISOString() 
+      };
+      logger.error('❌ Failed to start blog curation agent:', {
+        message: error.message,
+        stack: error.stack
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Validate required dependencies for the agent
+   */
+  validateDependencies() {
+    try {
+      // Check if Firebase is available
+      const { getFirestore } = require('../firebase/admin');
+      const db = getFirestore();
+      if (!db) {
+        throw new Error('Firestore is not available');
+      }
+      
+      // Check if subdomains config is available
+      const { getAllSubdomains } = require('../config/subdomains');
+      const subdomains = getAllSubdomains();
+      if (!subdomains || subdomains.length === 0) {
+        throw new Error('No subdomains configured for blog curation');
+      }
+      
+      logger.info(`✅ Blog agent dependencies validated - ${subdomains.length} subdomains configured`);
+    } catch (error) {
+      logger.error('❌ Blog agent dependency validation failed:', error.message);
+      throw new Error(`Blog curation agent dependency validation failed: ${error.message}`);
+    }
   }
 
   /**
@@ -420,17 +521,88 @@ const newsCurationAgent = new NewsCurationAgent();
 const blogCurationAgent = new BlogCurationAgent();
 
 /**
- * Start all curation agents
+ * Start all curation agents with comprehensive error handling and logging
+ * 
+ * This function:
+ * 1. Checks if agents are disabled via environment variable
+ * 2. Validates dependencies for each agent individually 
+ * 3. Starts each agent with detailed error logging
+ * 4. Tracks agent status for health reporting
+ * 5. Continues startup even if some agents fail (configurable in production)
  */
 function startCurationAgents() {
-  if (process.env.NODE_ENV !== 'production') {
+  const environment = process.env.NODE_ENV || 'development';
+  
+  // Check if agents should be disabled in production
+  if (process.env.DISABLE_CURATION_AGENTS === 'true') {
+    logger.info('ℹ️ Curation agents are disabled via DISABLE_CURATION_AGENTS environment variable');
+    agentStatus.newsAgent.status = 'disabled';
+    agentStatus.blogAgent.status = 'disabled';
+    return;
+  }
+  
+  if (environment !== 'production') {
     logger.info('🔧 Curation agents running in development mode');
   }
   
-  newsCurationAgent.start();
-  blogCurationAgent.start();
+  const startupErrors = [];
   
-  logger.info('🤖 All AI curation agents started successfully');
+  // Start news curation agent with individual error handling
+  try {
+    newsCurationAgent.start();
+    logger.info('✅ News curation agent started successfully');
+  } catch (error) {
+    const errorMsg = `News curation agent failed to start: ${error.message}`;
+    startupErrors.push(errorMsg);
+    logger.error('❌ ' + errorMsg, {
+      error: error.message,
+      stack: error.stack
+    });
+  }
+  
+  // Start blog curation agent with individual error handling
+  try {
+    blogCurationAgent.start();
+    logger.info('✅ Blog curation agent started successfully');
+  } catch (error) {
+    const errorMsg = `Blog curation agent failed to start: ${error.message}`;
+    startupErrors.push(errorMsg);
+    logger.error('❌ ' + errorMsg, {
+      error: error.message,
+      stack: error.stack
+    });
+  }
+  
+  // Report overall startup status
+  if (startupErrors.length === 0) {
+    logger.info('🤖 All AI curation agents started successfully');
+  } else {
+    const errorSummary = `${startupErrors.length} agent(s) failed to start: ${startupErrors.join('; ')}`;
+    logger.error('❌ Curation agent startup completed with errors: ' + errorSummary);
+    
+    // In production, we might want to throw to prevent the app from starting
+    // This is configurable via FAIL_ON_AGENT_ERROR environment variable
+    if (environment === 'production' && process.env.FAIL_ON_AGENT_ERROR === 'true') {
+      throw new Error('Critical curation agents failed to start: ' + errorSummary);
+    }
+  }
+}
+
+/**
+ * Get the current status of all curation agents
+ * 
+ * This function provides real-time status information for monitoring
+ * and health check purposes. Used by the /health endpoint and admin dashboard.
+ * 
+ * @returns {Object} Current status of all agents with timestamps
+ */
+function getCurationAgentStatus() {
+  return {
+    newsAgent: { ...agentStatus.newsAgent },
+    blogAgent: { ...agentStatus.blogAgent },
+    environment: process.env.NODE_ENV || 'development',
+    timestamp: new Date().toISOString()
+  };
 }
 
 /**
@@ -451,5 +623,6 @@ module.exports = {
   newsCurationAgent,
   blogCurationAgent,
   startCurationAgents,
-  triggerManualCuration
+  triggerManualCuration,
+  getCurationAgentStatus
 };
