@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
 import { 
@@ -301,6 +302,7 @@ const ContactInfo = styled.div`
 
 function ProfilePage() {
   const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
     firstName: user?.displayName?.split(' ')[0] || 'John',
@@ -420,6 +422,17 @@ function ProfilePage() {
                 <div className="label">Completed Jobs</div>
               </div>
             </div>
+            
+            <QuickActions style={{ marginTop: '1rem' }}>
+              <ActionButton 
+                variant="outline" 
+                size="sm"
+                onClick={() => navigate('/account/settings')}
+              >
+                <Settings size={16} />
+                Account Settings
+              </ActionButton>
+            </QuickActions>
           </ProfileInfo>
         </ProfileHeader>
 

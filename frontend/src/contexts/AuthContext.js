@@ -362,6 +362,122 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // Account management functions
+  const hideProfile = async (hidden = true) => {
+    try {
+      if (!currentUser) throw new Error('No user logged in');
+      if (!process.env.REACT_APP_API_URL) throw new Error('API not configured');
+      
+      const token = await currentUser.getIdToken();
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/profile/visibility`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ hidden })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        toast.success(data.message || (hidden ? 'Profile hidden successfully' : 'Profile restored successfully'));
+        return data;
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || 'Failed to update profile visibility');
+      }
+    } catch (error) {
+      toast.error(error.message);
+      throw error;
+    }
+  };
+
+  const deleteAccount = async (confirmEmail) => {
+    try {
+      if (!currentUser) throw new Error('No user logged in');
+      if (!process.env.REACT_APP_API_URL) throw new Error('API not configured');
+      
+      const token = await currentUser.getIdToken();
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/account`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ confirmEmail })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        toast.success(data.message || 'Account deletion scheduled successfully');
+        return data;
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || 'Failed to delete account');
+      }
+    } catch (error) {
+      toast.error(error.message);
+      throw error;
+    }
+  };
+
+  const restoreAccount = async () => {
+    try {
+      if (!currentUser) throw new Error('No user logged in');
+      if (!process.env.REACT_APP_API_URL) throw new Error('API not configured');
+      
+      const token = await currentUser.getIdToken();
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/account/restore`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        toast.success(data.message || 'Account restored successfully');
+        return data;
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || 'Failed to restore account');
+      }
+    } catch (error) {
+      toast.error(error.message);
+      throw error;
+    }
+  };
+
+  const requestAccountMerge = async (targetEmail, provider = 'google.com') => {
+    try {
+      if (!currentUser) throw new Error('No user logged in');
+      if (!process.env.REACT_APP_API_URL) throw new Error('API not configured');
+      
+      const token = await currentUser.getIdToken();
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/merge/request`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ targetEmail, provider })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        toast.success(data.message || 'Account merge request created successfully');
+        return data;
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || 'Failed to request account merge');
+      }
+    } catch (error) {
+      toast.error(error.message);
+      throw error;
+    }
+  };
+
   // Listen for auth state changes with improved error handling
   useEffect(() => {
     let unsubscribe = () => {};
@@ -420,6 +536,10 @@ export function AuthProvider({ children }) {
     resetPassword,
     loginWithGoogle,
     updateProfile,
+    hideProfile,
+    deleteAccount,
+    restoreAccount,
+    requestAccountMerge,
     loading,
     isFirebaseConfigured: auth !== mockAuth
   };

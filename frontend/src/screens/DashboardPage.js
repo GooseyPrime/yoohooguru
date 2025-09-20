@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
-import { User, BookOpen, Star, MessageSquare, Calendar, TrendingUp, Users, Award } from 'lucide-react';
+import { User, BookOpen, Calendar, Users } from 'lucide-react';
 import Button from '../components/Button';
 import SkillMatching from '../components/SkillMatching';
 
@@ -148,7 +148,6 @@ const ComingSoonFeatures = styled.div`
 
 function DashboardPage() {
   const { currentUser } = useAuth();
-  const [activeTab, setActiveTab] = useState('overview');
 
   const quickActions = [
     {
@@ -241,7 +240,7 @@ function DashboardPage() {
         <ComingSoonFeatures>
           <h3>🚧 Advanced Features Coming Soon!</h3>
           <p>
-            We're building advanced skill matching, real-time progress tracking, 
+            We&apos;re building advanced skill matching, real-time progress tracking, 
             AI-powered recommendations, certification pathways, and community insights. 
             Stay tuned for updates!
           </p>
