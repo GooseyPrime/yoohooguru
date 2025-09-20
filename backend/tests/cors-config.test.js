@@ -15,6 +15,11 @@ describe('CORS Configuration', () => {
     test('should only allow trusted origins in production', () => {
       process.env.NODE_ENV = 'production';
       process.env.CORS_ORIGIN_PRODUCTION = 'https://yoohoo.guru,https://www.yoohoo.guru';
+      // Set required production environment variables
+      process.env.JWT_SECRET = 'test_secret';
+      process.env.FIREBASE_PROJECT_ID = 'valid-prod-project';
+      process.env.FIREBASE_API_KEY = 'test_key';
+      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
       
       const config = getConfig();
       const corsOrigins = getCorsOrigins(config);
@@ -35,6 +40,11 @@ describe('CORS Configuration', () => {
     test('should use default production origins when CORS_ORIGIN_PRODUCTION not set', () => {
       process.env.NODE_ENV = 'production';
       delete process.env.CORS_ORIGIN_PRODUCTION;
+      // Set required production environment variables
+      process.env.JWT_SECRET = 'test_secret';
+      process.env.FIREBASE_PROJECT_ID = 'valid-prod-project';
+      process.env.FIREBASE_API_KEY = 'test_key';
+      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
       
       const config = getConfig();
       const corsOrigins = getCorsOrigins(config);
@@ -51,6 +61,11 @@ describe('CORS Configuration', () => {
     test('should reject insecure origins in production', () => {
       process.env.NODE_ENV = 'production';
       process.env.CORS_ORIGIN_PRODUCTION = 'http://insecure.com,https://secure.com';
+      // Set required production environment variables
+      process.env.JWT_SECRET = 'test_secret';
+      process.env.FIREBASE_PROJECT_ID = 'valid-prod-project';
+      process.env.FIREBASE_API_KEY = 'test_key';
+      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
       
       const config = getConfig();
       const corsOrigins = getCorsOrigins(config);
@@ -67,6 +82,11 @@ describe('CORS Configuration', () => {
     test('should reject localhost origins in production', () => {
       process.env.NODE_ENV = 'production';
       process.env.CORS_ORIGIN_PRODUCTION = 'https://yoohoo.guru,http://localhost:3000';
+      // Set required production environment variables
+      process.env.JWT_SECRET = 'test_secret';
+      process.env.FIREBASE_PROJECT_ID = 'valid-prod-project';
+      process.env.FIREBASE_API_KEY = 'test_key';
+      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
       
       const config = getConfig();
       const corsOrigins = getCorsOrigins(config);
@@ -104,6 +124,11 @@ describe('CORS Configuration', () => {
     test('should not allow wildcard origins in production', () => {
       process.env.NODE_ENV = 'production';
       process.env.CORS_ORIGIN_PRODUCTION = 'https://yoohoo.guru,*';
+      // Set required production environment variables
+      process.env.JWT_SECRET = 'test_secret';
+      process.env.FIREBASE_PROJECT_ID = 'valid-prod-project';
+      process.env.FIREBASE_API_KEY = 'test_key';
+      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
       
       const config = getConfig();
       const corsOrigins = getCorsOrigins(config);
@@ -116,6 +141,11 @@ describe('CORS Configuration', () => {
     test('should trim whitespace from CORS origins', () => {
       process.env.NODE_ENV = 'production';
       process.env.CORS_ORIGIN_PRODUCTION = ' https://yoohoo.guru , https://www.yoohoo.guru ';
+      // Set required production environment variables
+      process.env.JWT_SECRET = 'test_secret';
+      process.env.FIREBASE_PROJECT_ID = 'valid-prod-project';
+      process.env.FIREBASE_API_KEY = 'test_key';
+      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
       
       const config = getConfig();
       const corsOrigins = getCorsOrigins(config);
@@ -128,6 +158,11 @@ describe('CORS Configuration', () => {
     test('should filter out empty origins', () => {
       process.env.NODE_ENV = 'production';
       process.env.CORS_ORIGIN_PRODUCTION = 'https://yoohoo.guru,,https://www.yoohoo.guru';
+      // Set required production environment variables
+      process.env.JWT_SECRET = 'test_secret';
+      process.env.FIREBASE_PROJECT_ID = 'valid-prod-project';
+      process.env.FIREBASE_API_KEY = 'test_key';
+      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
       
       const config = getConfig();
       const corsOrigins = getCorsOrigins(config);
@@ -172,6 +207,11 @@ describe('CORS Configuration', () => {
     test('should apply same strict rules as production', () => {
       process.env.NODE_ENV = 'staging';
       process.env.CORS_ORIGIN_PRODUCTION = 'https://staging.yoohoo.guru';
+      // Set required production/staging environment variables
+      process.env.JWT_SECRET = 'test_secret';
+      process.env.FIREBASE_PROJECT_ID = 'valid-staging-project';
+      process.env.FIREBASE_API_KEY = 'test_key';
+      // Staging doesn't require STRIPE_WEBHOOK_SECRET, so we can leave it unset
       
       const config = getConfig();
       const corsOrigins = getCorsOrigins(config);
