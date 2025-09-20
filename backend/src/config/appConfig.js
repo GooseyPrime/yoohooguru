@@ -23,11 +23,9 @@ function getConfig() {
     appContactAddress: process.env.APP_CONTACT_ADDRESS || 'yoohoo.guru, Legal Department',
     
     // CORS Configuration
-    corsOriginProduction: (process.env.CORS_ORIGIN_PRODUCTION || '')
-      .split(',')
-      .map(s => s.trim())
-      .filter(Boolean)
-      || ['https://yoohoo.guru', 'https://www.yoohoo.guru', 'https://*.vercel.app'],
+    corsOriginProduction: process.env.CORS_ORIGIN_PRODUCTION
+      ? process.env.CORS_ORIGIN_PRODUCTION.split(',').map(s => s.trim()).filter(Boolean)
+      : ['https://yoohoo.guru', 'https://www.yoohoo.guru', 'https://*.vercel.app'],
     corsOriginDevelopment: process.env.CORS_ORIGIN_DEVELOPMENT 
       ? process.env.CORS_ORIGIN_DEVELOPMENT.split(',').map(origin => origin.trim())
       : ['http://localhost:3000', 'http://127.0.0.1:3000'],
@@ -109,12 +107,51 @@ function getConfig() {
 }
 
 /**
- * Get CORS origins based on environment
+ * Get CORS origins as array for logging/display purposes
  */
-function getCorsOrigins(config) {
+function getCorsOriginsArray(config) {
   return config.nodeEnv === 'production' 
     ? config.corsOriginProduction 
     : config.corsOriginDevelopment;
+}
+
+/**
+ * Get CORS origins based on environment
+ * Supports wildcard matching for domains like *.vercel.app
+ */
+function getCorsOrigins(config) {
+  const origins = config.nodeEnv === 'production' 
+    ? config.corsOriginProduction 
+    : config.corsOriginDevelopment;
+  
+  // Return function for dynamic origin validation to support wildcards
+  return (origin, callback) => {
+    // Allow requests with no origin (mobile apps, Postman, etc.)
+    if (!origin) {
+      return callback(null, true);
+    }
+    
+    // Check for exact matches first
+    if (origins.includes(origin)) {
+      return callback(null, true);
+    }
+    
+    // Check for wildcard matches
+    for (const allowedOrigin of origins) {
+      if (allowedOrigin.includes('*')) {
+        const pattern = allowedOrigin
+          .replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // Escape regex chars
+          .replace(/\\\*/g, '.*'); // Convert * to regex pattern
+        const regex = new RegExp(`^${pattern}$`);
+        if (regex.test(origin)) {
+          return callback(null, true);
+        }
+      }
+    }
+    
+    // Origin not allowed
+    callback(new Error(`CORS policy violation: Origin ${origin} not allowed`));
+  };
 }
 
 /**
@@ -144,7 +181,7 @@ function validateConfig(config) {
   // Log configuration summary
   logger.info(`Configuration loaded for environment: ${config.nodeEnv}`);
   logger.info(`App brand: ${config.appBrandName}`);
-  logger.info(`CORS origins: ${getCorsOrigins(config).join(', ')}`);
+  logger.info(`CORS origins: ${getCorsOriginsArray(config).join(', ')}`);
   logger.info(`Serve frontend: ${config.serveFrontend}`);
   if (config.featureModifiedMasters) {
     logger.info(`Modified Masters enabled with subdomain: ${config.modifiedMastersEnableSubdomain}`);
@@ -156,5 +193,6 @@ function validateConfig(config) {
 module.exports = {
   getConfig,
   getCorsOrigins,
+  getCorsOriginsArray,
   validateConfig
 };
