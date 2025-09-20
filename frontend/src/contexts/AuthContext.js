@@ -161,6 +161,7 @@ export function AuthProvider({ children }) {
       'auth/popup-blocked': 'Popup blocked. Please allow popups for this site.',
       'auth/cancelled-popup-request': 'Sign-in cancelled due to another popup request.',
       'auth/unauthorized-domain': 'This domain is not authorized for authentication.',
+      'auth/internal-error': 'Google Sign-in is temporarily unavailable. Please try again or use email/password authentication.',
     };
     
     return errorMessages[error.code] || error.message || 'An authentication error occurred.';
@@ -237,6 +238,10 @@ export function AuthProvider({ children }) {
       const { GoogleAuthProvider, signInWithPopup } = require('firebase/auth');
       const provider = new GoogleAuthProvider();
       
+      // Configure the provider for better UX
+      provider.addScope('email');
+      provider.addScope('profile');
+      
       // Add helpful error handling for common Google Auth issues
       const result = await signInWithPopup(auth, provider);
       
@@ -269,7 +274,19 @@ export function AuthProvider({ children }) {
       return result;
     } catch (error) {
       console.error('Google Auth Error:', error);
-      const errorMessage = getAuthErrorMessage(error);
+      
+      // Handle specific Google Auth errors
+      let errorMessage = getAuthErrorMessage(error);
+      
+      // Add specific messaging for CSP and script loading issues
+      if (error.message?.includes('script') || 
+          error.message?.includes('Content Security Policy') ||
+          error.message?.includes('apis.google.com')) {
+        errorMessage = 'Google Sign-in is temporarily unavailable due to security restrictions. Please try using email/password authentication or refresh the page.';
+      } else if (error.code === 'auth/internal-error') {
+        errorMessage = 'Google Sign-in encountered a technical issue. Please try again or use email/password authentication.';
+      }
+      
       toast.error(errorMessage);
       throw error;
     }
