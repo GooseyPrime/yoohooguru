@@ -23,11 +23,18 @@ function getConfig() {
     appContactAddress: process.env.APP_CONTACT_ADDRESS || 'yoohoo.guru, Legal Department',
     
     // CORS Configuration
-    corsOriginProduction: (process.env.CORS_ORIGIN_PRODUCTION || '')
-      .split(',')
-      .map(s => s.trim())
-      .filter(Boolean)
-      || ['https://yoohoo.guru', 'https://www.yoohoo.guru', 'https://*.vercel.app'],
+    corsOriginProduction: process.env.CORS_ORIGIN_PRODUCTION 
+      ? process.env.CORS_ORIGIN_PRODUCTION.split(',')
+        .map(s => s.trim())
+        .filter(Boolean)
+        .filter(origin => {
+          // Filter out wildcard origins in production
+          if (origin === '*') return false;
+          // Filter out insecure HTTP origins (except localhost for dev compatibility)
+          if (origin.startsWith('http://') && !origin.includes('localhost')) return false;
+          return true;
+        })
+      : ['https://yoohoo.guru', 'https://www.yoohoo.guru'],
     corsOriginDevelopment: process.env.CORS_ORIGIN_DEVELOPMENT 
       ? process.env.CORS_ORIGIN_DEVELOPMENT.split(',').map(origin => origin.trim())
       : ['http://localhost:3000', 'http://127.0.0.1:3000'],
@@ -112,7 +119,8 @@ function getConfig() {
  * Get CORS origins based on environment
  */
 function getCorsOrigins(config) {
-  return config.nodeEnv === 'production' 
+  // Both production and staging should use strict production CORS settings
+  return (config.nodeEnv === 'production' || config.nodeEnv === 'staging') 
     ? config.corsOriginProduction 
     : config.corsOriginDevelopment;
 }

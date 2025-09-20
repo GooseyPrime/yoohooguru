@@ -125,6 +125,11 @@ Configure these in your Stripe Dashboard:
 2. Enable events: `checkout.session.completed`, `payment_intent.succeeded`, etc.
 3. Copy webhook secret to Railway backend config
 
+**Important**: The `STRIPE_WEBHOOK_SECRET` is **required** for production and staging environments. It must be set as:
+- Production: `whsec_` prefix from live webhook endpoint  
+- Staging: `whsec_` prefix from test webhook endpoint
+- Never leave this empty in production/staging deployments
+
 #### Products & Pricing
 Create these products and copy their price IDs:
 - Guru Pass Subscription
@@ -229,9 +234,12 @@ Use these test values for development/staging:
 ```env
 # Use test keys from respective services
 STRIPE_SECRET_KEY=sk_test_...
-FIREBASE_PROJECT_ID=your-test-project
+STRIPE_WEBHOOK_SECRET=whsec_test_...
+FIREBASE_PROJECT_ID=yoohoo-dev-testing
 JWT_SECRET=test_jwt_secret_not_for_production
 ```
+
+**Important**: Testing must use a valid Firebase project ID format (lowercase, alphanumeric with hyphens). Prohibited patterns include: demo, test, mock, localhost, emulator, example, your_, changeme.
 
 ## 🆘 Troubleshooting
 
