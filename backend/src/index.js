@@ -15,7 +15,7 @@ const { getConfig, getCorsOrigins, validateConfig } = require('./config/appConfi
 const { logger } = require('./utils/logger');
 const errorHandler = require('./middleware/errorHandler');
 const { subdomainHandler } = require('./middleware/subdomainHandler');
-const { startCurationAgents } = require('./agents/curationAgents');
+const { startCurationAgents, getCurationAgentStatus } = require('./agents/curationAgents');
 
 // Route Imports
 const authRoutes = require('./routes/auth');
@@ -130,13 +130,26 @@ if (config.serveFrontend) {
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'OK',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    environment: config.nodeEnv,
-    version: config.apiVersion
-  });
+  try {
+    const agentStatus = getCurationAgentStatus();
+    res.status(200).json({
+      status: 'OK',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      environment: config.nodeEnv,
+      version: config.apiVersion,
+      curationAgents: agentStatus
+    });
+  } catch (error) {
+    logger.error('Health check failed:', error);
+    res.status(500).json({
+      status: 'ERROR',
+      timestamp: new Date().toISOString(),
+      environment: config.nodeEnv,
+      error: 'Health check failed',
+      message: error.message
+    });
+  }
 });
 
 // Main API routes
@@ -244,7 +257,17 @@ if (require.main === module) {
     try {
       startCurationAgents();
     } catch (error) {
-      logger.warn('Failed to start curation agents:', error.message);
+      logger.error('Failed to start curation agents:', {
+        message: error.message,
+        stack: error.stack,
+        environment: config.nodeEnv
+      });
+      
+      // In production, log this as a critical issue but don't crash the server
+      // unless FAIL_ON_AGENT_ERROR is explicitly set
+      if (config.nodeEnv === 'production' && process.env.FAIL_ON_AGENT_ERROR !== 'true') {
+        logger.warn('⚠️ Server continuing despite curation agent failures (production mode)');
+      }
     }
   });
 }
