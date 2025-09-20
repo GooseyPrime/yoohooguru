@@ -44,7 +44,7 @@ const RetryButton = styled.button`
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, error: null, errorInfo: null };
+    this.state = { hasError: false, error: null, errorInfo: null, isFirebaseAuthError: false };
   }
 
   static getDerivedStateFromError() {
@@ -56,16 +56,40 @@ class ErrorBoundary extends React.Component {
     // Log error details for debugging
     console.error('ErrorBoundary caught an error:', error, errorInfo);
     
+    // Check if this is a Firebase auth error
+    const isFirebaseAuthError = this.isFirebaseAuthError(error);
+    
     // You can also log the error to an error reporting service here
     this.setState({
       error: error,
-      errorInfo: errorInfo
+      errorInfo: errorInfo,
+      isFirebaseAuthError: isFirebaseAuthError
     });
+  }
+
+  isFirebaseAuthError(error) {
+    // Check for Firebase auth-related errors
+    const firebaseAuthPatterns = [
+      'Firebase',
+      'firebase',
+      'auth/internal-error',
+      'GoogleAuthProvider',
+      'signInWithPopup',
+      'apis.google.com',
+      'Content Security Policy'
+    ];
+    
+    const errorString = error?.toString() || '';
+    const stackString = error?.stack || '';
+    
+    return firebaseAuthPatterns.some(pattern => 
+      errorString.includes(pattern) || stackString.includes(pattern)
+    );
   }
 
   handleRetry() {
     // Clear the error state and try to re-render
-    this.setState({ hasError: false, error: null, errorInfo: null });
+    this.setState({ hasError: false, error: null, errorInfo: null, isFirebaseAuthError: false });
   }
 
   render() {
@@ -73,10 +97,20 @@ class ErrorBoundary extends React.Component {
       // Fallback UI
       return (
         <ErrorContainer>
-          <ErrorTitle>Oops! Something went wrong</ErrorTitle>
+          <ErrorTitle>
+            {this.state.isFirebaseAuthError ? 'Authentication Issue' : 'Oops! Something went wrong'}
+          </ErrorTitle>
           <ErrorMessage>
-            We encountered an unexpected error. Don&apos;t worry, this has been logged and our team will look into it.
+            {this.state.isFirebaseAuthError ? 
+              'We encountered an issue with Google Sign-in. This might be due to browser security settings or network connectivity. Please try refreshing the page or using email/password authentication instead.' :
+              'We encountered an unexpected error. Don&apos;t worry, this has been logged and our team will look into it.'
+            }
           </ErrorMessage>
+          {this.state.isFirebaseAuthError && (
+            <ErrorMessage style={{ marginTop: '1rem', fontSize: '0.9rem', opacity: 0.8 }}>
+              💡 Tip: If you&apos;re using an ad blocker or strict privacy settings, try temporarily disabling them and refresh the page.
+            </ErrorMessage>
+          )}
           <RetryButton onClick={this.handleRetry.bind(this)}>
             Try Again
           </RetryButton>
