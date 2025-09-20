@@ -30,8 +30,8 @@ function getConfig() {
         .filter(origin => {
           // Filter out wildcard origins in production
           if (origin === '*') return false;
-          // Filter out insecure HTTP origins (except localhost for dev compatibility)
-          if (origin.startsWith('http://') && !origin.includes('localhost')) return false;
+          // Filter out insecure HTTP origins in production (no exceptions)
+          if (origin.startsWith('http://')) return false;
           return true;
         })
       : ['https://yoohoo.guru', 'https://www.yoohoo.guru'],
@@ -96,13 +96,21 @@ function getConfig() {
     modifiedMastersRequireReview: process.env.MODIFIED_MASTERS_REQUIRE_REVIEW === 'true',
   };
 
-  // Validate required environment variables in production
-  if (config.nodeEnv === 'production') {
+  // Validate required environment variables in production and staging
+  if (config.nodeEnv === 'production' || config.nodeEnv === 'staging') {
     const requiredVars = [
       'JWT_SECRET',
       'FIREBASE_PROJECT_ID',
       'FIREBASE_API_KEY'
     ];
+    
+    // Stripe webhook secret is required for production/staging
+    if (!config.stripeWebhookSecret) {
+      logger.warn('⚠️ STRIPE_WEBHOOK_SECRET is not set - Stripe webhooks will fail');
+      if (config.nodeEnv === 'production') {
+        throw new Error('STRIPE_WEBHOOK_SECRET is required in production environment');
+      }
+    }
     
     const missingVars = requiredVars.filter(varName => !process.env[varName]);
     

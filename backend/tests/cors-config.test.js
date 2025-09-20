@@ -55,13 +55,25 @@ describe('CORS Configuration', () => {
       const config = getConfig();
       const corsOrigins = getCorsOrigins(config);
       
-      // Filter should remove insecure origins or validation should reject them
-      // This test ensures our CORS config is strict about HTTPS in production
+      // Should filter out ALL HTTP origins in production
       const hasInsecureOrigins = corsOrigins.some(origin => 
-        origin.startsWith('http://') && !origin.includes('localhost')
+        origin.startsWith('http://')
       );
       
       expect(hasInsecureOrigins).toBe(false);
+      expect(corsOrigins).toEqual(['https://secure.com']);
+    });
+
+    test('should reject localhost origins in production', () => {
+      process.env.NODE_ENV = 'production';
+      process.env.CORS_ORIGIN_PRODUCTION = 'https://yoohoo.guru,http://localhost:3000';
+      
+      const config = getConfig();
+      const corsOrigins = getCorsOrigins(config);
+      
+      // Should filter out localhost in production
+      expect(corsOrigins).not.toContain('http://localhost:3000');
+      expect(corsOrigins).toEqual(['https://yoohoo.guru']);
     });
   });
 
@@ -124,6 +136,35 @@ describe('CORS Configuration', () => {
       expect(corsOrigins).toContain('https://www.yoohoo.guru');
       expect(corsOrigins).not.toContain('');
       expect(corsOrigins.length).toBe(2);
+    });
+  });
+
+  describe('Stripe Webhook Secret Validation', () => {
+    test('should require STRIPE_WEBHOOK_SECRET in production', () => {
+      process.env.NODE_ENV = 'production';
+      process.env.JWT_SECRET = 'test_secret';
+      process.env.FIREBASE_PROJECT_ID = 'valid-prod-project';
+      process.env.FIREBASE_API_KEY = 'test_key';
+      delete process.env.STRIPE_WEBHOOK_SECRET;
+      
+      expect(() => getConfig()).toThrow(/STRIPE_WEBHOOK_SECRET is required in production/);
+    });
+
+    test('should warn but not fail in staging without STRIPE_WEBHOOK_SECRET', () => {
+      process.env.NODE_ENV = 'staging';
+      process.env.JWT_SECRET = 'test_secret';
+      process.env.FIREBASE_PROJECT_ID = 'valid-staging-project';
+      process.env.FIREBASE_API_KEY = 'test_key';
+      delete process.env.STRIPE_WEBHOOK_SECRET;
+      
+      expect(() => getConfig()).not.toThrow();
+    });
+
+    test('should not require STRIPE_WEBHOOK_SECRET in development', () => {
+      process.env.NODE_ENV = 'development';
+      delete process.env.STRIPE_WEBHOOK_SECRET;
+      
+      expect(() => getConfig()).not.toThrow();
     });
   });
 
