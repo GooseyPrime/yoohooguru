@@ -67,6 +67,9 @@ app.use(helmet({
       "connect-src": ["'self'", "https://api.stripe.com", "https://accounts.google.com", "https://www.googleapis.com", "https://identitytoolkit.googleapis.com", "https://securetoken.googleapis.com"],
     },
   },
+  // Add missing security headers
+  crossOriginEmbedderPolicy: false, // Allow embedding for Stripe iframes
+  noSniff: true, // Add X-Content-Type-Options: nosniff
 }));
 app.use(cors({
   origin: getCorsOrigins(config),
@@ -112,7 +115,29 @@ if (config.serveFrontend) {
   // Additional safety check: verify frontend files exist before serving
   const fs = require('fs');
   if (fs.existsSync(frontendDistPath)) {
-    app.use(express.static(frontendDistPath));
+    // Configure static file serving with proper cache headers
+    const staticOptions = {
+      maxAge: '1y', // Cache static assets for 1 year
+      etag: true,
+      lastModified: true,
+      setHeaders: (res, path) => {
+        // Remove problematic must-revalidate directive
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+        // Add security headers
+        res.setHeader('X-Content-Type-Options', 'nosniff');
+        
+        // Special handling for different file types
+        if (path.endsWith('.html')) {
+          // HTML files should have shorter cache times
+          res.setHeader('Cache-Control', 'public, max-age=3600');
+        } else if (path.includes('/fonts/')) {
+          // Font files can be cached longer
+          res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+        }
+      }
+    };
+    
+    app.use(express.static(frontendDistPath, staticOptions));
     logger.info(`🎨 Frontend static files will be served from: ${frontendDistPath}`);
   } else {
     logger.warn(`🚨 Frontend serving enabled but dist directory not found: ${frontendDistPath}`);
