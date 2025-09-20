@@ -1,0 +1,12 @@
+
+> yoohoo-guru-frontend@1.0.0 test
+> jest
+
+sh: 1: jest: not found
+npm error Lifecycle script `test` failed with error:
+npm error code 127
+npm error path /home/runner/work/yoohooguru/yoohooguru/frontend
+npm error workspace yoohoo-guru-frontend@1.0.0
+npm error location /home/runner/work/yoohooguru/yoohooguru/frontend
+npm error command failed
+npm error command sh -c jest
