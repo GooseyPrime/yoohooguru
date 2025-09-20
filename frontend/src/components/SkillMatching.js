@@ -3,9 +3,9 @@
  * Shows personalized guru-understudy matches with AI insights
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { User, Star, MapPin, Clock, Zap, Brain, TrendingUp } from 'lucide-react';
+import { Star, MapPin, Zap, Brain, TrendingUp } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import Button from './Button';
 import { getGuruMatches, getUnderstudyRecommendations, formatMatchForDisplay } from '../lib/matchmakingApi';
@@ -217,9 +217,9 @@ function SkillMatchingComponent() {
 
   useEffect(() => {
     loadMatches();
-  }, [currentUser]);
+  }, [currentUser, loadMatches]);
 
-  const loadMatches = async () => {
+  const loadMatches = useCallback(async () => {
     if (!currentUser) return;
 
     setLoading(true);
@@ -252,7 +252,7 @@ function SkillMatchingComponent() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentUser]);
 
   const handleConnect = (match) => {
     // In production, this would open a message composer or booking flow

@@ -137,7 +137,7 @@ function TermsAndConditionsPage() {
           <ul>
             <li><strong>Skill-sharing marketplace</strong> - Connect with community members to teach or learn skills</li>
             <li><strong>Guru dashboard</strong> - Tools for teachers and coaches to manage their offerings</li>
-            <li><strong>Angel's List</strong> - Service marketplace for professional services</li>
+            <li><strong>Angel&apos;s List</strong> - Service marketplace for professional services</li>
             <li><strong>Specialized subdomains</strong> - Domain-specific communities (cooking.yoohoo.guru, tech.yoohoo.guru, etc.)</li>
             <li><strong>User profiles and skill discovery</strong> - Advanced matching and discovery tools</li>
             <li><strong>Communication and coordination features</strong> - Safe messaging and scheduling</li>
@@ -174,13 +174,13 @@ function TermsAndConditionsPage() {
           <p>
             Skill exchanges occur directly between community members. {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'} facilitates connections but 
             is not a party to any agreements between users. We provide the platform infrastructure including specialized subdomains, 
-            Guru dashboards, and the Angel's List marketplace.
+            Guru dashboards, and the Angel&apos;s List marketplace.
           </p>
 
           <h3>Types of Exchanges</h3>
           <ul>
             <li><strong>Skill Swaps:</strong> Direct exchanges where members teach each other different skills</li>
-            <li><strong>Paid Services:</strong> Professional services offered through the Angel's List marketplace</li>
+            <li><strong>Paid Services:</strong> Professional services offered through the Angel&apos;s List marketplace</li>
             <li><strong>Mentorship Programs:</strong> Ongoing learning relationships between experienced gurus and understudies</li>
             <li><strong>Community Workshops:</strong> Group learning sessions and events</li>
             <li><strong>Subdomain Specializations:</strong> Category-specific exchanges on dedicated subdomains</li>
@@ -189,7 +189,7 @@ function TermsAndConditionsPage() {
           <h3>Your Responsibilities</h3>
           <ul>
             <li>Accurately represent your skills, qualifications, and availability</li>
-            <li>Maintain appropriate certifications for professional services on Angel's List</li>
+            <li>Maintain appropriate certifications for professional services on Angel&apos;s List</li>
             <li>Fulfill commitments made to other community members</li>
             <li>Respect others&apos; time, expertise, and property</li>
             <li>Provide honest feedback and ratings after exchanges</li>
@@ -262,9 +262,9 @@ function TermsAndConditionsPage() {
             while offering specialized tools and content for that skill area.
           </p>
 
-          <h3>Angel's List Marketplace</h3>
+          <h3>Angel&apos;s List Marketplace</h3>
           <p>
-            The Angel's List is our professional services marketplace where certified providers offer premium services. 
+            The Angel&apos;s List is our professional services marketplace where certified providers offer premium services.
             Participation requires additional verification and may involve background checks, insurance requirements, 
             and professional certifications depending on the service category.
           </p>
