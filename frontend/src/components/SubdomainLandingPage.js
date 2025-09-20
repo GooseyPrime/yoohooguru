@@ -369,16 +369,8 @@ function SubdomainLandingPage({ subdomain, config }) {
         
         // Fetch home data and news data in parallel
         const [homeResponse, newsResponse] = await Promise.allSettled([
-          axios.get(`${process.env.REACT_APP_API_URL}/api/${subdomain}/home`, {
-            headers: {
-              'Host': `${subdomain}.yoohoo.guru`
-            }
-          }),
-          axios.get(`${process.env.REACT_APP_API_URL}/api/news/${subdomain}`, {
-            headers: {
-              'Host': `${subdomain}.yoohoo.guru`
-            }
-          })
+          axios.get(`${process.env.REACT_APP_API_URL}/api/gurus/${subdomain}/home`),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/gurus/news/${subdomain}`)
         ]);
 
         // Handle home data
