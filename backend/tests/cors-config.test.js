@@ -1,3 +1,4 @@
+
 /**
  * Test CORS configuration functionality
  */
