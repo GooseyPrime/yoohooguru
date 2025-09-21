@@ -89,13 +89,21 @@ function getConfig() {
     modifiedMastersRequireReview: process.env.MODIFIED_MASTERS_REQUIRE_REVIEW === 'true',
   };
 
-  // Validate required environment variables in production
-  if (config.nodeEnv === 'production') {
+  // Validate required environment variables in production and staging
+  if (config.nodeEnv === 'production' || config.nodeEnv === 'staging') {
     const requiredVars = [
       'JWT_SECRET',
       'FIREBASE_PROJECT_ID',
       'FIREBASE_API_KEY'
     ];
+    
+    // Stripe webhook secret is required for production/staging
+    if (!config.stripeWebhookSecret) {
+      logger.warn('⚠️ STRIPE_WEBHOOK_SECRET is not set - Stripe webhooks will fail');
+      if (config.nodeEnv === 'production') {
+        throw new Error('STRIPE_WEBHOOK_SECRET is required in production environment');
+      }
+    }
     
     const missingVars = requiredVars.filter(varName => !process.env[varName]);
     
@@ -112,7 +120,8 @@ function getConfig() {
  * Get CORS origins based on environment
  */
 function getCorsOrigins(config) {
-  return config.nodeEnv === 'production' 
+  // Both production and staging should use strict production CORS settings
+  return (config.nodeEnv === 'production' || config.nodeEnv === 'staging') 
     ? config.corsOriginProduction 
     : config.corsOriginDevelopment;
 }
