@@ -23,11 +23,36 @@ function getConfig() {
     appContactAddress: process.env.APP_CONTACT_ADDRESS || 'yoohoo.guru, Legal Department',
     
     // CORS Configuration
-    corsOriginProduction: (process.env.CORS_ORIGIN_PRODUCTION || '')
-      .split(',')
-      .map(s => s.trim())
-      .filter(Boolean)
-      || ['https://yoohoo.guru', 'https://www.yoohoo.guru', 'https://*.yoohoo.guru', 'https://*.vercel.app'],
+    corsOriginProduction: (() => {
+      const origins = (process.env.CORS_ORIGIN_PRODUCTION || '')
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean);
+      
+      const defaultOrigins = ['https://yoohoo.guru', 'https://www.yoohoo.guru', 'https://*.yoohoo.guru', 'https://*.vercel.app'];
+      const finalOrigins = origins.length > 0 ? origins : defaultOrigins;
+      
+      // In production, filter out insecure and localhost origins for security
+      if (process.env.NODE_ENV === 'production') {
+        return finalOrigins.filter(origin => {
+          // Allow only HTTPS origins
+          if (!origin.startsWith('https://')) {
+            return false;
+          }
+          // Block localhost/127.0.0.1 in production
+          if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+            return false;
+          }
+          // Block bare wildcard
+          if (origin === '*') {
+            return false;
+          }
+          return true;
+        });
+      }
+      
+      return finalOrigins;
+    })(),
     corsOriginDevelopment: process.env.CORS_ORIGIN_DEVELOPMENT 
       ? process.env.CORS_ORIGIN_DEVELOPMENT.split(',').map(origin => origin.trim())
       : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://*.localhost:3000'],
