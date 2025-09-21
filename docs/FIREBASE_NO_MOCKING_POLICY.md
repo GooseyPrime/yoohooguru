@@ -30,7 +30,7 @@ All Firebase mocking has been permanently removed from the test suite:
 Tests may show Firebase authentication warnings in CI environments. This is expected behavior when running without full service account credentials, but tests still validate business logic correctly.
 
 ### 🔧 Configuration:
-- Test environment uses real Firebase project: `yoohoo-test-project`
+- Test environment uses real Firebase project: `yoohoo-dev-testing`
 - Jest timeout increased to 45 seconds for real Firebase operations
 - Firebase validation relaxed for test environment (production validation still strict)
 
