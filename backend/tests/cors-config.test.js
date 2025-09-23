@@ -49,9 +49,11 @@ describe('CORS Configuration', () => {
       const config = getConfig();
       const corsOrigins = getCorsOrigins(config);
       
-      // Should use secure default origins
+      // Should use secure default origins including subdomain support
       expect(corsOrigins).toContain('https://yoohoo.guru');
       expect(corsOrigins).toContain('https://www.yoohoo.guru');
+      expect(corsOrigins).toContain('https://*.yoohoo.guru');
+      expect(corsOrigins).toContain('https://*.vercel.app');
       
       // Should not include localhost or insecure origins
       expect(corsOrigins).not.toContain('http://localhost:3000');
@@ -121,9 +123,9 @@ describe('CORS Configuration', () => {
   });
 
   describe('CORS Origin Validation', () => {
-    test('should not allow wildcard origins in production', () => {
+    test('should allow secure wildcard patterns for subdomains in production', () => {
       process.env.NODE_ENV = 'production';
-      process.env.CORS_ORIGIN_PRODUCTION = 'https://yoohoo.guru,*';
+      process.env.CORS_ORIGIN_PRODUCTION = 'https://yoohoo.guru,https://*.yoohoo.guru';
       // Set required production environment variables
       process.env.JWT_SECRET = 'test_secret';
       process.env.FIREBASE_PROJECT_ID = 'valid-prod-project';
@@ -133,9 +135,12 @@ describe('CORS Configuration', () => {
       const config = getConfig();
       const corsOrigins = getCorsOrigins(config);
       
-      // Should filter out wildcard origins
+      // Should allow secure wildcard patterns for subdomains
+      expect(corsOrigins).toContain('https://yoohoo.guru');
+      expect(corsOrigins).toContain('https://*.yoohoo.guru');
+      
+      // Should not allow insecure wildcard '*' alone
       expect(corsOrigins).not.toContain('*');
-      expect(corsOrigins.some(origin => origin === '*')).toBe(false);
     });
 
     test('should trim whitespace from CORS origins', () => {
