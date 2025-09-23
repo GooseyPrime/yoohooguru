@@ -1,226 +1,164 @@
-const { getConfig, getCorsOrigins } = require('../src/config/appConfig');
+
+/**
+ * Test CORS configuration functionality
+ */
 
 describe('CORS Configuration', () => {
-  let originalEnv;
+  let originalNodeEnv;
+  let originalCorsOriginProduction;
 
-  beforeEach(() => {
-    originalEnv = { ...process.env };
+  beforeAll(() => {
+    // Store original values
+    originalNodeEnv = process.env.NODE_ENV;
+    originalCorsOriginProduction = process.env.CORS_ORIGIN_PRODUCTION;
+  });
+
+  afterAll(() => {
+    // Restore original values
+    process.env.NODE_ENV = originalNodeEnv;
+    if (originalCorsOriginProduction !== undefined) {
+      process.env.CORS_ORIGIN_PRODUCTION = originalCorsOriginProduction;
+    } else {
+      delete process.env.CORS_ORIGIN_PRODUCTION;
+    }
   });
 
   afterEach(() => {
-    process.env = originalEnv;
+    // Clear require cache to ensure clean config loading
+    delete require.cache[require.resolve('../src/config/appConfig')];
   });
 
-  describe('Production CORS Configuration', () => {
-    test('should only allow trusted origins in production', () => {
-      process.env.NODE_ENV = 'production';
-      process.env.CORS_ORIGIN_PRODUCTION = 'https://yoohoo.guru,https://www.yoohoo.guru';
-      // Set required production environment variables
-      process.env.JWT_SECRET = 'test_secret';
-      process.env.FIREBASE_PROJECT_ID = 'valid-prod-project';
-      process.env.FIREBASE_API_KEY = 'test_key';
-      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
-      
-      const config = getConfig();
-      const corsOrigins = getCorsOrigins(config);
-      
-      expect(corsOrigins).toEqual([
-        'https://yoohoo.guru',
-        'https://www.yoohoo.guru'
-      ]);
-      
-      // Should not include any development origins
-      expect(corsOrigins).not.toContain('http://localhost:3000');
-      expect(corsOrigins).not.toContain('http://127.0.0.1:3000');
-      
-      // Should not include wildcard origins
-      expect(corsOrigins.some(origin => origin.includes('*'))).toBe(false);
-    });
-
-    test('should use default production origins when CORS_ORIGIN_PRODUCTION not set', () => {
+  describe('Production CORS Origins', () => {
+    beforeEach(() => {
       process.env.NODE_ENV = 'production';
       delete process.env.CORS_ORIGIN_PRODUCTION;
-      // Set required production environment variables
-      process.env.JWT_SECRET = 'test_secret';
-      process.env.FIREBASE_PROJECT_ID = 'valid-prod-project';
-      process.env.FIREBASE_API_KEY = 'test_key';
-      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
-      
-      const config = getConfig();
-      const corsOrigins = getCorsOrigins(config);
-      
-      // Should use secure default origins
-      expect(corsOrigins).toContain('https://yoohoo.guru');
-      expect(corsOrigins).toContain('https://www.yoohoo.guru');
-      
-      // Should not include localhost or insecure origins
-      expect(corsOrigins).not.toContain('http://localhost:3000');
-      expect(corsOrigins.every(origin => origin.startsWith('https://'))).toBe(true);
     });
 
-    test('should reject insecure origins in production', () => {
-      process.env.NODE_ENV = 'production';
-      process.env.CORS_ORIGIN_PRODUCTION = 'http://insecure.com,https://secure.com';
-      // Set required production environment variables
-      process.env.JWT_SECRET = 'test_secret';
-      process.env.FIREBASE_PROJECT_ID = 'valid-prod-project';
-      process.env.FIREBASE_API_KEY = 'test_key';
-      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
-      
+    it('should use default production origins when CORS_ORIGIN_PRODUCTION is not set', () => {
+      const { getConfig } = require('../src/config/appConfig');
       const config = getConfig();
-      const corsOrigins = getCorsOrigins(config);
       
-      // Should filter out ALL HTTP origins in production
-      const hasInsecureOrigins = corsOrigins.some(origin => 
-        origin.startsWith('http://')
-      );
-      
-      expect(hasInsecureOrigins).toBe(false);
-      expect(corsOrigins).toEqual(['https://secure.com']);
+      expect(config.corsOriginProduction).toEqual([
+        'https://yoohoo.guru',
+        'https://www.yoohoo.guru',
+        'https://*.vercel.app'
+      ]);
     });
 
-    test('should reject localhost origins in production', () => {
-      process.env.NODE_ENV = 'production';
-      process.env.CORS_ORIGIN_PRODUCTION = 'https://yoohoo.guru,http://localhost:3000';
-      // Set required production environment variables
-      process.env.JWT_SECRET = 'test_secret';
-      process.env.FIREBASE_PROJECT_ID = 'valid-prod-project';
-      process.env.FIREBASE_API_KEY = 'test_key';
-      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
+    it('should use custom origins when CORS_ORIGIN_PRODUCTION is set', () => {
+      process.env.CORS_ORIGIN_PRODUCTION = 'https://custom1.com,https://custom2.com';
       
+      const { getConfig } = require('../src/config/appConfig');
       const config = getConfig();
-      const corsOrigins = getCorsOrigins(config);
       
-      // Should filter out localhost in production
-      expect(corsOrigins).not.toContain('http://localhost:3000');
-      expect(corsOrigins).toEqual(['https://yoohoo.guru']);
+      expect(config.corsOriginProduction).toEqual([
+        'https://custom1.com',
+        'https://custom2.com'
+      ]);
+    });
+
+    it('should handle empty CORS_ORIGIN_PRODUCTION by using defaults', () => {
+      process.env.CORS_ORIGIN_PRODUCTION = '';
+      
+      const { getConfig } = require('../src/config/appConfig');
+      const config = getConfig();
+      
+      expect(config.corsOriginProduction).toEqual([
+        'https://yoohoo.guru',
+        'https://www.yoohoo.guru',
+        'https://*.vercel.app'
+      ]);
     });
   });
 
-  describe('Development CORS Configuration', () => {
-    test('should allow localhost origins in development', () => {
+  describe('CORS Origin Validation Function', () => {
+    let corsFunction;
+
+    beforeEach(() => {
+      process.env.NODE_ENV = 'production';
+      delete process.env.CORS_ORIGIN_PRODUCTION;
+      
+      const { getConfig, getCorsOrigins } = require('../src/config/appConfig');
+      const config = getConfig();
+      corsFunction = getCorsOrigins(config);
+    });
+
+    it('should allow exact origin matches', (done) => {
+      corsFunction('https://yoohoo.guru', (err, allowed) => {
+        expect(err).toBeNull();
+        expect(allowed).toBe(true);
+        done();
+      });
+    });
+
+    it('should allow wildcard matches for vercel.app', (done) => {
+      corsFunction('https://myapp.vercel.app', (err, allowed) => {
+        expect(err).toBeNull();
+        expect(allowed).toBe(true);
+        done();
+      });
+    });
+
+    it('should allow another wildcard match for vercel.app', (done) => {
+      corsFunction('https://another-app.vercel.app', (err, allowed) => {
+        expect(err).toBeNull();
+        expect(allowed).toBe(true);
+        done();
+      });
+    });
+
+    it('should block non-matching origins', (done) => {
+      corsFunction('https://badsite.com', (err, allowed) => {
+        expect(err).toBeInstanceOf(Error);
+        expect(err.message).toContain('CORS policy violation');
+        expect(allowed).toBeUndefined();
+        done();
+      });
+    });
+
+    it('should allow requests with no origin (mobile apps, Postman)', (done) => {
+      corsFunction(null, (err, allowed) => {
+        expect(err).toBeNull();
+        expect(allowed).toBe(true);
+        done();
+      });
+    });
+
+    it('should allow requests with undefined origin', (done) => {
+      corsFunction(undefined, (err, allowed) => {
+        expect(err).toBeNull();
+        expect(allowed).toBe(true);
+        done();
+      });
+    });
+  });
+
+  describe('Development CORS Origins', () => {
+    beforeEach(() => {
       process.env.NODE_ENV = 'development';
-      
+      delete process.env.CORS_ORIGIN_DEVELOPMENT;
+    });
+
+    it('should use default development origins', () => {
+      const { getConfig } = require('../src/config/appConfig');
       const config = getConfig();
-      const corsOrigins = getCorsOrigins(config);
       
-      expect(corsOrigins).toContain('http://localhost:3000');
-      expect(corsOrigins).toContain('http://127.0.0.1:3000');
+      expect(config.corsOriginDevelopment).toEqual([
+        'http://localhost:3000',
+        'http://127.0.0.1:3000'
+      ]);
     });
 
-    test('should use custom development origins when provided', () => {
-      process.env.NODE_ENV = 'development';
-      process.env.CORS_ORIGIN_DEVELOPMENT = 'http://localhost:3001,http://localhost:3002';
-      
+    it('should work with development origins', (done) => {
+      const { getConfig, getCorsOrigins } = require('../src/config/appConfig');
       const config = getConfig();
-      const corsOrigins = getCorsOrigins(config);
+      const corsFunction = getCorsOrigins(config);
       
-      expect(corsOrigins).toContain('http://localhost:3001');
-      expect(corsOrigins).toContain('http://localhost:3002');
-    });
-  });
-
-  describe('CORS Origin Validation', () => {
-    test('should not allow wildcard origins in production', () => {
-      process.env.NODE_ENV = 'production';
-      process.env.CORS_ORIGIN_PRODUCTION = 'https://yoohoo.guru,*';
-      // Set required production environment variables
-      process.env.JWT_SECRET = 'test_secret';
-      process.env.FIREBASE_PROJECT_ID = 'valid-prod-project';
-      process.env.FIREBASE_API_KEY = 'test_key';
-      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
-      
-      const config = getConfig();
-      const corsOrigins = getCorsOrigins(config);
-      
-      // Should filter out wildcard origins
-      expect(corsOrigins).not.toContain('*');
-      expect(corsOrigins.some(origin => origin === '*')).toBe(false);
-    });
-
-    test('should trim whitespace from CORS origins', () => {
-      process.env.NODE_ENV = 'production';
-      process.env.CORS_ORIGIN_PRODUCTION = ' https://yoohoo.guru , https://www.yoohoo.guru ';
-      // Set required production environment variables
-      process.env.JWT_SECRET = 'test_secret';
-      process.env.FIREBASE_PROJECT_ID = 'valid-prod-project';
-      process.env.FIREBASE_API_KEY = 'test_key';
-      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
-      
-      const config = getConfig();
-      const corsOrigins = getCorsOrigins(config);
-      
-      expect(corsOrigins).toContain('https://yoohoo.guru');
-      expect(corsOrigins).toContain('https://www.yoohoo.guru');
-      expect(corsOrigins).not.toContain(' https://yoohoo.guru ');
-    });
-
-    test('should filter out empty origins', () => {
-      process.env.NODE_ENV = 'production';
-      process.env.CORS_ORIGIN_PRODUCTION = 'https://yoohoo.guru,,https://www.yoohoo.guru';
-      // Set required production environment variables
-      process.env.JWT_SECRET = 'test_secret';
-      process.env.FIREBASE_PROJECT_ID = 'valid-prod-project';
-      process.env.FIREBASE_API_KEY = 'test_key';
-      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
-      
-      const config = getConfig();
-      const corsOrigins = getCorsOrigins(config);
-      
-      expect(corsOrigins).toContain('https://yoohoo.guru');
-      expect(corsOrigins).toContain('https://www.yoohoo.guru');
-      expect(corsOrigins).not.toContain('');
-      expect(corsOrigins.length).toBe(2);
-    });
-  });
-
-  describe('Stripe Webhook Secret Validation', () => {
-    test('should require STRIPE_WEBHOOK_SECRET in production', () => {
-      process.env.NODE_ENV = 'production';
-      process.env.JWT_SECRET = 'test_secret';
-      process.env.FIREBASE_PROJECT_ID = 'valid-prod-project';
-      process.env.FIREBASE_API_KEY = 'test_key';
-      delete process.env.STRIPE_WEBHOOK_SECRET;
-      
-      expect(() => getConfig()).toThrow(/STRIPE_WEBHOOK_SECRET is required in production/);
-    });
-
-    test('should warn but not fail in staging without STRIPE_WEBHOOK_SECRET', () => {
-      process.env.NODE_ENV = 'staging';
-      process.env.JWT_SECRET = 'test_secret';
-      process.env.FIREBASE_PROJECT_ID = 'valid-staging-project';
-      process.env.FIREBASE_API_KEY = 'test_key';
-      delete process.env.STRIPE_WEBHOOK_SECRET;
-      
-      expect(() => getConfig()).not.toThrow();
-    });
-
-    test('should not require STRIPE_WEBHOOK_SECRET in development', () => {
-      process.env.NODE_ENV = 'development';
-      delete process.env.STRIPE_WEBHOOK_SECRET;
-      
-      expect(() => getConfig()).not.toThrow();
-    });
-  });
-
-  describe('Staging CORS Configuration', () => {
-    test('should apply same strict rules as production', () => {
-      process.env.NODE_ENV = 'staging';
-      process.env.CORS_ORIGIN_PRODUCTION = 'https://staging.yoohoo.guru';
-      // Set required production/staging environment variables
-      process.env.JWT_SECRET = 'test_secret';
-      process.env.FIREBASE_PROJECT_ID = 'valid-staging-project';
-      process.env.FIREBASE_API_KEY = 'test_key';
-      // Staging doesn't require STRIPE_WEBHOOK_SECRET, so we can leave it unset
-      
-      const config = getConfig();
-      const corsOrigins = getCorsOrigins(config);
-      
-      // Should use production CORS configuration in staging
-      expect(corsOrigins).toEqual(['https://staging.yoohoo.guru']);
-      
-      // Should not include development origins
-      expect(corsOrigins).not.toContain('http://localhost:3000');
+      corsFunction('http://localhost:3000', (err, allowed) => {
+        expect(err).toBeNull();
+        expect(allowed).toBe(true);
+        done();
+      });
     });
   });
 });

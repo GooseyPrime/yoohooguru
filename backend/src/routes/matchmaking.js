@@ -7,7 +7,6 @@ const express = require('express');
 const { authenticateUser } = require('../middleware/auth');
 const AIMatchmakingService = require('../lib/aiMatchmakingService');
 const usersDB = require('../db/users');
-const skillsDB = require('../db/skills');
 const { logger } = require('../utils/logger');
 
 const router = express.Router();

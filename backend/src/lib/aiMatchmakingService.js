@@ -296,7 +296,7 @@ Find the best matches and return as JSON array. Be thorough but selective.`;
   /**
    * Extract matches from AI text response (fallback parser)
    */
-  extractMatchesFromText(text, understudies) {
+  extractMatchesFromText(text) {
     const matches = [];
     const lines = text.split('\n');
     
