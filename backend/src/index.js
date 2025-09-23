@@ -179,6 +179,23 @@ if (config.serveFrontend) {
 
 // --- Application Routes ---
 
+// FIX: Handle favicon.ico requests to prevent 502 errors
+app.get('/favicon.ico', (req, res) => {
+  // Return a minimal 1x1 transparent GIF as favicon
+  const transparentGif = Buffer.from([
+    0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x01, 0x00,
+    0x01, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0xff, 0xff, 0xff, 0x21, 0xf9, 0x04, 0x01, 0x00,
+    0x00, 0x00, 0x00, 0x2c, 0x00, 0x00, 0x00, 0x00,
+    0x01, 0x00, 0x01, 0x00, 0x00, 0x02, 0x02, 0x04,
+    0x01, 0x00, 0x3b
+  ]);
+  
+  res.setHeader('Content-Type', 'image/gif');
+  res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 1 day
+  res.send(transparentGif);
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   try {
@@ -299,10 +316,14 @@ process.on('SIGINT', () => {
 
 // --- Server Initialization ---
 if (require.main === module) {
-  app.listen(PORT, () => {
-    logger.info(`🎯 ${config.appBrandName} Backend server running on port ${PORT}`);
+  // FIX: Bind to 0.0.0.0 (all interfaces) for Railway compatibility
+  // Railway requires servers to bind to 0.0.0.0, not localhost/127.0.0.1
+  const HOST = process.env.HOST || '0.0.0.0';
+  
+  app.listen(PORT, HOST, () => {
+    logger.info(`🎯 ${config.appBrandName} Backend server running on ${HOST}:${PORT}`);
     logger.info(`Environment: ${config.nodeEnv}`);
-    logger.info(`Health check: http://localhost:${PORT}/health`);
+    logger.info(`Health check: http://${HOST === '0.0.0.0' ? 'localhost' : HOST}:${PORT}/health`);
     
     // Start curation agents after server is running
     try {
