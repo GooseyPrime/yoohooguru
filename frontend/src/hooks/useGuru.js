@@ -45,7 +45,8 @@ export function useGuru() {
       setLoading(true);
       setError(null);
       
-      const response = await fetch(`/api/gurus/${subdomainName}/home`, {
+      const apiUrl = process.env.REACT_APP_API_URL || '/api';
+      const response = await fetch(`${apiUrl}/gurus/${subdomainName}/home`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -89,7 +90,8 @@ export function useGuru() {
         }
       });
       
-      const response = await fetch(`/api/gurus/${subdomain}/posts?${queryParams}`, {
+      const apiUrl = process.env.REACT_APP_API_URL || '/api';
+      const response = await fetch(`${apiUrl}/gurus/${subdomain}/posts?${queryParams}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -119,7 +121,8 @@ export function useGuru() {
     if (!subdomain) return;
     
     try {
-      const response = await fetch(`/api/gurus/${subdomain}/services`, {
+      const apiUrl = process.env.REACT_APP_API_URL || '/api';
+      const response = await fetch(`${apiUrl}/gurus/${subdomain}/services`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -150,7 +153,8 @@ export function useGuru() {
     }
     
     try {
-      const response = await fetch(`/api/gurus/${subdomain}/leads`, {
+      const apiUrl = process.env.REACT_APP_API_URL || '/api';
+      const response = await fetch(`${apiUrl}/gurus/${subdomain}/leads`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -28,7 +28,7 @@ function getConfig() {
       : ['https://yoohoo.guru', 'https://www.yoohoo.guru', 'https://*.vercel.app'],
     corsOriginDevelopment: process.env.CORS_ORIGIN_DEVELOPMENT 
       ? process.env.CORS_ORIGIN_DEVELOPMENT.split(',').map(origin => origin.trim())
-      : ['http://localhost:3000', 'http://127.0.0.1:3000'],
+      : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://*.localhost:3000'],
     
     // Express Configuration
     expressJsonLimit: process.env.EXPRESS_JSON_LIMIT || '10mb',

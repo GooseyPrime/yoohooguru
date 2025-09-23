@@ -72,7 +72,33 @@ app.use(helmet({
   noSniff: true, // Add X-Content-Type-Options: nosniff
 }));
 app.use(cors({
-  origin: getCorsOrigins(config),
+  origin: (origin, callback) => {
+    const corsOrigins = getCorsOrigins(config);
+    
+    // Allow requests with no origin (like mobile apps or server-to-server)
+    if (!origin) return callback(null, true);
+    
+    // Check exact matches first
+    if (corsOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    
+    // Check wildcard patterns
+    for (const pattern of corsOrigins) {
+      if (pattern.includes('*')) {
+        const regex = pattern
+          .replace(/\./g, '\\.')  // Escape dots
+          .replace(/\*/g, '.*');  // Convert * to .*
+        
+        if (new RegExp(`^${regex}$`).test(origin)) {
+          return callback(null, true);
+        }
+      }
+    }
+    
+    // Origin not allowed
+    callback(new Error(`CORS: Origin ${origin} not allowed`), false);
+  },
   credentials: true
 }));
 app.use(compression());
