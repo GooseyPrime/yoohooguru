@@ -6,6 +6,29 @@ The api.yoohoo.guru endpoint was returning "502 Bad Gateway - application failed
 ## Root Cause
 Railway requires applications to bind to `0.0.0.0` (all network interfaces), but the Express server was using the default binding which only listens on localhost/127.0.0.1 in some configurations.
 
+## Issues Addressed
+
+### 1. Main Issue: 502 Bad Gateway (FIXED)
+**Problem**: `https://api.yoohoo.guru` returns "502 Bad Gateway - application failed to respond"  
+**Cause**: Server not binding to correct host interface for Railway  
+**Fix**: Server now binds to `0.0.0.0` explicitly
+
+### 2. Favicon 502 Errors (FIXED)
+**Problem**: Browser requests to `/favicon.ico` return 502 errors  
+**Cause**: No explicit favicon route handler  
+**Fix**: Added favicon route returning minimal transparent GIF
+
+### 3. Chrome Extension Errors (NORMAL - No fix needed)
+**Problem**: Console errors like:
+```
+Could not load content for chrome-extension://gpphkfbcpidddadnkolkpfckpihlkkil/react-devtools-shared/src/isArray.js
+```
+**Explanation**: These are normal React DevTools extension errors in production. They occur because:
+- React DevTools tries to load in production environment
+- Extension files are not available in production builds  
+- This is expected behavior and not related to the 502 issue
+- **No action required** - these can be safely ignored
+
 ## Fix Applied
 
 ### 1. Server Host Binding (Critical)
@@ -57,10 +80,8 @@ All changes are covered by tests:
 ✅ `https://api.yoohoo.guru/health` should return JSON health status  
 ✅ `https://api.yoohoo.guru/favicon.ico` should return 200 with GIF image  
 ✅ No more 502 "application failed to respond" errors  
-✅ Server logs should show "Backend server running on 0.0.0.0:3001"
-
-## Chrome Extension Errors (Normal)
-The errors about chrome-extension:// files are normal - they're from React DevTools trying to load in production and are not related to the 502 issue.
+✅ Server logs should show "Backend server running on 0.0.0.0:3001"  
+⚠️ Chrome extension errors will continue (normal behavior)
 
 ## Next Steps
 After Railway picks up this deployment, verify with:
