@@ -1,0 +1,12 @@
+
+> yoohooguru-backend@1.0.0 lint
+> eslint src/ --ext .js
+
+sh: 1: eslint: not found
+npm error Lifecycle script `lint` failed with error:
+npm error code 127
+npm error path /home/runner/work/yoohooguru/yoohooguru/backend
+npm error workspace yoohooguru-backend@1.0.0
+npm error location /home/runner/work/yoohooguru/yoohooguru/backend
+npm error command failed
+npm error command sh -c eslint src/ --ext .js

@@ -238,7 +238,7 @@ router.put('/profile/visibility', authenticateUser, async (req, res) => {
       hiddenAt: hidden ? new Date().toISOString() : null
     };
 
-    const updatedUser = await usersDB.merge(req.user.uid, updates);
+    await usersDB.merge(req.user.uid, updates);
 
     logger.info(`Profile visibility updated for user: ${req.user.uid} - Hidden: ${hidden}`);
 
