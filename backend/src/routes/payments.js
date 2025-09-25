@@ -16,7 +16,7 @@ router.get('/config', (req, res) => {
         skillVerification: config.stripeSkillVerificationPriceId,
         trustSafety: config.stripeTrustSafetyPriceId
       },
-      webhookEndpoint: '/api/webhooks/stripe'
+      webhookEndpoint: `${config.apiBaseUrl}/api/webhooks/stripe`
     }
   });
 });
