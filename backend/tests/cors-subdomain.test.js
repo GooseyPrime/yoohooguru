@@ -1,4 +1,4 @@
-const { getCorsOrigins, getConfig } = require('../src/config/appConfig');
+const { getCorsOrigins, getCorsOriginsArray, getConfig } = require('../src/config/appConfig');
 
 describe('CORS Configuration', () => {
   describe('CORS Origins Configuration', () => {
@@ -7,7 +7,7 @@ describe('CORS Configuration', () => {
       process.env.NODE_ENV = 'production';
       
       const config = getConfig();
-      const corsOrigins = getCorsOrigins(config);
+      const corsOrigins = getCorsOriginsArray(config);
       
       expect(corsOrigins).toContain('https://*.yoohoo.guru');
       expect(corsOrigins).toContain('https://yoohoo.guru');
@@ -21,7 +21,7 @@ describe('CORS Configuration', () => {
       process.env.NODE_ENV = 'development';
       
       const config = getConfig();
-      const corsOrigins = getCorsOrigins(config);
+      const corsOrigins = getCorsOriginsArray(config);
       
       expect(corsOrigins).toContain('http://*.localhost:3000');
       expect(corsOrigins).toContain('http://localhost:3000');
