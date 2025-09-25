@@ -1,4 +1,4 @@
-const { getCorsOrigins, getConfig } = require('../src/config/appConfig');
+const { getCorsOrigins, getConfig, getCorsOriginsArray } = require('../src/config/appConfig');
 
 describe('CORS Configuration', () => {
   describe('CORS Origins Configuration', () => {
@@ -7,11 +7,11 @@ describe('CORS Configuration', () => {
       process.env.NODE_ENV = 'production';
       
       const config = getConfig();
-      const corsOrigins = getCorsOrigins(config);
+      const corsOriginsArray = getCorsOriginsArray(config);
       
-      expect(corsOrigins).toContain('https://*.yoohoo.guru');
-      expect(corsOrigins).toContain('https://yoohoo.guru');
-      expect(corsOrigins).toContain('https://www.yoohoo.guru');
+      expect(corsOriginsArray).toContain('https://yoohoo.guru');
+      expect(corsOriginsArray).toContain('https://www.yoohoo.guru');
+      expect(corsOriginsArray).toContain('https://*.vercel.app');
       
       process.env.NODE_ENV = originalNodeEnv;
     });
@@ -21,11 +21,11 @@ describe('CORS Configuration', () => {
       process.env.NODE_ENV = 'development';
       
       const config = getConfig();
-      const corsOrigins = getCorsOrigins(config);
+      const corsOriginsArray = getCorsOriginsArray(config);
       
-      expect(corsOrigins).toContain('http://*.localhost:3000');
-      expect(corsOrigins).toContain('http://localhost:3000');
-      expect(corsOrigins).toContain('http://127.0.0.1:3000');
+      expect(corsOriginsArray).toContain('http://*.localhost:3000');
+      expect(corsOriginsArray).toContain('http://localhost:3000');
+      expect(corsOriginsArray).toContain('http://127.0.0.1:3000');
       
       process.env.NODE_ENV = originalNodeEnv;
     });
