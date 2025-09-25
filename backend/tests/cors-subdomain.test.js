@@ -1,33 +1,47 @@
-const { getCorsOrigins, getConfig } = require('../src/config/appConfig');
+const { getCorsOriginsArray, getConfig } = require('../src/config/appConfig');
 
 describe('CORS Configuration', () => {
   describe('CORS Origins Configuration', () => {
-    it('should include wildcard subdomains in production configuration', () => {
+    it('should include expected origins in production configuration', () => {
       const originalNodeEnv = process.env.NODE_ENV;
+      const originalCorsOriginProduction = process.env.CORS_ORIGIN_PRODUCTION;
+      
       process.env.NODE_ENV = 'production';
+      // Clear env var to test defaults
+      delete process.env.CORS_ORIGIN_PRODUCTION;
       
       const config = getConfig();
-      const corsOrigins = getCorsOrigins(config);
+      const corsOrigins = getCorsOriginsArray(config);
       
-      expect(corsOrigins).toContain('https://*.yoohoo.guru');
       expect(corsOrigins).toContain('https://yoohoo.guru');
       expect(corsOrigins).toContain('https://www.yoohoo.guru');
+      expect(corsOrigins).toContain('https://*.vercel.app');
       
       process.env.NODE_ENV = originalNodeEnv;
+      if (originalCorsOriginProduction) {
+        process.env.CORS_ORIGIN_PRODUCTION = originalCorsOriginProduction;
+      }
     });
 
     it('should include wildcard localhost in development configuration', () => {
       const originalNodeEnv = process.env.NODE_ENV;
+      const originalCorsOriginDevelopment = process.env.CORS_ORIGIN_DEVELOPMENT;
+      
       process.env.NODE_ENV = 'development';
+      // Clear env var to test defaults
+      delete process.env.CORS_ORIGIN_DEVELOPMENT;
       
       const config = getConfig();
-      const corsOrigins = getCorsOrigins(config);
+      const corsOrigins = getCorsOriginsArray(config);
       
       expect(corsOrigins).toContain('http://*.localhost:3000');
       expect(corsOrigins).toContain('http://localhost:3000');
       expect(corsOrigins).toContain('http://127.0.0.1:3000');
       
       process.env.NODE_ENV = originalNodeEnv;
+      if (originalCorsOriginDevelopment) {
+        process.env.CORS_ORIGIN_DEVELOPMENT = originalCorsOriginDevelopment;
+      }
     });
   });
 
@@ -45,15 +59,14 @@ describe('CORS Configuration', () => {
       }
     };
 
-    it('should match yoohoo.guru subdomains correctly', () => {
-      const pattern = 'https://*.yoohoo.guru';
+    it('should match vercel.app subdomains correctly', () => {
+      const pattern = 'https://*.vercel.app';
       
-      testWildcardMatch(pattern, 'https://art.yoohoo.guru', true);
-      testWildcardMatch(pattern, 'https://coach.yoohoo.guru', true);
-      testWildcardMatch(pattern, 'https://masters.yoohoo.guru', true);
-      testWildcardMatch(pattern, 'https://any-subdomain.yoohoo.guru', true);
+      testWildcardMatch(pattern, 'https://yoohooguru.vercel.app', true);
+      testWildcardMatch(pattern, 'https://frontend-123.vercel.app', true);
+      testWildcardMatch(pattern, 'https://any-subdomain.vercel.app', true);
       
-      // Should not match non-yoohoo domains
+      // Should not match non-vercel domains
       testWildcardMatch(pattern, 'https://malicious.com', false);
       testWildcardMatch(pattern, 'https://sub.malicious.com', false);
     });
