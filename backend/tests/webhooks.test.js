@@ -1,13 +1,12 @@
 const request = require('supertest');
 const express = require('express');
 const crypto = require('crypto');
-const webhookRoutes = require('../src/routes/webhooks');
+const stripeWebhooks = require('../src/routes/stripeWebhooks');
 
-// Create test app
+// Create test app that mirrors the main app structure
 const app = express();
 // Add raw body parser middleware specifically for webhooks
-app.use('/api/webhooks/stripe', express.raw({ type: 'application/json' }));
-app.use('/api/webhooks', webhookRoutes);
+app.use('/api/webhooks/stripe', express.raw({ type: 'application/json' }), stripeWebhooks);
 
 describe('Stripe Webhooks', () => {
   let originalEnv;
@@ -68,11 +67,14 @@ describe('Stripe Webhooks', () => {
         .send(payload);
 
       expect(response.status).toBe(400);
-      expect(response.body.error).toBe('Invalid signature');
+      expect(response.text).toContain('Webhook Error');
     });
 
-    test('should reject webhook when secret is not configured', async () => {
-      delete process.env.STRIPE_WEBHOOK_SECRET;
+    test('should reject webhook when stripe is not configured (in non-test env)', async () => {
+      // Temporarily change NODE_ENV to production to trigger the check
+      const originalNodeEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = 'production';
+      delete process.env.STRIPE_SECRET_KEY;
 
       const payload = JSON.stringify({
         id: 'evt_test_webhook',
@@ -86,8 +88,11 @@ describe('Stripe Webhooks', () => {
         .set('content-type', 'application/json')
         .send(payload);
 
-      expect(response.status).toBe(500);
-      expect(response.body.error).toBe('Webhook secret not configured');
+      expect(response.status).toBe(503);
+      expect(response.body.error).toBe('Stripe not configured. Please set STRIPE_SECRET_KEY environment variable.');
+      
+      // Restore NODE_ENV
+      process.env.NODE_ENV = originalNodeEnv;
     });
 
     test('should handle payment_intent.succeeded event', async () => {
