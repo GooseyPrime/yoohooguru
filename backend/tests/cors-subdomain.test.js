@@ -1,3 +1,4 @@
+
 const { getCorsOrigins, getConfig, getCorsOriginsArray } = require('../src/config/appConfig');
 
 describe('CORS Configuration', () => {
@@ -28,6 +29,42 @@ describe('CORS Configuration', () => {
       expect(corsOriginsArray).toContain('http://127.0.0.1:3000');
       
       process.env.NODE_ENV = originalNodeEnv;
+    });
+    
+    it('should return a function for dynamic CORS validation', () => {
+      const config = getConfig();
+      const corsValidator = getCorsOrigins(config);
+      
+      expect(typeof corsValidator).toBe('function');
+    });
+    
+    it('should validate origins correctly through the CORS function', (done) => {
+      const originalNodeEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = 'development';
+      
+      const config = getConfig();
+      const corsValidator = getCorsOrigins(config);
+      
+      // Test valid origin
+      corsValidator('http://localhost:3000', (err, allowed) => {
+        expect(err).toBeNull();
+        expect(allowed).toBe(true);
+        
+        // Test wildcard origin
+        corsValidator('http://test.localhost:3000', (err2, allowed2) => {
+          expect(err2).toBeNull();
+          expect(allowed2).toBe(true);
+          
+          // Test invalid origin
+          corsValidator('http://malicious.com', (err3, allowed3) => {
+            expect(err3).toBeInstanceOf(Error);
+            expect(allowed3).toBeUndefined();
+            
+            process.env.NODE_ENV = originalNodeEnv;
+            done();
+          });
+        });
+      });
     });
   });
 
