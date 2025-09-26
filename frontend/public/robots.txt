@@ -1,0 +1,34 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://yoohoo.guru/sitemap.xml
+
+# Block admin and private routes
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /profile/
+Disallow: /account/
+Disallow: /onboarding/
+
+# Block API endpoints if served from same domain
+Disallow: /api/
+
+# Allow public pages and subdomain content
+Allow: /skills
+Allow: /angels-list
+Allow: /about
+Allow: /how-it-works
+Allow: /pricing
+Allow: /blog
+Allow: /success-stories
+Allow: /events
+Allow: /forum
+Allow: /mentorship
+Allow: /help
+Allow: /contact
+Allow: /safety
+Allow: /login
+Allow: /signup
+Allow: /privacy
+Allow: /terms
