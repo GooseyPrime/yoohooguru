@@ -41,6 +41,7 @@ describe('CORS Configuration', () => {
       expect(config.corsOriginProduction).toEqual([
         'https://yoohoo.guru',
         'https://www.yoohoo.guru',
+        'https://api.yoohoo.guru',
         'https://*.yoohoo.guru',
         'https://*.vercel.app'
       ]);
@@ -67,6 +68,7 @@ describe('CORS Configuration', () => {
       expect(config.corsOriginProduction).toEqual([
         'https://yoohoo.guru',
         'https://www.yoohoo.guru',
+        'https://api.yoohoo.guru',
         'https://*.yoohoo.guru',
         'https://*.vercel.app'
       ]);
