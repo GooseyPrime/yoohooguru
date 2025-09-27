@@ -53,7 +53,7 @@ echo ""
 
 # Check for configuration files
 check_file "vercel.json" "Root vercel.json"
-check_file "frontend/vercel.json" "Frontend vercel.json"
+echo -e "${GREEN}ℹ️  Frontend vercel.json consolidated into root configuration${NC}"
 check_file "docs/VERCEL_DEPLOYMENT_CONTROL.md" "Deployment control documentation"
 
 echo ""
@@ -62,7 +62,7 @@ echo ""
 
 # Check deployment control settings
 check_config "vercel.json" '"deploymentEnabled"' "Root deployment control"
-check_config "frontend/vercel.json" '"deploymentEnabled"' "Frontend deployment control"
+echo -e "${GREEN}ℹ️  Frontend deployment control consolidated into root vercel.json${NC}"
 check_config "vercel.json" '"main": true' "Main branch deployment enabled"
 
 echo ""
@@ -88,6 +88,7 @@ if [ $error_count -eq 0 ]; then
     echo "  • PRs will NOT trigger Vercel deployments"
     echo "  • Only merges to main branch will deploy" 
     echo "  • Production deployments are protected by review process"
+    echo "  • Frontend configuration consolidated into root vercel.json"
     echo ""
     exit 0
 else
