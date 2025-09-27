@@ -176,7 +176,10 @@ function CitySelectionModal({ isOpen, onClose, onSelectCity }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [customCity, setCustomCity] = useState('');
 
-  if (!isOpen) return null;
+  // Fixed: Move conditional return after all hooks are called
+  if (!isOpen) {
+    return null;
+  }
 
   const filteredCities = POPULAR_CITIES.filter(city =>
     city.toLowerCase().includes(searchTerm.toLowerCase())
