@@ -1,4 +1,5 @@
-const { getCorsOrigins, getCorsOriginsArray, getConfig } = require('../src/config/appConfig');
+
+const { getCorsOriginsArray, getConfig } = require('../src/config/appConfig');
 
 describe('CORS Configuration', () => {
   describe('CORS Origins Configuration', () => {

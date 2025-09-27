@@ -4,9 +4,11 @@
   "description": "Backend API for yoohoo.guru skill-sharing platform",
   "main": "src/index.js",
   "scripts": {
+    "predev": "npm run ensure-frontend-built",
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
     "build": "echo 'Build completed'",
+    "ensure-frontend-built": "cd ../frontend && ([ -d dist ] || npm run build)",
     "test": "jest --forceExit",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
