@@ -389,26 +389,34 @@ vercel --prod
 ```
 
 **Step 2: Project Configuration**
-Create `frontend/vercel.json`:
+The `vercel.json` configuration is already included in the repository root. It uses simplified patterns for Vercel compatibility:
 ```json
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "installCommand": "npm install",
-  "devCommand": "npm run dev",
+  "buildCommand": "cd frontend && npm run build",
+  "outputDirectory": "frontend/dist",
+  "installCommand": "npm ci && cd frontend && npm ci",
   "rewrites": [
     {
-      "source": "/((?!static/).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ],
   "headers": [
     {
-      "source": "/static/(.*)",
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline'..."
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "s-maxage=31536000,immutable"
+          "value": "public, max-age=31536000, immutable"
         }
       ]
     }
