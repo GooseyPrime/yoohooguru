@@ -1,15 +1,44 @@
+// Mock authentication middleware FIRST (before requiring the app)
+jest.mock('../src/middleware/auth', () => ({
+  requireAuth: (req, res, next) => {
+    req.user = { uid: 'test-user-123', email: 'test@example.com' };
+    next();
+  },
+  optionalAuth: (req, res, next) => {
+    // Optional auth doesn't require a user for public endpoints
+    next();
+  },
+  authenticateUser: (req, res, next) => {
+    req.user = { uid: 'test-user-123', email: 'test@example.com' };
+    next();
+  },
+  requireRole: (roles) => (req, res, next) => {
+    req.user = { uid: 'test-user-123', email: 'test@example.com', role: 'admin' };
+    next();
+  }
+}));
+
+// Mock only logger for test output control
+jest.mock('../src/utils/logger', () => ({
+  logger: {
+    info: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn()
+  }
+}));
+
 const request = require('supertest');
 const app = require('../src/index');
 
 // Real Firebase integration - no mocks per user directive
-const { initializeFirebase, getDatabase } = require('../src/config/firebase');
+const { initializeFirebase, getFirestore } = require('../src/config/firebase');
 
 let firebaseInitialized = false;
 
 beforeAll(async () => {
   try {
     await initializeFirebase();
-    const db = getDatabase();
+    const db = getFirestore();
     firebaseInitialized = !!db;
     console.log('Real Firebase initialized for angels jobs tests');
   } catch (error) {
@@ -26,15 +55,6 @@ const skipIfNoFirebase = () => {
   return false;
 };
 
-// Mock only logger for test output control
-jest.mock('../src/utils/logger', () => ({
-  logger: {
-    info: jest.fn(),
-    error: jest.fn(),
-    warn: jest.fn()
-  }
-}));
-
 describe('Angels Jobs API', () => {
   describe('POST /api/angels/jobs', () => {
     it('should create a new angel job posting', async () => {
@@ -43,17 +63,29 @@ describe('Angels Jobs API', () => {
         return;
       }
       
-      const { getDatabase } = require('../src/config/firebase');
-      const mockDB = getDatabase();
-      const mockJobRef = { key: 'job-123', set: jest.fn().mockResolvedValue() };
+      // Mock Firestore for this test
+      const mockJobRef = {
+        id: 'job-123',
+        set: jest.fn().mockResolvedValue()
+      };
       
-      mockDB.ref.mockImplementation((path) => {
-        if (path === 'angel_jobs') {
-          return { push: jest.fn(() => mockJobRef) };
-        } else if (path === 'activity_logs') {
-          return { push: jest.fn().mockResolvedValue() };
-        }
-      });
+      const mockFirestore = {
+        collection: jest.fn((collectionName) => {
+          if (collectionName === 'angel_jobs') {
+            return {
+              doc: jest.fn(() => mockJobRef)
+            };
+          } else if (collectionName === 'activity_logs') {
+            return {
+              add: jest.fn().mockResolvedValue({ id: 'activity-log-id' })
+            };
+          }
+        })
+      };
+      
+      // Temporarily replace getFirestore
+      const originalGetFirestore = require('../src/config/firebase').getFirestore;
+      require('../src/config/firebase').getFirestore = jest.fn(() => mockFirestore);
 
       const jobData = {
         title: 'Help with Moving',
@@ -85,6 +117,9 @@ describe('Angels Jobs API', () => {
           featured: true
         })
       );
+      
+      // Restore original function
+      require('../src/config/firebase').getFirestore = originalGetFirestore;
     });
 
     it('should return 400 for missing required fields', async () => {
@@ -115,9 +150,6 @@ describe('Angels Jobs API', () => {
         return;
       }
       
-      const { getDatabase } = require('../src/config/firebase');
-      const mockDB = getDatabase();
-
       const mockJobs = [
         {
           id: 'job-1',
@@ -125,7 +157,7 @@ describe('Angels Jobs API', () => {
           category: 'home',
           location: { city: 'Denver' },
           status: 'open',
-          createdAt: Date.now(),
+          createdAt: new Date().toISOString(),
           applications: {}
         },
         {
@@ -134,20 +166,29 @@ describe('Angels Jobs API', () => {
           category: 'moving',
           location: { city: 'Boulder' },
           status: 'open',
-          createdAt: Date.now() - 1000,
+          createdAt: new Date(Date.now() - 1000).toISOString(),
           applications: { 'user-1': {} }
         }
       ];
 
-      mockDB.ref.mockImplementation(() => ({
-        once: jest.fn().mockResolvedValue({
-          forEach: (callback) => {
-            mockJobs.forEach(job => {
-              callback({ val: () => job });
-            });
-          }
-        })
-      }));
+      const mockFirestore = {
+        collection: jest.fn(() => ({
+          get: jest.fn().mockResolvedValue({
+            forEach: (callback) => {
+              mockJobs.forEach(job => {
+                callback({
+                  data: () => job,
+                  id: job.id
+                });
+              });
+            }
+          })
+        }))
+      };
+      
+      // Temporarily replace getFirestore
+      const originalGetFirestore = require('../src/config/firebase').getFirestore;
+      require('../src/config/firebase').getFirestore = jest.fn(() => mockFirestore);
 
       const response = await request(app)
         .get('/api/angels/jobs?category=home')
@@ -157,6 +198,9 @@ describe('Angels Jobs API', () => {
       expect(response.body.data.jobs).toHaveLength(1);
       expect(response.body.data.jobs[0].category).toBe('home');
       expect(response.body.data.pagination.total).toBe(1);
+      
+      // Restore original function
+      require('../src/config/firebase').getFirestore = originalGetFirestore;
     });
 
     it('should support search functionality', async () => {
@@ -165,9 +209,6 @@ describe('Angels Jobs API', () => {
         return;
       }
       
-      const { getDatabase } = require('../src/config/firebase');
-      const mockDB = getDatabase();
-
       const mockJobs = [
         {
           id: 'job-1',
@@ -175,7 +216,7 @@ describe('Angels Jobs API', () => {
           description: 'Fix kitchen sink',
           category: 'home',
           status: 'open',
-          createdAt: Date.now(),
+          createdAt: new Date().toISOString(),
           applications: {}
         },
         {
@@ -184,20 +225,29 @@ describe('Angels Jobs API', () => {
           description: 'Weed removal and planting',
           category: 'outdoor',
           status: 'open',
-          createdAt: Date.now(),
+          createdAt: new Date().toISOString(),
           applications: {}
         }
       ];
 
-      mockDB.ref.mockImplementation(() => ({
-        once: jest.fn().mockResolvedValue({
-          forEach: (callback) => {
-            mockJobs.forEach(job => {
-              callback({ val: () => job });
-            });
-          }
-        })
-      }));
+      const mockFirestore = {
+        collection: jest.fn(() => ({
+          get: jest.fn().mockResolvedValue({
+            forEach: (callback) => {
+              mockJobs.forEach(job => {
+                callback({
+                  data: () => job,
+                  id: job.id
+                });
+              });
+            }
+          })
+        }))
+      };
+      
+      // Temporarily replace getFirestore
+      const originalGetFirestore = require('../src/config/firebase').getFirestore;
+      require('../src/config/firebase').getFirestore = jest.fn(() => mockFirestore);
 
       const response = await request(app)
         .get('/api/angels/jobs?search=handyman')
@@ -206,6 +256,9 @@ describe('Angels Jobs API', () => {
       expect(response.body.success).toBe(true);
       expect(response.body.data.jobs).toHaveLength(1);
       expect(response.body.data.jobs[0].title).toContain('Handyman');
+      
+      // Restore original function
+      require('../src/config/firebase').getFirestore = originalGetFirestore;
     });
 
     it('should sort featured jobs to the top', async () => {
@@ -214,9 +267,6 @@ describe('Angels Jobs API', () => {
         return;
       }
       
-      const { getDatabase } = require('../src/config/firebase');
-      const mockDB = getDatabase();
-
       const mockJobs = [
         {
           id: 'job-1',
@@ -225,7 +275,7 @@ describe('Angels Jobs API', () => {
           location: { city: 'Denver' },
           status: 'open',
           featured: false,
-          createdAt: Date.now() - 1000, // Older job
+          createdAt: new Date(Date.now() - 1000).toISOString(), // Older job
           applications: {}
         },
         {
@@ -235,7 +285,7 @@ describe('Angels Jobs API', () => {
           location: { city: 'Denver' },
           status: 'open',
           featured: true,
-          createdAt: Date.now() - 2000, // Even older but featured
+          createdAt: new Date(Date.now() - 2000).toISOString(), // Even older but featured
           applications: {}
         },
         {
@@ -245,20 +295,29 @@ describe('Angels Jobs API', () => {
           location: { city: 'Denver' },
           status: 'open',
           featured: false,
-          createdAt: Date.now(), // Newest job
+          createdAt: new Date().toISOString(), // Newest job
           applications: {}
         }
       ];
 
-      mockDB.ref.mockImplementation(() => ({
-        once: jest.fn().mockResolvedValue({
-          forEach: (callback) => {
-            mockJobs.forEach(job => {
-              callback({ val: () => job });
-            });
-          }
-        })
-      }));
+      const mockFirestore = {
+        collection: jest.fn(() => ({
+          get: jest.fn().mockResolvedValue({
+            forEach: (callback) => {
+              mockJobs.forEach(job => {
+                callback({
+                  data: () => job,
+                  id: job.id
+                });
+              });
+            }
+          })
+        }))
+      };
+      
+      // Temporarily replace getFirestore
+      const originalGetFirestore = require('../src/config/firebase').getFirestore;
+      require('../src/config/firebase').getFirestore = jest.fn(() => mockFirestore);
 
       const response = await request(app)
         .get('/api/angels/jobs')
@@ -274,6 +333,9 @@ describe('Angels Jobs API', () => {
       // Regular jobs should be sorted by creation date after featured jobs
       expect(response.body.data.jobs[1].title).toBe('Another Regular Job');
       expect(response.body.data.jobs[2].title).toBe('Regular Job');
+      
+      // Restore original function
+      require('../src/config/firebase').getFirestore = originalGetFirestore;
     });
   });
 
@@ -284,9 +346,6 @@ describe('Angels Jobs API', () => {
         return;
       }
       
-      const { getDatabase } = require('../src/config/firebase');
-      const mockDB = getDatabase();
-
       const mockJob = {
         id: 'job-123',
         title: 'Help with Gardening',
@@ -301,22 +360,33 @@ describe('Angels Jobs API', () => {
         rating: 4.8
       };
 
-      mockDB.ref.mockImplementation((path) => {
-        if (path === 'angel_jobs/job-123') {
-          return {
-            once: jest.fn().mockResolvedValue({
-              exists: () => true,
-              val: () => mockJob
-            })
-          };
-        } else if (path === 'users/user-456') {
-          return {
-            once: jest.fn().mockResolvedValue({
-              val: () => mockPoster
-            })
-          };
-        }
-      });
+      const mockFirestore = {
+        collection: jest.fn((collectionName) => {
+          if (collectionName === 'angel_jobs') {
+            return {
+              doc: jest.fn(() => ({
+                get: jest.fn().mockResolvedValue({
+                  exists: true,
+                  data: () => mockJob
+                })
+              }))
+            };
+          } else if (collectionName === 'users') {
+            return {
+              doc: jest.fn(() => ({
+                get: jest.fn().mockResolvedValue({
+                  exists: true,
+                  data: () => mockPoster
+                })
+              }))
+            };
+          }
+        })
+      };
+      
+      // Temporarily replace getFirestore
+      const originalGetFirestore = require('../src/config/firebase').getFirestore;
+      require('../src/config/firebase').getFirestore = jest.fn(() => mockFirestore);
 
       const response = await request(app)
         .get('/api/angels/jobs/job-123')
@@ -326,6 +396,9 @@ describe('Angels Jobs API', () => {
       expect(response.body.data.job.title).toBe(mockJob.title);
       expect(response.body.data.job.poster.name).toBe(mockPoster.name);
       expect(response.body.data.job.applicationCount).toBe(2);
+      
+      // Restore original function
+      require('../src/config/firebase').getFirestore = originalGetFirestore;
     });
 
     it('should return 404 for non-existent job', async () => {
@@ -334,14 +407,19 @@ describe('Angels Jobs API', () => {
         return;
       }
       
-      const { getDatabase } = require('../src/config/firebase');
-      const mockDB = getDatabase();
-
-      mockDB.ref.mockImplementation(() => ({
-        once: jest.fn().mockResolvedValue({
-          exists: () => false
-        })
-      }));
+      const mockFirestore = {
+        collection: jest.fn(() => ({
+          doc: jest.fn(() => ({
+            get: jest.fn().mockResolvedValue({
+              exists: false
+            })
+          }))
+        }))
+      };
+      
+      // Temporarily replace getFirestore
+      const originalGetFirestore = require('../src/config/firebase').getFirestore;
+      require('../src/config/firebase').getFirestore = jest.fn(() => mockFirestore);
 
       const response = await request(app)
         .get('/api/angels/jobs/non-existent')
@@ -349,6 +427,9 @@ describe('Angels Jobs API', () => {
 
       expect(response.body.success).toBe(false);
       expect(response.body.error.message).toBe('Angel job not found');
+      
+      // Restore original function
+      require('../src/config/firebase').getFirestore = originalGetFirestore;
     });
   });
 
@@ -359,9 +440,6 @@ describe('Angels Jobs API', () => {
         return;
       }
       
-      const { getDatabase } = require('../src/config/firebase');
-      const mockDB = getDatabase();
-
       const mockJob = {
         id: 'job-123',
         title: 'Garden Work',
@@ -369,20 +447,31 @@ describe('Angels Jobs API', () => {
         applications: {}
       };
 
-      mockDB.ref.mockImplementation((path) => {
-        if (path === 'angel_jobs/job-123') {
-          return {
-            once: jest.fn().mockResolvedValue({
-              exists: () => true,
-              val: () => mockJob
-            })
-          };
-        } else if (path === 'angel_jobs/job-123/applications/test-user-123') {
-          return { set: jest.fn().mockResolvedValue() };
-        } else if (path === 'activity_logs') {
-          return { push: jest.fn().mockResolvedValue() };
-        }
-      });
+      const mockJobRef = {
+        get: jest.fn().mockResolvedValue({
+          exists: true,
+          data: () => mockJob
+        }),
+        update: jest.fn().mockResolvedValue()
+      };
+
+      const mockFirestore = {
+        collection: jest.fn((collectionName) => {
+          if (collectionName === 'angel_jobs') {
+            return {
+              doc: jest.fn(() => mockJobRef)
+            };
+          } else if (collectionName === 'activity_logs') {
+            return {
+              add: jest.fn().mockResolvedValue({ id: 'activity-id' })
+            };
+          }
+        })
+      };
+      
+      // Temporarily replace getFirestore
+      const originalGetFirestore = require('../src/config/firebase').getFirestore;
+      require('../src/config/firebase').getFirestore = jest.fn(() => mockFirestore);
 
       const applicationData = {
         message: 'I have experience with gardening',
@@ -398,6 +487,10 @@ describe('Angels Jobs API', () => {
       expect(response.body.data.application.applicantId).toBe('test-user-123');
       expect(response.body.data.application.message).toBe(applicationData.message);
       expect(response.body.data.application.status).toBe('pending');
+      expect(mockJobRef.update).toHaveBeenCalled();
+      
+      // Restore original function
+      require('../src/config/firebase').getFirestore = originalGetFirestore;
     });
 
     it('should prevent user from applying to their own job', async () => {
@@ -406,9 +499,6 @@ describe('Angels Jobs API', () => {
         return;
       }
       
-      const { getDatabase } = require('../src/config/firebase');
-      const mockDB = getDatabase();
-
       const mockJob = {
         id: 'job-123',
         title: 'Garden Work',
@@ -416,12 +506,20 @@ describe('Angels Jobs API', () => {
         applications: {}
       };
 
-      mockDB.ref.mockImplementation(() => ({
-        once: jest.fn().mockResolvedValue({
-          exists: () => true,
-          val: () => mockJob
-        })
-      }));
+      const mockFirestore = {
+        collection: jest.fn(() => ({
+          doc: jest.fn(() => ({
+            get: jest.fn().mockResolvedValue({
+              exists: true,
+              data: () => mockJob
+            })
+          }))
+        }))
+      };
+      
+      // Temporarily replace getFirestore
+      const originalGetFirestore = require('../src/config/firebase').getFirestore;
+      require('../src/config/firebase').getFirestore = jest.fn(() => mockFirestore);
 
       const response = await request(app)
         .post('/api/angels/jobs/job-123/apply')
@@ -430,6 +528,9 @@ describe('Angels Jobs API', () => {
 
       expect(response.body.success).toBe(false);
       expect(response.body.error.message).toBe('Cannot apply to your own job posting');
+      
+      // Restore original function
+      require('../src/config/firebase').getFirestore = originalGetFirestore;
     });
 
     it('should prevent duplicate applications', async () => {
@@ -438,9 +539,6 @@ describe('Angels Jobs API', () => {
         return;
       }
       
-      const { getDatabase } = require('../src/config/firebase');
-      const mockDB = getDatabase();
-
       const mockJob = {
         id: 'job-123',
         title: 'Garden Work',
@@ -450,12 +548,20 @@ describe('Angels Jobs API', () => {
         }
       };
 
-      mockDB.ref.mockImplementation(() => ({
-        once: jest.fn().mockResolvedValue({
-          exists: () => true,
-          val: () => mockJob
-        })
-      }));
+      const mockFirestore = {
+        collection: jest.fn(() => ({
+          doc: jest.fn(() => ({
+            get: jest.fn().mockResolvedValue({
+              exists: true,
+              data: () => mockJob
+            })
+          }))
+        }))
+      };
+      
+      // Temporarily replace getFirestore
+      const originalGetFirestore = require('../src/config/firebase').getFirestore;
+      require('../src/config/firebase').getFirestore = jest.fn(() => mockFirestore);
 
       const response = await request(app)
         .post('/api/angels/jobs/job-123/apply')
@@ -464,6 +570,9 @@ describe('Angels Jobs API', () => {
 
       expect(response.body.success).toBe(false);
       expect(response.body.error.message).toBe('You have already applied to this job');
+      
+      // Restore original function
+      require('../src/config/firebase').getFirestore = originalGetFirestore;
     });
   });
 
@@ -474,16 +583,13 @@ describe('Angels Jobs API', () => {
         return;
       }
       
-      const { getDatabase } = require('../src/config/firebase');
-      const mockDB = getDatabase();
-
       const mockPostedJobs = [
         {
           id: 'job-1',
           title: 'My Posted Job',
           postedBy: 'test-user-123',
           status: 'open',
-          createdAt: Date.now(),
+          createdAt: new Date().toISOString(),
           applications: { 'user-1': {} }
         }
       ];
@@ -496,42 +602,39 @@ describe('Angels Jobs API', () => {
           postedBy: 'other-user',
           status: 'open',
           applications: {
-            'test-user-123': { appliedAt: Date.now(), status: 'pending' }
+            'test-user-123': { appliedAt: new Date().toISOString(), status: 'pending' }
           }
         }
       ];
 
-      mockDB.ref.mockImplementation((path) => {
-        if (path === 'angel_jobs') {
-          if (arguments.length > 0) {
-            // This is the orderByChild call
+      const mockFirestore = {
+        collection: jest.fn((collectionName) => {
+          if (collectionName === 'angel_jobs') {
             return {
-              orderByChild: jest.fn(() => ({
-                equalTo: jest.fn(() => ({
-                  once: jest.fn().mockResolvedValue({
-                    forEach: (callback) => {
-                      mockPostedJobs.forEach(job => {
-                        callback({ val: () => job });
-                      });
-                    }
-                  })
-                }))
-              }))
-            };
-          } else {
-            // This is the getAllJobs call
-            return {
-              once: jest.fn().mockResolvedValue({
+              where: jest.fn(() => ({
+                get: jest.fn().mockResolvedValue({
+                  forEach: (callback) => {
+                    mockPostedJobs.forEach(job => {
+                      callback({ data: () => job });
+                    });
+                  }
+                })
+              })),
+              get: jest.fn().mockResolvedValue({
                 forEach: (callback) => {
                   mockAllJobs.forEach(job => {
-                    callback({ val: () => job });
+                    callback({ data: () => job });
                   });
                 }
               })
             };
           }
-        }
-      });
+        })
+      };
+      
+      // Temporarily replace getFirestore
+      const originalGetFirestore = require('../src/config/firebase').getFirestore;
+      require('../src/config/firebase').getFirestore = jest.fn(() => mockFirestore);
 
       const response = await request(app)
         .get('/api/angels/my-activity')
@@ -542,6 +645,9 @@ describe('Angels Jobs API', () => {
       expect(response.body.data.applications).toHaveLength(1);
       expect(response.body.data.statistics.totalJobsPosted).toBe(1);
       expect(response.body.data.statistics.totalApplications).toBe(1);
+      
+      // Restore original function
+      require('../src/config/firebase').getFirestore = originalGetFirestore;
     });
   });
 });
