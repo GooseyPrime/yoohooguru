@@ -103,6 +103,14 @@ describe('CORS Configuration', () => {
       });
     });
 
+    it('should allow api.yoohoo.guru explicitly', (done) => {
+      corsFunction('https://api.yoohoo.guru', (err, allowed) => {
+        expect(err).toBeNull();
+        expect(allowed).toBe(true);
+        done();
+      });
+    });
+
     it('should allow another wildcard match for vercel.app', (done) => {
       corsFunction('https://another-app.vercel.app', (err, allowed) => {
         expect(err).toBeNull();
@@ -133,6 +141,29 @@ describe('CORS Configuration', () => {
         expect(err).toBeNull();
         expect(allowed).toBe(true);
         done();
+      });
+    });
+
+    it('should validate all required origins from issue spec', (done) => {
+      const requiredOrigins = [
+        'https://api.yoohoo.guru',
+        'https://www.yoohoo.guru',
+        'https://some-app.vercel.app'
+      ];
+      
+      let completedTests = 0;
+      const totalTests = requiredOrigins.length;
+      
+      requiredOrigins.forEach(origin => {
+        corsFunction(origin, (err, allowed) => {
+          expect(err).toBeNull();
+          expect(allowed).toBe(true);
+          completedTests++;
+          
+          if (completedTests === totalTests) {
+            done();
+          }
+        });
       });
     });
   });
