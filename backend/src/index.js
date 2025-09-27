@@ -174,6 +174,7 @@ app.get('/favicon.ico', (req, res) => {
 app.get('/health', (req, res) => {
   try {
     const agentStatus = getCurationAgentStatus();
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.status(200).json({
       status: 'OK',
       timestamp: new Date().toISOString(),
@@ -184,6 +185,7 @@ app.get('/health', (req, res) => {
     });
   } catch (error) {
     logger.error('Health check failed:', error);
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.status(500).json({
       status: 'ERROR',
       timestamp: new Date().toISOString(),
@@ -226,6 +228,7 @@ if (config.featureModifiedMasters) {
 
 // API status endpoint
 app.get('/api', (req, res) => {
+  res.setHeader('Cache-Control', 'public, max-age=300'); // Cache for 5 minutes
   res.json({
     message: config.apiWelcomeMessage,
     version: config.apiVersion,
@@ -261,6 +264,7 @@ if (config.serveFrontend) {
 } else {
   // When frontend is deployed separately, return API info for non-API routes
   app.get('*', (req, res) => {
+    res.setHeader('Cache-Control', 'public, max-age=300'); // Cache for 5 minutes
     res.status(404).json({
       error: 'Route Not Found',
       message: 'This is an API-only server. Frontend is deployed separately.',
