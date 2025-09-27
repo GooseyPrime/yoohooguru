@@ -25,7 +25,7 @@ function getConfig() {
     // CORS Configuration
     corsOriginProduction: process.env.CORS_ORIGIN_PRODUCTION
       ? process.env.CORS_ORIGIN_PRODUCTION.split(',').map(s => s.trim()).filter(Boolean)
-      : ['https://yoohoo.guru', 'https://www.yoohoo.guru', 'https://*.yoohoo.guru', 'https://*.vercel.app'],
+      : ['https://yoohoo.guru', 'https://www.yoohoo.guru', 'https://api.yoohoo.guru', 'https://*.yoohoo.guru', 'https://*.vercel.app'],
     corsOriginDevelopment: process.env.CORS_ORIGIN_DEVELOPMENT 
       ? process.env.CORS_ORIGIN_DEVELOPMENT.split(',').map(origin => origin.trim())
       : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://*.localhost:3000'],
