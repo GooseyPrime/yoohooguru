@@ -39,13 +39,13 @@ jobs:
       run: cd backend && npm run lint
 
     - name: Run frontend tests
-      run: cd frontend && npm test
+      run: cd frontend && npm run test:ci
 
     - name: Run backend tests
       run: cd backend && npm test -- --detectOpenHandles --verbose
       env:
         NODE_ENV: test
-        FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+        FIREBASE_PROJECT_ID: ceremonial-tea-470904-f3
         FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
         FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
         FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
