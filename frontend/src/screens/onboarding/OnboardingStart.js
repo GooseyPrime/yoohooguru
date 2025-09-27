@@ -22,7 +22,10 @@ export default function OnboardingStart() {
     </div>
   );
 
-  if (!status) return <div style={{padding: '2rem'}}>Loading…</div>;
+  // Fixed: Move conditional return after all hooks are called
+  if (!status) {
+    return <div style={{padding: '2rem'}}>Loading…</div>;
+  }
 
   return (
     <div style={{maxWidth: '680px', margin: '0 auto', padding: '2rem'}}>
