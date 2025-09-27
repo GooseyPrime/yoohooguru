@@ -127,7 +127,7 @@ Return ONLY the blog post content in markdown format, starting with the title as
 });
 
 /**
- * Generate news articles using AI with web search
+ * Generate news articles using AI with proper fallback chain
  */
 router.post('/generate-news', async (req, res) => {
   try {
@@ -140,14 +140,111 @@ router.post('/generate-news', async (req, res) => {
       });
     }
 
-    const messages = [
-      {
-        role: 'system',
-        content: `You are a news curator for yoohoo.guru, specializing in finding and summarizing the latest industry trends and developments. Create engaging news summaries that are relevant to skill learners and teachers.`
-      },
-      {
-        role: 'user',
-        content: `Find and create ${limit} current news articles related to ${category} and skills like ${skills ? skills.join(', ') : category}. 
+    logger.info(`🔄 Generating ${limit} news articles for category: ${category}`);
+
+    // Try multiple AI providers in order
+    const aiResult = await tryMultipleAIProvidersForNews(category, skills, limit);
+    
+    if (aiResult.success) {
+      logger.info(`✅ News generated successfully via ${aiResult.provider}`);
+      res.json({
+        success: true,
+        data: aiResult.data.slice(0, limit),
+        provider: aiResult.provider
+      });
+    } else {
+      logger.error('❌ All AI providers failed for news generation');
+      
+      // In production, never return placeholder content
+      if (process.env.NODE_ENV === 'production') {
+        res.status(503).json({
+          success: false,
+          error: 'AI news generation temporarily unavailable',
+          code: 'AI_SERVICE_UNAVAILABLE'
+        });
+      } else {
+        // Development/test: return empty result to avoid hardcoded content
+        logger.warn('⚠️ Development mode: returning empty result instead of placeholders');
+        res.json({
+          success: false,
+          data: [],
+          error: 'AI services unavailable in development',
+          fallbackUsed: 'none'
+        });
+      }
+    }
+
+  } catch (error) {
+    logger.error('News generation error:', error);
+    res.status(500).json({
+      success: false,
+      error: process.env.NODE_ENV === 'production' ? 'Internal server error' : error.message
+    });
+  }
+});
+
+/**
+ * Try multiple AI providers for news generation
+ */
+async function tryMultipleAIProvidersForNews(category, skills, limit) {
+  const skillsArray = Array.isArray(skills) ? skills : [skills].filter(Boolean);
+  
+  // Provider 1: OpenRouter with Perplexity (best for current news)
+  try {
+    logger.info('🤖 Attempting news generation via OpenRouter/Perplexity...');
+    const messages = createNewsPrompt(category, skillsArray, limit);
+    const response = await makeOpenRouterRequest(messages, 'perplexity/llama-3.1-sonar-large-128k-online', 4000);
+    const articles = parseAINewsResponse(response, category, limit);
+    
+    if (articles && articles.length > 0) {
+      return { success: true, data: articles, provider: 'openrouter-perplexity' };
+    }
+  } catch (error) {
+    logger.warn('OpenRouter/Perplexity failed:', error.message);
+  }
+
+  // Provider 2: OpenRouter with Claude
+  try {
+    logger.info('🤖 Attempting news generation via OpenRouter/Claude...');
+    const messages = createNewsPrompt(category, skillsArray, limit);
+    const response = await makeOpenRouterRequest(messages, 'anthropic/claude-3.5-sonnet', 4000);
+    const articles = parseAINewsResponse(response, category, limit);
+    
+    if (articles && articles.length > 0) {
+      return { success: true, data: articles, provider: 'openrouter-claude' };
+    }
+  } catch (error) {
+    logger.warn('OpenRouter/Claude failed:', error.message);
+  }
+
+  // Provider 3: OpenAI GPT-4 (if API key available)
+  if (process.env.OPENAI_API_KEY) {
+    try {
+      logger.info('🤖 Attempting news generation via OpenAI...');
+      const result = await tryOpenAIForNews(category, skillsArray, limit);
+      if (result.success) {
+        return { success: true, data: result.data, provider: 'openai-gpt4' };
+      }
+    } catch (error) {
+      logger.warn('OpenAI failed:', error.message);
+    }
+  }
+
+  return { success: false, error: 'All AI providers failed' };
+}
+
+/**
+ * Create news generation prompt
+ */
+function createNewsPrompt(category, skills, limit) {
+  return [
+    {
+      role: 'system',
+      content: `You are a news curator for yoohoo.guru, specializing in finding and summarizing the latest industry trends and developments. Create engaging news summaries that are relevant to skill learners and teachers.`
+    },
+    {
+      role: 'user',
+      content: `Find and create ${limit} current news articles related to ${category} and skills like ${skills.join(', ')}. 
 
 For each article, provide:
 1. A compelling headline
@@ -158,73 +255,83 @@ For each article, provide:
 Focus on recent developments, trends, studies, or industry changes that would interest people learning or teaching these skills. Make each article unique and informative.
 
 Return as JSON array with objects containing: id, title, summary, relevance, publishedAt (today's date in ISO format), source.`
-      }
-    ];
+    }
+  ];
+}
 
-    const response = await makeOpenRouterRequest(messages, 'perplexity/llama-3.1-sonar-large-128k-online', 4000);
-
-    try {
-      // Try to parse as JSON, fallback to structured text
-      let articles;
-      try {
-        articles = JSON.parse(response);
-      } catch {
-        // Fallback: extract structured content from text response
-        articles = [];
-        const sections = response.split('\n\n');
-        let currentArticle = {};
-        
-        sections.forEach(section => {
-          if (section.includes('title:') || section.includes('Title:')) {
-            if (currentArticle.title) articles.push(currentArticle);
-            currentArticle = {
-              id: `ai-news-${Date.now()}-${articles.length}`,
-              title: section.split(':')[1]?.trim() || 'Industry Update',
-              publishedAt: new Date().toISOString(),
-              source: 'AI News Curator'
-            };
-          } else if (section.includes('summary:') || section.includes('Summary:')) {
-            currentArticle.summary = section.split(':')[1]?.trim();
-          } else if (section.length > 50 && !currentArticle.summary) {
-            currentArticle.summary = section.trim();
-          }
-        });
-        
+/**
+ * Parse AI news response with fallback parsing
+ */
+function parseAINewsResponse(response, category, limit) {
+  try {
+    // Try JSON parsing first
+    return JSON.parse(response);
+  } catch {
+    // Fallback: extract structured content from text response
+    const articles = [];
+    const sections = response.split('\n\n');
+    let currentArticle = {};
+    
+    sections.forEach(section => {
+      if (section.includes('title:') || section.includes('Title:')) {
         if (currentArticle.title) articles.push(currentArticle);
-        
-        // Ensure we have the right number of articles
-        while (articles.length < limit) {
-          articles.push({
-            id: `ai-news-${Date.now()}-${articles.length}`,
-            title: `Latest Trends in ${category}`,
-            summary: `Discover the newest developments in ${category} that are shaping how people learn and develop their skills.`,
-            publishedAt: new Date().toISOString(),
-            source: 'AI News Curator'
-          });
-        }
+        currentArticle = {
+          id: `ai-news-${Date.now()}-${articles.length}`,
+          title: section.split(':')[1]?.trim() || 'Industry Update',
+          publishedAt: new Date().toISOString(),
+          source: 'AI News Curator'
+        };
+      } else if (section.includes('summary:') || section.includes('Summary:')) {
+        currentArticle.summary = section.split(':')[1]?.trim();
+      } else if (section.length > 50 && !currentArticle.summary) {
+        currentArticle.summary = section.trim();
       }
-
-      res.json({
-        success: true,
-        data: articles.slice(0, limit)
-      });
-
-    } catch (parseError) {
-      logger.error('News parsing error:', parseError);
-      res.status(500).json({
-        success: false,
-        error: 'Failed to parse AI response'
-      });
+    });
+    
+    if (currentArticle.title) articles.push(currentArticle);
+    
+    // Only add generic articles if we have less than required and it's not production
+    if (articles.length < limit && process.env.NODE_ENV !== 'production') {
+      while (articles.length < limit) {
+        articles.push({
+          id: `ai-news-${Date.now()}-${articles.length}`,
+          title: `Latest Developments in ${category}`,
+          summary: `Industry experts discuss emerging trends and innovations in ${category} that are transforming professional skill development.`,
+          publishedAt: new Date().toISOString(),
+          source: 'AI News Curator'
+        });
+      }
     }
 
-  } catch (error) {
-    logger.error('News generation error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    return articles;
   }
-});
+}
+
+/**
+ * Try OpenAI for news generation
+ */
+async function tryOpenAIForNews(category, skills, limit) {
+  const axios = require('axios');
+  
+  const messages = createNewsPrompt(category, skills, limit);
+
+  const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+    model: 'gpt-4o-mini',
+    messages: messages,
+    max_tokens: 2000,
+    temperature: 0.7
+  }, {
+    headers: {
+      'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+  const content = response.data.choices[0].message.content;
+  const articles = parseAINewsResponse(content, category, limit);
+  
+  return { success: true, data: articles };
+}
 
 /**
  * Health check endpoint
