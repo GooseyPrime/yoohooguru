@@ -97,7 +97,7 @@ All React app variables must be prefixed with `REACT_APP_` to be accessible in t
 |----------|----------|-------------|
 | `FIREBASE_API_KEY` | ✅ | Firebase API key |
 | `FIREBASE_AUTH_DOMAIN` | ✅ | Firebase auth domain |
-| `FIREBASE_PROJECT_ID` | ✅ | Firebase project ID |
+| `FIREBASE_PROJECT_ID` | ✅ | Firebase project ID - **MUST be `ceremonial-tea-470904-f3` for production** |
 | `FIREBASE_STORAGE_BUCKET` | ✅ | Firebase storage bucket |
 | `FIREBASE_MESSAGING_SENDER_ID` | ✅ | Firebase messaging sender ID |
 | `FIREBASE_APP_ID` | ✅ | Firebase app ID |
@@ -110,7 +110,7 @@ All Firebase variables also need `REACT_APP_` prefixed versions for frontend use
 
 - `REACT_APP_FIREBASE_API_KEY`
 - `REACT_APP_FIREBASE_AUTH_DOMAIN`
-- `REACT_APP_FIREBASE_PROJECT_ID`
+- `REACT_APP_FIREBASE_PROJECT_ID` - **MUST be `ceremonial-tea-470904-f3` for production**
 - `REACT_APP_FIREBASE_STORAGE_BUCKET`
 - `REACT_APP_FIREBASE_MESSAGING_SENDER_ID`
 - `REACT_APP_FIREBASE_APP_ID`

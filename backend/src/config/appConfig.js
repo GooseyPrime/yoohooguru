@@ -25,7 +25,7 @@ function getConfig() {
     // CORS Configuration
     corsOriginProduction: process.env.CORS_ORIGIN_PRODUCTION
       ? process.env.CORS_ORIGIN_PRODUCTION.split(',').map(s => s.trim()).filter(Boolean)
-      : ['https://yoohoo.guru', 'https://www.yoohoo.guru', 'https://*.yoohoo.guru', 'https://*.vercel.app'],
+      : ['https://yoohoo.guru', 'https://www.yoohoo.guru', 'https://api.yoohoo.guru', 'https://*.yoohoo.guru', 'https://*.vercel.app'],
     corsOriginDevelopment: process.env.CORS_ORIGIN_DEVELOPMENT 
       ? process.env.CORS_ORIGIN_DEVELOPMENT.split(',').map(origin => origin.trim())
       : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://*.localhost:3000'],
@@ -80,7 +80,9 @@ function getConfig() {
     firebaseMessagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
     firebaseAppId: process.env.FIREBASE_APP_ID,
 
-    // Modified Masters Configuration
+    // Domain Configuration
+    appDomain: process.env.APP_DOMAIN || 'localhost:3000',
+    apiBaseUrl: process.env.NODE_ENV === 'production' ? 'https://api.yoohoo.guru' : `http://localhost:${process.env.PORT || 3001}`,
     featureModifiedMasters: process.env.FEATURE_MODIFIED_MASTERS === 'true',
     modifiedMastersDonateUrl: process.env.MODIFIED_MASTERS_DONATE_URL || '',
     modifiedMastersEnableSubdomain: process.env.MODIFIED_MASTERS_ENABLE_SUBDOMAIN === 'true',
