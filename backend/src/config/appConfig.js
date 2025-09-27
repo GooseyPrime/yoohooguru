@@ -80,7 +80,9 @@ function getConfig() {
     firebaseMessagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
     firebaseAppId: process.env.FIREBASE_APP_ID,
 
-    // Modified Masters Configuration
+    // Domain Configuration
+    appDomain: process.env.APP_DOMAIN || 'localhost:3000',
+    apiBaseUrl: process.env.NODE_ENV === 'production' ? 'https://api.yoohoo.guru' : `http://localhost:${process.env.PORT || 3001}`,
     featureModifiedMasters: process.env.FEATURE_MODIFIED_MASTERS === 'true',
     modifiedMastersDonateUrl: process.env.MODIFIED_MASTERS_DONATE_URL || '',
     modifiedMastersEnableSubdomain: process.env.MODIFIED_MASTERS_ENABLE_SUBDOMAIN === 'true',
