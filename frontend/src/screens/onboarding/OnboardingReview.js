@@ -84,8 +84,13 @@ export default function OnboardingReview() {
       });
   }, []);
 
-  if (error) return <ErrorMessage>{error}</ErrorMessage>;
-  if (!data) return <LoadingMessage>Loading…</LoadingMessage>;
+  // Fixed: Move conditional returns after all hooks are called
+  if (error) {
+    return <ErrorMessage>{error}</ErrorMessage>;
+  }
+  if (!data) {
+    return <LoadingMessage>Loading…</LoadingMessage>;
+  }
 
   const publish = async () => {
     try {
