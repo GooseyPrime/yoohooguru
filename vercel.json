@@ -45,7 +45,7 @@
       ]
     },
     {
-      "source": "/**/*.js",
+      "source": "/(.*)\\.js$",
       "headers": [
         {
           "key": "Cache-Control",
@@ -58,7 +58,7 @@
       ]
     },
     {
-      "source": "/**/*.css",
+      "source": "/(.*)\\.css$",
       "headers": [
         {
           "key": "Cache-Control",
@@ -71,7 +71,7 @@
       ]
     },
     {
-      "source": "/**/*.woff",
+      "source": "/(.*)\\.woff2?$",
       "headers": [
         {
           "key": "Cache-Control",
@@ -84,7 +84,7 @@
       ]
     },
     {
-      "source": "/**/*.woff2",
+      "source": "/(.*)\\.png$",
       "headers": [
         {
           "key": "Cache-Control",
@@ -97,7 +97,7 @@
       ]
     },
     {
-      "source": "/**/*.png",
+      "source": "/(.*)\\.jpe?g$",
       "headers": [
         {
           "key": "Cache-Control",
@@ -110,7 +110,7 @@
       ]
     },
     {
-      "source": "/**/*.jpg",
+      "source": "/(.*)\\.gif$",
       "headers": [
         {
           "key": "Cache-Control",
@@ -123,7 +123,7 @@
       ]
     },
     {
-      "source": "/**/*.jpeg",
+      "source": "/(.*)\\.svg$",
       "headers": [
         {
           "key": "Cache-Control",
@@ -136,33 +136,7 @@
       ]
     },
     {
-      "source": "/**/*.gif",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        }
-      ]
-    },
-    {
-      "source": "/**/*.svg",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        }
-      ]
-    },
-    {
-      "source": "/**/*.ico",
+      "source": "/(.*)\\.ico$",
       "headers": [
         {
           "key": "Cache-Control",
