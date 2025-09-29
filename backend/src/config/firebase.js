@@ -2,54 +2,58 @@ let admin;
 try {
   admin = require('firebase-admin');
 } catch (error) {
-  // firebase-admin not available in test environment via npx
-  // Create a minimal mock for testing
-  admin = {
-    apps: { length: 0 },
-    initializeApp: (config) => ({
-      options: config
-    }),
-    app: () => ({}),
-    auth: () => ({
-      verifyIdToken: (token) => Promise.resolve({
-        uid: 'test-user-123',
-        email: 'test@example.com'
-      })
-    }),
-    firestore: () => ({
-      collection: (name) => ({
-        doc: (id) => ({
-          get: () => Promise.resolve({ exists: false }),
-          set: () => Promise.resolve(),
-          update: () => Promise.resolve(),
-          delete: () => Promise.resolve()
-        }),
-        get: () => Promise.resolve({ docs: [] }),
-        add: () => Promise.resolve({ id: 'test-doc-id' }),
-        where: () => ({
-          get: () => Promise.resolve({ docs: [] })
-        }),
-        orderBy: () => ({
-          get: () => Promise.resolve({ docs: [] }),
-          limit: () => ({
-            get: () => Promise.resolve({ docs: [] })
-          })
-        }),
-        limit: () => ({
-          get: () => Promise.resolve({ docs: [] })
-        })
-      }),
-      batch: () => ({
-        set: () => {},
-        update: () => {},
-        delete: () => {},
-        commit: () => Promise.resolve()
-      })
-    }),
-    credential: {
-      cert: () => ({})
-    }
-  };
+  if (process.env.NODE_ENV === 'test') {
+    // firebase-admin not available in test environment via npx
+    // Create a minimal mock for testing
+    admin = {
+      apps: { length: 0 },
+     initializeApp: (config) => ({
+       options: config
+     }),
+     app: () => ({}),
+     auth: () => ({
+       verifyIdToken: (token) => Promise.resolve({
+         uid: 'test-user-123',
+         email: 'test@example.com'
+       })
+     }),
+     firestore: () => ({
+       collection: (name) => ({
+         doc: (id) => ({
+           get: () => Promise.resolve({ exists: false }),
+           set: () => Promise.resolve(),
+           update: () => Promise.resolve(),
+           delete: () => Promise.resolve()
+         }),
+         get: () => Promise.resolve({ docs: [] }),
+         add: () => Promise.resolve({ id: 'test-doc-id' }),
+         where: () => ({
+           get: () => Promise.resolve({ docs: [] })
+         }),
+         orderBy: () => ({
+           get: () => Promise.resolve({ docs: [] }),
+           limit: () => ({
+             get: () => Promise.resolve({ docs: [] })
+           })
+         }),
+         limit: () => ({
+           get: () => Promise.resolve({ docs: [] })
+         })
+       }),
+       batch: () => ({
+         set: () => {},
+         update: () => {},
+         delete: () => {},
+         commit: () => Promise.resolve()
+       })
+     }),
+     credential: {
+       cert: () => ({})
+     }
+   };
+ } else {
+   throw error;
+ }
 }
 const { logger } = require('../utils/logger');
 
