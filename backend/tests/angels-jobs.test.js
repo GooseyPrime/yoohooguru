@@ -1,19 +1,37 @@
-// Mock authentication middleware FIRST (before requiring the app)
+// Production-ready database connections - NO MOCKS
+const request = require('supertest');
+const app = require('../src/index');
+const { getFirestore } = require('../src/config/firebase');
+
+// Mock authentication middleware to inject test user - using static IDs for consistency
 jest.mock('../src/middleware/auth', () => ({
   requireAuth: (req, res, next) => {
-    req.user = { uid: 'test-user-123', email: 'test@example.com' };
+    req.user = { 
+      uid: 'test-angels-user-static', 
+      email: 'test-angels@example.com' 
+    };
     next();
   },
   optionalAuth: (req, res, next) => {
-    // Optional auth doesn't require a user for public endpoints
+    req.user = { 
+      uid: 'test-angels-user-static', 
+      email: 'test-angels@example.com' 
+    };
     next();
   },
   authenticateUser: (req, res, next) => {
-    req.user = { uid: 'test-user-123', email: 'test@example.com' };
+    req.user = { 
+      uid: 'test-angels-user-static', 
+      email: 'test-angels@example.com' 
+    };
     next();
   },
   requireRole: (roles) => (req, res, next) => {
-    req.user = { uid: 'test-user-123', email: 'test@example.com', role: 'admin' };
+    req.user = { 
+      uid: 'test-angels-user-static', 
+      email: 'test-angels@example.com', 
+      role: 'admin' 
+    };
     next();
   }
 }));
@@ -62,7 +80,7 @@ describe('Angels Jobs API', () => {
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.job.title).toBe(jobData.title);
-      expect(response.body.data.job.postedBy).toBe('test-user-123');
+      expect(response.body.data.job.postedBy).toBe(TEST_USER.uid);
       expect(response.body.data.job.status).toBe('open');
     });
 
@@ -125,7 +143,7 @@ describe('Angels Jobs API', () => {
   describe('GET /api/angels/jobs/:jobId', () => {
     it('should return job details with poster information', async () => {
       const response = await request(app)
-        .get('/api/angels/jobs/job-123')
+        .get(`/api/angels/jobs/${jobRef.id}`)
         .expect(200);
 
       expect(response.body.success).toBe(true);
@@ -135,7 +153,7 @@ describe('Angels Jobs API', () => {
 
     it('should return 404 for non-existent job', async () => {
       const response = await request(app)
-        .get('/api/angels/jobs/non-existent')
+        .get('/api/angels/jobs/non-existent-job-id')
         .expect(404);
 
       expect(response.body.success).toBe(false);
@@ -146,17 +164,18 @@ describe('Angels Jobs API', () => {
   describe('POST /api/angels/jobs/:jobId/apply', () => {
     it('should allow user to apply to a job', async () => {
       const applicationData = {
-        message: 'I have experience with gardening',
-        proposedRate: 20
+        message: 'I want to apply for this job',
+        proposedRate: 30
       };
 
       const response = await request(app)
-        .post('/api/angels/jobs/job-123/apply')
+        .post(`/api/angels/jobs/${jobRef.id}/apply`)
         .send(applicationData)
         .expect(200);
 
       expect(response.body.success).toBe(true);
-      expect(response.body.data.application.applicantId).toBe('test-user-123');
+      expect(response.body.data.application).toBeDefined();
+      expect(response.body.data.application.applicantId).toBe(TEST_USER.uid);
       expect(response.body.data.application.message).toBe(applicationData.message);
       expect(response.body.data.application.status).toBe('pending');
     });
@@ -192,7 +211,7 @@ describe('Angels Jobs API', () => {
 
       // Second application should fail
       const response = await request(app)
-        .post('/api/angels/jobs/job-123/apply')
+        .post(`/api/angels/jobs/${jobRef.id}/apply`)
         .send({ message: 'I want to apply again' })
         .expect(400);
 
