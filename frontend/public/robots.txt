@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://yoohoo.guru/sitemap.xml
+Sitemap: https://www.yoohoo.guru/sitemap.xml
 
 # Block admin and private routes
 Disallow: /admin/
