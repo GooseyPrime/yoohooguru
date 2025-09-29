@@ -30,8 +30,22 @@ describe('CORS Configuration', () => {
 
   describe('Production CORS Origins', () => {
     beforeEach(() => {
+      // Set production environment but ensure test patterns aren't prohibited
       process.env.NODE_ENV = 'production';
       delete process.env.CORS_ORIGIN_PRODUCTION;
+      // Set a valid production Firebase project ID to avoid validation failures
+      process.env.FIREBASE_PROJECT_ID = 'ceremonial-tea-470904-f3';
+      process.env.FIREBASE_API_KEY = 'test-api-key';
+      process.env.JWT_SECRET = 'test-jwt-secret';
+      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
+    });
+
+    afterEach(() => {
+      // Clean up environment variables
+      delete process.env.FIREBASE_PROJECT_ID;
+      delete process.env.FIREBASE_API_KEY;
+      delete process.env.JWT_SECRET;
+      delete process.env.STRIPE_WEBHOOK_SECRET;
     });
 
     it('should use default production origins when CORS_ORIGIN_PRODUCTION is not set', () => {
@@ -81,10 +95,23 @@ describe('CORS Configuration', () => {
     beforeEach(() => {
       process.env.NODE_ENV = 'production';
       delete process.env.CORS_ORIGIN_PRODUCTION;
+      // Set required environment variables for production validation
+      process.env.FIREBASE_PROJECT_ID = 'ceremonial-tea-470904-f3';
+      process.env.FIREBASE_API_KEY = 'test-api-key';
+      process.env.JWT_SECRET = 'test-jwt-secret';
+      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
       
       const { getConfig, getCorsOrigins } = require('../src/config/appConfig');
       const config = getConfig();
       corsFunction = getCorsOrigins(config);
+    });
+
+    afterEach(() => {
+      // Clean up environment variables
+      delete process.env.FIREBASE_PROJECT_ID;
+      delete process.env.FIREBASE_API_KEY;
+      delete process.env.JWT_SECRET;
+      delete process.env.STRIPE_WEBHOOK_SECRET;
     });
 
     it('should allow exact origin matches', (done) => {
