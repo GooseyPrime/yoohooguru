@@ -75,6 +75,27 @@ app.use(cors({
   origin: getCorsOrigins(config),
   credentials: true
 }));
+
+// Additional security headers for enhanced protection
+app.use((req, res, next) => {
+  // Prevent clickjacking attacks
+  res.setHeader('X-Frame-Options', 'DENY');
+  
+  // Enable XSS protection in browsers
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  
+  // Prevent MIME type sniffing
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  
+  // Control referrer information
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  
+  // Permissions policy for enhanced privacy
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  
+  next();
+});
+
 app.use(compression());
 app.use(cookieParser());
 

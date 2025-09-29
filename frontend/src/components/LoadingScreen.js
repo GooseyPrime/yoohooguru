@@ -1,5 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
+import { Zap } from 'lucide-react';
 
 const fadeIn = keyframes`
   from { opacity: 0; }
@@ -66,7 +67,9 @@ function LoadingScreen({ message = 'Loading your skill-sharing platform...' }) {
   return (
     <LoadingContainer>
       <LoadingContent>
-        <YoohooLogo>🎯</YoohooLogo>
+        <YoohooLogo>
+          <Zap size={32} color="white" />
+        </YoohooLogo>
         <LoadingText>{process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}</LoadingText>
         <LoadingSubtitle>{message}</LoadingSubtitle>
       </LoadingContent>
