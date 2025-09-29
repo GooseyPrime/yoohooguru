@@ -12,13 +12,21 @@ function SEOMetadata({
   structuredData 
 }) {
   useEffect(() => {
+    const finalUrl = window.location.href;
+    
     // Update document title
     if (title) {
       document.title = title;
     }
 
-    // Update meta description
+    // Update meta description and check for default descriptions
     updateMetaTag('description', description);
+    
+    // SEO Warning: Check for default or missing meta descriptions
+    if (!description || description.length < 50 || 
+        description.includes('Learn') && description.includes('skills') && description.includes('expert')) {
+      console.warn(`SEO Warning: Page ${finalUrl} is using the default meta description. This may harm indexing.`);
+    }
     
     // Update meta keywords
     if (keywords) {
@@ -39,9 +47,12 @@ function SEOMetadata({
     updateMetaName('twitter:description', ogDescription || description);
     updateMetaName('twitter:image', ogImage);
 
-    // Canonical URL
+    // Canonical URL - ensure it's set
     if (canonicalUrl) {
       updateCanonicalLink(canonicalUrl);
+    } else {
+      // Set current URL as canonical if not explicitly provided
+      updateCanonicalLink(finalUrl);
     }
 
     // Structured data

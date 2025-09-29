@@ -372,6 +372,12 @@ const DashboardUnderstudy = React.lazy(() => import('../screens/DashboardUnderst
 // Host routing - lazy loaded
 const HostSubdomainRouterGate = React.lazy(() => import('./HostSubdomainRouterGate'));
 
+// 404 Page - lazy loaded
+const NotFoundPage = React.lazy(() => import('../screens/NotFoundPage'));
+
+// Subdomain 404 Page - lazy loaded  
+const SubdomainNotFoundPage = React.lazy(() => import('../screens/SubdomainNotFoundPage'));
+
 // Protected Route Component
 function ProtectedRoute({ children }) {
   const { currentUser, loading } = useAuth();
@@ -462,7 +468,11 @@ function AppRouter() {
           <Route path="angels-list" element={<RedirectToMainSite path="/angels-list" />} />
           
           {/* Catch-all route for guru subdomains */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={
+            <Suspense fallback={<LoadingScreen />}>
+              <SubdomainNotFoundPage subdomain={subdomain} config={config} />
+            </Suspense>
+          } />
         </Route>
       </Routes>
     );
@@ -735,7 +745,11 @@ function AppRouter() {
         } />
 
         {/* Catch-all route */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <NotFoundPage />
+          </Suspense>
+        } />
       </Route>
     </Routes>
   );
