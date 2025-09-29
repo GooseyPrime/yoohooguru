@@ -549,20 +549,20 @@ function SubdomainLandingPage({ subdomain, config }) {
           
           <CTAButtons>
             <Button 
-              primary
+              variant="primary"
               onClick={() => handleCTAClick('get-started')}
               style={{ backgroundColor: primaryColor }}
             >
               Get Started
             </Button>
             <Button 
-              secondary
+              variant="secondary"
               onClick={() => handleCTAClick('view-content')}
             >
               View Learning Content
             </Button>
             <Button 
-              secondary
+              variant="secondary"
               onClick={() => handleCTAClick('book-session')}
             >
               Book a Session
