@@ -50,7 +50,16 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Inter var', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     -webkit-font-smoothing: antialiased; 
     -moz-osx-font-smoothing: grayscale;
+    /* Ensure premium dark theme is always enforced */
+    background-color: #0F0A1E !important;
+    color: #F8FAFC !important;
   }
+  
+  /* Force dark theme across all elements */
+  *, *::before, *::after {
+    border-color: var(--border);
+  }
+  
   * { box-sizing: border-box; }
   a { color: inherit; text-decoration: none; }
   .text-muted { color: var(--muted); }
