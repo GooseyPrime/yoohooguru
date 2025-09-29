@@ -173,11 +173,22 @@ describe('Angels Jobs API', () => {
     });
 
     it('should prevent duplicate applications', async () => {
+      // First, check if job exists
+      const jobCheck = await request(app)
+        .get('/api/angels/jobs/job-123');
+      
+      console.log('Job check status:', jobCheck.status);
+      console.log('Job check body:', jobCheck.body);
+
       // First application
-      await request(app)
+      const firstResponse = await request(app)
         .post('/api/angels/jobs/job-123/apply')
-        .send({ message: 'First application' })
-        .expect(200);
+        .send({ message: 'First application' });
+
+      console.log('First response status:', firstResponse.status);
+      console.log('First response body:', firstResponse.body);
+      
+      expect(firstResponse.status).toBe(200);
 
       // Second application should fail
       const response = await request(app)

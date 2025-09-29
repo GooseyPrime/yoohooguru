@@ -18,7 +18,7 @@ const PageContainer = styled.div`
 `;
 
 const HeroSection = styled.section`
-  background: linear-gradient(135deg, ${props => props.primaryColor}22, ${props => props.secondaryColor}22);
+  background: linear-gradient(135deg, ${props => props.$primaryColor}22, ${props => props.$secondaryColor}22);
   padding: 4rem 2rem;
   text-align: center;
   position: relative;
@@ -31,8 +31,8 @@ const HeroSection = styled.section`
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at 30% 20%, ${props => props.primaryColor}15, transparent 50%),
-                radial-gradient(circle at 70% 80%, ${props => props.secondaryColor}15, transparent 50%);
+    background: radial-gradient(circle at 30% 20%, ${props => props.$primaryColor}15, transparent 50%),
+                radial-gradient(circle at 70% 80%, ${props => props.$secondaryColor}15, transparent 50%);
     z-index: -1;
   }
 `;
@@ -58,7 +58,7 @@ const DomainIcon = styled.div`
 const Title = styled.h1`
   font-size: 3rem;
   font-weight: 700;
-  color: ${props => props.primaryColor};
+  color: ${props => props.$primaryColor};
   margin-bottom: 1rem;
   
   @media (max-width: 768px) {
@@ -84,13 +84,13 @@ const SkillTags = styled.div`
 `;
 
 const SkillTag = styled.span`
-  background: ${props => props.primaryColor}15;
-  color: ${props => props.primaryColor};
+  background: ${props => props.$primaryColor}15;
+  color: ${props => props.$primaryColor};
   padding: 0.5rem 1rem;
   border-radius: 25px;
   font-size: 0.9rem;
   font-weight: 500;
-  border: 2px solid ${props => props.primaryColor}30;
+  border: 2px solid ${props => props.$primaryColor}30;
   text-transform: capitalize;
 `;
 
@@ -135,7 +135,7 @@ const StatItem = styled.div`
   .value {
     font-size: 1.5rem;
     font-weight: 700;
-    color: ${props => props.primaryColor};
+    color: ${props => props.$primaryColor};
   }
 `;
 
@@ -230,7 +230,7 @@ const NewsCard = styled.article`
   border-radius: 8px;
   padding: 1.25rem;
   box-shadow: var(--shadow-sm);
-  border-left: 4px solid ${props => props.primaryColor};
+  border-left: 4px solid ${props => props.$primaryColor};
 `;
 
 const NewsTitle = styled.h3`
@@ -523,12 +523,12 @@ function SubdomainLandingPage({ subdomain, config }) {
       </Helmet>
 
       {/* Hero Section */}
-      <HeroSection primaryColor={primaryColor} secondaryColor={secondaryColor}>
+      <HeroSection $primaryColor={primaryColor} $secondaryColor={secondaryColor}>
         <HeroContent>
           <DomainIcon>
             <IconComponent size={64} color={primaryColor} />
           </DomainIcon>
-          <Title primaryColor={primaryColor}>
+          <Title $primaryColor={primaryColor}>
             Master {subdomain.charAt(0).toUpperCase() + subdomain.slice(1)} Skills
           </Title>
           <Subtitle>
@@ -537,7 +537,7 @@ function SubdomainLandingPage({ subdomain, config }) {
           
           <SkillTags>
             {config?.primarySkills?.slice(0, 5).map((skill, index) => (
-              <SkillTag key={index} primaryColor={primaryColor}>
+              <SkillTag key={index} $primaryColor={primaryColor}>
                 {skill.replace('-', ' ')}
               </SkillTag>
             ))}
@@ -573,25 +573,25 @@ function SubdomainLandingPage({ subdomain, config }) {
           {homeData?.stats && Object.keys(homeData.stats).length > 0 && (
             <StatsRow>
               {homeData.stats.totalPosts && (
-                <StatItem primaryColor={primaryColor}>
+                <StatItem $primaryColor={primaryColor}>
                   <div className="label">Learning Resources</div>
                   <div className="value">{homeData.stats.totalPosts}</div>
                 </StatItem>
               )}
               {homeData.stats.totalViews && (
-                <StatItem primaryColor={primaryColor}>
+                <StatItem $primaryColor={primaryColor}>
                   <div className="label">Views</div>
                   <div className="value">{homeData.stats.totalViews}</div>
                 </StatItem>
               )}
               {homeData.stats.monthlyVisitors && (
-                <StatItem primaryColor={primaryColor}>
+                <StatItem $primaryColor={primaryColor}>
                   <div className="label">Monthly Visitors</div>
                   <div className="value">{homeData.stats.monthlyVisitors}</div>
                 </StatItem>
               )}
               {homeData.stats.totalLeads && (
-                <StatItem primaryColor={primaryColor}>
+                <StatItem $primaryColor={primaryColor}>
                   <div className="label">Students Helped</div>
                   <div className="value">{homeData.stats.totalLeads}</div>
                 </StatItem>
@@ -647,7 +647,7 @@ function SubdomainLandingPage({ subdomain, config }) {
             
             <NewsGrid>
               {newsData.articles.map((article, index) => (
-                <NewsCard key={article.id || index} primaryColor={primaryColor}>
+                <NewsCard key={article.id || index} $primaryColor={primaryColor}>
                   <NewsTitle>
                     {article.url === '#' ? (
                       article.title
