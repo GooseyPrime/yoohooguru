@@ -79,6 +79,20 @@ const validateProductionFirebaseConfig = (config) => {
     );
   }
 
+  if (process.env.FIRESTORE_EMULATOR_HOST) {
+    throw new Error(
+      `Firestore emulator host is configured (${process.env.FIRESTORE_EMULATOR_HOST}) ` +
+      `but NODE_ENV is ${env}. Emulators are prohibited in ${env} environments.`
+    );
+  }
+
+  if (process.env.FIREBASE_AUTH_EMULATOR_HOST) {
+    throw new Error(
+      `Firebase Auth emulator host is configured (${process.env.FIREBASE_AUTH_EMULATOR_HOST}) ` +
+      `but NODE_ENV is ${env}. Emulators are prohibited in ${env} environments.`
+    );
+  }
+
   if (process.env.USE_MOCKS && process.env.USE_MOCKS !== 'false') {
     throw new Error(
       `USE_MOCKS is enabled (${process.env.USE_MOCKS}) but NODE_ENV is ${env}. ` +
@@ -92,7 +106,7 @@ const validateProductionFirebaseConfig = (config) => {
     throw new Error(`Firebase project ID is required in ${env} environment`);
   }
 
-  const prohibitedPatterns = ['demo', 'test', 'mock', 'localhost', 'emulator', 'example', 'your_', 'changeme'];
+  const prohibitedPatterns = ['demo', 'test', 'mock', 'localhost', 'emulator', 'example', 'your_', 'changeme', 'invalid'];
   const hasProhibitedPattern = prohibitedPatterns.some(pattern => 
     projectId.toLowerCase().includes(pattern)
   );
@@ -100,7 +114,8 @@ const validateProductionFirebaseConfig = (config) => {
   if (hasProhibitedPattern) {
     throw new Error(
       `Firebase project ID "${projectId}" contains prohibited pattern for ${env} environment. ` +
-      `Production and staging must use live Firebase projects only.`
+      `Production and staging must use live Firebase projects only. ` +
+      `Prohibited patterns: ${prohibitedPatterns.join(', ')}`
     );
   }
 
@@ -109,6 +124,25 @@ const validateProductionFirebaseConfig = (config) => {
     throw new Error(
       `Firebase project ID "${projectId}" has invalid format. ` +
       `Project IDs must be lowercase alphanumeric with hyphens only.`
+    );
+  }
+
+  // Validate required secrets for production/staging
+  const requiredSecrets = ['JWT_SECRET', 'FIREBASE_API_KEY'];
+  const missingSecrets = requiredSecrets.filter(secret => !process.env[secret]);
+  
+  if (missingSecrets.length > 0) {
+    throw new Error(
+      `Missing required environment variables for ${env} environment: ${missingSecrets.join(', ')}. ` +
+      `All secrets must be properly configured in ${env}.`
+    );
+  }
+
+  // Validate STRIPE_WEBHOOK_SECRET for production/staging
+  if (!process.env.STRIPE_WEBHOOK_SECRET) {
+    throw new Error(
+      `STRIPE_WEBHOOK_SECRET is required in ${env} environment. ` +
+      `Stripe webhooks will fail without proper webhook secret configuration.`
     );
   }
 
