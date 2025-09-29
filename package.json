@@ -30,7 +30,10 @@
     "deploy:backend": "cd backend && npm run deploy",
     "copilot:demo": "node scripts/copilot-agent.js --demo",
     "copilot:agent": "node scripts/copilot-agent.js",
-    "test:copilot-agent": "node scripts/test-copilot-agent.js"
+    "test:copilot-agent": "node scripts/test-copilot-agent.js",
+    "seed:test-db": "node seed-test-db.js",
+    "cleanup:test-db": "node scripts/cleanup-test-db.js",
+    "test:auth": "cd backend && npm test -- tests/test.auth.spec.js"
   },
   "keywords": [
     "skill-sharing",
@@ -51,7 +54,7 @@
     "backend"
   ],
   "engines": {
-    "node": ">=18.0.0",
+    "node": ">=20.0.0",
     "npm": ">=9.0.0"
   },
   "dependencies": {

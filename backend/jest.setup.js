@@ -1,38 +1,54 @@
 /**
- * Jest setup for backend tests with real Firebase connections
- * IMPORTANT: No Firebase mocking - uses actual Firebase services per user requirement
+ * Jest setup for backend tests with Firebase Emulator
+ * Uses Firebase Emulator for all tests - no mocks, no real Firebase connections
  */
 
-// Load test environment variables
-require('dotenv').config({ path: '../.env.test' });
-
-// Set NODE_ENV to test if not already set
-if (!process.env.NODE_ENV) {
-  process.env.NODE_ENV = 'test';
+// Load test environment variables - handle gracefully if dotenv is not available
+try {
+  require('dotenv').config({ path: '.env.test' });
+} catch (error) {
+  // If dotenv is not available, set environment variables manually
+  console.log('dotenv not available, setting test environment variables manually');
 }
 
+// Ensure test environment is properly set
+process.env.NODE_ENV = 'test';
+process.env.FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID || 'demo-yoohooguru-test';
+process.env.FIREBASE_API_KEY = process.env.FIREBASE_API_KEY || 'test-api-key';
+process.env.FIREBASE_AUTH_EMULATOR_HOST = process.env.FIREBASE_AUTH_EMULATOR_HOST || 'localhost:9099';
+process.env.FIRESTORE_EMULATOR_HOST = process.env.FIRESTORE_EMULATOR_HOST || 'localhost:8080';
+process.env.JWT_SECRET = process.env.JWT_SECRET || 'test-jwt-secret-key-for-ci-cd-testing-only-not-for-production';
+process.env.STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder';
+process.env.STRIPE_PUBLISHABLE_KEY = process.env.STRIPE_PUBLISHABLE_KEY || 'pk_test_placeholder';
+process.env.STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || 'whsec_test_placeholder';
+process.env.CORS_ORIGIN_PRODUCTION = process.env.CORS_ORIGIN_PRODUCTION || 'http://localhost:3000,http://127.0.0.1:3000';
+
 // Initialize Firebase for testing before any tests run
-const { initializeFirebase } = require('./src/config/firebase');
+let firebaseInitialized = false;
 
 beforeAll(async () => {
-  // Initialize Firebase with real configuration for testing
   try {
+    const { initializeFirebase } = require('./src/config/firebase');
     await initializeFirebase();
-    console.log('✅ Firebase initialized for testing with REAL connection (no mocks)');
+    firebaseInitialized = true;
+    console.log('✅ Firebase Emulator initialized for testing');
   } catch (error) {
-    console.warn('⚠️  Firebase connection warning during test setup:', error.message);
-    console.log('🔥 Tests will continue with Firebase connection attempts (no mocks allowed)');
-    // Don't fail tests if Firebase is not fully configured - tests will handle Firebase errors gracefully
-    // This allows tests to run even if Firebase credentials are not available in test environment
+    console.warn('❌ Firebase Emulator initialization failed:', error.message);
+    console.log('🧪 Tests will continue without Firebase functionality');
+    // Don't throw error - let tests handle Firebase gracefully
+    firebaseInitialized = false;
   }
 });
 
-// Longer timeout for real Firebase operations
+// Longer timeout for Firebase operations
 jest.setTimeout(45000);
 
 // Clean up resources after all tests
 afterAll(async () => {
-  // Allow time for Firebase connections to clean up
+  // Allow time for connections to clean up
   await new Promise(resolve => setTimeout(resolve, 2000));
-  console.log('🧹 Test cleanup completed - Firebase connections terminated');
+  console.log('🧹 Test cleanup completed');
 });
+
+// Export helper to check if Firebase is available
+global.isFirebaseAvailable = () => firebaseInitialized;

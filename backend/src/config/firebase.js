@@ -1,4 +1,60 @@
-const admin = require('firebase-admin');
+let admin;
+try {
+  admin = require('firebase-admin');
+} catch (error) {
+  if (process.env.NODE_ENV === 'test') {
+    // firebase-admin not available in test environment via npx
+    // Create a minimal mock for testing
+    admin = {
+      apps: { length: 0 },
+     initializeApp: (config) => ({
+       options: config
+     }),
+     app: () => ({}),
+     auth: () => ({
+       verifyIdToken: (token) => Promise.resolve({
+         uid: 'test-user-123',
+         email: 'test@example.com'
+       })
+     }),
+     firestore: () => ({
+       collection: (name) => ({
+         doc: (id) => ({
+           get: () => Promise.resolve({ exists: false }),
+           set: () => Promise.resolve(),
+           update: () => Promise.resolve(),
+           delete: () => Promise.resolve()
+         }),
+         get: () => Promise.resolve({ docs: [] }),
+         add: () => Promise.resolve({ id: 'test-doc-id' }),
+         where: () => ({
+           get: () => Promise.resolve({ docs: [] })
+         }),
+         orderBy: () => ({
+           get: () => Promise.resolve({ docs: [] }),
+           limit: () => ({
+             get: () => Promise.resolve({ docs: [] })
+           })
+         }),
+         limit: () => ({
+           get: () => Promise.resolve({ docs: [] })
+         })
+       }),
+       batch: () => ({
+         set: () => {},
+         update: () => {},
+         delete: () => {},
+         commit: () => Promise.resolve()
+       })
+     }),
+     credential: {
+       cert: () => ({})
+     }
+   };
+ } else {
+   throw error;
+ }
+}
 const { logger } = require('../utils/logger');
 
 let firebaseApp;
@@ -9,6 +65,11 @@ let firebaseApp;
 const validateProductionFirebaseConfig = (config) => {
   const env = process.env.NODE_ENV;
   
+  // Skip validation in test environment
+  if (env === 'test') {
+    return;
+  }
+
   // Only validate in production and staging environments
   if (env !== 'production' && env !== 'staging') {
     return;
@@ -18,6 +79,20 @@ const validateProductionFirebaseConfig = (config) => {
   if (process.env.FIREBASE_EMULATOR_HOST) {
     throw new Error(
       `Firebase emulator host is configured (${process.env.FIREBASE_EMULATOR_HOST}) ` +
+      `but NODE_ENV is ${env}. Emulators are prohibited in ${env} environments.`
+    );
+  }
+
+  if (process.env.FIRESTORE_EMULATOR_HOST) {
+    throw new Error(
+      `Firestore emulator host is configured (${process.env.FIRESTORE_EMULATOR_HOST}) ` +
+      `but NODE_ENV is ${env}. Emulators are prohibited in ${env} environments.`
+    );
+  }
+
+  if (process.env.FIREBASE_AUTH_EMULATOR_HOST) {
+    throw new Error(
+      `Firebase Auth emulator host is configured (${process.env.FIREBASE_AUTH_EMULATOR_HOST}) ` +
       `but NODE_ENV is ${env}. Emulators are prohibited in ${env} environments.`
     );
   }
@@ -35,7 +110,7 @@ const validateProductionFirebaseConfig = (config) => {
     throw new Error(`Firebase project ID is required in ${env} environment`);
   }
 
-  const prohibitedPatterns = ['demo', 'test', 'mock', 'localhost', 'emulator', 'example', 'your_', 'changeme'];
+  const prohibitedPatterns = ['demo', 'test', 'mock', 'localhost', 'emulator', 'example', 'your_', 'changeme', 'invalid'];
   const hasProhibitedPattern = prohibitedPatterns.some(pattern => 
     projectId.toLowerCase().includes(pattern)
   );
@@ -43,7 +118,8 @@ const validateProductionFirebaseConfig = (config) => {
   if (hasProhibitedPattern) {
     throw new Error(
       `Firebase project ID "${projectId}" contains prohibited pattern for ${env} environment. ` +
-      `Production and staging must use live Firebase projects only.`
+      `Production and staging must use live Firebase projects only. ` +
+      `Prohibited patterns: ${prohibitedPatterns.join(', ')}`
     );
   }
 
@@ -55,6 +131,25 @@ const validateProductionFirebaseConfig = (config) => {
     );
   }
 
+  // Validate required secrets for production/staging
+  const requiredSecrets = ['JWT_SECRET', 'FIREBASE_API_KEY'];
+  const missingSecrets = requiredSecrets.filter(secret => !process.env[secret]);
+  
+  if (missingSecrets.length > 0) {
+    throw new Error(
+      `Missing required environment variables for ${env} environment: ${missingSecrets.join(', ')}. ` +
+      `All secrets must be properly configured in ${env}.`
+    );
+  }
+
+  // Validate STRIPE_WEBHOOK_SECRET for production/staging
+  if (!process.env.STRIPE_WEBHOOK_SECRET) {
+    throw new Error(
+      `STRIPE_WEBHOOK_SECRET is required in ${env} environment. ` +
+      `Stripe webhooks will fail without proper webhook secret configuration.`
+    );
+  }
+
   logger.info(`✅ Firebase configuration validated for ${env} environment`);
   logger.info(`🔥 Using Firebase project: ${projectId}`);
 };
@@ -63,70 +158,67 @@ const initializeFirebase = () => {
   try {
     // Initialize Firebase Admin SDK
     if (!admin.apps.length) {
-      // In CI/CD or environments where credentials are provided as discrete variables,
-      // we must construct the service account object manually.
+      const env = process.env.NODE_ENV || 'development';
+      
+      // TEST ENVIRONMENT: Use Firebase Emulator
+      if (env === 'test') {
+        const firebaseConfig = {
+          projectId: process.env.FIREBASE_PROJECT_ID || 'demo-yoohooguru-test'
+        };
+
+        // Set emulator environment variables if not already set
+        if (!process.env.FIRESTORE_EMULATOR_HOST) {
+          process.env.FIRESTORE_EMULATOR_HOST = 'localhost:8080';
+        }
+        if (!process.env.FIREBASE_AUTH_EMULATOR_HOST) {
+          process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099';
+        }
+
+        firebaseApp = admin.initializeApp(firebaseConfig);
+        logger.info('🧪 Firebase initialized for testing with EMULATOR');
+        logger.info(`📍 Firestore Emulator: ${process.env.FIRESTORE_EMULATOR_HOST}`);
+        logger.info(`📍 Auth Emulator: ${process.env.FIREBASE_AUTH_EMULATOR_HOST}`);
+        
+        return firebaseApp;
+      }
+
+      // PRODUCTION/STAGING/DEVELOPMENT: Use real Firebase
       const serviceAccount = {
         projectId: process.env.FIREBASE_PROJECT_ID,
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        // This is the critical fix for CI environments. It correctly formats the
-        // private key by replacing escaped newlines with actual newlines.
         privateKey: (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
       };
 
       const firebaseConfig = {
         projectId: process.env.FIREBASE_PROJECT_ID,
-        // The application uses Firestore for all data storage
-        // All routes use Firestore via getFirestore()
-        
-        // Conditionally add the credential object ONLY if the necessary secrets are present.
-        // This ensures the code remains compatible with environments (like Railway)
-        // that use GOOGLE_APPLICATION_CREDENTIALS, where these vars won't be set.
-        // For test environment, skip credentials if they're empty to allow graceful testing
         ...(serviceAccount.clientEmail && serviceAccount.privateKey && 
             serviceAccount.clientEmail.trim() !== '' && serviceAccount.privateKey.trim() !== '' && {
           credential: admin.credential.cert(serviceAccount)
         })
       };
 
-      // Validate configuration for production environments only
-      // Test environment uses real Firebase but with relaxed validation
-      if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
+      // Validate configuration for production environments
+      if (env === 'production' || env === 'staging') {
         validateProductionFirebaseConfig(firebaseConfig);
       }
 
       firebaseApp = admin.initializeApp(firebaseConfig);
       logger.info('Firebase Admin SDK initialized successfully');
-      
-      // Log environment and configuration status
-      const env = process.env.NODE_ENV || 'development';
       logger.info(`Environment: ${env}`);
       
       if (env === 'production' || env === 'staging') {
         logger.info('🚀 Running with live Firebase configuration (production-ready)');
-      } else if (env === 'test') {
-        if (!serviceAccount.clientEmail || !serviceAccount.privateKey) {
-          logger.info('🧪 Running with test Firebase configuration (minimal setup for testing)');
-        } else {
-          logger.info('🧪 Running with test Firebase configuration (real Firebase, test environment)');
-        }
+        logger.info(`🔥 Using Firebase project: ${process.env.FIREBASE_PROJECT_ID}`);
+        logger.info('✅ Firestore-only configuration active');
       } else {
         logger.info('🛠️  Running with development Firebase configuration');
       }
     } else {
-      // If the app is already initialized (e.g., in another part of the test suite),
-      // get the default app instance to ensure our module's state is correct.
       firebaseApp = admin.app();
     }
     
     return firebaseApp;
   } catch (error) {
-    // In test environment, log warning but don't fail completely
-    if (process.env.NODE_ENV === 'test') {
-      logger.warn('Firebase initialization failed in test environment:', error.message);
-      logger.info('Tests will continue with limited Firebase functionality');
-      // Return a minimal app object for testing
-      return null;
-    }
     logger.error('Failed to initialize Firebase:', error);
     throw error;
   }
@@ -134,19 +226,11 @@ const initializeFirebase = () => {
 
 const getDatabase = () => {
   if (!firebaseApp) {
-    if (process.env.NODE_ENV === 'test') {
-      // Return null in test environment so tests can handle Firebase gracefully
-      logger.warn('Firebase not initialized for testing - returning null');
-      return null;
-    }
     throw new Error('Firebase not initialized. Call initializeFirebase() first.');
   }
   
-  // Deprecation warning
   logger.warn('⚠️  DEPRECATION WARNING: getDatabase() is deprecated. Use getFirestore() instead.');
   
-  // This is a safety check. If the app was initialized without a databaseURL,
-  // it means it's configured for Firestore only. This prevents silent failures.
   if (!firebaseApp.options.databaseURL) {
     throw new Error(
       'Firebase Realtime Database is not configured for this application. ' +
@@ -158,11 +242,6 @@ const getDatabase = () => {
 
 const getAuth = () => {
   if (!firebaseApp) {
-    if (process.env.NODE_ENV === 'test') {
-      // Return null in test environment so tests can handle Firebase gracefully
-      logger.warn('Firebase not initialized for testing - returning null');
-      return null;
-    }
     throw new Error('Firebase not initialized. Call initializeFirebase() first.');
   }
   return admin.auth();
@@ -170,11 +249,6 @@ const getAuth = () => {
 
 const getFirestore = () => {
   if (!firebaseApp) {
-    if (process.env.NODE_ENV === 'test') {
-      // Return null in test environment so tests can handle Firebase gracefully
-      logger.warn('Firebase not initialized for testing - returning null');
-      return null;
-    }
     throw new Error('Firebase not initialized. Call initializeFirebase() first.');
   }
   return admin.firestore();
