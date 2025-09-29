@@ -67,12 +67,13 @@ const Button = ({
   variant = 'primary',
   fullWidth = false,
   size = 'medium',
+  loading = false,
   disabled = false,
   type = 'button',
   onClick,
   ...props 
 }) => {
-  // Convert to transient props (prefixed with $)
+  // Convert to transient props (prefixed with $) to avoid DOM prop warnings
   const $primary = variant === 'primary';
   const $secondary = variant === 'secondary';
   const $fullWidth = fullWidth;
@@ -86,11 +87,12 @@ const Button = ({
       $fullWidth={$fullWidth}
       $small={$small}
       $large={$large}
-      disabled={disabled}
+      disabled={disabled || loading}
       type={type}
       onClick={onClick}
       {...props}
     >
+      {loading && <span>Loading...</span>}
       {children}
     </StyledButton>
   );
