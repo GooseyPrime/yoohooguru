@@ -15,7 +15,7 @@ jobs:
       has-artifacts: ${{ steps.check-artifacts.outputs.has-artifacts }}
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
 
     steps:
     - name: Checkout repository
@@ -42,25 +42,21 @@ jobs:
       run: cd frontend && npm run test:ci
 
     - name: Run backend tests
-      run: cd backend && npm test -- --detectOpenHandles --verbose
+      run: |
+        cd backend
+        npm install -g firebase-tools
+        npm test
       env:
         NODE_ENV: test
-        FIREBASE_PROJECT_ID: ceremonial-tea-470904-f3
-        FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
-        FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
-        FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
-        FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
-        FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
-        FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
-        FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
-        STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-        STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
-        STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
-        STRIPE_WEBHOOK_ID: ${{ secrets.STRIPE_WEBHOOK_ID }}
-        STRIPE_GURU_PASS_PRICE_ID: ${{ secrets.STRIPE_GURU_PASS_PRICE_ID }}
-        STRIPE_SKILL_VERIFICATION_PRICE_ID: ${{ secrets.STRIPE_SKILL_VERIFICATION_PRICE_ID }}
-        STRIPE_TRUST_SAFETY_PRICE_ID: ${{ secrets.STRIPE_TRUST_SAFETY_PRICE_ID }}
+        FIREBASE_PROJECT_ID: demo-yoohooguru-test
+        JWT_SECRET: test-jwt-secret-key-for-ci-cd-testing
+        STRIPE_SECRET_KEY: sk_test_placeholder
+        STRIPE_PUBLISHABLE_KEY: pk_test_placeholder
+        STRIPE_WEBHOOK_SECRET: whsec_test_placeholder
+        STRIPE_WEBHOOK_ID: we_test_placeholder
+        STRIPE_GURU_PASS_PRICE_ID: price_test_placeholder
+        STRIPE_SKILL_VERIFICATION_PRICE_ID: price_test_placeholder
+        STRIPE_TRUST_SAFETY_PRICE_ID: price_test_placeholder
 
     - name: Build frontend
       run: cd frontend && npm run build
