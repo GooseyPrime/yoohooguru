@@ -1,3 +1,4 @@
+
 const request = require('supertest');
 const app = require('../src/index');
 const { seedTestData, clearTestData } = require('./seed-test-data');
@@ -35,7 +36,7 @@ describe('Angels Jobs API', () => {
       expect(response.body.success).toBe(true);
       expect(response.body.data.job).toBeDefined();
       expect(response.body.data.job.title).toBe(jobData.title);
-      expect(response.body.data.job.postedBy).toBe('test-user-123');
+      expect(response.body.data.job.postedBy).toBe(TEST_USER.uid);
       expect(response.body.data.job.status).toBe('open');
     });
 
@@ -99,7 +100,7 @@ describe('Angels Jobs API', () => {
   describe('GET /api/angels/jobs/:jobId', () => {
     it('should return job details with poster information', async () => {
       const response = await request(app)
-        .get('/api/angels/jobs/job-123')
+        .get(`/api/angels/jobs/${jobRef.id}`)
         .expect(200);
 
       expect(response.body.success).toBe(true);
@@ -109,7 +110,7 @@ describe('Angels Jobs API', () => {
 
     it('should return 404 for non-existent job', async () => {
       const response = await request(app)
-        .get('/api/angels/jobs/non-existent')
+        .get('/api/angels/jobs/non-existent-job-id')
         .expect(404);
 
       expect(response.body.success).toBe(false);
@@ -120,8 +121,8 @@ describe('Angels Jobs API', () => {
   describe('POST /api/angels/jobs/:jobId/apply', () => {
     it('should allow user to apply to a job', async () => {
       const applicationData = {
-        message: 'I have experience with gardening',
-        proposedRate: 20
+        message: 'I want to apply for this job',
+        proposedRate: 30
       };
 
       const response = await request(app)
