@@ -42,7 +42,7 @@ describe('Stripe Webhooks', () => {
         .post('/api/webhooks/stripe')
         .set('stripe-signature', signature)
         .set('content-type', 'application/json')
-        .send(payload);
+        .send(Buffer.from(payload));
 
       expect(response.status).toBe(200);
       expect(response.body.received).toBe(true);
@@ -59,7 +59,7 @@ describe('Stripe Webhooks', () => {
         .post('/api/webhooks/stripe')
         .set('stripe-signature', 'invalid_signature')
         .set('content-type', 'application/json')
-        .send(payload);
+        .send(Buffer.from(payload));
 
       expect(response.status).toBe(400);
       expect(response.text).toContain('Webhook Error');
@@ -87,7 +87,7 @@ describe('Stripe Webhooks', () => {
         .post('/api/webhooks/stripe')
         .set('stripe-signature', signature)
         .set('content-type', 'application/json')
-        .send(payload);
+        .send(Buffer.from(payload));
 
       expect(response.status).toBe(200);
       expect(response.body.received).toBe(true);
@@ -126,7 +126,7 @@ describe('Stripe Webhooks', () => {
         .post('/api/webhooks/stripe')
         .set('stripe-signature', signature)
         .set('content-type', 'application/json')
-        .send(payload);
+        .send(Buffer.from(payload));
 
       expect(response.status).toBe(200);
       expect(response.body.received).toBe(true);
@@ -150,7 +150,7 @@ describe('Stripe Webhooks', () => {
         .post('/api/webhooks/stripe')
         .set('stripe-signature', signature)
         .set('content-type', 'application/json')
-        .send(payload);
+        .send(Buffer.from(payload));
 
       expect(response.status).toBe(200);
       expect(response.body.received).toBe(true);

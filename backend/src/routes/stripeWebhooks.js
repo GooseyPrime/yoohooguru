@@ -51,7 +51,16 @@ router.post('/', async (req, res) => {
       // In test environment, if we have a webhook secret, verify the signature
       // If no secret is configured, treat as valid for testing purposes
       if (endpointSecret && stripe && stripe.webhooks) {
-        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+        try {
+          event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+        } catch (err) {
+          logger.error('❌ Test environment signature verification failed:', err.message);
+          logger.error('Debug info - Body type:', typeof req.body);
+          logger.error('Debug info - Body length:', req.body ? req.body.length : 'undefined');
+          logger.error('Debug info - Signature:', sig);
+          logger.error('Debug info - Secret:', endpointSecret);
+          throw err;
+        }
       } else {
         // Parse the webhook payload directly for test environment
         event = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;

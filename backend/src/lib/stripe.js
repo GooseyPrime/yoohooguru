@@ -36,7 +36,9 @@ if (!process.env.STRIPE_SECRET_KEY) {
           }
           
           // Verify the signature matches what we expect
-          const payloadString = typeof payload === 'string' ? payload : JSON.stringify(payload);
+          // Convert buffer to string if needed
+          const payloadString = Buffer.isBuffer(payload) ? payload.toString() : 
+                               (typeof payload === 'string' ? payload : JSON.stringify(payload));
           const signingString = timestamp + '.' + payloadString;
           const expectedSignature = crypto.createHmac('sha256', secret).update(signingString).digest('hex');
           
@@ -45,7 +47,11 @@ if (!process.env.STRIPE_SECRET_KEY) {
           }
           
           // Return parsed event
-          return typeof payload === 'string' ? JSON.parse(payload) : payload;
+          try {
+            return JSON.parse(payloadString);
+          } catch (error) {
+            throw new Error('Invalid JSON payload');
+          }
         }
       }
     };
