@@ -108,6 +108,35 @@ async function seedTestData() {
     await db.collection('angel_jobs').doc(job.id).set(job);
   }
 
+  // Seed job_bookings collection for webhook testing
+  const testJobBookings = [
+    {
+      id: 'job-123',
+      status: 'pending',
+      bookedBy: 'test-user-123',
+      jobId: 'job-123',
+      createdAt: new Date().toISOString()
+    }
+  ];
+
+  for (const booking of testJobBookings) {
+    await db.collection('job_bookings').doc(booking.id).set(booking);
+  }
+
+  // Seed profiles collection with stripe account data for webhook testing
+  const testProfiles = [
+    {
+      uid: 'test-user-123',
+      stripe_account_id: 'acct_test_12345',
+      payouts_ready: false,
+      createdAt: new Date().toISOString()
+    }
+  ];
+
+  for (const profile of testProfiles) {
+    await db.collection('profiles').doc(profile.uid).set(profile);
+  }
+
   console.log('✅ Test data seeded successfully');
 }
 
@@ -117,7 +146,7 @@ async function seedTestData() {
 async function clearTestData() {
   const db = getFirestore();
   
-  const collections = ['users', 'angel_jobs', 'activity_logs'];
+  const collections = ['users', 'angel_jobs', 'activity_logs', 'job_bookings', 'profiles'];
   
   for (const collectionName of collections) {
     const snapshot = await db.collection(collectionName).get();

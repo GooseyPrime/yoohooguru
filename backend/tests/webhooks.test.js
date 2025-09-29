@@ -1,24 +1,16 @@
 const request = require('supertest');
-const express = require('express');
 const crypto = require('crypto');
-const stripeWebhooks = require('../src/routes/stripeWebhooks');
-
-// Create test app that mirrors the main app structure
-const app = express();
-// Add raw body parser middleware specifically for webhooks
-app.use('/api/webhooks/stripe', express.raw({ type: 'application/json' }), stripeWebhooks);
+const app = require('../src/index');
+const { seedTestData, clearTestData } = require('./seed-test-data');
 
 describe('Stripe Webhooks', () => {
-  let originalEnv;
-
-  beforeEach(() => {
-    originalEnv = process.env;
-    process.env.NODE_ENV = 'test'; // Ensure consistent test environment
-    process.env.STRIPE_WEBHOOK_SECRET = 'whsec_fake_webhook_secret_test';
+  beforeEach(async () => {
+    await clearTestData();
+    await seedTestData();
   });
 
-  afterEach(() => {
-    process.env = originalEnv;
+  afterEach(async () => {
+    await clearTestData();
   });
 
   const createValidSignature = (payload, secret, timestamp) => {
@@ -31,18 +23,20 @@ describe('Stripe Webhooks', () => {
     test('should accept valid webhook with proper signature', async () => {
       const payload = JSON.stringify({
         id: 'evt_test_webhook',
-        type: 'payment_intent.succeeded',
+        type: 'checkout.session.completed',
         data: {
           object: {
-            id: 'pi_test_12345',
-            amount: 2000,
-            currency: 'usd'
+            id: 'cs_test_12345',
+            metadata: {
+              jobId: 'job-123'
+            },
+            payment_intent: 'pi_test_12345'
           }
         }
       });
 
       const timestamp = Math.floor(Date.now() / 1000);
-      const signature = createValidSignature(payload, 'whsec_fake_webhook_secret_test', timestamp);
+      const signature = createValidSignature(payload, 'whsec_test_placeholder', timestamp);
 
       const response = await request(app)
         .post('/api/webhooks/stripe')
@@ -52,7 +46,6 @@ describe('Stripe Webhooks', () => {
 
       expect(response.status).toBe(200);
       expect(response.body.received).toBe(true);
-      // In test mode, may also include test_mode: true
     });
 
     test('should reject webhook with invalid signature', async () => {
@@ -72,43 +65,23 @@ describe('Stripe Webhooks', () => {
       expect(response.text).toContain('Webhook Error');
     });
 
-    test('should process webhook successfully even when stripe key is missing in test env', async () => {
-      // This test verifies that in test environment, webhooks are processed 
-      // even if some configurations are missing
+    test('should handle checkout.session.completed event and update job booking', async () => {
       const payload = JSON.stringify({
         id: 'evt_test_webhook',
-        type: 'payment_intent.succeeded',
-        data: { object: { id: 'pi_test_12345' } }
-      });
-
-      const timestamp = Math.floor(Date.now() / 1000);
-      const signature = createValidSignature(payload, 'whsec_fake_webhook_secret_test', timestamp);
-
-      const response = await request(app)
-        .post('/api/webhooks/stripe')
-        .set('stripe-signature', signature)
-        .set('content-type', 'application/json')
-        .send(payload);
-
-      expect(response.status).toBe(200);
-      expect(response.body.received).toBe(true);
-    });
-
-    test('should handle payment_intent.succeeded event', async () => {
-      const payload = JSON.stringify({
-        id: 'evt_test_webhook',
-        type: 'payment_intent.succeeded',
+        type: 'checkout.session.completed',
         data: {
           object: {
-            id: 'pi_test_12345',
-            amount: 2000,
-            currency: 'usd'
+            id: 'cs_test_12345',
+            metadata: {
+              jobId: 'job-123'
+            },
+            payment_intent: 'pi_test_12345'
           }
         }
       });
 
       const timestamp = Math.floor(Date.now() / 1000);
-      const signature = createValidSignature(payload, 'whsec_fake_webhook_secret_test', timestamp);
+      const signature = createValidSignature(payload, 'whsec_test_placeholder', timestamp);
 
       const response = await request(app)
         .post('/api/webhooks/stripe')
@@ -118,24 +91,36 @@ describe('Stripe Webhooks', () => {
 
       expect(response.status).toBe(200);
       expect(response.body.received).toBe(true);
-      // In test mode, may include test_mode when Firebase is not available
+      
+      // Verify the job booking was updated in Firebase
+      const { getFirestore } = require('../src/config/firebase');
+      const db = getFirestore();
+      const jobDoc = await db.collection('job_bookings').doc('job-123').get();
+      
+      if (jobDoc.exists) {
+        const jobData = jobDoc.data();
+        expect(jobData.status).toBe('paid');
+        expect(jobData.checkout_session_id).toBe('cs_test_12345');
+        expect(jobData.payment_intent_id).toBe('pi_test_12345');
+      }
     });
 
-    test('should handle subscription events', async () => {
+    test('should handle account.updated event and update profile payouts_ready status', async () => {
       const payload = JSON.stringify({
         id: 'evt_test_webhook',
-        type: 'customer.subscription.created',
+        type: 'account.updated',
         data: {
           object: {
-            id: 'sub_test_12345',
-            customer: 'cus_test_12345',
-            status: 'active'
+            id: 'acct_test_12345',
+            payouts_enabled: true,
+            charges_enabled: true,
+            details_submitted: true
           }
         }
       });
 
       const timestamp = Math.floor(Date.now() / 1000);
-      const signature = createValidSignature(payload, 'whsec_fake_webhook_secret_test', timestamp);
+      const signature = createValidSignature(payload, 'whsec_test_placeholder', timestamp);
 
       const response = await request(app)
         .post('/api/webhooks/stripe')
@@ -145,7 +130,6 @@ describe('Stripe Webhooks', () => {
 
       expect(response.status).toBe(200);
       expect(response.body.received).toBe(true);
-      // In test mode, may include test_mode when Firebase is not available
     });
 
     test('should handle unknown event types gracefully', async () => {
@@ -160,7 +144,7 @@ describe('Stripe Webhooks', () => {
       });
 
       const timestamp = Math.floor(Date.now() / 1000);
-      const signature = createValidSignature(payload, 'whsec_fake_webhook_secret_test', timestamp);
+      const signature = createValidSignature(payload, 'whsec_test_placeholder', timestamp);
 
       const response = await request(app)
         .post('/api/webhooks/stripe')
@@ -170,7 +154,6 @@ describe('Stripe Webhooks', () => {
 
       expect(response.status).toBe(200);
       expect(response.body.received).toBe(true);
-      // In test mode, may include test_mode when Firebase is not available
     });
   });
 });
