@@ -6,6 +6,11 @@ import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import Button from './Button';
 import LoadingSpinner from './LoadingSpinner';
+import { 
+  ChefHat, Music, Dumbbell, Laptop, Palette, MessageCircle, 
+  Briefcase, Sparkles, PenTool, Camera, Sprout, Wrench, 
+  Heart, Target 
+} from 'lucide-react';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -343,6 +348,27 @@ function SubdomainLandingPage({ subdomain, config }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Professional icon mapping using Lucide React icons
+  const getSubdomainIcon = (subdomain) => {
+    const iconMap = {
+      cooking: ChefHat,
+      music: Music,
+      fitness: Dumbbell,
+      tech: Laptop,
+      art: Palette,
+      language: MessageCircle,
+      business: Briefcase,
+      design: Sparkles,
+      writing: PenTool,
+      photography: Camera,
+      gardening: Sprout,
+      crafts: Wrench,
+      wellness: Heart
+    };
+    
+    return iconMap[subdomain] || Target;
+  };
+
   // All available subdomains for cross-domain links  
   const allSubdomains = {
     cooking: { icon: '🍳', category: 'culinary' },
@@ -474,7 +500,7 @@ function SubdomainLandingPage({ subdomain, config }) {
 
   const primaryColor = config?.theme?.primaryColor || '#6c5ce7';
   const secondaryColor = config?.theme?.secondaryColor || '#a29bfe';
-  const domainIcon = config?.theme?.icon || allSubdomains[subdomain]?.icon || '🎯';
+  const IconComponent = getSubdomainIcon(subdomain);
 
   return (
     <PageContainer>
@@ -499,7 +525,9 @@ function SubdomainLandingPage({ subdomain, config }) {
       {/* Hero Section */}
       <HeroSection primaryColor={primaryColor} secondaryColor={secondaryColor}>
         <HeroContent>
-          <DomainIcon>{domainIcon}</DomainIcon>
+          <DomainIcon>
+            <IconComponent size={64} color={primaryColor} />
+          </DomainIcon>
           <Title primaryColor={primaryColor}>
             Master {subdomain.charAt(0).toUpperCase() + subdomain.slice(1)} Skills
           </Title>

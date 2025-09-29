@@ -1,22 +1,24 @@
 const theme = {
   colors: {
-    bg: '#040118',
-    surface: '#0A0B1E',
-    elev: '#111225',
-    text: '#E8EDF2',
-    muted: '#9AA7B2',
-    border: '#1A1D35',
-    pri: '#00c78c',
-    succ: '#00c78c',
-    warn: '#F5B950',
-    err: '#F26D6D',
-    accent: '#00c78c'
+    // Premium deep indigo dark theme palette - sophisticated and professional
+    bg: '#0F0A1E',          // Deep indigo background - darker and more premium
+    surface: '#1A1530',     // Elevated surface with rich indigo undertone
+    elev: '#252142',        // Higher elevation surfaces with subtle indigo
+    text: '#F8FAFC',        // High contrast white text for maximum readability
+    muted: '#B4C6E7',       // Refined muted text with indigo tint
+    border: '#2D2754',      // Sophisticated border color maintaining indigo theme
+    pri: '#6366F1',         // Premium indigo primary color - professional and modern
+    succ: '#10B981',        // Success green that complements indigo palette
+    warn: '#F59E0B',        // Warning amber that works well with dark theme
+    err: '#EF4444',         // Error red with good contrast
+    accent: '#8B5CF6'       // Purple accent that harmonizes with indigo theme
   },
   radius: { sm: 6, md: 8, lg: 12, xl: 16 },
   shadow: {
-    card: '0 4px 20px rgba(0,0,0,.25)',
-    lg: '0 8px 32px rgba(0,0,0,.3)',
-    xl: '0 12px 48px rgba(0,0,0,.35)'
+    // Enhanced shadows for premium look on dark background
+    card: '0 4px 20px rgba(15,10,30,0.4)',
+    lg: '0 8px 32px rgba(15,10,30,0.5)',
+    xl: '0 12px 48px rgba(15,10,30,0.6)'
   },
   motion: {
     fast: '120ms', med: '180ms', slow: '240ms',

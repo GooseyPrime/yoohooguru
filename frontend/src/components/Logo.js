@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { Target } from 'lucide-react';
 
 const LogoContainer = styled(Link)`
   display: flex;
@@ -81,7 +82,7 @@ const Logo = ({
     <LogoContainer to={to} className={className}>
       {showIcon && (
         <LogoIcon style={{ fontSize: `${1.8 * sizeMultiplier}rem` }}>
-          🎯
+          <Target size={Math.round(28 * sizeMultiplier)} color="var(--pri)" />
         </LogoIcon>
       )}
       
