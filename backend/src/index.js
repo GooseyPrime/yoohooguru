@@ -10,7 +10,7 @@ const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 
-const { initializeFirebase } = require('./firebase/admin');
+const { initializeFirebase } = require('./config/firebase');
 const { getConfig, getCorsOrigins, validateConfig } = require('./config/appConfig');
 const { logger } = require('./utils/logger');
 const errorHandler = require('./middleware/errorHandler');

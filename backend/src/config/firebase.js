@@ -214,20 +214,11 @@ const initializeFirebase = () => {
         logger.info('🛠️  Running with development Firebase configuration');
       }
     } else {
-      // If the app is already initialized (e.g., in another part of the test suite),
-      // get the default app instance to ensure our module's state is correct.
       firebaseApp = admin.app();
     }
     
     return firebaseApp;
   } catch (error) {
-    // In test environment, log warning but don't fail completely
-    if (process.env.NODE_ENV === 'test') {
-      logger.warn('Firebase initialization failed in test environment:', error.message);
-      logger.info('Tests will continue with limited Firebase functionality');
-      // Return a minimal app object for testing
-      return null;
-    }
     logger.error('Failed to initialize Firebase:', error);
     throw error;
   }
