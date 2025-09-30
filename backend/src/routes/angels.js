@@ -268,7 +268,7 @@ router.post('/jobs/:jobId/apply', requireAuth, async (req, res) => {
       jobId,
       details: {
         jobTitle: job.title,
-        proposedRate
+        proposedRate: proposedRate || null
       },
       timestamp: new Date().toISOString()
     });
