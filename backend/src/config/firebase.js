@@ -12,14 +12,14 @@ try {
      }),
      app: () => ({}),
      auth: () => ({
-       verifyIdToken: (token) => Promise.resolve({
+       verifyIdToken: (_token) => Promise.resolve({
          uid: 'test-user-123',
          email: 'test@example.com'
        })
      }),
      firestore: () => ({
-       collection: (name) => ({
-         doc: (id) => ({
+       collection: (_name) => ({
+         doc: (_id) => ({
            get: () => Promise.resolve({ exists: false }),
            set: () => Promise.resolve(),
            update: () => Promise.resolve(),
@@ -205,9 +205,6 @@ const validateProductionFirebaseConfig = (config) => {
 
 const initializeFirebase = () => {
   try {
-    // Validate environment setup before Firebase initialization
-    validateTestEnvironmentSetup();
-    
     // Initialize Firebase Admin SDK
     if (!admin.apps.length) {
       const env = process.env.NODE_ENV || 'development';
@@ -233,6 +230,9 @@ const initializeFirebase = () => {
         
         return firebaseApp;
       }
+
+      // For non-test environments, validate that emulators aren't misconfigured
+      validateTestEnvironmentSetup();
 
       // PRODUCTION/STAGING/DEVELOPMENT: Use real Firebase
       const serviceAccount = {
