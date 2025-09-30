@@ -7,53 +7,53 @@ try {
     // Create a minimal mock for testing
     admin = {
       apps: { length: 0 },
-     initializeApp: (config) => ({
-       options: config
-     }),
-     app: () => ({}),
-     auth: () => ({
-       verifyIdToken: (_token) => Promise.resolve({
-         uid: 'test-user-123',
-         email: 'test@example.com'
-       })
-     }),
-     firestore: () => ({
-       collection: (_name) => ({
-         doc: (_id) => ({
-           get: () => Promise.resolve({ exists: false }),
-           set: () => Promise.resolve(),
-           update: () => Promise.resolve(),
-           delete: () => Promise.resolve()
-         }),
-         get: () => Promise.resolve({ docs: [] }),
-         add: () => Promise.resolve({ id: 'test-doc-id' }),
-         where: () => ({
-           get: () => Promise.resolve({ docs: [] })
-         }),
-         orderBy: () => ({
-           get: () => Promise.resolve({ docs: [] }),
-           limit: () => ({
-             get: () => Promise.resolve({ docs: [] })
-           })
-         }),
-         limit: () => ({
-           get: () => Promise.resolve({ docs: [] })
-         })
-       }),
-       batch: () => ({
-         set: () => {},
-         update: () => {},
-         delete: () => {},
-         commit: () => Promise.resolve()
-       })
-     }),
-     credential: {
-       cert: () => ({})
-     }
-   };
- } else {
-   throw error;
- }
+      initializeApp: (config) => ({
+        options: config
+      }),
+      app: () => ({}),
+      auth: () => ({
+        verifyIdToken: (token) => Promise.resolve({
+          uid: 'test-user-123',
+          email: 'test@example.com'
+        })
+      }),
+      firestore: () => ({
+        collection: (name) => ({
+          doc: (id) => ({
+            get: () => Promise.resolve({ exists: false }),
+            set: () => Promise.resolve(),
+            update: () => Promise.resolve(),
+            delete: () => Promise.resolve()
+          }),
+          get: () => Promise.resolve({ docs: [] }),
+          add: () => Promise.resolve({ id: 'test-doc-id' }),
+          where: () => ({
+            get: () => Promise.resolve({ docs: [] })
+          }),
+          orderBy: () => ({
+            get: () => Promise.resolve({ docs: [] }),
+            limit: () => ({
+              get: () => Promise.resolve({ docs: [] })
+            })
+          }),
+          limit: () => ({
+            get: () => Promise.resolve({ docs: [] })
+          })
+        }),
+        batch: () => ({
+          set: () => {},
+          update: () => {},
+          delete: () => {},
+          commit: () => Promise.resolve()
+        })
+      }),
+      credential: {
+        cert: () => ({})
+      }
+    };
+  } else {
+    throw error;
+  }
 }
 const { logger } = require('../utils/logger');
 
