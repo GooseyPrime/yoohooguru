@@ -20,7 +20,7 @@ GET /api/skills
 
 **Example:**
 ```bash
-curl "http://localhost:8080/api/skills?isModifiedMasters=true&tag=screen_reader_friendly"
+curl "http://localhost:3001/api/skills?isModifiedMasters=true&tag=screen_reader_friendly"
 ```
 
 ### Create Skill

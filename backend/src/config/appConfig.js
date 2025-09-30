@@ -11,7 +11,7 @@ const { logger } = require('../utils/logger');
 function getConfig() {
   const config = {
     // Server Configuration
-    port: process.env.PORT || 8080,
+    port: process.env.PORT || 3001,
     nodeEnv: process.env.NODE_ENV || 'development',
     
     // App Branding
