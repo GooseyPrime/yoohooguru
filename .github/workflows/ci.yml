@@ -49,6 +49,7 @@ jobs:
       env:
         NODE_ENV: test
         FIREBASE_PROJECT_ID: demo-yoohooguru-test
+        FIREBASE_API_KEY: AIzaSyDummy_Test_Key_For_CI_Testing
         JWT_SECRET: test-jwt-secret-key-for-ci-cd-testing
         STRIPE_SECRET_KEY: sk_test_placeholder
         STRIPE_PUBLISHABLE_KEY: pk_test_placeholder
