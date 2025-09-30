@@ -296,49 +296,29 @@ const HowItWorksPage = React.lazy(() => import('../screens/HowItWorksPage'));
 const PricingPage = React.lazy(() => import('../screens/PricingPage'));
 
 // Individual lazy loaded Coming Soon page components
-const HelpCenterPage = () => (
-  <Suspense fallback={<LoadingScreen />}>
-    {React.createElement(React.lazy(() => import('../screens/ComingSoonPages').then(module => ({ default: module.HelpCenterPage }))))}
-  </Suspense>
+const HelpCenterPageLazy = React.lazy(() => 
+  import('../screens/ComingSoonPages').then(module => ({ 
+    default: module.HelpCenterPage 
+  }))
 );
 
-const ContactUsPage = () => (
-  <Suspense fallback={<LoadingScreen />}>
-    {React.createElement(React.lazy(() => import('../screens/ComingSoonPages').then(module => ({ default: module.ContactUsPage }))))}
-  </Suspense>
+const ContactUsPageLazy = React.lazy(() => 
+  import('../screens/ComingSoonPages').then(module => ({ 
+    default: module.ContactUsPage 
+  }))
 );
 
-const SafetyPage = () => (
-  <Suspense fallback={<LoadingScreen />}>
-    {React.createElement(React.lazy(() => import('../screens/SafetyPage')))}
-  </Suspense>
-);
+const SafetyPageLazy = React.lazy(() => import('../screens/SafetyPage'));
 
 const BlogPage = React.lazy(() => import('../screens/BlogPage'));
 
-const SuccessStoriesPage = () => (
-  <Suspense fallback={<LoadingScreen />}>
-    {React.createElement(React.lazy(() => import('../screens/SuccessStoriesPage')))}
-  </Suspense>
-);
+const SuccessStoriesPageLazy = React.lazy(() => import('../screens/SuccessStoriesPage'));
 
-const EventsPage = () => (
-  <Suspense fallback={<LoadingScreen />}>
-    {React.createElement(React.lazy(() => import('../screens/EventsPage')))}
-  </Suspense>
-);
+const EventsPageLazy = React.lazy(() => import('../screens/EventsPage'));
 
-const ForumPage = () => (
-  <Suspense fallback={<LoadingScreen />}>
-    {React.createElement(React.lazy(() => import('../screens/ForumPage')))}
-  </Suspense>
-);
+const ForumPageLazy = React.lazy(() => import('../screens/ForumPage'));
 
-const MentorshipPage = () => (
-  <Suspense fallback={<LoadingScreen />}>
-    {React.createElement(React.lazy(() => import('../screens/MentorshipPage')))}
-  </Suspense>
-);
+const MentorshipPageLazy = React.lazy(() => import('../screens/MentorshipPage'));
 
 // Legal pages - lazy loaded
 const PrivacyPolicyPage = React.lazy(() => import('../screens/PrivacyPolicyPage'));
@@ -480,9 +460,10 @@ function AppRouter() {
 
   // Main site routes (existing functionality)
   return (
-    <Routes>
-      {/* Public routes */}
-      <Route path="/" element={<Layout />}>
+    <>
+      <Routes>
+        {/* Public routes */}
+        <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
         {/* SkillShare (public label) – technical route remains /skills */}
         <Route path="skills" element={
@@ -512,9 +493,21 @@ function AppRouter() {
         } />
         
         {/* Coming Soon pages */}
-        <Route path="help" element={<HelpCenterPage />} />
-        <Route path="contact" element={<ContactUsPage />} />
-        <Route path="safety" element={<SafetyPage />} />
+        <Route path="help" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <HelpCenterPageLazy />
+          </Suspense>
+        } />
+        <Route path="contact" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <ContactUsPageLazy />
+          </Suspense>
+        } />
+        <Route path="safety" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <SafetyPageLazy />
+          </Suspense>
+        } />
         <Route path="blog" element={
           <Suspense fallback={<LoadingScreen />}>
             <BlogPage />
@@ -525,10 +518,26 @@ function AppRouter() {
             <BlogPage />
           </Suspense>
         } />
-        <Route path="success-stories" element={<SuccessStoriesPage />} />
-        <Route path="events" element={<EventsPage />} />
-        <Route path="forum" element={<ForumPage />} />
-        <Route path="mentorship" element={<MentorshipPage />} />
+        <Route path="success-stories" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <SuccessStoriesPageLazy />
+          </Suspense>
+        } />
+        <Route path="events" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <EventsPageLazy />
+          </Suspense>
+        } />
+        <Route path="forum" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <ForumPageLazy />
+          </Suspense>
+        } />
+        <Route path="mentorship" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <MentorshipPageLazy />
+          </Suspense>
+        } />
         
         <Route path="liability-demo" element={
           <Suspense fallback={<LoadingScreen />}>
@@ -727,11 +736,6 @@ function AppRouter() {
           } 
         />
 
-        {/* Host Subdomain Router Gate - handles subdomain routing */}
-        <Suspense fallback={<LoadingScreen />}>
-          <HostSubdomainRouterGate />
-        </Suspense>
-
         {/* Admin routes (outside of Layout) */}
         <Route path="admin/login" element={
           <Suspense fallback={<LoadingScreen />}>
@@ -752,6 +756,12 @@ function AppRouter() {
         } />
       </Route>
     </Routes>
+    
+    {/* Host Subdomain Router Gate - handles subdomain routing */}
+    <Suspense fallback={<LoadingScreen />}>
+      <HostSubdomainRouterGate />
+    </Suspense>
+    </>
   );
 }
 
