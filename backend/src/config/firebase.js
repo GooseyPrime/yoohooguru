@@ -12,14 +12,14 @@ try {
       }),
       app: () => ({}),
       auth: () => ({
-        verifyIdToken: (token) => Promise.resolve({
+        verifyIdToken: (_token) => Promise.resolve({
           uid: 'test-user-123',
           email: 'test@example.com'
         })
       }),
       firestore: () => ({
-        collection: (name) => ({
-          doc: (id) => ({
+        collection: (_name) => ({
+          doc: (_id) => ({
             get: () => Promise.resolve({ exists: false }),
             set: () => Promise.resolve(),
             update: () => Promise.resolve(),
