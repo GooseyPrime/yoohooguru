@@ -49,15 +49,14 @@ jobs:
       env:
         NODE_ENV: test
         FIREBASE_PROJECT_ID: demo-yoohooguru-test
-        FIREBASE_API_KEY: AIzaSyDummy_Test_Key_For_CI_Testing
-        JWT_SECRET: test-jwt-secret-key-for-ci-cd-testing
-        STRIPE_SECRET_KEY: sk_test_placeholder
-        STRIPE_PUBLISHABLE_KEY: pk_test_placeholder
-        STRIPE_WEBHOOK_SECRET: whsec_test_placeholder
-        STRIPE_WEBHOOK_ID: we_test_placeholder
-        STRIPE_GURU_PASS_PRICE_ID: price_test_placeholder
-        STRIPE_SKILL_VERIFICATION_PRICE_ID: price_test_placeholder
-        STRIPE_TRUST_SAFETY_PRICE_ID: price_test_placeholder
+        JWT_SECRET: test-jwt-secret-key-for-ci-cd-testing-only-not-for-production
+        STRIPE_SECRET_KEY: sk_test_51AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQr
+        STRIPE_PUBLISHABLE_KEY: pk_test_51AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOp
+        STRIPE_WEBHOOK_SECRET: whsec_1AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWx
+        STRIPE_WEBHOOK_ID: we_1AbCdEfGhIjKlMnOpQrStUv
+        STRIPE_GURU_PASS_PRICE_ID: price_1AbCdEfGhIjKlMnOpQrStUvWxYzAbCd
+        STRIPE_SKILL_VERIFICATION_PRICE_ID: price_1SkillVerificationTestId1234567
+        STRIPE_TRUST_SAFETY_PRICE_ID: price_1TrustSafetyTestId1234567890
 
     - name: Build frontend
       run: cd frontend && npm run build
