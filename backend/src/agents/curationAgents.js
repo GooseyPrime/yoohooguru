@@ -1,5 +1,5 @@
 const cron = require('node-cron');
-const { getFirestore } = require('../firebase/admin');
+const { getFirestore } = require('../config/firebase');
 const { getAllSubdomains, getSubdomainConfig } = require('../config/subdomains');
 const { logger } = require('../utils/logger');
 
@@ -58,7 +58,7 @@ class NewsCurationAgent {
   validateDependencies() {
     try {
       // Check if Firebase is available
-      const { getFirestore } = require('../firebase/admin');
+      const { getFirestore } = require('../config/firebase');
       const db = getFirestore();
       if (!db) {
         throw new Error('Firestore is not available');
@@ -515,7 +515,7 @@ class BlogCurationAgent {
   validateDependencies() {
     try {
       // Check if Firebase is available
-      const { getFirestore } = require('../firebase/admin');
+      const { getFirestore } = require('../config/firebase');
       const db = getFirestore();
       if (!db) {
         throw new Error('Firestore is not available');

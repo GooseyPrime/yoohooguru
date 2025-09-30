@@ -18,8 +18,8 @@ jest.mock('node-cron', () => ({
   schedule: jest.fn(() => ({ destroy: jest.fn() }))
 }));
 
-// Mock Firebase admin
-jest.mock('../src/firebase/admin', () => ({
+// Mock Firebase config
+jest.mock('../src/config/firebase', () => ({
   getFirestore: jest.fn()
 }));
 
@@ -39,7 +39,7 @@ describe('Curation Agents Error Handling', () => {
 
   describe('startCurationAgents()', () => {
     it('should start agents successfully when all dependencies are available', () => {
-      const { getFirestore } = require('../src/firebase/admin');
+      const { getFirestore } = require('../src/config/firebase');
       const { getAllSubdomains } = require('../src/config/subdomains');
       
       getFirestore.mockReturnValue({}); // Mock Firestore instance
@@ -62,7 +62,7 @@ describe('Curation Agents Error Handling', () => {
     });
 
     it('should log detailed errors when Firebase is not available', () => {
-      const { getFirestore } = require('../src/firebase/admin');
+      const { getFirestore } = require('../src/config/firebase');
       
       getFirestore.mockImplementation(() => {
         throw new Error('Firebase not initialized. Call initializeFirebase() first.');
@@ -80,7 +80,7 @@ describe('Curation Agents Error Handling', () => {
     });
 
     it('should log detailed errors when subdomains are not configured', () => {
-      const { getFirestore } = require('../src/firebase/admin');
+      const { getFirestore } = require('../src/config/firebase');
       const { getAllSubdomains } = require('../src/config/subdomains');
       
       getFirestore.mockReturnValue({});
@@ -98,7 +98,7 @@ describe('Curation Agents Error Handling', () => {
     });
 
     it('should continue startup even when some agents fail', () => {
-      const { getFirestore } = require('../src/firebase/admin');
+      const { getFirestore } = require('../src/config/firebase');
       
       // Make Firebase fail for this test
       getFirestore.mockImplementation(() => {
@@ -114,7 +114,7 @@ describe('Curation Agents Error Handling', () => {
 
     it('should show development mode message in non-production environments', () => {
       process.env.NODE_ENV = 'development';
-      const { getFirestore } = require('../src/firebase/admin');
+      const { getFirestore } = require('../src/config/firebase');
       const { getAllSubdomains } = require('../src/config/subdomains');
       
       getFirestore.mockReturnValue({});
@@ -151,7 +151,7 @@ describe('Curation Agents Error Handling', () => {
 
   describe('Individual Agent Dependency Validation', () => {
     it('should validate NewsAgent dependencies correctly', () => {
-      const { getFirestore } = require('../src/firebase/admin');
+      const { getFirestore } = require('../src/config/firebase');
       const { getAllSubdomains } = require('../src/config/subdomains');
       
       getFirestore.mockReturnValue({});
@@ -165,7 +165,7 @@ describe('Curation Agents Error Handling', () => {
     });
 
     it('should validate BlogAgent dependencies correctly', () => {
-      const { getFirestore } = require('../src/firebase/admin');
+      const { getFirestore } = require('../src/config/firebase');
       const { getAllSubdomains } = require('../src/config/subdomains');
       
       getFirestore.mockReturnValue({});
@@ -179,7 +179,7 @@ describe('Curation Agents Error Handling', () => {
     });
 
     it('should throw detailed errors when Firebase is unavailable', () => {
-      const { getFirestore } = require('../src/firebase/admin');
+      const { getFirestore } = require('../src/config/firebase');
       
       getFirestore.mockImplementation(() => {
         throw new Error('Firebase not initialized. Call initializeFirebase() first.');
