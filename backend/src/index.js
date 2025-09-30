@@ -248,6 +248,14 @@ if (config.featureModifiedMasters) {
   app.use('/api/modified-masters', modifiedMastersRoutes);
 }
 
+// Non-API guru routes (for frontend direct access)
+// Mount guru routes at both /api/gurus and /gurus for frontend compatibility
+app.use('/gurus', gurusRoutes);
+
+// Non-API auth routes (for frontend direct access)
+// Mount auth routes at both /api/auth and /auth for frontend compatibility
+app.use('/auth', authRoutes);
+
 // API status endpoint
 app.get('/api', (req, res) => {
   res.setHeader('Cache-Control', 'public, max-age=300'); // Cache for 5 minutes
