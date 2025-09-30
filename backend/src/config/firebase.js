@@ -7,53 +7,53 @@ try {
     // Create a minimal mock for testing
     admin = {
       apps: { length: 0 },
-     initializeApp: (config) => ({
-       options: config
-     }),
-     app: () => ({}),
-     auth: () => ({
-       verifyIdToken: (token) => Promise.resolve({
-         uid: 'test-user-123',
-         email: 'test@example.com'
-       })
-     }),
-     firestore: () => ({
-       collection: (name) => ({
-         doc: (id) => ({
-           get: () => Promise.resolve({ exists: false }),
-           set: () => Promise.resolve(),
-           update: () => Promise.resolve(),
-           delete: () => Promise.resolve()
-         }),
-         get: () => Promise.resolve({ docs: [] }),
-         add: () => Promise.resolve({ id: 'test-doc-id' }),
-         where: () => ({
-           get: () => Promise.resolve({ docs: [] })
-         }),
-         orderBy: () => ({
-           get: () => Promise.resolve({ docs: [] }),
-           limit: () => ({
-             get: () => Promise.resolve({ docs: [] })
-           })
-         }),
-         limit: () => ({
-           get: () => Promise.resolve({ docs: [] })
-         })
-       }),
-       batch: () => ({
-         set: () => {},
-         update: () => {},
-         delete: () => {},
-         commit: () => Promise.resolve()
-       })
-     }),
-     credential: {
-       cert: () => ({})
-     }
-   };
- } else {
-   throw error;
- }
+      initializeApp: (config) => ({
+        options: config
+      }),
+      app: () => ({}),
+      auth: () => ({
+        verifyIdToken: (token) => Promise.resolve({
+          uid: 'test-user-123',
+          email: 'test@example.com'
+        })
+      }),
+      firestore: () => ({
+        collection: (name) => ({
+          doc: (id) => ({
+            get: () => Promise.resolve({ exists: false }),
+            set: () => Promise.resolve(),
+            update: () => Promise.resolve(),
+            delete: () => Promise.resolve()
+          }),
+          get: () => Promise.resolve({ docs: [] }),
+          add: () => Promise.resolve({ id: 'test-doc-id' }),
+          where: () => ({
+            get: () => Promise.resolve({ docs: [] })
+          }),
+          orderBy: () => ({
+            get: () => Promise.resolve({ docs: [] }),
+            limit: () => ({
+              get: () => Promise.resolve({ docs: [] })
+            })
+          }),
+          limit: () => ({
+            get: () => Promise.resolve({ docs: [] })
+          })
+        }),
+        batch: () => ({
+          set: () => {},
+          update: () => {},
+          delete: () => {},
+          commit: () => Promise.resolve()
+        })
+      }),
+      credential: {
+        cert: () => ({})
+      }
+    };
+  } else {
+    throw error;
+  }
 }
 const { logger } = require('../utils/logger');
 
@@ -205,9 +205,6 @@ const validateProductionFirebaseConfig = (config) => {
 
 const initializeFirebase = () => {
   try {
-    // Validate environment setup before Firebase initialization
-    validateTestEnvironmentSetup();
-    
     // Initialize Firebase Admin SDK
     if (!admin.apps.length) {
       const env = process.env.NODE_ENV || 'development';
@@ -233,6 +230,9 @@ const initializeFirebase = () => {
         
         return firebaseApp;
       }
+
+      // For non-test environments, validate that emulators aren't misconfigured
+      validateTestEnvironmentSetup();
 
       // PRODUCTION/STAGING/DEVELOPMENT: Use real Firebase
       const serviceAccount = {

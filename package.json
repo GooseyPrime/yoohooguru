@@ -47,7 +47,8 @@
   "author": "GooseyPrime",
   "license": "MIT",
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "jest": "^30.2.0"
   },
   "workspaces": [
     "frontend",
