@@ -262,7 +262,7 @@ router.post('/jobs/:jobId/apply', requireAuth, async (req, res) => {
     });
 
     // Create activity log entry
-    await db.collection('activity_logs').add({
+    const activityLogData = {
       type: 'angel_job_application',
       userId: req.user.uid,
       jobId,
@@ -271,7 +271,14 @@ router.post('/jobs/:jobId/apply', requireAuth, async (req, res) => {
         proposedRate: proposedRate || null
       },
       timestamp: new Date().toISOString()
-    });
+    };
+
+    // Only include proposedRate if it's defined
+    if (proposedRate !== undefined && proposedRate !== null) {
+      activityLogData.details.proposedRate = proposedRate;
+    }
+
+    await db.collection('activity_logs').add(activityLogData);
 
     logger.info(`User ${req.user.uid} applied to angel job ${jobId}`);
 

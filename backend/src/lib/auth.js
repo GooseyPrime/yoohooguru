@@ -76,7 +76,14 @@ const loginUser = async (email, password) => {
     };
 
   } catch (error) {
-    logger.error('Login error:', error);
+    // Only log unexpected errors, not validation errors which are expected behavior
+    if (error.message !== 'Email and password are required' && 
+        error.message !== 'Invalid credentials' && 
+        error.message !== 'Authentication service not available' &&
+        error.message !== 'Authentication service unavailable in test environment' &&
+        error.message !== 'Firebase not initialized. Call initializeFirebase() first.') {
+      logger.error('Login error:', error);
+    }
     throw error;
   }
 };

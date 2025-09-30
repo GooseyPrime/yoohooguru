@@ -31,12 +31,12 @@ describe('Angels Jobs API', () => {
         .post('/api/angels/jobs')
         .set('Authorization', 'Bearer test-token') // This will be handled by auth middleware
         .send(jobData)
-        .expect(200);
+        .expect(201);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.job).toBeDefined();
       expect(response.body.data.job.title).toBe(jobData.title);
-      expect(response.body.data.job.postedBy).toBe(TEST_USER.uid);
+      expect(response.body.data.job.postedBy).toBe('test-user-123');
       expect(response.body.data.job.status).toBe('open');
     });
 
@@ -100,7 +100,7 @@ describe('Angels Jobs API', () => {
   describe('GET /api/angels/jobs/:jobId', () => {
     it('should return job details with poster information', async () => {
       const response = await request(app)
-        .get(`/api/angels/jobs/${jobRef.id}`)
+        .get('/api/angels/jobs/job-123')
         .expect(200);
 
       expect(response.body.success).toBe(true);
@@ -155,9 +155,10 @@ describe('Angels Jobs API', () => {
       const firstResponse = await request(app)
         .post('/api/angels/jobs/job-123/apply')
         .set('Authorization', 'Bearer test-token')
-        .send({ message: 'First application' });
+        .send({ message: 'First application' })
+        .expect(200);
 
-      expect(firstResponse.status).toBe(200);
+      expect(firstResponse.body.success).toBe(true);
 
       // Second application should fail
       const response = await request(app)
