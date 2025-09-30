@@ -238,6 +238,7 @@ app.use('/api/gurus', gurusRoutes);
 app.use('/api/badges', require('./routes/badges'));
 app.use('/api/compliance', require('./routes/compliance'));
 app.use('/api/insurance', require('./routes/insurance'));
+app.use('/api/demo', require('./routes/demo'));
 app.use('/api/resources', resourcesRoutes);
 app.use('/api', locationsRoutes);
 

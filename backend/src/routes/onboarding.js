@@ -2,6 +2,7 @@ const express = require('express');
 const { authenticateUser } = require('../middleware/auth');
 const { getFirestore } = require('../config/firebase');
 const { logger } = require('../utils/logger');
+const { createUnifiedRequirements, getComplianceCategory } = require('../utils/requirementsMapper');
 
 const router = express.Router();
 
@@ -103,15 +104,31 @@ router.get('/requirements', authenticateUser, async (req, res) => {
       db.collection('profile_categories').doc(uid).get(),
       db.collection('category_requirements').get()
     ]);
+    
     const picks = Object.keys(picksSnap.exists ? picksSnap.data() : {});
     const reqs = {};
     reqsSnap.forEach(doc => {
       reqs[doc.id] = doc.data();
     });
-    const needed = picks.map(slug => ({ slug, requirements: reqs[slug] || {} }));
-    res.json({ success:true, data:{ needed }});
+
+    // Import compliance requirements to merge with legacy requirements
+    const { COMPLIANCE_REQUIREMENTS } = require('../config/complianceRequirements');
+    
+    const needed = picks.map(slug => {
+      const legacyRequirements = reqs[slug] || {};
+      
+      // Try to find corresponding compliance requirements
+      const complianceCategory = getComplianceCategory(slug);
+      const complianceRequirements = complianceCategory ? COMPLIANCE_REQUIREMENTS[complianceCategory] : null;
+      
+      // Create unified requirements that work with both systems
+      return createUnifiedRequirements(slug, legacyRequirements, complianceRequirements);
+    });
+    
+    res.json({ success: true, data: { needed }});
   } catch (e) {
-    res.status(500).json({ success:false, error:{ message:'Failed to load requirements' }});
+    logger.error('onboarding/requirements error:', e);
+    res.status(500).json({ success: false, error: { message: 'Failed to load requirements' }});
   }
 });
 

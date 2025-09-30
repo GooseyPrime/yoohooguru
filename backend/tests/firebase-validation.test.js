@@ -6,8 +6,18 @@ describe('Firebase Production Validation', () => {
   beforeEach(() => {
     originalEnv = { ...process.env };
     // Clear any existing Firebase apps for clean testing
-    const admin = require('firebase-admin');
-    admin.apps.forEach(app => app.delete());
+    try {
+      const admin = require('firebase-admin');
+      admin.apps.forEach(app => {
+        try {
+          app.delete();
+        } catch (error) {
+          // Ignore delete errors during cleanup
+        }
+      });
+    } catch (error) {
+      // firebase-admin may not be available in test environment
+    }
   });
 
   afterEach(() => {
@@ -46,6 +56,10 @@ describe('Firebase Production Validation', () => {
       // Clear credentials to test validation logic
       process.env.FIREBASE_CLIENT_EMAIL = '';
       process.env.FIREBASE_PRIVATE_KEY = '';
+      // Clear emulator settings for production test
+      delete process.env.FIRESTORE_EMULATOR_HOST;
+      delete process.env.FIREBASE_AUTH_EMULATOR_HOST;
+      delete process.env.FIREBASE_EMULATOR_HOST;
 
       expect(() => initializeFirebase()).toThrow(/contains prohibited pattern/);
     });
@@ -57,6 +71,10 @@ describe('Firebase Production Validation', () => {
       // Clear credentials to test validation logic
       process.env.FIREBASE_CLIENT_EMAIL = '';
       process.env.FIREBASE_PRIVATE_KEY = '';
+      // Clear emulator settings for production test
+      delete process.env.FIRESTORE_EMULATOR_HOST;
+      delete process.env.FIREBASE_AUTH_EMULATOR_HOST;
+      delete process.env.FIREBASE_EMULATOR_HOST;
 
       expect(() => initializeFirebase()).toThrow(/contains prohibited pattern/);
     });
@@ -68,6 +86,10 @@ describe('Firebase Production Validation', () => {
       // Clear credentials to test validation logic
       process.env.FIREBASE_CLIENT_EMAIL = '';
       process.env.FIREBASE_PRIVATE_KEY = '';
+      // Clear emulator settings for production test
+      delete process.env.FIRESTORE_EMULATOR_HOST;
+      delete process.env.FIREBASE_AUTH_EMULATOR_HOST;
+      delete process.env.FIREBASE_EMULATOR_HOST;
 
       expect(() => initializeFirebase()).toThrow(/contains prohibited pattern/);
     });
@@ -76,6 +98,9 @@ describe('Firebase Production Validation', () => {
       process.env.NODE_ENV = 'production';
       process.env.FIREBASE_PROJECT_ID = 'production-project';
       process.env.FIREBASE_DATABASE_URL = 'https://production-project.firebaseio.com';
+      // Clear emulator settings first, then set the specific one to test
+      delete process.env.FIRESTORE_EMULATOR_HOST;
+      delete process.env.FIREBASE_AUTH_EMULATOR_HOST;
       process.env.FIREBASE_EMULATOR_HOST = 'localhost:9000';
       // Clear credentials to test validation logic
       process.env.FIREBASE_CLIENT_EMAIL = '';
@@ -92,6 +117,10 @@ describe('Firebase Production Validation', () => {
       // Clear credentials to test validation logic
       process.env.FIREBASE_CLIENT_EMAIL = '';
       process.env.FIREBASE_PRIVATE_KEY = '';
+      // Clear emulator settings for production test
+      delete process.env.FIRESTORE_EMULATOR_HOST;
+      delete process.env.FIREBASE_AUTH_EMULATOR_HOST;
+      delete process.env.FIREBASE_EMULATOR_HOST;
 
       expect(() => initializeFirebase()).toThrow(/USE_MOCKS is enabled/);
     });
@@ -103,6 +132,14 @@ describe('Firebase Production Validation', () => {
       // Clear credentials to test without Firebase connection
       process.env.FIREBASE_CLIENT_EMAIL = '';
       process.env.FIREBASE_PRIVATE_KEY = '';
+      // Clear emulator settings for production test
+      delete process.env.FIRESTORE_EMULATOR_HOST;
+      delete process.env.FIREBASE_AUTH_EMULATOR_HOST;
+      delete process.env.FIREBASE_EMULATOR_HOST;
+      // Set required production secrets
+      process.env.JWT_SECRET = 'test-jwt-secret';
+      process.env.FIREBASE_API_KEY = 'test-api-key';
+      process.env.STRIPE_WEBHOOK_SECRET = 'test-webhook-secret';
 
       expect(() => initializeFirebase()).not.toThrow();
     });
@@ -114,17 +151,25 @@ describe('Firebase Production Validation', () => {
       // Clear credentials to test validation logic
       process.env.FIREBASE_CLIENT_EMAIL = '';
       process.env.FIREBASE_PRIVATE_KEY = '';
+      // Clear emulator settings for production test
+      delete process.env.FIRESTORE_EMULATOR_HOST;
+      delete process.env.FIREBASE_AUTH_EMULATOR_HOST;
+      delete process.env.FIREBASE_EMULATOR_HOST;
 
       expect(() => initializeFirebase()).toThrow(/project ID is required/);
     });
 
     test('should validate project ID format', () => {
       process.env.NODE_ENV = 'production';
-      process.env.FIREBASE_PROJECT_ID = 'Invalid_Project_ID';
+      process.env.FIREBASE_PROJECT_ID = 'Production_Project_With_Capitals';
       process.env.FIREBASE_DATABASE_URL = 'https://example.firebaseio.com';
       // Clear credentials to test validation logic
       process.env.FIREBASE_CLIENT_EMAIL = '';
       process.env.FIREBASE_PRIVATE_KEY = '';
+      // Clear emulator settings for production test
+      delete process.env.FIRESTORE_EMULATOR_HOST;
+      delete process.env.FIREBASE_AUTH_EMULATOR_HOST;
+      delete process.env.FIREBASE_EMULATOR_HOST;
 
       expect(() => initializeFirebase()).toThrow(/invalid format/);
     });
@@ -138,6 +183,10 @@ describe('Firebase Production Validation', () => {
       // Clear credentials to test validation logic
       process.env.FIREBASE_CLIENT_EMAIL = '';
       process.env.FIREBASE_PRIVATE_KEY = '';
+      // Clear emulator settings for staging test
+      delete process.env.FIRESTORE_EMULATOR_HOST;
+      delete process.env.FIREBASE_AUTH_EMULATOR_HOST;
+      delete process.env.FIREBASE_EMULATOR_HOST;
 
       expect(() => initializeFirebase()).toThrow(/contains prohibited pattern/);
     });
@@ -149,6 +198,14 @@ describe('Firebase Production Validation', () => {
       // Clear credentials to test validation logic
       process.env.FIREBASE_CLIENT_EMAIL = '';
       process.env.FIREBASE_PRIVATE_KEY = '';
+      // Clear emulator settings for staging test
+      delete process.env.FIRESTORE_EMULATOR_HOST;
+      delete process.env.FIREBASE_AUTH_EMULATOR_HOST;
+      delete process.env.FIREBASE_EMULATOR_HOST;
+      // Set required staging secrets
+      process.env.JWT_SECRET = 'test-jwt-secret';
+      process.env.FIREBASE_API_KEY = 'test-api-key';
+      process.env.STRIPE_WEBHOOK_SECRET = 'test-webhook-secret';
 
       expect(() => initializeFirebase()).not.toThrow();
     });
