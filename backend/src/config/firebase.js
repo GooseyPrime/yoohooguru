@@ -60,13 +60,62 @@ const { logger } = require('../utils/logger');
 let firebaseApp;
 
 /**
+ * Validates that test environment is properly configured for emulator use
+ * This prevents CI failures when emulators are used in non-test environments
+ */
+const validateTestEnvironmentSetup = () => {
+  const env = process.env.NODE_ENV;
+  
+  // Only run validation in CI or when emulator hosts are set
+  const isCI = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
+  const hasEmulatorHosts = process.env.FIRESTORE_EMULATOR_HOST || process.env.FIREBASE_AUTH_EMULATOR_HOST;
+  
+  if (!isCI && !hasEmulatorHosts) {
+    return; // Skip validation in local development without emulators
+  }
+  
+  // If emulators are configured, NODE_ENV must be 'test' or 'development'
+  if (hasEmulatorHosts && env !== 'test' && env !== 'development') {
+    logger.error('❌ ENVIRONMENT CONFIGURATION ERROR:');
+    logger.error(`   NODE_ENV is '${env}' but Firebase emulators are configured.`);
+    logger.error('   Emulators should only be used in test or development environments.');
+    logger.error('');
+    logger.error('   🔧 To fix this:');
+    logger.error('   1. Set NODE_ENV=test for testing with emulators');
+    logger.error('   2. Remove emulator environment variables for production/staging');
+    logger.error('');
+    logger.error('   📍 Current emulator configuration:');
+    if (process.env.FIRESTORE_EMULATOR_HOST) {
+      logger.error(`   - FIRESTORE_EMULATOR_HOST=${process.env.FIRESTORE_EMULATOR_HOST}`);
+    }
+    if (process.env.FIREBASE_AUTH_EMULATOR_HOST) {
+      logger.error(`   - FIREBASE_AUTH_EMULATOR_HOST=${process.env.FIREBASE_AUTH_EMULATOR_HOST}`);
+    }
+    
+    throw new Error(
+      `Environment configuration error: Emulator hosts configured with NODE_ENV=${env}. ` +
+      `Emulators are only allowed in test and development environments.`
+    );
+  }
+  
+  // Log successful validation for CI debugging
+  if (isCI && env === 'test') {
+    logger.info('✅ Test environment configuration validated for CI');
+    logger.info(`   NODE_ENV: ${env}`);
+    if (hasEmulatorHosts) {
+      logger.info('   Firebase emulators: configured');
+    }
+  }
+};
+
+/**
  * Validates Firebase configuration for production environments
  */
 const validateProductionFirebaseConfig = (config) => {
   const env = process.env.NODE_ENV;
   
-  // Skip validation in test environment
-  if (env === 'test') {
+  // Skip validation in test and development environments
+  if (env === 'test' || env === 'development') {
     return;
   }
 
@@ -75,7 +124,7 @@ const validateProductionFirebaseConfig = (config) => {
     return;
   }
 
-  // Check for prohibited emulator/mock settings
+  // Check for prohibited emulator/mock settings in production/staging ONLY
   if (process.env.FIREBASE_EMULATOR_HOST) {
     throw new Error(
       `Firebase emulator host is configured (${process.env.FIREBASE_EMULATOR_HOST}) ` +
@@ -156,6 +205,9 @@ const validateProductionFirebaseConfig = (config) => {
 
 const initializeFirebase = () => {
   try {
+    // Validate environment setup before Firebase initialization
+    validateTestEnvironmentSetup();
+    
     // Initialize Firebase Admin SDK
     if (!admin.apps.length) {
       const env = process.env.NODE_ENV || 'development';
