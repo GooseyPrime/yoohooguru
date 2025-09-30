@@ -14,7 +14,7 @@ Stripe webhooks were failing because of:
 ### Backend Configuration
 
 The webhook endpoint is now properly configured at:
-- **Development**: `http://localhost:3001/api/webhooks/stripe`
+- **Development**: `http://localhost:8080/api/webhooks/stripe`
 - **Production**: `https://api.yoohoo.guru/api/webhooks/stripe`
 
 ### Required Environment Variables
@@ -56,7 +56,7 @@ yoohoo.guru        → Railway backend (causes webhook failures)
 ### Webhook Health Check
 
 You can verify webhook configuration by checking:
-- **Development**: `http://localhost:3001/api/webhooks/stripe/health`
+- **Development**: `http://localhost:8080/api/webhooks/stripe/health`
 - **Production**: `https://api.yoohoo.guru/api/webhooks/stripe/health`
 
 Expected response:

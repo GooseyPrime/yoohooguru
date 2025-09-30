@@ -16,7 +16,7 @@ The platform includes two AI-powered curation agents:
 Check the current status of curation agents via the health endpoint:
 
 ```bash
-curl http://localhost:3001/health
+curl http://localhost:8080/health
 ```
 
 The response includes a `curationAgents` section with detailed status information:
@@ -46,7 +46,7 @@ The response includes a `curationAgents` section with detailed status informatio
 Agents status is also available via the admin API endpoint:
 
 ```bash
-curl http://localhost:3001/api/admin/agents-status
+curl http://localhost:8080/api/admin/agents-status
 ```
 
 ## Common Issues and Solutions

@@ -130,7 +130,7 @@ npm run dev
 
 # Or run separately:
 npm run dev:frontend  # React dev server on port 3000
-npm run dev:backend   # Express API server on port 3001
+npm run dev:backend   # Express API server on port 8080
 ```
 
 ### 4. Production Build
@@ -587,7 +587,7 @@ ls -la dist/  # Should contain index.html, static assets
 # Test backend startup
 cd ../backend  
 npm start
-# Should show: "Server running on port 3001"
+# Should show: "Server running on port 8080"
 ```
 
 **Step 3: Validate Environment Setup**
@@ -1199,7 +1199,7 @@ npm run install:all
 # Development
 npm run dev                 # Start both frontend and backend
 npm run dev:frontend        # Frontend only (port 3000)
-npm run dev:backend         # Backend only (port 3001)
+npm run dev:backend         # Backend only (port 8080)
 
 # Building
 npm run build               # Build both for production (see performance notes above)
