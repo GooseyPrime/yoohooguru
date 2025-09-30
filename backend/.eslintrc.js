@@ -16,6 +16,6 @@ module.exports = {
     'node/no-unsupported-features/es-syntax': 'off',
     'node/no-missing-import': 'off',
     'no-process-exit': 'off',
-    'no-unused-vars': 'warn',
+    'no-unused-vars': ['warn', { 'argsIgnorePattern': '^_' }],
   },
 };
