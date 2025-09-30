@@ -175,6 +175,24 @@ module.exports = (env, argv) => {
       hot: process.env.WEBPACK_DEV_HOT !== 'false',
       historyApiFallback: true,
       open: process.env.WEBPACK_DEV_OPEN !== 'false',
+      headers: {
+        // Configure Content Security Policy for Google Sign-in and Firebase in development
+        'Content-Security-Policy': [
+          "default-src 'self'",
+          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://js.stripe.com https://www.google.com https://gstatic.com https://accounts.google.com",
+          "script-src-elem 'self' 'unsafe-inline' https://apis.google.com https://js.stripe.com https://www.google.com https://gstatic.com https://accounts.google.com",
+          "frame-src 'self' https://accounts.google.com https://*.firebaseapp.com https://js.stripe.com https://www.google.com",
+          "connect-src 'self' ws://localhost:* https://accounts.google.com https://www.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://oauth2.googleapis.com https://api.stripe.com",
+          "img-src 'self' data: https: blob:",
+          "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+          "font-src 'self' https://fonts.gstatic.com"
+        ].join('; '),
+        // Additional security headers (relaxed for development)
+        'X-Frame-Options': 'SAMEORIGIN',
+        'X-XSS-Protection': '1; mode=block',
+        'X-Content-Type-Options': 'nosniff',
+        'Referrer-Policy': 'strict-origin-when-cross-origin'
+      },
     },
     optimization: {
       splitChunks: {
