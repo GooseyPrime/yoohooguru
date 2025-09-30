@@ -28,8 +28,28 @@ let firebaseInitialized = false;
 
 beforeAll(async () => {
   try {
-    const { initializeFirebase } = require('./src/config/firebase');
-    await initializeFirebase();
+    // Try to import Firebase configuration
+    let firebaseConfig;
+    try {
+      firebaseConfig = require('./src/config/firebase');
+    } catch (importError) {
+      console.warn('❌ Firebase module import failed:', importError.message);
+      console.log('🧪 Tests will continue without Firebase functionality');
+      firebaseInitialized = false;
+      return;
+    }
+
+    // Check if initializeFirebase function exists
+    if (typeof firebaseConfig.initializeFirebase !== 'function') {
+      console.warn('❌ initializeFirebase is not a function');
+      console.log('Available exports:', Object.keys(firebaseConfig));
+      console.log('🧪 Tests will continue without Firebase functionality');
+      firebaseInitialized = false;
+      return;
+    }
+
+    // Initialize Firebase
+    await firebaseConfig.initializeFirebase();
     firebaseInitialized = true;
     console.log('✅ Firebase Emulator initialized for testing');
   } catch (error) {
