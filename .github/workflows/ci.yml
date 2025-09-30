@@ -49,6 +49,8 @@ jobs:
       env:
         NODE_ENV: test
         FIREBASE_PROJECT_ID: demo-yoohooguru-test
+        FIRESTORE_EMULATOR_HOST: localhost:8080
+        FIREBASE_AUTH_EMULATOR_HOST: localhost:9099
         JWT_SECRET: test-jwt-secret-key-for-ci-cd-testing-only-not-for-production
         STRIPE_SECRET_KEY: sk_test_51AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQr
         STRIPE_PUBLISHABLE_KEY: pk_test_51AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOp
