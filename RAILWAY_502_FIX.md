@@ -83,11 +83,33 @@ All changes are covered by tests:
 ✅ Server logs should show "Backend server running on 0.0.0.0:3001"  
 ⚠️ Chrome extension errors will continue (normal behavior)
 
+## Additional Fixes Applied (Sept 30, 2025)
+
+### 4. Missing Non-API Routes (FIXED)
+**Problem**: Frontend making requests to `/gurus/` and `/auth/` routes (without `/api/` prefix) causing 502 errors  
+**Cause**: Routes only mounted under `/api/` prefix, but frontend expected both patterns  
+**Fix**: Mounted guru and auth routes at both API and non-API paths:
+
+```javascript
+// Mount routes at both API and non-API paths for frontend compatibility
+app.use('/api/gurus', gurusRoutes);
+app.use('/gurus', gurusRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
+```
+
+### 5. CORS OPTIONS Handling (VERIFIED)
+**Problem**: All failing requests were OPTIONS (CORS preflight) requests  
+**Analysis**: CORS middleware was correctly configured, issue was missing route handlers  
+**Result**: With new route handlers, OPTIONS requests now return 204 (success) instead of 502
+
 ## Next Steps
 After Railway picks up this deployment, verify with:
 ```bash
 curl -I https://api.yoohoo.guru/health
 curl -I https://api.yoohoo.guru/favicon.ico  
+curl -X OPTIONS -H "Origin: https://yoohoo.guru" https://api.yoohoo.guru/gurus/subdomain/home
+curl -X OPTIONS -H "Origin: https://yoohoo.guru" https://api.yoohoo.guru/auth/profile
 ```
 
-Both should return 200 status codes.
+All should return 200/204 status codes instead of 502.
