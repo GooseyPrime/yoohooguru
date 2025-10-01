@@ -22,6 +22,10 @@ dist/
 build/
 .webpack-cache/
 
+# Report directories (orphan detection, etc.)
+orphan-reports/
+ci-orphan-reports/
+
 # Logs
 *.log
 npm-debug.log*
