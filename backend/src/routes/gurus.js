@@ -1,7 +1,6 @@
 const express = require('express');
 const { getFirestore } = require('../config/firebase');
 const admin = require('firebase-admin');
-const { requireGuru } = require('../middleware/subdomainHandler');
 const { getSubdomainConfig, isValidSubdomain } = require('../config/subdomains');
 const { logger } = require('../utils/logger');
 const { v4: uuidv4 } = require('uuid');
