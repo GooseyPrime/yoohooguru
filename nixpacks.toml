@@ -17,6 +17,5 @@ cmd = "cd backend && npm start"
 [variables]
 SERVE_FRONTEND = "false"
 NODE_ENV = "production"
-PORT = "3001"
 # FIX: Ensure server binds to all interfaces for Railway compatibility
 HOST = "0.0.0.0"
