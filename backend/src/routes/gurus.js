@@ -2,13 +2,101 @@ const express = require('express');
 const { getFirestore } = require('../config/firebase');
 const admin = require('firebase-admin');
 const { requireGuru } = require('../middleware/subdomainHandler');
+const { getSubdomainConfig, isValidSubdomain } = require('../config/subdomains');
 const { logger } = require('../utils/logger');
 const { v4: uuidv4 } = require('uuid');
 
 const router = express.Router();
 
-// Apply subdomain requirement to all routes
-router.use(requireGuru);
+/**
+ * Middleware to validate subdomain parameter in URL path
+ * This handles cases where subdomain comes from URL path rather than host header
+ */
+function validateSubdomainParam(req, res, next) {
+  const { subdomain } = req.params;
+  
+  if (!subdomain) {
+    return res.status(400).json({
+      error: 'Missing subdomain parameter',
+      message: 'Subdomain parameter is required'
+    });
+  }
+
+  // Check if it's a valid guru subdomain
+  if (!isValidSubdomain(subdomain)) {
+    logger.warn(`Invalid guru subdomain requested: ${subdomain}`, {
+      url: req.originalUrl,
+      ip: req.ip,
+      userAgent: req.get('User-Agent')
+    });
+    
+    return res.status(404).json({
+      error: 'Invalid guru subdomain',
+      message: `Guru subdomain "${subdomain}" not found`,
+      availableSubdomains: Object.keys(require('../config/subdomains').subdomainConfig)
+    });
+  }
+
+  // Set guru context based on URL parameter
+  const config = getSubdomainConfig(subdomain);
+  req.guru = {
+    subdomain,
+    config,
+    isGuru: true,
+    isMainSite: false,
+    source: 'url-param' // Indicate this came from URL parameter, not host
+  };
+
+  next();
+}
+
+// Apply subdomain parameter validation to routes with subdomain in path
+// This targets the problematic patterns from the error logs
+router.use('/:subdomain/home', validateSubdomainParam);
+router.use('/:subdomain/services', validateSubdomainParam);
+router.use('/:subdomain/posts', validateSubdomainParam);
+router.use('/:subdomain/posts/:slug', validateSubdomainParam);
+router.use('/:subdomain/leads', validateSubdomainParam);
+router.use('/:subdomain/about', validateSubdomainParam);
+
+// For the news route, we need a different approach since it's /news/:subdomain
+router.use('/news/:subdomain', (req, res, next) => {
+  const { subdomain } = req.params;
+  
+  if (!subdomain) {
+    return res.status(400).json({
+      error: 'Missing subdomain parameter',
+      message: 'Subdomain parameter is required'
+    });
+  }
+
+  // Check if it's a valid guru subdomain
+  if (!isValidSubdomain(subdomain)) {
+    logger.warn(`Invalid guru subdomain requested in news: ${subdomain}`, {
+      url: req.originalUrl,
+      ip: req.ip,
+      userAgent: req.get('User-Agent')
+    });
+    
+    return res.status(404).json({
+      error: 'Invalid guru subdomain',
+      message: `Guru subdomain "${subdomain}" not found`,
+      availableSubdomains: Object.keys(require('../config/subdomains').subdomainConfig)
+    });
+  }
+
+  // Set guru context based on URL parameter
+  const config = getSubdomainConfig(subdomain);
+  req.guru = {
+    subdomain,
+    config,
+    isGuru: true,
+    isMainSite: false,
+    source: 'url-param' // Indicate this came from URL parameter, not host
+  };
+
+  next();
+});
 
 /**
  * GET /:subdomain/home
