@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import Button from '../components/Button';
 import SEOMetadata from '../components/SEOMetadata';
+import AuthenticationPrompt from '../components/auth/AuthenticationPrompt';
 import toast from 'react-hot-toast';
 
 const Container = styled.div`
@@ -301,7 +302,7 @@ const ContactInfo = styled.div`
 `;
 
 function ProfilePage() {
-  const { user, isAuthenticated } = useAuth();
+  const { currentUser: user } = useAuth();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
@@ -359,23 +360,14 @@ function ProfilePage() {
     canonicalUrl: window.location.href
   };
 
-  if (!isAuthenticated) {
+  if (!user) {
     return (
-      <Container>
-        <Content>
-          <DashboardCard>
-            <h2>Please Log In</h2>
-            <p>You need to be logged in to view your profile.</p>
-            <Button 
-              variant="primary" 
-              onClick={() => window.location.href = '/login'}
-              style={{ marginTop: '1rem' }}
-            >
-              Log In
-            </Button>
-          </DashboardCard>
-        </Content>
-      </Container>
+      <AuthenticationPrompt
+        title="Sign In Required"
+        subtitle="Access your personal profile, manage your skills, track earnings, and connect with your community."
+        returnPath="/profile"
+        message="Sign in to access your profile"
+      />
     );
   }
 
