@@ -8,11 +8,11 @@ jest.mock('../src/config/firebase', () => ({
   getFirestore: jest.fn(() => ({
     collection: jest.fn(() => ({
       doc: jest.fn(() => ({
-        get: jest.fn(),
-        set: jest.fn(),
-        update: jest.fn()
+        get: jest.fn().mockResolvedValue({ exists: false }),
+        set: jest.fn().mockResolvedValue(),
+        update: jest.fn().mockResolvedValue()
       })),
-      get: jest.fn()
+      get: jest.fn().mockResolvedValue({ forEach: jest.fn() })
     }))
   }))
 }));
@@ -34,15 +34,23 @@ jest.mock('../src/utils/logger', () => ({
 
 describe('Onboarding Requirements Endpoint', () => {
   let app;
-  let mockFirestore;
+  let mockDb;
 
   beforeEach(() => {
+    jest.clearAllMocks();
+    
+    // Create a fresh mock for each test
+    mockDb = {
+      collection: jest.fn()
+    };
+    
+    // Mock the Firebase config to return our fresh mock
+    const { getFirestore } = require('../src/config/firebase');
+    getFirestore.mockReturnValue(mockDb);
+    
     app = express();
     app.use(express.json());
     app.use('/onboarding', onboardingRoutes);
-
-    const { getFirestore } = require('../src/config/firebase');
-    mockFirestore = getFirestore();
   });
 
   afterEach(() => {
@@ -83,10 +91,10 @@ describe('Onboarding Requirements Endpoint', () => {
       ];
 
       // Setup mocks
-      mockFirestore.collection.mockImplementation((collectionName) => {
+      mockDb.collection.mockImplementation((collectionName) => {
         if (collectionName === 'profile_categories') {
           return {
-            doc: () => ({
+            doc: (uid) => ({
               get: () => Promise.resolve({
                 exists: true,
                 data: () => mockCategoriesData
@@ -108,9 +116,6 @@ describe('Onboarding Requirements Endpoint', () => {
 
       const response = await request(app)
         .get('/onboarding/requirements');
-
-      console.log('Response status:', response.status);
-      console.log('Response body:', response.body);
       
       expect(response.status).toBe(200);
 
@@ -137,10 +142,10 @@ describe('Onboarding Requirements Endpoint', () => {
         'unknown-category': { selectedAt: '2024-01-01T00:00:00.000Z' }
       };
 
-      mockFirestore.collection.mockImplementation((collectionName) => {
+      mockDb.collection.mockImplementation((collectionName) => {
         if (collectionName === 'profile_categories') {
           return {
-            doc: () => ({
+            doc: (uid) => ({
               get: () => Promise.resolve({
                 exists: true,
                 data: () => mockCategoriesData
@@ -184,7 +189,7 @@ describe('Onboarding Requirements Endpoint', () => {
     });
 
     test('should handle database errors gracefully', async () => {
-      mockFirestore.collection.mockImplementation(() => {
+      mockDb.collection.mockImplementation(() => {
         throw new Error('Database connection failed');
       });
 
