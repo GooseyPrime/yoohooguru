@@ -1,34 +1,3 @@
-// Test data that can be overridden per test
-let mockTestData = {
-  profileCategories: {
-    'tutoring': { selectedAt: '2024-01-01T00:00:00.000Z' },
-    'handyman': { selectedAt: '2024-01-01T00:00:00.000Z' }
-  },
-  categoryRequirements: [
-    {
-      id: 'tutoring',
-      data: () => ({
-        slug: 'tutoring',
-        requires_license: false,
-        requires_gl: false,
-        requires_background_check: false,
-        notes: 'Guardian present for minors (MVP).'
-      })
-    },
-    {
-      id: 'handyman',
-      data: () => ({
-        slug: 'handyman',
-        requires_license: false,
-        requires_gl: true,
-        min_gl_per_occurrence_cents: 100000000,
-        min_gl_aggregate_cents: 200000000,
-        notes: 'No gas, roofing, or structural work.'
-      })
-    }
-  ],
-  shouldThrowError: false
-};
 
 // Mock Firebase - default setup that will be overridden in tests
 jest.mock('../src/config/firebase', () => ({
@@ -199,8 +168,8 @@ describe('Onboarding Requirements Endpoint', () => {
     });
 
     test('should handle categories with no legacy requirements', async () => {
-      // Override test data to have unknown category with no legacy requirements
-      mockTestData.profileCategories = {
+      // Mock user selected categories with unknown category
+      const mockCategoriesData = {
         'unknown-category': { selectedAt: '2024-01-01T00:00:00.000Z' }
       };
 
