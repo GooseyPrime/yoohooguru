@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { User, BookOpen, Calendar, Users } from 'lucide-react';
+import { User, BookOpen, Calendar, Users, CheckCircle } from 'lucide-react';
 import Button from '../components/Button';
 import SkillMatching from '../components/SkillMatching';
 
@@ -146,8 +147,81 @@ const ComingSoonFeatures = styled.div`
   }
 `;
 
+const BookingAlert = styled.div`
+  background: ${props => props.theme.colors.surface};
+  border: 1px solid ${props => props.theme.colors.pri};
+  border-radius: ${props => props.theme.radius.lg}px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  .icon {
+    color: ${props => props.theme.colors.pri};
+    flex-shrink: 0;
+  }
+
+  .content {
+    flex: 1;
+  }
+
+  h3 {
+    color: ${props => props.theme.colors.text};
+    margin: 0 0 0.5rem 0;
+    font-size: var(--text-lg);
+  }
+
+  p {
+    color: ${props => props.theme.colors.muted};
+    margin: 0 0 1rem 0;
+    line-height: 1.5;
+  }
+
+  .actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+`;
+
 function DashboardPage() {
   const { currentUser } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [bookingState, setBookingState] = useState(null);
+
+  // Handle incoming booking/action state from navigation
+  useEffect(() => {
+    if (location.state) {
+      const { action, category, message } = location.state;
+      
+      if (action === 'book-service' || action === 'book-skill-session') {
+        setBookingState({
+          action,
+          category,
+          message,
+          type: action === 'book-service' ? 'service' : 'skill'
+        });
+        
+        // Clear the navigation state to prevent browser back issues
+        window.history.replaceState({}, document.title, location.pathname);
+      }
+    }
+  }, [location]);
+
+  const handleBookingAction = (actionType) => {
+    if (actionType === 'continue' && bookingState) {
+      // Navigate to appropriate booking page based on type
+      if (bookingState.type === 'service') {
+        navigate('/angels-list', { state: { category: bookingState.category } });
+      } else {
+        navigate('/skills', { state: { category: bookingState.category } });
+      }
+    } else if (actionType === 'dismiss') {
+      setBookingState(null);
+    }
+  };
 
   const quickActions = [
     {
@@ -185,6 +259,35 @@ function DashboardPage() {
             Your skill-sharing dashboard. Connect, learn, and teach in your community.
           </Description>
         </Header>
+        
+        {/* Show booking alert if user came from a booking action */}
+        {bookingState && (
+          <BookingAlert>
+            <div className="icon">
+              <CheckCircle size={24} />
+            </div>
+            <div className="content">
+              <h3>Ready to Book {bookingState.category}!</h3>
+              <p>{bookingState.message}</p>
+              <div className="actions">
+                <Button 
+                  variant="primary" 
+                  size="sm"
+                  onClick={() => handleBookingAction('continue')}
+                >
+                  Continue Booking
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => handleBookingAction('dismiss')}
+                >
+                  Dismiss
+                </Button>
+              </div>
+            </div>
+          </BookingAlert>
+        )}
         
         <WelcomeCard>
           <h2>🎯 Ready to Make an Impact?</h2>
