@@ -5,6 +5,7 @@ import { useGuru } from '../hooks/useGuru';
 import Layout from './Layout';
 import LoadingScreen from './LoadingScreen';
 import SubdomainLandingPage from './SubdomainLandingPage';
+import ProtectedRoute from './auth/ProtectedRoute';
 
 // Eagerly loaded components (critical for initial render)
 import HomePage from '../screens/HomePage';
@@ -347,20 +348,7 @@ const NotFoundPage = React.lazy(() => import('../screens/NotFoundPage'));
 // Subdomain 404 Page - lazy loaded  
 const SubdomainNotFoundPage = React.lazy(() => import('../screens/SubdomainNotFoundPage'));
 
-// Protected Route Component
-function ProtectedRoute({ children }) {
-  const { currentUser, loading } = useAuth();
 
-  if (loading) {
-    return <LoadingScreen />;
-  }
-
-  if (!currentUser) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return children;
-}
 
 // Public Route (redirect to dashboard if authenticated)
 function PublicRoute({ children }) {

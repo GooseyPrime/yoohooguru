@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../lib/api';
 import Button from '../../components/Button';
+import EnhancedLocationSelector from '../../components/EnhancedLocationSelector';
 
 // A simple styled component for displaying error messages
 const ErrorMessage = ({ children }) => (
@@ -26,6 +27,8 @@ export default function OnboardingProfile() {
     zip: '',
     bio: ''
   });
+  const [location, setLocation] = useState('');
+  const [locationError, setLocationError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
@@ -40,6 +43,12 @@ export default function OnboardingProfile() {
         const existingProfile = await api('/onboarding/profile').then(r => r.json());
         if (existingProfile) {
           setForm(prev => ({ ...prev, ...existingProfile }));
+          // Set location string if city and zip exist
+          if (existingProfile.city && existingProfile.zip) {
+            setLocation(`${existingProfile.city}, ${existingProfile.zip}`);
+          } else if (existingProfile.city) {
+            setLocation(existingProfile.city);
+          }
         }
       } catch (err) {
         console.error("Failed to load profile data:", err);
@@ -72,6 +81,21 @@ export default function OnboardingProfile() {
 
   const handleChange = (field) => (e) => {
     setForm({ ...form, [field]: e.target.value });
+  };
+
+  const handleLocationChange = (locationString, locationData) => {
+    setLocation(locationString);
+    setLocationError('');
+    // Update form with location data
+    setForm(prev => ({
+      ...prev,
+      city: locationData.city || '',
+      zip: locationData.zipCode || ''
+    }));
+  };
+
+  const handleLocationError = (error) => {
+    setLocationError(error);
   };
 
   if (isLoading) {
@@ -112,27 +136,30 @@ export default function OnboardingProfile() {
           />
         </label>
         
-        <label>
-          City *
-          <input 
-            type="text" 
-            value={form.city} 
-            onChange={handleChange('city')}
-            required
-            style={{width: '100%', padding: '0.5rem', marginTop: '0.25rem', border: '1px solid #e5e7eb', borderRadius: '4px'}}
+        {/* Enhanced Location Selector */}
+        <div style={{marginBottom: '1rem'}}>
+          <label style={{display: 'block', marginBottom: '0.5rem', fontWeight: '500'}}>
+            Location *
+          </label>
+          <EnhancedLocationSelector
+            location={location}
+            onLocationChange={handleLocationChange}
+            onLocationError={handleLocationError}
+            autoRequestGPS={true}
           />
-        </label>
-        
-        <label>
-          ZIP Code *
-          <input 
-            type="text" 
-            value={form.zip} 
-            onChange={handleChange('zip')}
-            required
-            style={{width: '100%', padding: '0.5rem', marginTop: '0.25rem', border: '1px solid #e5e7eb', borderRadius: '4px'}}
-          />
-        </label>
+          {locationError && (
+            <div style={{
+              color: '#ef4444',
+              fontSize: '0.875rem',
+              marginTop: '0.25rem'
+            }}>
+              {locationError}
+            </div>
+          )}
+          {/* Hidden inputs to maintain form compatibility */}
+          <input type="hidden" value={form.city} required />
+          <input type="hidden" value={form.zip} required />
+        </div>
         
         <label>
           Bio *

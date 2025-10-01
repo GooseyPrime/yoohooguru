@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { User, BookOpen, Calendar, Users, CheckCircle, AlertCircle } from 'lucide-react';
 import Button from '../components/Button';
 import SkillMatching from '../components/SkillMatching';
+import ResourcesSection from '../components/ResourcesSection';
 
 const Container = styled.div`
   min-height: calc(100vh - 140px);
@@ -423,6 +424,11 @@ function DashboardPage() {
             </ActionCard>
           ))}
         </QuickActions>
+
+        {/* Learning Resources Section */}
+        <div style={{ margin: '3rem 0' }}>
+          <ResourcesSection />
+        </div>
 
         <ComingSoonFeatures>
           <h3>🚧 Advanced Features Coming Soon!</h3>
