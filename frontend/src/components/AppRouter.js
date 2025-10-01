@@ -176,25 +176,7 @@ const subdomainConfigs = {
       keywords: ['writing lessons', 'creative writing', 'copywriting', 'blogging', 'storytelling']
     }
   },
-  photography: { 
-    character: 'Photography Guru', 
-    category: 'creative',
-    primarySkills: ['portrait', 'landscape', 'wedding', 'editing', 'equipment'],
-    affiliateCategories: ['cameras', 'lenses', 'software', 'accessories'],
-    theme: {
-      primaryColor: '#607d8b',
-      secondaryColor: '#546e7a',
-      accentColor: '#455a64',
-      icon: '📸',
-      emoji: '📷'
-    },
-    seo: {
-      title: 'Photography Guru - Master Photography Skills',
-      description: 'Learn photography techniques, editing, and equipment use from professional photographers.',
-      keywords: ['photography lessons', 'photo editing', 'camera techniques', 'portrait photography', 'landscape photography']
-    }
-  },
-  gardening: { 
+  garden: {
     character: 'Garden Guru', 
     category: 'lifestyle',
     primarySkills: ['vegetable-gardening', 'flower-gardening', 'landscaping', 'composting', 'plant-care'],
