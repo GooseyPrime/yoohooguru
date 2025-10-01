@@ -117,6 +117,16 @@ const limiter = rateLimit({
   message: config.rateLimitMessage,
   standardHeaders: true,
   legacyHeaders: false,
+  // FIX: Configure trust proxy settings for Railway deployment
+  trustProxy: config.nodeEnv === 'production' ? 1 : false, // Only trust first proxy in production
+  keyGenerator: (req) => {
+    // Use X-Forwarded-For in production (Railway), real IP in development
+    if (config.nodeEnv === 'production') {
+      return req.ip || req.connection.remoteAddress || 'unknown';
+    } else {
+      return req.connection.remoteAddress || 'localhost';
+    }
+  }
 });
 app.use('/api/', limiter);
 

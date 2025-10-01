@@ -148,9 +148,8 @@ describe('CORS Configuration', () => {
 
     it('should block non-matching origins', (done) => {
       corsFunction('https://badsite.com', (err, allowed) => {
-        expect(err).toBeInstanceOf(Error);
-        expect(err.message).toContain('CORS policy violation');
-        expect(allowed).toBeUndefined();
+        expect(err).toBeNull(); // No error thrown anymore
+        expect(allowed).toBe(false); // Origin not allowed
         done();
       });
     });

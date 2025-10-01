@@ -124,9 +124,19 @@ router.post('/register', validateRegistration, async (req, res) => {
 // @access  Private
 router.get('/profile', authenticateUser, async (req, res) => {
   try {
+    // Additional safety check - ensure user is authenticated
+    if (!req.user || !req.user.uid) {
+      logger.warn('Profile access attempt with invalid user object', { user: req.user });
+      return res.status(401).json({
+        success: false,
+        error: { message: 'User authentication failed' }
+      });
+    }
+
     const userData = await usersDB.get(req.user.uid);
 
     if (!userData) {
+      logger.info(`User profile not found for uid: ${req.user.uid}`);
       return res.status(404).json({
         success: false,
         error: { message: 'User profile not found' }
@@ -139,7 +149,12 @@ router.get('/profile', authenticateUser, async (req, res) => {
     });
 
   } catch (error) {
-    logger.error('Profile fetch error:', error);
+    logger.error('Profile fetch error:', {
+      error: error.message,
+      stack: error.stack,
+      uid: req.user?.uid,
+      url: req.originalUrl
+    });
     res.status(500).json({
       success: false,
       error: { message: 'Failed to fetch profile' }

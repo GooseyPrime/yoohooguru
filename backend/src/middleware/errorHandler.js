@@ -55,6 +55,31 @@ const errorHandler = (err, req, res, next) => {
     message = 'Invalid resource ID';
   }
 
+  // CORS error - should return 403 not 500
+  if (err.message && err.message.includes('CORS policy violation')) {
+    statusCode = 403;
+    message = 'Cross-origin request not allowed';
+  }
+
+  // Client disconnection errors
+  if (err.code === 'ECONNRESET' || err.code === 'EPIPE' || err.code === 'ECONNABORTED') {
+    statusCode = 499; // Client closed request
+    message = 'Client disconnected';
+    // Don't log client disconnections as errors - they're normal
+    logger.info(`Client disconnected: ${err.message}`, {
+      method: req.method,
+      url: req.originalUrl,
+      ip: req.ip,
+      code: err.code
+    });
+  }
+
+  // Request timeout
+  if (err.code === 'TIMEOUT' || err.timeout) {
+    statusCode = 408;
+    message = 'Request timeout';
+  }
+
   // Custom errors
   if (err.statusCode) {
     statusCode = err.statusCode;
