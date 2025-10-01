@@ -196,12 +196,12 @@ function DashboardPage() {
     if (location.state) {
       const { action, category, message } = location.state;
       
-      if (action === 'book-service' || action === 'book-skill-session') {
+      if (action === 'book-service' || action === 'book-skill-session' || action === 'find-teachers') {
         setBookingState({
           action,
           category,
           message,
-          type: action === 'book-service' ? 'service' : 'skill'
+          type: action === 'book-service' ? 'service' : action === 'find-teachers' ? 'teachers' : 'skill'
         });
         
         // Clear the navigation state to prevent browser back issues
@@ -212,9 +212,12 @@ function DashboardPage() {
 
   const handleBookingAction = (actionType) => {
     if (actionType === 'continue' && bookingState) {
-      // Navigate to appropriate booking page based on type
+      // Navigate to appropriate page based on type
       if (bookingState.type === 'service') {
         navigate('/angels-list', { state: { category: bookingState.category } });
+      } else if (bookingState.type === 'teachers') {
+        // For now, redirect to skills page with teacher filter - this could be enhanced later
+        navigate('/skills', { state: { category: bookingState.category, showTeachers: true } });
       } else {
         navigate('/skills', { state: { category: bookingState.category } });
       }
@@ -267,7 +270,11 @@ function DashboardPage() {
               <CheckCircle size={24} />
             </div>
             <div className="content">
-              <h3>Ready to Book {bookingState.category}!</h3>
+              <h3>
+                {bookingState.type === 'teachers' 
+                  ? `Find ${bookingState.category} Teachers!` 
+                  : `Ready to Book ${bookingState.category}!`}
+              </h3>
               <p>{bookingState.message}</p>
               <div className="actions">
                 <Button 
@@ -275,7 +282,7 @@ function DashboardPage() {
                   size="sm"
                   onClick={() => handleBookingAction('continue')}
                 >
-                  Continue Booking
+                  {bookingState.type === 'teachers' ? 'Find Teachers' : 'Continue Booking'}
                 </Button>
                 <Button 
                   variant="ghost" 
