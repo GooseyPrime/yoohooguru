@@ -58,9 +58,16 @@ router.post('/', async (req, res) => {
           event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
           logger.info('🧪 Test environment: webhook signature verified successfully');
         } catch (err) {
-          logger.warn('🧪 Test environment signature verification failed, processing without verification:', err.message);
-          // In test environment, fall back to processing without verification
-          event = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+          // In test environment, if signature is provided but invalid, still reject it
+          // Only be permissive when no signature is provided at all
+          if (sig && sig.trim() !== '') {
+            logger.error('🧪 Test environment: Invalid signature provided, rejecting webhook');
+            throw err; // Re-throw to trigger the catch block below
+          } else {
+            logger.warn('🧪 Test environment: No signature provided, processing without verification');
+            // Parse the webhook payload directly for test environment
+            event = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+          }
         }
       } else {
         // Parse the webhook payload directly for test environment

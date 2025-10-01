@@ -1,3 +1,51 @@
+// Mock Firebase dependencies for webhook tests
+jest.mock('../src/config/firebase', () => ({
+  initializeFirebase: jest.fn(() => Promise.resolve()),
+  getFirestore: jest.fn(() => ({
+    collection: jest.fn(() => ({
+      doc: jest.fn(() => ({
+        get: jest.fn(() => Promise.resolve({ exists: false, data: () => ({}) })),
+        set: jest.fn(() => Promise.resolve()),
+        update: jest.fn(() => Promise.resolve())
+      })),
+      get: jest.fn(() => Promise.resolve({ forEach: () => {} }))
+    }))
+  })),
+  getAuth: jest.fn(() => ({
+    verifyIdToken: jest.fn(() => Promise.resolve({ uid: 'test-user', email: 'test@example.com' }))
+  }))
+}));
+
+// Mock Stripe for webhook signature verification
+jest.mock('stripe', () => {
+  return jest.fn(() => ({
+    webhooks: {
+      constructEvent: jest.fn((payload, signature, secret) => {
+        // Simple test-friendly validation:
+        // If signature is 'invalid_signature', throw error
+        // Otherwise, accept it as valid
+        if (signature === 'invalid_signature') {
+          throw new Error('Invalid signature');
+        }
+        
+        // For any other signature (including valid ones), accept it
+        // Convert payload to string if it's a Buffer, then parse as JSON
+        const payloadString = Buffer.isBuffer(payload) ? payload.toString() : 
+                             (typeof payload === 'object' ? JSON.stringify(payload) : payload);
+        
+        const event = typeof payloadString === 'string' ? JSON.parse(payloadString) : payloadString;
+        return event;
+      })
+    }
+  }));
+});
+
+// Mock seed test data functions to avoid Firebase dependency
+jest.mock('./seed-test-data', () => ({
+  seedTestData: jest.fn(() => Promise.resolve()),
+  clearTestData: jest.fn(() => Promise.resolve())
+}));
+
 const request = require('supertest');
 const crypto = require('crypto');
 const app = require('../src/index');
