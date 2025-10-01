@@ -14,6 +14,11 @@ const router = express.Router();
 function validateSubdomainParam(req, res, next) {
   const { subdomain } = req.params;
   
+  // Allow OPTIONS requests to pass through for CORS preflight, even with invalid subdomains
+  if (req.method === 'OPTIONS') {
+    return next();
+  }
+  
   if (!subdomain) {
     return res.status(400).json({
       error: 'Missing subdomain parameter',
@@ -61,6 +66,11 @@ router.use('/:subdomain/about', validateSubdomainParam);
 // For the news route, we need a different approach since it's /news/:subdomain
 router.use('/news/:subdomain', (req, res, next) => {
   const { subdomain } = req.params;
+  
+  // Allow OPTIONS requests to pass through for CORS preflight, even with invalid subdomains
+  if (req.method === 'OPTIONS') {
+    return next();
+  }
   
   if (!subdomain) {
     return res.status(400).json({

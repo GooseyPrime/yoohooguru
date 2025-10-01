@@ -204,8 +204,13 @@ function getCorsOrigins(config) {
       }
     }
     
-    // Origin not allowed
-    callback(new Error(`CORS policy violation: Origin ${origin} not allowed`));
+    // Origin not allowed - return false instead of throwing error to avoid 500 status
+    logger.warn(`CORS policy violation: Origin ${origin} not allowed`, {
+      origin,
+      allowedOrigins: origins,
+      nodeEnv: config.nodeEnv
+    });
+    callback(null, false);
   };
 }
 
