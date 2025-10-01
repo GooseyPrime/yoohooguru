@@ -199,8 +199,8 @@ describe('Onboarding Requirements Endpoint', () => {
     });
 
     test('should handle categories with no legacy requirements', async () => {
-      // Override test data to have unknown category with no legacy requirements
-      mockTestData.profileCategories = {
+      // Mock user selected categories with unknown category
+      const mockCategoriesData = {
         'unknown-category': { selectedAt: '2024-01-01T00:00:00.000Z' }
       };
 
