@@ -63,8 +63,10 @@ const errorHandler = (err, req, res, next) => {
 
   // Client disconnection errors
   if (err.code === 'ECONNRESET' || err.code === 'EPIPE' || err.code === 'ECONNABORTED') {
-    statusCode = 499; // Client closed request
+    statusCode = 400; // Use standard code; original intent was 499 (Client closed request)
     message = 'Client disconnected';
+    // Optionally, add a custom header for diagnostics
+    res.set('X-Original-Status', '499');
     // Don't log client disconnections as errors - they're normal
     logger.info(`Client disconnected: ${err.message}`, {
       method: req.method,
