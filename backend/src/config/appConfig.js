@@ -6,6 +6,37 @@
 const { logger } = require('../utils/logger');
 
 /**
+ * Sanitize CORS origins to prevent overly permissive wildcard patterns
+ * This prevents configuration errors that could accidentally allow all origins
+ */
+function sanitizeCorsOrigins(origins) {
+  const sanitized = [];
+  
+  for (const origin of origins) {
+    if (!origin) continue;
+    
+    // Check for overly permissive patterns that could allow any origin
+    const isOverlyPermissive = 
+      origin === 'http://*' ||
+      origin === 'https://*' ||
+      origin === '*' ||
+      origin.match(/^https?:\/\/\*$/);
+    
+    if (isOverlyPermissive) {
+      logger.warn(`⚠️ Rejecting overly permissive CORS origin: ${origin}`);
+      logger.warn('   This pattern would allow any origin, which is a security risk.');
+      logger.warn('   Use more specific patterns like: http://*.localhost:3000 or https://*.yourdomain.com');
+      // Skip this origin instead of allowing it
+      continue;
+    }
+    
+    sanitized.push(origin);
+  }
+  
+  return sanitized;
+}
+
+/**
  * Get and validate required environment variables
  */
 function getConfig() {
@@ -24,10 +55,16 @@ function getConfig() {
     
     // CORS Configuration
     corsOriginProduction: process.env.CORS_ORIGIN_PRODUCTION
-      ? process.env.CORS_ORIGIN_PRODUCTION.split(',').map(s => s.trim()).filter(Boolean)
+      ? (() => {
+          const sanitized = sanitizeCorsOrigins(process.env.CORS_ORIGIN_PRODUCTION.split(',').map(s => s.trim()).filter(Boolean));
+          return sanitized.length > 0 ? sanitized : ['https://yoohoo.guru', 'https://www.yoohoo.guru', 'https://api.yoohoo.guru', 'https://*.yoohoo.guru', 'https://*.vercel.app'];
+        })()
       : ['https://yoohoo.guru', 'https://www.yoohoo.guru', 'https://api.yoohoo.guru', 'https://*.yoohoo.guru', 'https://*.vercel.app'],
     corsOriginDevelopment: process.env.CORS_ORIGIN_DEVELOPMENT 
-      ? process.env.CORS_ORIGIN_DEVELOPMENT.split(',').map(origin => origin.trim())
+      ? (() => {
+          const sanitized = sanitizeCorsOrigins(process.env.CORS_ORIGIN_DEVELOPMENT.split(',').map(origin => origin.trim()));
+          return sanitized.length > 0 ? sanitized : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://*.localhost:3000'];
+        })()
       : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://*.localhost:3000'],
     
     // Express Configuration
