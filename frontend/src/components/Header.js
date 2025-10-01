@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { Menu, X, User, LogOut, Settings } from 'lucide-react';
+import { Menu, X, User, LogOut, Settings, Shield, Star } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import Button from './Button';
 import Logo from './Logo';
@@ -230,6 +230,20 @@ function Header() {
                   }}>
                     <Settings size={16} />
                     Profile
+                  </DropdownItem>
+                  <DropdownItem onClick={() => {
+                    navigate('/compliance');
+                    setIsUserMenuOpen(false);
+                  }}>
+                    <Shield size={16} />
+                    Compliance
+                  </DropdownItem>
+                  <DropdownItem onClick={() => {
+                    navigate('/guru');
+                    setIsUserMenuOpen(false);
+                  }}>
+                    <Star size={16} />
+                    Guru Dashboard
                   </DropdownItem>
                   <DropdownItem onClick={handleLogout}>
                     <LogOut size={16} />

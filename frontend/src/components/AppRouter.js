@@ -268,6 +268,13 @@ const subdomainConfigs = {
   }
 };
 
+// Compliance components - lazy loaded
+const ComplianceDashboard = React.lazy(() => import('../components/ComplianceDashboard'));
+const ComplianceSetup = React.lazy(() => import('../components/ComplianceSetup'));
+
+// GuruHomePage - lazy loaded
+const GuruHomePage = React.lazy(() => import('../screens/guru/GuruHomePage'));
+
 // Lazy loaded components
 const DashboardPage = React.lazy(() => import('../screens/DashboardPage'));
 const ProfilePage = React.lazy(() => import('../screens/ProfilePage'));
@@ -674,6 +681,40 @@ function AppRouter() {
             <ProtectedRoute>
               <Suspense fallback={<LoadingScreen />}>
                 <OnboardingReview />
+              </Suspense>
+            </ProtectedRoute>
+          } 
+        />
+
+        {/* Compliance routes */}
+        <Route 
+          path="compliance" 
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<LoadingScreen />}>
+                <ComplianceDashboard />
+              </Suspense>
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="compliance/setup/:category" 
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<LoadingScreen />}>
+                <ComplianceSetup />
+              </Suspense>
+            </ProtectedRoute>
+          } 
+        />
+        
+        {/* Guru Homepage */}
+        <Route 
+          path="guru" 
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<LoadingScreen />}>
+                <GuruHomePage />
               </Suspense>
             </ProtectedRoute>
           } 

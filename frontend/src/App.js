@@ -5,6 +5,7 @@ import { ThemeProvider } from 'styled-components';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Analytics } from '@vercel/analytics/react';
 import { AuthProvider } from './contexts/AuthContext';
+import { FeatureFlagsProvider } from './contexts/FeatureFlagsContext';
 import AppRouter from './components/AppRouter';
 import ErrorBoundary from './components/ErrorBoundary';
 import theme from './theme/tokens';
@@ -14,37 +15,39 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider theme={theme}>
-        <AuthProvider>
-          <Router>
-            <GlobalStyle />
-            <AppRouter />
-            <SpeedInsights />
-            <Analytics />
-            <Toaster
-              position="top-right"
-              toastOptions={{
-                duration: 4000,
-                style: {
-                  background: '#171B22',
-                  color: '#E8EDF2',
-                  border: '1px solid #252B34',
-                },
-                success: {
+        <FeatureFlagsProvider>
+          <AuthProvider>
+            <Router>
+              <GlobalStyle />
+              <AppRouter />
+              <SpeedInsights />
+              <Analytics />
+              <Toaster
+                position="top-right"
+                toastOptions={{
+                  duration: 4000,
                   style: {
-                    background: '#27C093',
-                    color: '#0B0D10',
+                    background: '#171B22',
+                    color: '#E8EDF2',
+                    border: '1px solid #252B34',
                   },
-                },
-                error: {
-                  style: {
-                    background: '#F26D6D',
-                    color: '#0B0D10',
+                  success: {
+                    style: {
+                      background: '#27C093',
+                      color: '#0B0D10',
+                    },
                   },
-                },
-              }}
-            />
-          </Router>
-        </AuthProvider>
+                  error: {
+                    style: {
+                      background: '#F26D6D',
+                      color: '#0B0D10',
+                    },
+                  },
+                }}
+              />
+            </Router>
+          </AuthProvider>
+        </FeatureFlagsProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

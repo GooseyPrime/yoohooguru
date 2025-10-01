@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import BadgeDisplay from './BadgeDisplay';
 import LiabilityWaiverModal from './LiabilityWaiverModal';
 
@@ -226,7 +227,9 @@ const AlertBox = styled.div`
   line-height: 1.5;
 `;
 
-function ComplianceSetup({ skillCategory, onComplete }) {
+function ComplianceSetup({ onComplete }) {
+  const { category } = useParams();
+  const skillCategory = category;
   const { user } = useAuth();
   const [complianceData, setComplianceData] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
