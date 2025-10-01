@@ -53,6 +53,17 @@ const PORT = config.port;
 // Initialize Firebase
 initializeFirebase();
 
+// Configure Express to trust proxy headers appropriately for the deployment environment
+// This is required for express-rate-limit to work correctly when deployed behind a proxy
+if (config.nodeEnv === 'production' || config.nodeEnv === 'staging') {
+  // In production/staging (Railway), trust proxy headers to get real client IPs
+  // Railway's load balancer sets X-Forwarded-For with the real client IP first
+  app.set('trust proxy', true);
+} else {
+  // In development, we can trust all proxies since we control the environment
+  app.set('trust proxy', true);
+}
+
 // --- Core Middleware Setup ---
 
 // Security headers, CORS, and Compression
