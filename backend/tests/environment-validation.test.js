@@ -113,10 +113,14 @@ describe('Environment Configuration Validation', () => {
   describe('Local Development Flexibility', () => {
     it('should skip validation in local development without CI flag', () => {
       process.env.NODE_ENV = 'production';
+      // Use a valid production project ID format for this test
+      process.env.FIREBASE_PROJECT_ID = 'yoohoo-production-12345';
       // No CI flag set
       delete process.env.CI;
       delete process.env.GITHUB_ACTIONS;
       // No emulator hosts set
+      delete process.env.FIRESTORE_EMULATOR_HOST;
+      delete process.env.FIREBASE_AUTH_EMULATOR_HOST;
       
       expect(() => {
         const { initializeFirebase } = require('../src/config/firebase');
