@@ -13,7 +13,7 @@ try {
 
 // Ensure test environment is properly set
 process.env.NODE_ENV = 'test';
-process.env.FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID || 'demo-yoohooguru-test';
+process.env.FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID || 'yoohoo-dev-testing';
 process.env.FIREBASE_API_KEY = process.env.FIREBASE_API_KEY || 'test-api-key';
 process.env.FIREBASE_AUTH_EMULATOR_HOST = process.env.FIREBASE_AUTH_EMULATOR_HOST || 'localhost:9099';
 process.env.FIRESTORE_EMULATOR_HOST = process.env.FIRESTORE_EMULATOR_HOST || 'localhost:8080';
