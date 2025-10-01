@@ -35,6 +35,7 @@
     "orphans:ci": "scripts/ci-orphan-detection.sh",
     "seed:test-db": "node seed-test-db.js",
     "cleanup:test-db": "node scripts/cleanup-test-db.js",
+    "migrate:content": "node backend/ai-content-migration.js",
     "test:auth": "cd backend && npm test -- tests/test.auth.spec.js"
   },
   "keywords": [

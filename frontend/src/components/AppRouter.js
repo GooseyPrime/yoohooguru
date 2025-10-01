@@ -5,6 +5,7 @@ import { useGuru } from '../hooks/useGuru';
 import Layout from './Layout';
 import LoadingScreen from './LoadingScreen';
 import SubdomainLandingPage from './SubdomainLandingPage';
+import ProtectedRoute from './auth/ProtectedRoute';
 
 // Eagerly loaded components (critical for initial render)
 import HomePage from '../screens/HomePage';
@@ -268,6 +269,13 @@ const subdomainConfigs = {
   }
 };
 
+// Compliance components - lazy loaded
+const ComplianceDashboard = React.lazy(() => import('../components/ComplianceDashboard'));
+const ComplianceSetup = React.lazy(() => import('../components/ComplianceSetup'));
+
+// GuruHomePage - lazy loaded
+const GuruHomePage = React.lazy(() => import('../screens/guru/GuruHomePage'));
+
 // Lazy loaded components
 const DashboardPage = React.lazy(() => import('../screens/DashboardPage'));
 const ProfilePage = React.lazy(() => import('../screens/ProfilePage'));
@@ -340,20 +348,7 @@ const NotFoundPage = React.lazy(() => import('../screens/NotFoundPage'));
 // Subdomain 404 Page - lazy loaded  
 const SubdomainNotFoundPage = React.lazy(() => import('../screens/SubdomainNotFoundPage'));
 
-// Protected Route Component
-function ProtectedRoute({ children }) {
-  const { currentUser, loading } = useAuth();
 
-  if (loading) {
-    return <LoadingScreen />;
-  }
-
-  if (!currentUser) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return children;
-}
 
 // Public Route (redirect to dashboard if authenticated)
 function PublicRoute({ children }) {
@@ -674,6 +669,40 @@ function AppRouter() {
             <ProtectedRoute>
               <Suspense fallback={<LoadingScreen />}>
                 <OnboardingReview />
+              </Suspense>
+            </ProtectedRoute>
+          } 
+        />
+
+        {/* Compliance routes */}
+        <Route 
+          path="compliance" 
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<LoadingScreen />}>
+                <ComplianceDashboard />
+              </Suspense>
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="compliance/setup/:category" 
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<LoadingScreen />}>
+                <ComplianceSetup />
+              </Suspense>
+            </ProtectedRoute>
+          } 
+        />
+        
+        {/* Guru Homepage */}
+        <Route 
+          path="guru" 
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<LoadingScreen />}>
+                <GuruHomePage />
               </Suspense>
             </ProtectedRoute>
           } 
