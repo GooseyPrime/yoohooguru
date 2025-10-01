@@ -5,8 +5,8 @@ This directory contains modules that were identified as orphaned during the modu
 ## Archived Modules
 
 ### Configuration Files
-- **frontend-eslintrc.js** - Frontend ESLint configuration (redundant with package.json config)
-- **jest.config.js** - Jest configuration file (redundant with package.json config)
+- ~~**frontend-eslintrc.js**~~ - **RESTORED** - Required for CI (ESLint configuration)
+- ~~**jest.config.js**~~ - **RESTORED** - Required for CI (Jest configuration)
 
 ### Duplicate/Redundant Components
 - **SubdomainLandingPages.js** - Duplicate subdomain configurations (already in AppRouter.js)
