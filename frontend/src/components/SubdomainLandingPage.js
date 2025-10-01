@@ -424,16 +424,17 @@ function SubdomainLandingPage({ subdomain, config }) {
     switch (action) {
       case 'get-started':
         if (currentUser) {
-          navigate('/dashboard');
+          window.location.href = 'https://yoohoo.guru/dashboard';
         } else {
-          navigate('/signup');
+          window.location.href = 'https://yoohoo.guru/signup';
         }
         break;
       case 'view-content':
+        // Navigate to subdomain blog page (exists in routing)
         navigate('/blog');
         break;
       case 'book-session':
-        navigate(`/book?category=${config?.category}`);
+        window.location.href = `https://yoohoo.guru/skills?category=${config?.category}`;
         break;
       default:
         break;
@@ -698,10 +699,10 @@ function SubdomainLandingPage({ subdomain, config }) {
       {/* Footer */}
       <Footer>
         <div className="links">
-          <a href="/terms" className="link">Terms of Service</a>
-          <a href="/privacy" className="link">Privacy Policy</a>
-          <a href="/safety" className="link">Community Guidelines</a>
-          <a href="/liability" className="link">Liability Waiver</a>
+          <a href="https://yoohoo.guru/terms" className="link">Terms of Service</a>
+          <a href="https://yoohoo.guru/privacy" className="link">Privacy Policy</a>
+          <a href="https://yoohoo.guru/safety" className="link">Community Guidelines</a>
+          <a href="https://yoohoo.guru/contact" className="link">Contact Us</a>
         </div>
         <div className="disclaimer">
           All service providers (gurus) are independent contractors and not employees of the platform.
