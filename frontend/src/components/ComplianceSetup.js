@@ -229,7 +229,6 @@ const AlertBox = styled.div`
 
 function ComplianceSetup({ onComplete }) {
   const { category } = useParams();
-  const skillCategory = category;
   const { user } = useAuth();
   const [complianceData, setComplianceData] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
