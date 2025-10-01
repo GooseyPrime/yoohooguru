@@ -205,24 +205,6 @@ function Header() {
               Dashboard
             </NavLink>
           )}
-          {currentUser && (
-            <>
-              <NavLink 
-                to="/dashboard/coach" 
-                className={isActive('/dashboard/coach') ? 'active' : ''}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Coach
-              </NavLink>
-              <NavLink 
-                to="/dashboard/understudy" 
-                className={isActive('/dashboard/understudy') ? 'active' : ''}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Understudy
-              </NavLink>
-            </>
-          )}
         </Nav>
 
         <UserMenu>

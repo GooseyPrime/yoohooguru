@@ -1,5 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { ArrowLeft } from 'lucide-react';
 
 const Container = styled.div`
   min-height: calc(100vh - 140px);
@@ -63,7 +65,34 @@ const FeatureList = styled.ul`
   }
 `;
 
-function ComingSoonPage({ title, description, features = [] }) {
+const BackButton = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: ${props => props.theme.colors.pri};
+  color: white;
+  text-decoration: none;
+  border-radius: var(--r-md);
+  font-weight: 500;
+  transition: all var(--t-fast);
+  margin-top: 1rem;
+  
+  &:hover {
+    background-color: ${props => props.theme.colors.pri}dd;
+    transform: translateY(-1px);
+  }
+`;
+
+const NavigationButtons = styled.div`
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+`;
+
+function ComingSoonPage({ title, description, features = [], showBackButton = true, alternativeLinks = [] }) {
   return (
     <Container>
       <Content>
@@ -82,6 +111,20 @@ function ComingSoonPage({ title, description, features = [] }) {
         <Description style={{ fontSize: 'var(--text-base)', marginTop: '2rem' }}>
           We&apos;re working hard to bring you this feature. Check back soon!
         </Description>
+
+        <NavigationButtons>
+          {showBackButton && (
+            <BackButton to="/">
+              <ArrowLeft size={16} />
+              Back to Home
+            </BackButton>
+          )}
+          {alternativeLinks.map((link, index) => (
+            <BackButton key={index} to={link.to}>
+              {link.text}
+            </BackButton>
+          ))}
+        </NavigationButtons>
       </Content>
     </Container>
   );
@@ -100,6 +143,10 @@ export function HelpCenterPage() {
         "Troubleshooting assistance",
         "Community support forum"
       ]}
+      alternativeLinks={[
+        { to: "/contact", text: "Contact Us" },
+        { to: "/about", text: "About Us" }
+      ]}
     />
   );
 }
@@ -115,6 +162,10 @@ export function ContactUsPage() {
         "Phone support hours",
         "Bug reporting system",
         "Feature request portal"
+      ]}
+      alternativeLinks={[
+        { to: "/help", text: "Help Center" },
+        { to: "/about", text: "About Us" }
       ]}
     />
   );
@@ -132,6 +183,10 @@ export function SafetyPage() {
         "Incident reporting tools",
         "Insurance coverage information"
       ]}
+      alternativeLinks={[
+        { to: "/how-it-works", text: "How It Works" },
+        { to: "/about", text: "About Us" }
+      ]}
     />
   );
 }
@@ -147,6 +202,10 @@ export function BlogPage() {
         "Community highlights",
         "Expert guest posts",
         "Platform updates and news"
+      ]}
+      alternativeLinks={[
+        { to: "/success-stories", text: "Success Stories" },
+        { to: "/about", text: "About Us" }
       ]}
     />
   );
@@ -164,6 +223,10 @@ export function SuccessStoriesPage() {
         "Skill mastery celebrations",
         "Neighborhood improvement tales"
       ]}
+      alternativeLinks={[
+        { to: "/blog", text: "Blog" },
+        { to: "/events", text: "Community Events" }
+      ]}
     />
   );
 }
@@ -179,6 +242,10 @@ export function EventsPage() {
         "Community project events",
         "Networking opportunities",
         "Seasonal celebrations"
+      ]}
+      alternativeLinks={[
+        { to: "/forum", text: "Discussion Forum" },
+        { to: "/success-stories", text: "Success Stories" }
       ]}
     />
   );
@@ -196,6 +263,10 @@ export function ForumPage() {
         "Local area groups",
         "Mentorship connections"
       ]}
+      alternativeLinks={[
+        { to: "/events", text: "Community Events" },
+        { to: "/mentorship", text: "Mentorship Program" }
+      ]}
     />
   );
 }
@@ -211,6 +282,10 @@ export function MentorshipPage() {
         "Skill-based mentor networks",
         "Progress tracking tools",
         "Recognition and rewards system"
+      ]}
+      alternativeLinks={[
+        { to: "/forum", text: "Discussion Forum" },
+        { to: "/skills", text: "Browse Skills" }
       ]}
     />
   );

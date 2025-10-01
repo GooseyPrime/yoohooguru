@@ -150,11 +150,7 @@ function Footer() {
         <FooterBottom>
           <p>&copy; 2024 {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}. All rights reserved.</p>
           <SocialLinks>
-            <a href="#" aria-label="Twitter">Twitter</a>
-            <a href="#" aria-label="Facebook">Facebook</a>
-            <a href="#" aria-label="Instagram">Instagram</a>
-            <a href="#" aria-label="LinkedIn">LinkedIn</a>
-            <a href="#" aria-label="Discord">Discord</a>
+            <Link to="/contact">Follow Us <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></Link>
           </SocialLinks>
         </FooterBottom>
       </FooterContent>
