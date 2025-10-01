@@ -31,6 +31,8 @@
     "copilot:demo": "node scripts/copilot-agent.js --demo",
     "copilot:agent": "node scripts/copilot-agent.js",
     "test:copilot-agent": "node scripts/test-copilot-agent.js",
+    "orphans": "node scripts/detect-orphan-modules.js --verbose --output=./orphan-reports",
+    "orphans:ci": "scripts/ci-orphan-detection.sh",
     "seed:test-db": "node seed-test-db.js",
     "cleanup:test-db": "node scripts/cleanup-test-db.js",
     "migrate:content": "node backend/ai-content-migration.js",
