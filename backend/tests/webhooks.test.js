@@ -16,29 +16,41 @@ jest.mock('../src/config/firebase', () => ({
   }))
 }));
 
-// Mock Stripe for webhook signature verification
-jest.mock('stripe', () => {
-  return jest.fn(() => ({
+// Mock the stripe lib module directly instead of the stripe package
+jest.mock('../src/lib/stripe', () => ({
+  stripe: {
     webhooks: {
       constructEvent: jest.fn((payload, signature, secret) => {
         // Simple test-friendly validation:
         // If signature is 'invalid_signature', throw error
-        // Otherwise, accept it as valid
         if (signature === 'invalid_signature') {
           throw new Error('Invalid signature');
         }
         
         // For any other signature (including valid ones), accept it
         // Convert payload to string if it's a Buffer, then parse as JSON
-        const payloadString = Buffer.isBuffer(payload) ? payload.toString() : 
-                             (typeof payload === 'object' ? JSON.stringify(payload) : payload);
+        let payloadString;
+        if (Buffer.isBuffer(payload)) {
+          payloadString = payload.toString('utf8');
+        } else if (typeof payload === 'string') {
+          payloadString = payload;
+        } else if (typeof payload === 'object') {
+          payloadString = JSON.stringify(payload);
+        } else {
+          payloadString = String(payload);
+        }
         
-        const event = typeof payloadString === 'string' ? JSON.parse(payloadString) : payloadString;
-        return event;
+        // Parse the JSON payload to return a proper event object
+        try {
+          const event = JSON.parse(payloadString);
+          return event;
+        } catch (error) {
+          throw new Error('Invalid JSON payload');
+        }
       })
     }
-  }));
-});
+  }
+}));
 
 // Mock seed test data functions to avoid Firebase dependency
 jest.mock('./seed-test-data', () => ({
@@ -53,14 +65,27 @@ const { seedTestData, clearTestData } = require('./seed-test-data');
 
 describe('Stripe Webhooks', () => {
   let originalStripeWebhookSecret;
+  let originalStripeSecretKey;
 
   beforeAll(() => {
     originalStripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    originalStripeSecretKey = process.env.STRIPE_SECRET_KEY;
+    
+    // Clear STRIPE_SECRET_KEY for tests to ensure we use the test mock
+    delete process.env.STRIPE_SECRET_KEY;
+    
+    // Clear require cache to force re-evaluation of stripe lib
+    delete require.cache[require.resolve('../src/lib/stripe')];
+    delete require.cache[require.resolve('../src/routes/stripeWebhooks')];
+    delete require.cache[require.resolve('../src/index')];
   });
 
   afterAll(() => {
     if (originalStripeWebhookSecret !== undefined) {
       process.env.STRIPE_WEBHOOK_SECRET = originalStripeWebhookSecret;
+    }
+    if (originalStripeSecretKey !== undefined) {
+      process.env.STRIPE_SECRET_KEY = originalStripeSecretKey;
     }
   });
 
@@ -106,7 +131,7 @@ describe('Stripe Webhooks', () => {
         .post('/api/webhooks/stripe')
         .set('stripe-signature', signature)
         .set('content-type', 'application/json')
-        .send(Buffer.from(payload));
+        .send(payload);
 
       expect(response.status).toBe(200);
       expect(response.body.received).toBe(true);
@@ -123,7 +148,7 @@ describe('Stripe Webhooks', () => {
         .post('/api/webhooks/stripe')
         .set('stripe-signature', 'invalid_signature')
         .set('content-type', 'application/json')
-        .send(Buffer.from(payload));
+        .send(payload);
 
       expect(response.status).toBe(400);
       expect(response.text).toContain('Webhook Error');
@@ -153,7 +178,7 @@ describe('Stripe Webhooks', () => {
       const response = await request(app)
         .post('/api/webhooks/stripe')
         .set('content-type', 'application/json')
-        .send(Buffer.from(payload));
+        .send(payload);
 
       expect(response.status).toBe(200);
       expect(response.body.received).toBe(true);
@@ -173,7 +198,7 @@ describe('Stripe Webhooks', () => {
       const response = await request(app)
         .post('/api/webhooks/stripe')
         .set('content-type', 'application/json')
-        .send(Buffer.from(payload));
+        .send(payload);
 
       expect(response.status).toBe(200);
       expect(response.body.received).toBe(true);
