@@ -84,6 +84,32 @@ All comment analysis is logged to `logs/comment-analysis.log` with detailed reas
 
 ## Other Scripts
 
+### `detect-orphan-modules.js`
+Advanced orphan module detection script that identifies unused dependencies, unreachable modules, and orphaned files.
+
+**Features:**
+- Detects unused npm dependencies across frontend/backend
+- Finds unreachable JavaScript modules using dependency graph analysis
+- Identifies orphaned files (backups, temp files, etc.)
+- Generates comprehensive reports in JSON, HTML, and Markdown formats
+- CI integration with configurable thresholds
+- Detailed recommendations for cleanup actions
+
+**Usage:**
+```bash
+# Basic analysis
+node scripts/detect-orphan-modules.js
+
+# Verbose output with custom output directory
+node scripts/detect-orphan-modules.js --verbose --output=./reports
+
+# CI mode with error threshold
+ORPHAN_ERROR_THRESHOLD=50 node scripts/detect-orphan-modules.js
+```
+
+### `ci-orphan-detection.sh`
+CI integration script for orphan module detection that prepares reports for artifact upload.
+
 ### `cleanup-copilot-branches.sh`
 Script to clean up old copilot branches safely.
 
