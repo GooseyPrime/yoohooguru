@@ -79,12 +79,10 @@ jest.mock('../src/middleware/auth', () => ({
   })
 }));
 
-// Mock logger - capture error messages for debugging
+// Mock logger - clean version for final implementation
 jest.mock('../src/utils/logger', () => ({
   logger: {
-    error: jest.fn((message, error) => {
-      console.log('Logger error called:', message, error);
-    })
+    error: jest.fn()
   }
 }));
 
@@ -177,31 +175,22 @@ describe('Onboarding Requirements Endpoint', () => {
     test('should return unified requirements for selected categories', async () => {
       const response = await request(app)
         .get('/onboarding/requirements');
-
-      console.log('Response status:', response.status);
-      console.log('Response body:', response.body);
-      
-      // If there's an error, let's see the actual error details
-      if (response.status === 500) {
-        console.log('Error details:', response.body.error);
-      }
       
       expect(response.status).toBe(200);
-
       expect(response.body.success).toBe(true);
       expect(response.body.data.needed).toHaveLength(2);
 
       // Check tutoring requirements
       const tutoringReq = response.body.data.needed.find(r => r.slug === 'tutoring');
       expect(tutoringReq).toBeDefined();
-      expect(tutoringReq.name).toBe('Tutoring & Education'); // Should come from compliance system
-      expect(tutoringReq.riskLevel).toBe('medium'); // Should come from compliance system
+      expect(tutoringReq.name).toBe('Tutoring & Education');
+      expect(tutoringReq.riskLevel).toBe('medium');
       expect(tutoringReq.legacy.notes).toBe('Guardian present for minors (MVP).');
 
       // Check handyman requirements
       const handymanReq = response.body.data.needed.find(r => r.slug === 'handyman');
       expect(handymanReq).toBeDefined();
-      expect(handymanReq.name).toBe('Construction & Home Repair'); // Mapped to construction compliance
+      expect(handymanReq.name).toBe('Construction & Home Repair');
       expect(handymanReq.legacy.requires_gl).toBe(true);
       expect(handymanReq.legacy.notes).toBe('No gas, roofing, or structural work.');
     });
