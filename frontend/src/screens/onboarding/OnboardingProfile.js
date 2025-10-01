@@ -157,8 +157,8 @@ export default function OnboardingProfile() {
             </div>
           )}
           {/* Hidden inputs to maintain form compatibility */}
-          <input type="hidden" value={form.city} required />
-          <input type="hidden" value={form.zip} required />
+          <input type="hidden" value={form.city} />
+          <input type="hidden" value={form.zip} />
         </div>
         
         <label>
