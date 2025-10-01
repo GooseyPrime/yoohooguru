@@ -33,41 +33,14 @@ let mockTestData = {
 // Mock Firebase - default setup that will be overridden in tests
 jest.mock('../src/config/firebase', () => ({
   getFirestore: jest.fn(() => ({
-    collection: jest.fn((collectionName) => {
-      if (mockTestData.shouldThrowError) {
-        throw new Error('Database connection failed');
-      }
-      
-      if (collectionName === 'profile_categories') {
-        return {
-          doc: jest.fn((docId) => ({
-            get: jest.fn(() => Promise.resolve({ 
-              exists: Object.keys(mockTestData.profileCategories).length > 0, 
-              data: () => mockTestData.profileCategories
-            })),
-            set: jest.fn(() => Promise.resolve()),
-            update: jest.fn(() => Promise.resolve())
-          }))
-        };
-      }
-      if (collectionName === 'category_requirements') {
-        return {
-          get: jest.fn(() => Promise.resolve({ 
-            forEach: (callback) => {
-              mockTestData.categoryRequirements.forEach(callback);
-            }
-          }))
-        };
-      }
-      return {
-        doc: jest.fn(() => ({
-          get: jest.fn(() => Promise.resolve({ exists: false, data: () => ({}) })),
-          set: jest.fn(() => Promise.resolve()),
-          update: jest.fn(() => Promise.resolve())
-        })),
-        get: jest.fn(() => Promise.resolve({ forEach: () => {} }))
-      };
-    })
+    collection: jest.fn(() => ({
+      doc: jest.fn(() => ({
+        get: jest.fn().mockResolvedValue({ exists: false }),
+        set: jest.fn().mockResolvedValue(),
+        update: jest.fn().mockResolvedValue()
+      })),
+      get: jest.fn().mockResolvedValue({ forEach: jest.fn() })
+    }))
   }))
 }));
 
@@ -123,48 +96,23 @@ const { authenticateUser } = require('../src/middleware/auth');
 
 describe('Onboarding Requirements Endpoint', () => {
   let app;
-  let mockFirestore;
+  let mockDb;
 
   beforeEach(() => {
-    // Reset test data to defaults
-    mockTestData.profileCategories = {
-      'tutoring': { selectedAt: '2024-01-01T00:00:00.000Z' },
-      'handyman': { selectedAt: '2024-01-01T00:00:00.000Z' }
+    jest.clearAllMocks();
+    
+    // Create a fresh mock for each test
+    mockDb = {
+      collection: jest.fn()
     };
-    mockTestData.categoryRequirements = [
-      {
-        id: 'tutoring',
-        data: () => ({
-          slug: 'tutoring',
-          requires_license: false,
-          requires_gl: false,
-          requires_background_check: false,
-          notes: 'Guardian present for minors (MVP).'
-        })
-      },
-      {
-        id: 'handyman',
-        data: () => ({
-          slug: 'handyman',
-          requires_license: false,
-          requires_gl: true,
-          min_gl_per_occurrence_cents: 100000000,
-          min_gl_aggregate_cents: 200000000,
-          notes: 'No gas, roofing, or structural work.'
-        })
-      }
-    ];
-    mockTestData.shouldThrowError = false;
-
+    
+    // Mock the Firebase config to return our fresh mock
+    const { getFirestore } = require('../src/config/firebase');
+    getFirestore.mockReturnValue(mockDb);
+    
     app = express();
     app.use(express.json());
     app.use('/onboarding', onboardingRoutes);
-
-    const { getFirestore } = require('../src/config/firebase');
-    mockFirestore = getFirestore();
-    
-    // Clear any previous mock implementations
-    jest.clearAllMocks();
   });
 
   afterEach(() => {
@@ -173,6 +121,61 @@ describe('Onboarding Requirements Endpoint', () => {
 
   describe('GET /onboarding/requirements', () => {
     test('should return unified requirements for selected categories', async () => {
+      // Mock user selected categories
+      const mockCategoriesData = {
+        'tutoring': { selectedAt: '2024-01-01T00:00:00.000Z' },
+        'handyman': { selectedAt: '2024-01-01T00:00:00.000Z' }
+      };
+
+      // Mock legacy requirements
+      const mockRequirementsData = [
+        {
+          id: 'tutoring',
+          data: () => ({
+            slug: 'tutoring',
+            requires_license: false,
+            requires_gl: false,
+            requires_background_check: false,
+            notes: 'Guardian present for minors (MVP).'
+          })
+        },
+        {
+          id: 'handyman',
+          data: () => ({
+            slug: 'handyman',
+            requires_license: false,
+            requires_gl: true,
+            min_gl_per_occurrence_cents: 100000000,
+            min_gl_aggregate_cents: 200000000,
+            notes: 'No gas, roofing, or structural work.'
+          })
+        }
+      ];
+
+      // Setup mocks
+      mockDb.collection.mockImplementation((collectionName) => {
+        if (collectionName === 'profile_categories') {
+          return {
+            doc: (uid) => ({
+              get: () => Promise.resolve({
+                exists: true,
+                data: () => mockCategoriesData
+              })
+            })
+          };
+        }
+        if (collectionName === 'category_requirements') {
+          return {
+            get: () => Promise.resolve({
+              forEach: (callback) => {
+                mockRequirementsData.forEach(callback);
+              }
+            })
+          };
+        }
+        return { doc: () => ({ get: () => Promise.resolve({ exists: false }) }) };
+      });
+
       const response = await request(app)
         .get('/onboarding/requirements');
       
@@ -200,8 +203,27 @@ describe('Onboarding Requirements Endpoint', () => {
       mockTestData.profileCategories = {
         'unknown-category': { selectedAt: '2024-01-01T00:00:00.000Z' }
       };
-      mockTestData.categoryRequirements = []; // No legacy requirements found
-      mockTestData.shouldThrowError = false;
+
+      mockDb.collection.mockImplementation((collectionName) => {
+        if (collectionName === 'profile_categories') {
+          return {
+            doc: (uid) => ({
+              get: () => Promise.resolve({
+                exists: true,
+                data: () => mockCategoriesData
+              })
+            })
+          };
+        }
+        if (collectionName === 'category_requirements') {
+          return {
+            get: () => Promise.resolve({
+              forEach: () => {} // No requirements found
+            })
+          };
+        }
+        return { doc: () => ({ get: () => Promise.resolve({ exists: false }) }) };
+      });
 
       const response = await request(app)
         .get('/onboarding/requirements')
@@ -229,8 +251,9 @@ describe('Onboarding Requirements Endpoint', () => {
     });
 
     test('should handle database errors gracefully', async () => {
-      // Set up mock to throw error
-      mockTestData.shouldThrowError = true;
+      mockDb.collection.mockImplementation(() => {
+        throw new Error('Database connection failed');
+      });
 
       const response = await request(app)
         .get('/onboarding/requirements')
