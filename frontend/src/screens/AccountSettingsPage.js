@@ -8,11 +8,15 @@ import {
   Shield, 
   Trash2, 
   Link2, 
-  ArrowLeft 
+  ArrowLeft,
+  Settings as SettingsIcon,
+  Lock,
+  UserX
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import Button from '../components/Button';
 import SEOMetadata from '../components/SEOMetadata';
+import AuthenticationPrompt from '../components/auth/AuthenticationPrompt';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -225,21 +229,18 @@ function AccountSettingsPage() {
 
   if (!user) {
     return (
-      <Container>
-        <Content>
-          <Header>
-            <Title>Please Log In</Title>
-            <Subtitle>You need to be logged in to access account settings.</Subtitle>
-            <Button 
-              variant="primary" 
-              onClick={() => navigate('/login')}
-              style={{ marginTop: '1rem' }}
-            >
-              Log In
-            </Button>
-          </Header>
-        </Content>
-      </Container>
+      <AuthenticationPrompt
+        title="Account Settings Access"
+        subtitle="Sign in to manage your account settings, privacy controls, and security preferences."
+        returnPath="/account/settings"
+        message="Sign in to access account settings"
+        features={[
+          { icon: SettingsIcon, text: "Manage account preferences and settings" },
+          { icon: Shield, text: "Control privacy and security options" },
+          { icon: Lock, text: "Update password and authentication" },
+          { icon: UserX, text: "Account deletion and data management" }
+        ]}
+      />
     );
   }
 
