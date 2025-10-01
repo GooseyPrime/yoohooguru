@@ -71,8 +71,8 @@ describe('CORS Configuration', () => {
 
           // Test invalid origin
           corsValidator('http://malicious.com', (err3, allowed3) => {
-            expect(err3).toBeNull(); // No error thrown anymore
-            expect(allowed3).toBe(false); // Origin not allowed
+            expect(err3).toBeInstanceOf(Error);
+            expect(allowed3).toBeUndefined();
 
             process.env.NODE_ENV = originalNodeEnv;
             done();
