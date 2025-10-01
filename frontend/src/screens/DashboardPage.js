@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { User, BookOpen, Calendar, Users, CheckCircle } from 'lucide-react';
+import { User, BookOpen, Calendar, Users, CheckCircle, AlertCircle } from 'lucide-react';
 import Button from '../components/Button';
 import SkillMatching from '../components/SkillMatching';
 
@@ -186,27 +186,33 @@ const BookingAlert = styled.div`
 `;
 
 function DashboardPage() {
-  const { currentUser } = useAuth();
+  const { currentUser, loading } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [bookingState, setBookingState] = useState(null);
+  const [error, setError] = useState(null);
 
   // Handle incoming booking/action state from navigation
   useEffect(() => {
-    if (location.state) {
-      const { action, category, message } = location.state;
-      
-      if (action === 'book-service' || action === 'book-skill-session' || action === 'find-teachers') {
-        setBookingState({
-          action,
-          category,
-          message,
-          type: action === 'book-service' ? 'service' : action === 'find-teachers' ? 'teachers' : 'skill'
-        });
+    try {
+      if (location.state) {
+        const { action, category, message } = location.state;
         
-        // Clear the navigation state to prevent browser back issues
-        window.history.replaceState({}, document.title, location.pathname);
+        if (action === 'book-service' || action === 'book-skill-session' || action === 'find-teachers') {
+          setBookingState({
+            action,
+            category,
+            message,
+            type: action === 'book-service' ? 'service' : action === 'find-teachers' ? 'teachers' : 'skill'
+          });
+          
+          // Clear the navigation state to prevent browser back issues
+          window.history.replaceState({}, document.title, location.pathname);
+        }
       }
+    } catch (err) {
+      console.error('Error handling navigation state:', err);
+      setError('There was an issue loading your dashboard. Please refresh the page.');
     }
   }, [location]);
 
@@ -252,6 +258,74 @@ function DashboardPage() {
       action: () => window.location.href = '/onboarding'
     }
   ];
+
+  // Show loading state while auth is loading
+  if (loading) {
+    return (
+      <Container>
+        <Content>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            minHeight: '200px',
+            color: 'var(--text-muted)'
+          }}>
+            Loading dashboard...
+          </div>
+        </Content>
+      </Container>
+    );
+  }
+
+  // Show error state if there's an error
+  if (error) {
+    return (
+      <Container>
+        <Content>
+          <div style={{ 
+            display: 'flex', 
+            flexDirection: 'column',
+            alignItems: 'center', 
+            padding: '2rem',
+            textAlign: 'center'
+          }}>
+            <AlertCircle size={48} style={{ color: 'var(--danger)', marginBottom: '1rem' }} />
+            <h3 style={{ color: 'var(--text)', marginBottom: '0.5rem' }}>Dashboard Error</h3>
+            <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>{error}</p>
+            <Button 
+              variant="primary" 
+              onClick={() => {
+                setError(null);
+                window.location.reload();
+              }}
+            >
+              Retry
+            </Button>
+          </div>
+        </Content>
+      </Container>
+    );
+  }
+
+  // Ensure user is available before rendering main content
+  if (!currentUser) {
+    return (
+      <Container>
+        <Content>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            minHeight: '200px',
+            color: 'var(--text-muted)'
+          }}>
+            Please sign in to access your dashboard.
+          </div>
+        </Content>
+      </Container>
+    );
+  }
 
   return (
     <Container>
@@ -311,7 +385,10 @@ function DashboardPage() {
           </Button>
         </WelcomeCard>
 
-        <SkillMatching />
+        {/* Wrap SkillMatching in error boundary to prevent crashes */}
+        <div style={{ marginBottom: '2rem' }}>
+          <SkillMatching />
+        </div>
 
         <StatsGrid>
           <StatCard>
