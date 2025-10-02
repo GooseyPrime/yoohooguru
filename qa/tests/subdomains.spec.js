@@ -8,7 +8,7 @@ const SUBDOMAIN_URLS = [
 
 for (const url of SUBDOMAIN_URLS) {
   test(`subdomain loads without console errors: ${url}`, async ({ page }) => {
-    const errors: string[] = [];
+    const errors = [];
 
     page.on('pageerror', (err) => errors.push(`pageerror: ${err.message}`));
     page.on('console', (msg) => {
