@@ -235,6 +235,7 @@ module.exports = (env, argv) => {
         },
       },
       // Optimize build performance
+      minimize: !isDevelopment && !isFastBuild,
       ...(isDevelopment || isFastBuild
         ? {}
         : {
