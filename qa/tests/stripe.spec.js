@@ -1,4 +1,5 @@
-import { test, expect } from '@playwright/test';
+
+const { test, expect } = require('@playwright/test');
 
 test.describe('Stripe API endpoints', () => {
   test('payments config returns publishable key', async ({ request, baseURL }) => {

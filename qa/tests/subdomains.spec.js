@@ -1,4 +1,6 @@
-import { test, expect } from '@playwright/test';
+
+const { test, expect } = require('@playwright/test');
+
 
 // Replace with your deployed domains when available
 const SUBDOMAIN_URLS = [

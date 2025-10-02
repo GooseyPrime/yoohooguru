@@ -7,7 +7,7 @@
     "dev": "webpack serve --mode development",
     "start": "npm run dev",
     "build": "webpack --mode production",
-    "build:dev": "webpack --mode development",
+    "build:fast": "FAST_BUILD=true webpack --mode production",
     "build:analyze": "webpack --mode production --analyze",
     "test": "jest --watchAll=false",
     "test:watch": "jest --watch",

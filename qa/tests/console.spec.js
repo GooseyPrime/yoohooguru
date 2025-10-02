@@ -1,4 +1,5 @@
-import { test, expect } from '@playwright/test';
+
+const { test, expect } = require('@playwright/test');
 
 // Critical routes for MVP
 const ROUTES = ['/', '/angels-list', '/coach', '/blog'];
