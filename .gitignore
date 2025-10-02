@@ -26,6 +26,10 @@ build/
 orphan-reports/
 ci-orphan-reports/
 
+# QA test results
+qa/test-results/
+qa/playwright-report/
+
 # Logs
 *.log
 npm-debug.log*
