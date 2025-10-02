@@ -1,3 +1,4 @@
+
 const { test, expect } = require('@playwright/test');
 
 test.describe('Stripe API endpoints', () => {

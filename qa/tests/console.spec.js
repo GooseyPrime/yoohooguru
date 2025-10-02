@@ -1,3 +1,4 @@
+
 const { test, expect } = require('@playwright/test');
 
 // Critical routes for MVP
