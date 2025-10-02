@@ -1,5 +1,5 @@
 
-const { test, expect } = require('@playwright/test');n
+const { test, expect } = require('@playwright/test');
 
 test.describe('Blog & AI Drafts', () => {
   test('blog page loads without console errors', async ({ page, baseURL }) => {
