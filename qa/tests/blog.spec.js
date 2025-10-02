@@ -1,8 +1,8 @@
-import { test, expect } from '@playwright/test';
+const { test, expect } = require('@playwright/test');
 
 test.describe('Blog & AI Drafts', () => {
   test('blog page loads without console errors', async ({ page, baseURL }) => {
-    const errors: string[] = [];
+    const errors = [];
 
     page.on('pageerror', (err) => errors.push(`pageerror: ${err.message}`));
     page.on('console', (msg) => {

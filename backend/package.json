@@ -8,6 +8,7 @@
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
     "build": "echo 'Build completed'",
+    "ensure-frontend-built": "cd ../frontend && (test -d dist || npm run build:fast)",
     "pretest": "node ../scripts/generate-cors-origins.js",
     "test": "firebase emulators:exec --project=yoohoo-dev-testing --only firestore,auth 'npm run jest'",
     "jest": "jest --forceExit --runInBand --detectOpenHandles --verbose",

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+const { test, expect } = require('@playwright/test');
 
 // Replace with your deployed domains when available
 const SUBDOMAIN_URLS = [
@@ -8,7 +8,7 @@ const SUBDOMAIN_URLS = [
 
 for (const url of SUBDOMAIN_URLS) {
   test(`subdomain loads without console errors: ${url}`, async ({ page }) => {
-    const errors: string[] = [];
+    const errors = [];
 
     page.on('pageerror', (err) => errors.push(`pageerror: ${err.message}`));
     page.on('console', (msg) => {

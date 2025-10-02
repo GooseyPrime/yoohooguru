@@ -1,7 +1,7 @@
-iimport { defineConfig, devices } from '@playwright/test';
+const { defineConfig, devices } = require('@playwright/test');
 
-export default defineConfig({
-  testDir: 'qa/tests',
+module.exports = defineConfig({
+  testDir: 'tests',
   timeout: 30_000,
   retries: 1,
   reporter: [['list'], ['html', { open: 'never' }]],
