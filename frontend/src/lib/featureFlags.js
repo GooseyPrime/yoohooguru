@@ -14,23 +14,45 @@ class FeatureFlagsService {
    */
   async loadFlags() {
     try {
-      const response = await fetch('/api/feature-flags', {
+      // Use environment variable or fallback to /api/flags
+      const flagsUrl = process.env.REACT_APP_FLAGS_URL || '/api/flags';
+      
+      const response = await fetch(flagsUrl, {
         credentials: 'include'
       });
       
-      if (response.ok) {
-        const data = await response.json();
-        this.flags = data.flags || {};
+      // Validate Content-Type before parsing
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        console.warn('Feature flags endpoint returned non-JSON content, using defaults');
+        this.flags = this.getDefaultFlags();
         this.loaded = true;
         return this.flags;
+      }
+      
+      if (response.ok) {
+        try {
+          const data = await response.json();
+          
+          // Support both new format { features: {...}, version: "..." }
+          // and legacy format { flags: {...} }
+          this.flags = data.features || data.flags || {};
+          this.loaded = true;
+          return this.flags;
+        } catch (parseError) {
+          console.warn('Failed to parse feature flags JSON, using defaults:', parseError.message);
+          this.flags = this.getDefaultFlags();
+          this.loaded = true;
+          return this.flags;
+        }
       } else {
-        console.warn('Failed to load feature flags, using defaults');
+        console.warn(`Failed to load feature flags (${response.status}), using defaults`);
         this.flags = this.getDefaultFlags();
         this.loaded = true;
         return this.flags;
       }
     } catch (error) {
-      console.error('Error loading feature flags:', error);
+      console.warn('Error loading feature flags, using defaults:', error.message);
       this.flags = this.getDefaultFlags();
       this.loaded = true;
       return this.flags;

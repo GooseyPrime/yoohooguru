@@ -49,6 +49,11 @@ const PostCard = styled.article`
     transform: translateY(-5px);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
   }
+  
+  &:focus-visible {
+    outline: 2px solid var(--pri, #6366F1);
+    outline-offset: 2px;
+  }
 `;
 
 const PostImage = styled.div`
@@ -179,7 +184,19 @@ function GuruFeaturedPosts({ posts, guru, showViewAll = true }) {
   const navigate = useNavigate();
 
   const handlePostClick = (post) => {
-    navigate(`/blog/${post.slug}`);
+    // Handle external URLs (if article has a URL, use it)
+    if (post.url && post.url !== '#') {
+      window.open(post.url, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    
+    // Otherwise navigate to blog page with slug or id
+    const identifier = post.slug || post.id;
+    if (identifier) {
+      navigate(`/blog/${identifier}`);
+    } else {
+      console.warn('Post missing slug and id:', post);
+    }
   };
 
   const handleViewAll = () => {
@@ -227,8 +244,20 @@ function GuruFeaturedPosts({ posts, guru, showViewAll = true }) {
       
       <PostsGrid>
         {posts.map((post, index) => (
-          <PostCard key={post.id || index} onClick={() => handlePostClick(post)}>
-            <PostImage 
+          <PostCard 
+            key={post.id || index} 
+            onClick={() => handlePostClick(post)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handlePostClick(post);
+              }
+            }}
+            tabIndex={0}
+            role="link"
+            aria-label={`Read article: ${post.title}`}
+          >
+            <PostImage
               primaryColor={guru?.theme?.primaryColor || '#6c5ce7'} 
               secondaryColor={guru?.theme?.secondaryColor || '#a29bfe'}
             >
