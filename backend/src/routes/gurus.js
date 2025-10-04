@@ -524,7 +524,22 @@ router.post('/:subdomain/leads', async (req, res) => {
     }
     
     // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Limit email length to prevent ReDoS attacks (max 254 chars per RFC 5321)
+    if (email.length > 254) {
+      return res.status(400).json({
+        error: 'Invalid email format',
+        message: 'Email address is too long'
+      });
+    }
+    
+    // Use a safe email validation pattern that avoids catastrophic backtracking
+    // Pattern explanation:
+    // - Local part: 1-64 chars of alphanumeric, dots, hyphens, underscores
+    // - @ symbol (required)
+    // - Domain part: 1-253 chars of alphanumeric, dots, hyphens
+    // - At least one dot in domain
+    // Using {1,64} instead of + to bound the quantifier and prevent polynomial complexity
+    const emailRegex = /^[a-zA-Z0-9._-]{1,64}@[a-zA-Z0-9.-]{1,253}\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({
         error: 'Invalid email format'
