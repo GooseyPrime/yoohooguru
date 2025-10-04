@@ -298,7 +298,7 @@ export function AuthProvider({ children }) {
       if (
         error.message?.includes('script') || 
         error.message?.includes('Content Security Policy') ||
-        errorHosts.includes('apis.google.com')
+        errorHosts.some(h => h === 'apis.google.com')
       ) {
         errorMessage = 'Google Sign-in is temporarily unavailable due to security restrictions. Please try using email/password authentication or refresh the page.';
       } else if (error.code === 'auth/internal-error') {
