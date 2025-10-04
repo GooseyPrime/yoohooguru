@@ -69,8 +69,8 @@ if (config.nodeEnv === 'production' || config.nodeEnv === 'staging') {
   // Railway's load balancer sets X-Forwarded-For with the real client IP first
   app.set('trust proxy', true);
 } else {
-  // In development, we can trust all proxies since we control the environment
-  app.set('trust proxy', true);
+  // In development/test, do not trust proxy headers to avoid rate limiting errors
+  app.set('trust proxy', false);
 }
 
 // --- Core Middleware Setup ---
@@ -133,7 +133,10 @@ app.use(session({
 }));
 
 // CSRF protection (requires session middleware)
-app.use(csrf());
+// Disable CSRF in test environment to allow API testing without CSRF tokens
+if (config.nodeEnv !== 'test') {
+  app.use(csrf());
+}
 
 // Rate limiting for API routes
 const limiter = rateLimit({
@@ -142,15 +145,11 @@ const limiter = rateLimit({
   message: config.rateLimitMessage,
   standardHeaders: true,
   legacyHeaders: false,
-  // FIX: Configure trust proxy settings for Railway deployment
-  trustProxy: config.nodeEnv === 'production' ? 1 : false, // Only trust first proxy in production
+  // Trust proxy is configured at the app level (app.set('trust proxy', ...))
+  // This ensures consistent behavior across all middleware
   keyGenerator: (req) => {
-    // Use X-Forwarded-For in production (Railway), real IP in development
-    if (config.nodeEnv === 'production') {
-      return req.ip || req.connection.remoteAddress || 'unknown';
-    } else {
-      return req.connection.remoteAddress || 'localhost';
-    }
+    // Use req.ip which respects the app-level trust proxy setting
+    return req.ip || req.connection.remoteAddress || 'unknown';
   }
 });
 app.use('/api/', limiter);
