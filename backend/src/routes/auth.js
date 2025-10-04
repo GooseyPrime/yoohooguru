@@ -214,7 +214,15 @@ router.post('/verify', async (req, res) => {
       });
     }
 
-    const decodedToken = await getAuth().verifyIdToken(token);
+    const auth = getAuth();
+    if (!auth) {
+      return res.status(401).json({
+        success: false,
+        error: { message: 'Invalid token' }
+      });
+    }
+
+    const decodedToken = await auth.verifyIdToken(token);
     
     res.json({
       success: true,
