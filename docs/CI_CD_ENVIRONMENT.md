@@ -89,6 +89,8 @@ env:
   # ... other test Firebase variables
 ```
 
+For detailed information about CI backend testing workflow, see [CI Backend Testing Guide](./CI_BACKEND_TESTING.md).
+
 ## Security Best Practices
 
 1. **Never commit secret values** - Always use `${{ secrets.SECRET_NAME }}`

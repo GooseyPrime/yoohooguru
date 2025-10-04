@@ -1176,6 +1176,8 @@ Backend tests use Firebase Emulators for safe, isolated testing without touching
 
 For detailed information about testing with Firebase emulators, see [Testing with Firebase Emulators Guide](./docs/TESTING_WITH_FIREBASE_EMULATORS.md).
 
+For CI/CD backend testing workflow documentation, see [CI Backend Testing Guide](./docs/CI_BACKEND_TESTING.md).
+
 ## 🔒 Security & Deployment Standards
 
 ### Firebase Production Policy
