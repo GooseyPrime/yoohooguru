@@ -1168,6 +1168,14 @@ npm run test:coverage
 - **Frontend**: Component testing with Jest and React Testing Library
 - **Integration**: End-to-end API testing with supertest
 
+### Testing with Firebase Emulators
+
+Backend tests use Firebase Emulators for safe, isolated testing without touching production data. All test scripts automatically set `NODE_ENV=test` to ensure proper emulator configuration.
+
+**Important**: The application enforces that Firebase emulator environment variables (`FIRESTORE_EMULATOR_HOST`, `FIREBASE_AUTH_EMULATOR_HOST`) can only be used when `NODE_ENV=test` or `NODE_ENV=development`. This safety check prevents accidental writes to production data.
+
+For detailed information about testing with Firebase emulators, see [Testing with Firebase Emulators Guide](./docs/TESTING_WITH_FIREBASE_EMULATORS.md).
+
 ## 🔒 Security & Deployment Standards
 
 ### Firebase Production Policy
