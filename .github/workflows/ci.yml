@@ -46,9 +46,11 @@ jobs:
         cd backend
         npm install -g firebase-tools
         npm test
-      # NOTE: Use 'npm test' command which is defined in backend/package.json
-      # DO NOT use nonexistent commands like 'backend-check' or 'job' 
+      # IMPORTANT: This step uses 'npm test' as defined in backend/package.json
+      # DO NOT use nonexistent commands like 'backend-check', 'job', or custom shell commands
+      # The correct command is: npm test (which runs Firebase emulators + Jest)
       # See docs/CI_BACKEND_TESTING.md for complete documentation
+      # Validate with: scripts/validate-ci-workflow.sh
       env:
         # IMPORTANT: NODE_ENV must be 'test' when using Firebase emulators
         # This is enforced in backend/src/config/firebase.js to prevent accidental
