@@ -134,10 +134,24 @@ The CI workflow sets the following environment variables for backend tests:
 
 ### Exit Code 127: Command Not Found
 
-If you see exit code 127, it means a command doesn't exist. Ensure:
-- You're using `npm test`, not nonexistent commands like `backend-check`
-- The command is defined in `backend/package.json` scripts
-- Firebase tools are installed before running tests
+If you see exit code 127 or errors like "backend-check: command not found", it means a command doesn't exist. 
+
+**Quick Fix:**
+1. Ensure you're using `npm test`, not nonexistent commands like `backend-check`
+2. Verify the command is defined in `backend/package.json` scripts
+3. Make sure Firebase tools are installed before running tests: `npm install -g firebase-tools`
+4. Run validation script to check workflow: `./scripts/validate-ci-workflow.sh`
+
+**Common Invalid Commands:**
+- ❌ `backend-check` - Does not exist
+- ❌ `job` - Not a command (it's a YAML key)
+- ❌ Custom shell scripts without proper setup
+
+**Correct Command:**
+- ✅ `npm test` - Defined in backend/package.json
+- ✅ `npm run jest` - Direct Jest execution
+- ✅ `npm run test:watch` - Watch mode
+- ✅ `npm run test:coverage` - Coverage reports
 
 ### Tests Fail in CI But Pass Locally
 
@@ -194,8 +208,24 @@ npm test
 
 Expected result: All tests should pass, and the process should exit with code 0.
 
+### CI Workflow Validation
+
+To validate that the CI workflow configuration is correct and doesn't use invalid commands:
+
+```bash
+# From repository root
+./scripts/validate-ci-workflow.sh
+```
+
+This script checks for:
+- No usage of invalid commands like `backend-check`
+- Correct use of `npm test` command
+- Proper firebase-tools installation
+- Correct working directory configuration
+
 ---
 
 **Last Updated**: December 2024
 **CI Workflow File**: `.github/workflows/ci.yml`
 **Backend Package**: `backend/package.json`
+**Validation Script**: `scripts/validate-ci-workflow.sh`

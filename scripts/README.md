@@ -125,6 +125,25 @@ Firebase configuration validation for production environment.
 ### `validate-railway.sh`
 Railway deployment validation script.
 
+### `validate-ci-workflow.sh`
+Validates CI workflow configuration to ensure correct test commands are used. This script prevents regressions where invalid commands like `backend-check` might be introduced.
+
+**Usage:**
+```bash
+# From repository root
+./scripts/validate-ci-workflow.sh
+```
+
+**Checks performed:**
+- Verifies no invalid commands (backend-check, etc.) in workflow files
+- Confirms backend tests use `npm test` command
+- Validates firebase-tools installation configuration
+- Ensures correct working directory setup
+
+**Exit codes:**
+- 0: All validations passed
+- 1: One or more validation errors found
+
 ### `verify-architecture.sh`
 Architecture verification and validation script.
 
