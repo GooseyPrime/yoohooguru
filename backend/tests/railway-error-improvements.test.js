@@ -16,8 +16,9 @@ function createTestApp() {
     const allowedOrigins = ['http://localhost:3000', 'https://yoohoo.guru'];
     const origin = req.headers.origin;
     
-    if (!origin || allowedOrigins.includes(origin)) {
-      res.setHeader('Access-Control-Allow-Origin', origin || '*');
+    // Only allow if origin is present, in whitelist, and not 'null'
+    if (origin && allowedOrigins.includes(origin) && origin !== 'null') {
+      res.setHeader('Access-Control-Allow-Origin', origin);
     }
     
     res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
