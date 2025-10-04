@@ -1,11 +1,32 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
+const rateLimit = require('express-rate-limit');
 const { getAuth } = require('../firebase/admin');
 const usersDB = require('../db/users');
 const { authenticateUser } = require('../middleware/auth');
 const { logger } = require('../utils/logger');
 
 const router = express.Router();
+
+// Strict rate limiter for authentication endpoints to prevent brute force attacks
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 requests per windowMs
+  message: 'Too many authentication attempts from this IP, please try again after 15 minutes',
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: false,
+  // Match the trust proxy configuration from index.js
+  // Only trust first proxy in production, localhost in development/test
+  keyGenerator: (req) => {
+    // Use X-Forwarded-For in production (Railway), real IP in development/test
+    if (process.env.NODE_ENV === 'production') {
+      return req.ip || req.connection.remoteAddress || 'unknown';
+    } else {
+      return req.connection.remoteAddress || 'localhost';
+    }
+  }
+});
 
 // Validation middleware
 const validateRegistration = [
@@ -25,7 +46,7 @@ const validateRegistration = [
 // @desc    Register user
 // @route   POST /api/auth/register
 // @access  Public
-router.post('/register', validateRegistration, async (req, res) => {
+router.post('/register', authLimiter, validateRegistration, async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -203,7 +224,7 @@ router.put('/profile', authenticateUser, async (req, res) => {
 // @desc    Verify token
 // @route   POST /api/auth/verify
 // @access  Public
-router.post('/verify', async (req, res) => {
+router.post('/verify', authLimiter, async (req, res) => {
   try {
     const { token } = req.body;
     
@@ -214,7 +235,15 @@ router.post('/verify', async (req, res) => {
       });
     }
 
-    const decodedToken = await getAuth().verifyIdToken(token);
+    const auth = getAuth();
+    if (!auth) {
+      return res.status(401).json({
+        success: false,
+        error: { message: 'Invalid token' }
+      });
+    }
+
+    const decodedToken = await auth.verifyIdToken(token);
     
     res.json({
       success: true,
