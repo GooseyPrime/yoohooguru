@@ -24,6 +24,19 @@ const authLimiter = rateLimit({
   }
 });
 
+// Rate limiter for authenticated profile endpoints (more permissive since users are authenticated)
+const profileLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 30, // Limit each IP to 30 requests per windowMs
+  message: 'Too many profile requests from this IP, please try again later',
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    // Use req.ip which respects the app-level trust proxy setting
+    return req.ip || req.connection.remoteAddress || 'unknown';
+  }
+});
+
 // Validation middleware
 const validateRegistration = [
   body('email').isEmail().normalizeEmail(),
@@ -139,7 +152,7 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
 // @desc    Get user profile
 // @route   GET /api/auth/profile
 // @access  Private
-router.get('/profile', authenticateUser, async (req, res) => {
+router.get('/profile', profileLimiter, authenticateUser, async (req, res) => {
   try {
     // Additional safety check - ensure user is authenticated
     if (!req.user || !req.user.uid) {
@@ -182,7 +195,7 @@ router.get('/profile', authenticateUser, async (req, res) => {
 // @desc    Update user profile
 // @route   PUT /api/auth/profile
 // @access  Private
-router.put('/profile', authenticateUser, async (req, res) => {
+router.put('/profile', profileLimiter, authenticateUser, async (req, res) => {
   try {
     const allowedUpdates = [
       'displayName', 'skillsOffered', 'skillsWanted', 
@@ -262,7 +275,7 @@ router.post('/verify', authLimiter, async (req, res) => {
 // @desc    Hide/unhide user profile
 // @route   PUT /api/auth/profile/visibility
 // @access  Private
-router.put('/profile/visibility', authenticateUser, async (req, res) => {
+router.put('/profile/visibility', profileLimiter, authenticateUser, async (req, res) => {
   try {
     const { hidden } = req.body;
     
@@ -300,7 +313,7 @@ router.put('/profile/visibility', authenticateUser, async (req, res) => {
 // @desc    Request account deletion (soft delete with 30-day retention)
 // @route   DELETE /api/auth/account
 // @access  Private
-router.delete('/account', authenticateUser, async (req, res) => {
+router.delete('/account', profileLimiter, authenticateUser, async (req, res) => {
   try {
     const { confirmEmail } = req.body;
     
@@ -349,7 +362,7 @@ router.delete('/account', authenticateUser, async (req, res) => {
 // @desc    Cancel account deletion
 // @route   PUT /api/auth/account/restore
 // @access  Private
-router.put('/account/restore', authenticateUser, async (req, res) => {
+router.put('/account/restore', profileLimiter, authenticateUser, async (req, res) => {
   try {
     const userData = await usersDB.get(req.user.uid);
     
@@ -391,7 +404,7 @@ router.put('/account/restore', authenticateUser, async (req, res) => {
 // @desc    Initiate account merge request (link Google account to email/password account)
 // @route   POST /api/auth/merge/request
 // @access  Private
-router.post('/merge/request', authenticateUser, async (req, res) => {
+router.post('/merge/request', profileLimiter, authenticateUser, async (req, res) => {
   try {
     const { targetEmail, provider } = req.body;
 
