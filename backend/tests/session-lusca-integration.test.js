@@ -59,13 +59,13 @@ describe('Session and Lusca Integration', () => {
         res.json({ success: true });
       });
       
-      // The request should work without errors
+      // The request should work without errors - GET requests are allowed by default
       const response = await request(app)
         .get('/test')
-        .expect(403); // CSRF protection will reject GET without token, but no session error
+        .expect(200); // GET requests with session should work
       
       // Should not contain session error
-      expect(response.body.message || '').not.toContain('req.session');
+      expect(response.body.success).toBe(true);
     });
 
     it('should fail when lusca is configured before session', () => {
