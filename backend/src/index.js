@@ -8,6 +8,7 @@ const compression = require('compression');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
 const path = require('path');
 const csrf = require('lusca').csrf;
 
@@ -53,6 +54,13 @@ const PORT = config.port;
 
 // Initialize Firebase
 initializeFirebase();
+
+// Validate SESSION_SECRET is set
+if (!process.env.SESSION_SECRET) {
+  logger.error('SESSION_SECRET environment variable is not set. This is required for session management.');
+  logger.error('Generate a secure secret with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
+  process.exit(1);
+}
 
 // Configure Express to trust proxy headers appropriately for the deployment environment
 // This is required for express-rate-limit to work correctly when deployed behind a proxy
@@ -110,6 +118,21 @@ app.use((req, res, next) => {
 
 app.use(compression());
 app.use(cookieParser());
+
+// Session middleware (MUST come before lusca)
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: config.nodeEnv === 'production', // Use secure cookies in production
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    sameSite: 'lax'
+  }
+}));
+
+// CSRF protection (requires session middleware)
 app.use(csrf());
 
 // Rate limiting for API routes
