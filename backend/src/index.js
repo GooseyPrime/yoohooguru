@@ -9,6 +9,7 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+const csrf = require('lusca').csrf;
 
 const { initializeFirebase } = require('./config/firebase');
 const { getConfig, getCorsOrigins, validateConfig } = require('./config/appConfig');
@@ -117,6 +118,7 @@ app.use((req, res, next) => {
 
 app.use(compression());
 app.use(cookieParser());
+app.use(csrf());
 
 // Rate limiting for API routes
 const limiter = rateLimit({
