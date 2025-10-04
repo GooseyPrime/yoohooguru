@@ -16,15 +16,11 @@ const authLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   skipSuccessfulRequests: false,
-  // Match the trust proxy configuration from index.js
-  // Only trust first proxy in production, localhost in development/test
+  // Trust proxy is configured at the app level (app.set('trust proxy', ...))
+  // This ensures consistent behavior across all middleware
   keyGenerator: (req) => {
-    // Use X-Forwarded-For in production (Railway), real IP in development/test
-    if (process.env.NODE_ENV === 'production') {
-      return req.ip || req.connection.remoteAddress || 'unknown';
-    } else {
-      return req.connection.remoteAddress || 'localhost';
-    }
+    // Use req.ip which respects the app-level trust proxy setting
+    return req.ip || req.connection.remoteAddress || 'unknown';
   }
 });
 
