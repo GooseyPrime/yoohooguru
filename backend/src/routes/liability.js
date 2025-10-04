@@ -381,6 +381,13 @@ router.get('/terms-status', authenticateUser, async (req, res) => {
 router.get('/compliance-check/:skillCategory', authenticateUser, async (req, res) => {
   try {
     const { skillCategory } = req.params;
+    // Only allow whitelisted skill categories
+    const ALLOWED_SKILL_CATEGORIES = [
+      'coding', 'cooking', 'painting', 'music', 'design', 'science', 'leadership', 'teaching', 'sports'
+    ];
+    if (!ALLOWED_SKILL_CATEGORIES.includes(skillCategory)) {
+      return res.status(400).json({ error: 'Invalid skill category' });
+    }
     const userId = req.user.uid;
     const db = getFirestore();
 
