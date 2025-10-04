@@ -41,7 +41,8 @@
     "node-cron": "^3.0.3",
     "stripe": "^18.5.0",
     "uuid": "^8.3.2",
-    "winston": "^3.18.2"
+    "winston": "^3.18.2",
+    "escape-html": "^1.0.3"
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "^3.0.0",

@@ -2,6 +2,7 @@ const express = require('express');
 const { stripe } = require('../lib/stripe');
 const { getFirestore } = require('../config/firebase');
 const { logger } = require('../utils/logger');
+const escapeHtml = require('escape-html');
 
 const router = express.Router();
 
@@ -82,7 +83,7 @@ router.post('/', async (req, res) => {
     logger.info(`✅ Webhook signature verified - event type: ${event.type}`);
   } catch (err) {
     logger.error('❌ Webhook signature verification failed.', err.message);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
+    return res.status(400).send(`Webhook Error: ${escapeHtml(err.message)}`);
   }
 
   try {
