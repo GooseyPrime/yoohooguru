@@ -127,7 +127,13 @@ app.use((req, res, next) => {
 app.use(compression());
 app.use(cookieParser());
 
-// Session middleware (MUST come before lusca)
+// Session middleware (required for lusca CSRF protection)
+// Validate SESSION_SECRET is set
+if (!process.env.SESSION_SECRET) {
+  logger.error('SESSION_SECRET environment variable is not set');
+  throw new Error('SESSION_SECRET is required for session management and CSRF protection. Please set it in your .env file.');
+}
+
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
@@ -135,13 +141,11 @@ app.use(session({
   cookie: {
     secure: config.nodeEnv === 'production', // Use secure cookies in production
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    sameSite: 'lax'
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
 }));
 
-// CSRF protection (requires session middleware)
-// Disable CSRF in test environment to allow API testing without CSRF tokens
+// CSRF protection (disabled in test environment to simplify testing)
 if (config.nodeEnv !== 'test') {
   app.use(csrf());
 }
