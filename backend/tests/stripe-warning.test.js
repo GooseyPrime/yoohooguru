@@ -9,7 +9,9 @@ describe('Stripe Warning Messages', () => {
       process.env.NODE_ENV = 'development';
       delete process.env.STRIPE_SECRET_KEY;
       require('${stripePath}');
-    `]);
+    `], {
+      env: { ...process.env, NODE_ENV: 'development' }
+    });
     
     let stderr = '';
     child.stderr.on('data', (data) => {
@@ -29,7 +31,9 @@ describe('Stripe Warning Messages', () => {
       process.env.NODE_ENV = 'production';
       delete process.env.STRIPE_SECRET_KEY;
       require('${stripePath}');
-    `]);
+    `], {
+      env: { ...process.env, NODE_ENV: 'production' }
+    });
     
     let stderr = '';
     child.stderr.on('data', (data) => {
@@ -48,7 +52,9 @@ describe('Stripe Warning Messages', () => {
       delete process.env.NODE_ENV;
       delete process.env.STRIPE_SECRET_KEY;
       require('${stripePath}');
-    `]);
+    `], {
+      env: { ...process.env, NODE_ENV: undefined }
+    });
     
     let stderr = '';
     child.stderr.on('data', (data) => {
@@ -67,7 +73,9 @@ describe('Stripe Warning Messages', () => {
       process.env.NODE_ENV = 'development';
       process.env.STRIPE_SECRET_KEY = 'sk_test_fake_key';
       require('${stripePath}');
-    `]);
+    `], {
+      env: { ...process.env, NODE_ENV: 'development', STRIPE_SECRET_KEY: 'sk_test_fake_key' }
+    });
     
     let stderr = '';
     child.stderr.on('data', (data) => {

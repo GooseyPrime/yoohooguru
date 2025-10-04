@@ -47,6 +47,9 @@ jobs:
         npm install -g firebase-tools
         npm test
       env:
+        # IMPORTANT: NODE_ENV must be 'test' when using Firebase emulators
+        # This is enforced in backend/src/config/firebase.js to prevent accidental
+        # writes to production data. See docs/TESTING_WITH_FIREBASE_EMULATORS.md
         NODE_ENV: test
         FIREBASE_PROJECT_ID: yoohoo-dev-testing
         FIRESTORE_EMULATOR_HOST: localhost:8080
@@ -111,6 +114,9 @@ jobs:
       deployment-status: ${{ steps.deployment.outputs.status }}
       artifact-errors-only: ${{ steps.check-errors.outputs.artifact-errors-only }}
     
+    # NOTE: This job intentionally does NOT set emulator environment variables.
+    # Production deployments must never use Firebase emulators.
+    # See docs/TESTING_WITH_FIREBASE_EMULATORS.md for details.
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
