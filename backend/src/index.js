@@ -55,6 +55,13 @@ const PORT = config.port;
 // Initialize Firebase
 initializeFirebase();
 
+// Validate SESSION_SECRET is set
+if (!process.env.SESSION_SECRET) {
+  logger.error('SESSION_SECRET environment variable is not set. This is required for session management.');
+  logger.error('Generate a secure secret with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
+  process.exit(1);
+}
+
 // Configure Express to trust proxy headers appropriately for the deployment environment
 // This is required for express-rate-limit to work correctly when deployed behind a proxy
 if (config.nodeEnv === 'production' || config.nodeEnv === 'staging') {
