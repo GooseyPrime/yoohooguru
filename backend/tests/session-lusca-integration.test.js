@@ -132,7 +132,13 @@ describe('Session and Lusca Integration', () => {
       app.use(session({
         secret: 'test_secret',
         resave: false,
-        saveUninitialized: false
+        saveUninitialized: false,
+        cookie: {
+          secure: process.env.NODE_ENV === 'production',
+          httpOnly: true,
+          maxAge: 24 * 60 * 60 * 1000,
+          sameSite: 'lax'
+        }
       }));
       
       app.use(csrf());
