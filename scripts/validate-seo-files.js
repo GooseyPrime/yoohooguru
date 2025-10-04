@@ -40,10 +40,19 @@ try {
   let nonCanonicalCount = 0;
   
   urlLines.forEach(line => {
-    if (line.includes('https://www.yoohoo.guru/')) {
-      canonicalCount++;
-    } else if (line.includes('https://yoohoo.guru/')) {
-      nonCanonicalCount++;
+    // Extract the URL within the <loc> tag
+    const match = line.match(/<loc>(.*?)<\/loc>/);
+    if (match && match[1]) {
+      try {
+        const locUrl = new URL(match[1]);
+        if (locUrl.hostname === 'www.yoohoo.guru') {
+          canonicalCount++;
+        } else if (locUrl.hostname === 'yoohoo.guru') {
+          nonCanonicalCount++;
+        }
+      } catch (e) {
+        // Invalid URL, skip
+      }
     }
   });
   
