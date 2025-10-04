@@ -15,12 +15,12 @@ echo "2. Testing Production CORS Configuration:"
 # Create a test that simulates production environment
 cd /home/runner/work/yoohooguru/yoohooguru/backend
 NODE_ENV=production node -e "
-const { getCorsOrigins, getConfig } = require('./src/config/appConfig');
+const { getCorsOrigins, getCorsOriginsArray, getConfig } = require('./src/config/appConfig');
 
 console.log('Production CORS Origins:');
 const config = getConfig();
-const corsOrigins = getCorsOrigins(config);
-corsOrigins.forEach(origin => console.log('  -', origin));
+const corsOriginsArray = getCorsOriginsArray(config);
+corsOriginsArray.forEach(origin => console.log('  -', origin));
 
 console.log('\nWildcard Pattern Matching Test:');
 
@@ -32,29 +32,13 @@ const testOrigins = [
   'https://www.yoohoo.guru'
 ];
 
+const corsValidator = getCorsOrigins(config);
+
 testOrigins.forEach(origin => {
-  let matched = false;
-  
-  // Check exact matches first
-  if (corsOrigins.includes(origin)) {
-    matched = true;
-  } else {
-    // Check wildcard patterns
-    for (const pattern of corsOrigins) {
-      if (pattern.includes('*')) {
-        const regex = pattern
-          .replace(/\./g, '\\\\\.')  // Escape dots
-          .replace(/\*/g, '.*');     // Convert * to .*
-        
-        if (new RegExp(\`^\${regex}$\`).test(origin)) {
-          matched = true;
-          break;
-        }
-      }
-    }
-  }
-  
-  console.log(\`  \${matched ? '✅' : '❌'} \${origin}\`);
+  corsValidator(origin, (err, allowed) => {
+    const matched = allowed && !err;
+    console.log(\`  \${matched ? '✅' : '❌'} \${origin}\`);
+  });
 });
 "
 
