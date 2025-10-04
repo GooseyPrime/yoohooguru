@@ -100,9 +100,21 @@ Return ONLY the blog post content in markdown format, starting with the title as
     const excerpt = lines.find(line => line.length > 100 && !line.startsWith('#'))?.substring(0, 200) + '...' || 
                    `Learn about ${topic} and develop your skills in ${category}.`;
 
+    // Sanitize title for slug generation
+    // Limit input length to prevent ReDoS attacks (max 200 chars for titles)
+    const sanitizedTitle = title.substring(0, 200);
+    // Use safe character-by-character approach instead of regex with polynomial complexity
+    const slug = sanitizedTitle
+      .toLowerCase()
+      .split('')
+      .map(char => /[a-z0-9]/.test(char) ? char : '-')
+      .join('')
+      .replace(/-+/g, '-')  // Collapse multiple dashes
+      .replace(/^-+|-+$/g, '');  // Trim dashes from start/end
+
     const blogPost = {
       title,
-      slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''),
+      slug,
       excerpt,
       content,
       category,
