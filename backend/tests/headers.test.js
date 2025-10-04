@@ -103,4 +103,25 @@ describe('Security and Performance Headers', () => {
       expect(response.headers['x-content-type-options']).toBe('nosniff');
     });
   });
+
+  describe('Content Security Policy', () => {
+    it('should include bigdatacloud.net in connect-src directive', async () => {
+      const response = await request(app)
+        .get('/api')
+        .expect(200);
+
+      expect(response.headers['content-security-policy']).toBeDefined();
+      expect(response.headers['content-security-policy']).toContain('https://api.bigdatacloud.net');
+    });
+
+    it('should include unsplash.com in connect-src directive', async () => {
+      const response = await request(app)
+        .get('/api')
+        .expect(200);
+
+      expect(response.headers['content-security-policy']).toBeDefined();
+      expect(response.headers['content-security-policy']).toContain('https://api.unsplash.com');
+      expect(response.headers['content-security-policy']).toContain('https://images.unsplash.com');
+    });
+  });
 });
