@@ -279,9 +279,27 @@ export function AuthProvider({ children }) {
       let errorMessage = getAuthErrorMessage(error);
       
       // Add specific messaging for CSP and script loading issues
-      if (error.message?.includes('script') || 
-          error.message?.includes('Content Security Policy') ||
-          error.message?.includes('apis.google.com')) {
+      // Helper: extract hostnames from error messages
+      const extractHostnames = (message) => {
+        if (!message) return [];
+        // Simple URL matching regex
+        const regex = /https?:\/\/([^\s/$.?#].[^\s]*)/gi;
+        const matches = message.match(regex) || [];
+        // Return hostnames only
+        return matches.map(urlStr => {
+          try {
+            return (new URL(urlStr)).hostname;
+          } catch { return null; }
+        }).filter(Boolean);
+      };
+      
+      const errorHosts = extractHostnames(error.message);
+      
+      if (
+        error.message?.includes('script') || 
+        error.message?.includes('Content Security Policy') ||
+        errorHosts.some(h => h === 'apis.google.com')
+      ) {
         errorMessage = 'Google Sign-in is temporarily unavailable due to security restrictions. Please try using email/password authentication or refresh the page.';
       } else if (error.code === 'auth/internal-error') {
         errorMessage = 'Google Sign-in encountered a technical issue. Please try again or use email/password authentication.';
