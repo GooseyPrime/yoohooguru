@@ -1,4 +1,5 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const { getFirestore } = require('../config/firebase');
 const admin = require('firebase-admin');
 const { getSubdomainConfig, isValidSubdomain } = require('../config/subdomains');
@@ -6,6 +7,19 @@ const { logger } = require('../utils/logger');
 const { v4: uuidv4 } = require('uuid');
 
 const router = express.Router();
+
+// Rate limiter for public guru pages (moderate limits for public content)
+const guruPagesLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: 'Too many requests to guru pages, please try again later',
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    // Use req.ip which respects the app-level trust proxy setting
+    return req.ip || req.connection.remoteAddress || 'unknown';
+  }
+});
 
 /**
  * Middleware to validate subdomain parameter in URL path
@@ -111,7 +125,7 @@ router.use('/news/:subdomain', (req, res, next) => {
  * GET /:subdomain/home
  * Get guru homepage data including featured posts and character info
  */
-router.get('/:subdomain/home', async (req, res) => {
+router.get('/:subdomain/home', guruPagesLimiter, async (req, res) => {
   try {
     const { subdomain } = req.params;
     const guru = req.guru;
@@ -691,7 +705,7 @@ router.get('/:subdomain/about', async (req, res) => {
  * GET /api/news/:subdomain
  * Get curated news articles for a subdomain
  */
-router.get('/news/:subdomain', async (req, res) => {
+router.get('/news/:subdomain', guruPagesLimiter, async (req, res) => {
   try {
     const { subdomain } = req.params;
     const guru = req.guru;
