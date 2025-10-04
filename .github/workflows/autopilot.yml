@@ -1,10 +1,11 @@
 name: Autopilot CI/CD
 
+permissions:
+  contents: read
+
 on:
   pull_request:
     types: [opened, synchronize, labeled, unlabeled]
-
-
 
 jobs:
   # Check if autopilot should run
