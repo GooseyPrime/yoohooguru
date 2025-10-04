@@ -8,6 +8,7 @@ const compression = require('compression');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
 const path = require('path');
 const csrf = require('lusca').csrf;
 
@@ -110,6 +111,25 @@ app.use((req, res, next) => {
 
 app.use(compression());
 app.use(cookieParser());
+
+// Session middleware (required for lusca CSRF protection)
+// Validate SESSION_SECRET is set
+if (!process.env.SESSION_SECRET) {
+  logger.error('SESSION_SECRET environment variable is not set');
+  throw new Error('SESSION_SECRET is required for session management and CSRF protection. Please set it in your .env file.');
+}
+
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: config.nodeEnv === 'production', // Use secure cookies in production
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
+
 app.use(csrf());
 
 // Rate limiting for API routes
