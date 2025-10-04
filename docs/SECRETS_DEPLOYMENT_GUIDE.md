@@ -52,7 +52,14 @@ SERVE_FRONTEND=false
 ```env
 CORS_ORIGIN_PRODUCTION=https://yoohoo.guru,https://*.vercel.app
 JWT_SECRET=your_super_secure_jwt_secret_256_bits_minimum
+SESSION_SECRET=your_secure_session_secret_64_chars_minimum
 ```
+
+**🔑 Generate SESSION_SECRET**: 
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+This generates a 64-character hexadecimal string for secure session management.
 
 #### Firebase Admin SDK (Server-Side Only)
 ```env
