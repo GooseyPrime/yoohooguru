@@ -117,8 +117,9 @@ describe('Feature Flags API Tests', () => {
         .get('/api/feature-flags')
         .expect(200);
 
-      expect(response.body.success).toBe(true);
-      expect(response.body.flags.instantPayouts).toBe(false);
+      expect(response.body.features).toBeDefined();
+      expect(response.body.features.instantPayouts).toBe(false);
+      expect(response.body.version).toBeDefined();
     });
   });
 });
