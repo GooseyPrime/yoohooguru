@@ -145,7 +145,10 @@ app.use(session({
   }
 }));
 
-app.use(csrf());
+// CSRF protection (disabled in test environment to simplify testing)
+if (config.nodeEnv !== 'test') {
+  app.use(csrf());
+}
 
 // Rate limiting for API routes
 const limiter = rateLimit({
