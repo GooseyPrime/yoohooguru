@@ -87,12 +87,12 @@ module.exports = (env, argv) => {
           REACT_APP_FIREBASE_MESSAGING_SENDER_ID: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
           REACT_APP_FIREBASE_APP_ID: process.env.REACT_APP_FIREBASE_APP_ID,
           // App branding environment variables
-          REACT_APP_BRAND_NAME: process.env.APP_BRAND_NAME,
-          REACT_APP_DISPLAY_NAME: process.env.APP_DISPLAY_NAME,
-          REACT_APP_LEGAL_EMAIL: process.env.APP_LEGAL_EMAIL,
-          REACT_APP_PRIVACY_EMAIL: process.env.APP_PRIVACY_EMAIL,
-          REACT_APP_SUPPORT_EMAIL: process.env.APP_SUPPORT_EMAIL,
-          REACT_APP_CONTACT_ADDRESS: process.env.APP_CONTACT_ADDRESS,
+          REACT_APP_BRAND_NAME: process.env.REACT_APP_BRAND_NAME,
+          REACT_APP_DISPLAY_NAME: process.env.REACT_APP_DISPLAY_NAME,
+          REACT_APP_LEGAL_EMAIL: process.env.REACT_APP_LEGAL_EMAIL,
+          REACT_APP_PRIVACY_EMAIL: process.env.REACT_APP_PRIVACY_EMAIL,
+          REACT_APP_SUPPORT_EMAIL: process.env.REACT_APP_SUPPORT_EMAIL,
+          REACT_APP_CONTACT_ADDRESS: process.env.REACT_APP_CONTACT_ADDRESS,
         }),
       }),
       new CopyWebpackPlugin({

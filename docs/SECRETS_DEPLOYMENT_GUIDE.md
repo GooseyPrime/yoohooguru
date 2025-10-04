@@ -18,25 +18,35 @@ Configure these in your Vercel project dashboard under Settings → Environment 
 
 #### Firebase Configuration (Public - Safe for Frontend)
 ```env
-VITE_FIREBASE_API_KEY=AIza...your_key_here
-VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=ceremonial-tea-470904-f3
-VITE_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
-VITE_FIREBASE_MESSAGING_SENDER_ID=123456789
-VITE_FIREBASE_APP_ID=1:123456789:web:your_app_id
+REACT_APP_FIREBASE_API_KEY=AIza...your_key_here
+REACT_APP_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+REACT_APP_FIREBASE_PROJECT_ID=ceremonial-tea-470904-f3
+REACT_APP_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=123456789
+REACT_APP_FIREBASE_APP_ID=1:123456789:web:your_app_id
 ```
 
 #### API Configuration
 ```env
-VITE_API_URL=https://api.yoohoo.guru
+REACT_APP_API_URL=https://api.yoohoo.guru
+```
+
+#### App Branding (Public - Safe for Frontend)
+```env
+REACT_APP_BRAND_NAME=yoohoo.guru
+REACT_APP_DISPLAY_NAME=yoohoo.guru
+REACT_APP_LEGAL_EMAIL=legal@yoohoo.guru
+REACT_APP_PRIVACY_EMAIL=privacy@yoohoo.guru
+REACT_APP_SUPPORT_EMAIL=support@yoohoo.guru
+REACT_APP_CONTACT_ADDRESS=yoohoo.guru, Legal Department
 ```
 
 #### Stripe Public Keys (Safe for Frontend)
 ```env
-VITE_STRIPE_PUBLISHABLE_KEY=pk_live_your_publishable_key
+REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_live_your_publishable_key
 ```
 
-**Note**: Use `VITE_*` prefix for Vite-based apps or `NEXT_PUBLIC_*` for Next.js apps.
+**Note**: This project uses webpack with `REACT_APP_*` prefix. Use `VITE_*` prefix for Vite-based apps or `NEXT_PUBLIC_*` for Next.js apps.
 
 ### 2. Backend Secrets (Railway Console)
 
@@ -148,7 +158,7 @@ Create these products and copy their price IDs:
 These can remain in `.env.example` and don't need to be secret:
 
 ```env
-# App Branding
+# App Branding (Backend - use REACT_APP_* prefix for frontend)
 APP_BRAND_NAME=yoohoo.guru
 APP_DISPLAY_NAME=yoohoo.guru
 APP_LEGAL_EMAIL=legal@yoohoo.guru
