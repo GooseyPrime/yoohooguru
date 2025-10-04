@@ -116,6 +116,10 @@ FIREBASE_API_KEY=your_api_key
 
 # Security (required for production)
 JWT_SECRET=your_super_secret_key
+SESSION_SECRET=your_secure_session_secret
+
+# Generate secure secrets with:
+# node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
 # App Branding (optional, defaults to yoohoo.guru)
 APP_BRAND_NAME=yoohoo.guru
