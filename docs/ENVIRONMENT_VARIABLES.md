@@ -124,6 +124,12 @@ All Firebase variables also need `REACT_APP_` prefixed versions for frontend use
 | `JWT_SECRET` | ✅ | Secret key for JWT token signing |
 | `JWT_EXPIRES_IN` | ❌ | JWT token expiration time (default: 7d) |
 
+#### Session Configuration
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `SESSION_SECRET` | ✅ | Secret key for session encryption - Generate with: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
+
 #### Stripe Configuration
 
 | Variable | Required | Description |

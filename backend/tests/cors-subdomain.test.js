@@ -85,6 +85,7 @@ describe('CORS Configuration', () => {
   describe('Wildcard Pattern Matching', () => {
     const testWildcardMatch = (pattern, origin, shouldMatch) => {
       const regex = pattern
+        .replace(/\\/g, '\\\\') // Escape backslashes
         .replace(/\./g, '\\.')  // Escape dots
         .replace(/\*/g, '[a-z0-9.-]+');  // Convert * to safe pattern (prevents ReDoS)
 
