@@ -35,9 +35,9 @@ jobs:
       - name: Parse PR body for ACTION REQUIRED section
         id: parse-body
         if: steps.check.outputs.should-run == 'true'
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
         run: |
-          PR_BODY='${{ github.event.pull_request.body }}'
-          
           # Check if ACTION REQUIRED section exists
           if echo "$PR_BODY" | grep -q "## \[ACTION REQUIRED:"; then
             echo "has-action-required=true" >> $GITHUB_OUTPUT
