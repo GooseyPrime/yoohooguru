@@ -14,7 +14,8 @@ import {
 
 const PageContainer = styled.div`
   min-height: 100vh;
-  background: #f8f9fa;
+  background: var(--bg, #0a0a0f);
+  color: var(--text, #ffffff);
 `;
 
 const HeroSection = styled.section`
@@ -68,7 +69,7 @@ const Title = styled.h1`
 
 const Subtitle = styled.h2`
   font-size: 1.3rem;
-  color: #666;
+  color: var(--muted, #B4C6E7);
   margin-bottom: 2rem;
   max-width: 600px;
   margin-left: auto;
@@ -96,7 +97,7 @@ const SkillTag = styled.span`
 
 const ValueProposition = styled.p`
   font-size: 1.1rem;
-  color: #555;
+  color: var(--muted, #B4C6E7);
   line-height: 1.6;
   max-width: 800px;
   margin: 0 auto 2rem;
@@ -128,7 +129,7 @@ const StatItem = styled.div`
   
   .label {
     font-size: 0.9rem;
-    color: #666;
+    color: var(--muted, #B4C6E7);
     margin-bottom: 0.25rem;
   }
   
@@ -155,13 +156,13 @@ const SectionTitle = styled.h2`
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  color: #2c3e50;
+  color: var(--text, #F8FAFC);
 `;
 
 const SectionSubtitle = styled.p`
   text-align: center;
   font-size: 1.1rem;
-  color: #666;
+  color: var(--muted, #B4C6E7);
   margin-bottom: 3rem;
   max-width: 600px;
   margin-left: auto;
@@ -180,31 +181,36 @@ const PostsGrid = styled.div`
 `;
 
 const PostCard = styled.article`
-  background: var(--card-bg);
-  color: var(--text);
+  background: var(--surface, #1A1530);
+  color: var(--text, #F8FAFC);
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-md, 0 4px 20px rgba(0,0,0,0.4));
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border, #2D2754);
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  }
+  
+  &:focus-visible {
+    outline: 2px solid var(--pri, #6366F1);
+    outline-offset: 2px;
   }
 `;
 
 const PostTitle = styled.h3`
   font-size: 1.3rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text, #F8FAFC);
   margin-bottom: 0.5rem;
   line-height: 1.4;
 `;
 
 const PostExcerpt = styled.p`
-  color: #666;
+  color: var(--muted, #B4C6E7);
   line-height: 1.6;
   margin-bottom: 1rem;
 `;
@@ -214,7 +220,7 @@ const PostMeta = styled.div`
   justify-content: space-between;
   align-items: center;
   font-size: 0.85rem;
-  color: #999;
+  color: var(--muted, #B4C6E7);
 `;
 
 const NewsGrid = styled.div`
@@ -225,24 +231,24 @@ const NewsGrid = styled.div`
 `;
 
 const NewsCard = styled.article`
-  background: var(--card-bg);
-  color: var(--text);
+  background: var(--surface, #1A1530);
+  color: var(--text, #F8FAFC);
   border-radius: 8px;
   padding: 1.25rem;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-sm, 0 2px 10px rgba(0,0,0,0.3));
   border-left: 4px solid ${props => props.$primaryColor};
 `;
 
 const NewsTitle = styled.h3`
   font-size: 1.1rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text, #F8FAFC);
   margin-bottom: 0.5rem;
   line-height: 1.4;
 `;
 
 const NewsSummary = styled.p`
-  color: #666;
+  color: var(--muted, #B4C6E7);
   font-size: 0.95rem;
   line-height: 1.5;
   margin-bottom: 0.75rem;
@@ -250,7 +256,7 @@ const NewsSummary = styled.p`
 
 const NewsSource = styled.div`
   font-size: 0.8rem;
-  color: #999;
+  color: var(--muted, #B4C6E7);
   font-weight: 500;
 `;
 
@@ -262,12 +268,12 @@ const CrossDomainGrid = styled.div`
 `;
 
 const DomainCard = styled.div`
-  background: var(--card-bg);
-  color: var(--text);
+  background: var(--surface, #1A1530);
+  color: var(--text, #F8FAFC);
   border-radius: 8px;
   padding: 1rem;
   text-align: center;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-sm, 0 2px 10px rgba(0,0,0,0.3));
   cursor: pointer;
   transition: transform 0.2s ease;
   text-decoration: none;
@@ -284,7 +290,7 @@ const DomainCard = styled.div`
   
   .name {
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--text, #F8FAFC);
     text-transform: capitalize;
   }
 `;
@@ -292,7 +298,7 @@ const DomainCard = styled.div`
 const EmptyState = styled.div`
   text-align: center;
   padding: 2rem;
-  color: #666;
+  color: var(--muted, #B4C6E7);
   
   .icon {
     font-size: 3rem;
@@ -442,7 +448,19 @@ function SubdomainLandingPage({ subdomain, config }) {
   };
 
   const handlePostClick = (post) => {
-    navigate(`/blog/${post.slug || post.id}`);
+    // Handle external URLs (if article has a URL, use it)
+    if (post.url && post.url !== '#') {
+      window.open(post.url, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    
+    // Otherwise navigate to blog page with slug or id
+    const identifier = post.slug || post.id;
+    if (identifier) {
+      navigate(`/blog/${identifier}`);
+    } else {
+      console.warn('Post missing slug and id:', post);
+    }
   };
 
   const handleDomainClick = (domain) => {
@@ -613,7 +631,19 @@ function SubdomainLandingPage({ subdomain, config }) {
           {homeData?.featuredPosts && homeData.featuredPosts.length > 0 ? (
             <PostsGrid>
               {homeData.featuredPosts.slice(0, 6).map((post, index) => (
-                <PostCard key={post.id || index} onClick={() => handlePostClick(post)}>
+                <PostCard 
+                  key={post.id || index} 
+                  onClick={() => handlePostClick(post)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handlePostClick(post);
+                    }
+                  }}
+                  tabIndex={0}
+                  role="link"
+                  aria-label={`Read article: ${post.title}`}
+                >
                   <PostTitle>{post.title}</PostTitle>
                   <PostExcerpt>
                     {post.excerpt || post.content?.substring(0, 150) + '...' || 'Expert insights and practical guidance to help you succeed.'}

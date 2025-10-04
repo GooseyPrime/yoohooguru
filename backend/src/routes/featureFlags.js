@@ -10,7 +10,18 @@ const router = express.Router();
 router.get('/', (req, res) => {
   try {
     const flags = getPublicFlags();
-    res.json({ success: true, flags });
+    // Generate version timestamp
+    const now = new Date();
+    const version = now.toISOString().replace(/[-:]/g, '').split('.')[0].replace('T', '.');
+    
+    // Set Content-Type header explicitly
+    res.setHeader('Content-Type', 'application/json');
+    
+    // Return in format: { features: {...}, version: "YYYYMMDD.HHMM" }
+    res.json({ 
+      features: flags,
+      version: version
+    });
   } catch (error) {
     logger.error('Error getting feature flags:', error);
     res.status(500).json({ 

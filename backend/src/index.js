@@ -248,6 +248,7 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/matchmaking', matchmakingRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/feature-flags', featureFlagRoutes);
+app.use('/api/flags', featureFlagRoutes); // Alias for feature-flags
 app.use('/api/liability', liabilityRoutes);
 app.use('/api/webhooks', webhookRoutes);
 app.use('/api/angels', angelsRoutes);
