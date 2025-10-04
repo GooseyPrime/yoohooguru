@@ -12,6 +12,14 @@ const path = require('path');
 
 const { initializeFirebase } = require('./config/firebase');
 const { getConfig, getCorsOrigins, validateConfig } = require('./config/appConfig');
+
+// Rate limiter for frontend catch-all route (serving index.html)
+const frontendLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
 const { logger } = require('./utils/logger');
 const errorHandler = require('./middleware/errorHandler');
 const { subdomainHandler } = require('./middleware/subdomainHandler');
@@ -302,7 +310,7 @@ app.use('/api/*', (req, res) => {
 
 // FIX: Catch-all for frontend routes. Only serves the React app when frontend serving is enabled.
 if (config.serveFrontend) {
-  app.get('*', (req, res) => {
+  app.get('*', frontendLimiter, (req, res) => {
     try {
       res.sendFile(path.join(frontendDistPath, 'index.html'));
     } catch (error) {
