@@ -244,28 +244,76 @@ jobs:
           npm ci
           cd backend && npm install
 
-      - name: Start backend server
+      - name: Install Firebase Tools
+        run: npm install -g firebase-tools
+
+      - name: Start Firebase Emulators and Backend Server
         run: |
           cd backend
+          # Start emulators in background
+          firebase emulators:start --only firestore,auth --project=yoohoo-dev-testing &
+          EMULATOR_PID=$!
+          echo "EMULATOR_PID=$EMULATOR_PID" >> $GITHUB_ENV
+          
+          # Wait for emulators to be ready
+          sleep 15
+          
+          # Start backend server
           npm start &
+          BACKEND_PID=$!
+          echo "BACKEND_PID=$BACKEND_PID" >> $GITHUB_ENV
+          
+          # Wait for backend to be ready
           sleep 10
         env:
           NODE_ENV: test
           PORT: 3001
           FIREBASE_PROJECT_ID: yoohoo-dev-testing
-          JWT_SECRET: test-secret
+          FIRESTORE_EMULATOR_HOST: localhost:8080
+          FIREBASE_AUTH_EMULATOR_HOST: localhost:9099
+          JWT_SECRET: test-jwt-secret-key-for-ci-cd-testing-only
+          STRIPE_SECRET_KEY: sk_test_placeholder
+          STRIPE_PUBLISHABLE_KEY: pk_test_placeholder
+          STRIPE_WEBHOOK_SECRET: whsec_placeholder
           SERVE_FRONTEND: false
 
       - name: Test /health endpoint
         run: |
-          curl -f http://localhost:3001/health || echo "Health check failed"
+          echo "Testing /health endpoint..."
+          RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}" http://localhost:3001/health)
+          HTTP_CODE=$(echo "$RESPONSE" | grep "HTTP_CODE:" | cut -d: -f2)
+          BODY=$(echo "$RESPONSE" | grep -v "HTTP_CODE:")
+          
+          echo "Response: $BODY"
+          echo "HTTP Code: $HTTP_CODE"
+          
+          if [ "$HTTP_CODE" == "200" ]; then
+            echo "✅ /health endpoint working"
+          else
+            echo "❌ /health endpoint failed with code $HTTP_CODE"
+            exit 1
+          fi
 
       - name: Test /api/skills endpoint
         run: |
-          curl -f http://localhost:3001/api/skills || echo "Skills endpoint failed"
+          echo "Testing /api/skills endpoint..."
+          RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}" http://localhost:3001/api/skills)
+          HTTP_CODE=$(echo "$RESPONSE" | grep "HTTP_CODE:" | cut -d: -f2)
+          BODY=$(echo "$RESPONSE" | grep -v "HTTP_CODE:")
+          
+          echo "Response: $BODY"
+          echo "HTTP Code: $HTTP_CODE"
+          
+          if [ "$HTTP_CODE" == "200" ]; then
+            echo "✅ /api/skills endpoint working"
+          else
+            echo "❌ /api/skills endpoint failed with code $HTTP_CODE"
+            exit 1
+          fi
 
       - name: Test /api/flags endpoint
         run: |
+          echo "Testing /api/flags endpoint..."
           RESPONSE=$(curl -s http://localhost:3001/api/flags)
           echo "Flags response: $RESPONSE"
           
@@ -277,9 +325,14 @@ jobs:
             exit 1
           fi
 
-      - name: Stop backend
+      - name: Stop backend and emulators
         if: always()
-        run: pkill -f "node.*backend" || true
+        run: |
+          echo "Stopping services..."
+          pkill -f "node.*backend" || true
+          pkill -f "firebase.*emulators" || true
+          pkill -f "java.*firestore" || true
+          sleep 2
 
   # Production release (only if not blocked)
   prod-release:
