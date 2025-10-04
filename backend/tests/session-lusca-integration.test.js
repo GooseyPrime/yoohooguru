@@ -50,7 +50,8 @@ describe('Session and Lusca Integration', () => {
       app.use(session({
         secret: 'test_secret',
         resave: false,
-        saveUninitialized: false
+        saveUninitialized: false,
+        cookie: { secure: true }
       }));
       
       app.use(csrf());
@@ -75,7 +76,8 @@ describe('Session and Lusca Integration', () => {
         app.use(session({
           secret: 'test_secret',
           resave: false,
-          saveUninitialized: false
+          saveUninitialized: false,
+          cookie: { secure: true }
         }));
       }).not.toThrow(); // Middleware registration doesn't throw, but requests will fail
     });
