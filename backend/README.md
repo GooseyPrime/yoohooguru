@@ -46,3 +46,11 @@ npm test
 # Lint code
 npm run lint
 ```
+
+## Testing with Firebase Emulators
+
+All test scripts (`npm test`, `npm run jest`, `npm run test:watch`, etc.) explicitly set `NODE_ENV=test` to ensure compatibility with Firebase emulators. This is required by the validation logic in `src/config/firebase.js` to prevent accidental writes to production data.
+
+**Important**: When using Firebase emulators, `NODE_ENV` must always be set to `test` or `development`. The application will throw an error if emulator environment variables are present with any other NODE_ENV value.
+
+For detailed information about testing with Firebase emulators, see [docs/TESTING_WITH_FIREBASE_EMULATORS.md](../docs/TESTING_WITH_FIREBASE_EMULATORS.md).
