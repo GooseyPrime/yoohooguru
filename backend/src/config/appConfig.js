@@ -196,8 +196,8 @@ function getCorsOrigins(config) {
       if (allowedOrigin.includes('*')) {
         const pattern = allowedOrigin
           .replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // Escape regex chars
-          .replace(/\\\*/g, '.*'); // Convert * to regex pattern
-        const regex = new RegExp(`^${pattern}$`);
+          .replace(/\\\*/g, '[a-z0-9.-]+'); // Convert * to safe pattern (prevents ReDoS)
+        const regex = new RegExp(`^${pattern}$`, 'i');
         if (regex.test(origin)) {
           return callback(null, true);
         }

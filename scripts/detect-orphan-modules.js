@@ -368,6 +368,8 @@ class OrphanModuleDetector {
           orphaned.push(...this.findOrphanedFiles(fullPath, patterns));
         } else if (entry.isFile()) {
           // Check if file matches any orphan pattern
+          // Note: patterns are hardcoded in analyzeOrphanedFiles(), not user input
+          // The [^/]* pattern prevents matching across directory separators
           for (const pattern of patterns) {
             const regex = new RegExp(pattern.replace(/\*\*/g, '.*').replace(/\*/g, '[^/]*'));
             if (regex.test(fullPath)) {
