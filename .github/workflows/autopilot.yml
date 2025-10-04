@@ -4,9 +4,7 @@ on:
   pull_request:
     types: [opened, synchronize, labeled, unlabeled]
 
-# Set default permissions to read-only for security
-permissions:
-  contents: read
+
 
 jobs:
   # Check if autopilot should run
