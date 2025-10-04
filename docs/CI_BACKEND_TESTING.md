@@ -194,8 +194,24 @@ npm test
 
 Expected result: All tests should pass, and the process should exit with code 0.
 
+### CI Workflow Validation
+
+To validate that the CI workflow configuration is correct and doesn't use invalid commands:
+
+```bash
+# From repository root
+./scripts/validate-ci-workflow.sh
+```
+
+This script checks for:
+- No usage of invalid commands like `backend-check`
+- Correct use of `npm test` command
+- Proper firebase-tools installation
+- Correct working directory configuration
+
 ---
 
 **Last Updated**: December 2024
 **CI Workflow File**: `.github/workflows/ci.yml`
 **Backend Package**: `backend/package.json`
+**Validation Script**: `scripts/validate-ci-workflow.sh`
