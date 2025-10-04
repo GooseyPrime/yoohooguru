@@ -69,11 +69,16 @@ module.exports = (env, argv) => {
       ],
     },
     plugins: [
+      // Expose only safe, public environment variables to frontend bundle.
+      // Firebase config variables here are intended for client-side usage per:
+      // https://firebase.google.com/docs/projects/api-keys
+      // Do NOT add secrets or sensitive data to this list.
       new webpack.DefinePlugin({
         'process.env': JSON.stringify({
           NODE_ENV: process.env.NODE_ENV || 'development',
           REACT_APP_API_URL: process.env.REACT_APP_API_URL,
           REACT_APP_ENVIRONMENT: process.env.REACT_APP_ENVIRONMENT,
+          // Firebase public config - safe by design for frontend context
           REACT_APP_FIREBASE_API_KEY: process.env.REACT_APP_FIREBASE_API_KEY,
           REACT_APP_FIREBASE_AUTH_DOMAIN: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
           REACT_APP_FIREBASE_DATABASE_URL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
