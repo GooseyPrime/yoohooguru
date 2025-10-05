@@ -110,6 +110,32 @@ ORPHAN_ERROR_THRESHOLD=50 node scripts/detect-orphan-modules.js
 ### `ci-orphan-detection.sh`
 CI integration script for orphan module detection that prepares reports for artifact upload.
 
+### `demo-auth.js`
+Development utility for testing authentication functionality without requiring Firebase connection.
+
+**Purpose:**
+- Demonstrates authentication input validation
+- Tests error handling for various scenarios
+- Useful for development and debugging authentication logic
+
+**Prerequisites:**
+```bash
+# Install backend dependencies first
+cd backend && npm install
+```
+
+**Usage:**
+```bash
+# From repository root (after installing backend dependencies)
+node scripts/demo-auth.js
+```
+
+**Test scenarios:**
+- Empty credentials validation
+- Whitespace-only credentials handling
+- Invalid password simulation
+- Firebase unavailability handling
+
 ### `cleanup-copilot-branches.sh`
 Script to clean up old copilot branches safely.
 

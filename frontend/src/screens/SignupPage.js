@@ -402,7 +402,7 @@ function SignupPage() {
     try {
       await loginWithGoogle();
       // For Google signup, redirect to onboarding to select user type
-      navigate('/profile/onboarding?type=select');
+      navigate('/onboarding?type=select');
     } catch (error) {
       // Error handling is done in AuthContext
     } finally {
