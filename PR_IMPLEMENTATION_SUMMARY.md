@@ -75,11 +75,11 @@ Created comprehensive CI/CD automation with:
 ```
 
 #### 3. COOP Headers (`vercel.json`)
-Added to prevent Firebase popup warnings:
+Updated to allow Firebase popup authentication:
 ```json
 {
   "key": "Cross-Origin-Opener-Policy",
-  "value": "same-origin-allow-popups"
+  "value": "unsafe-none"
 },
 {
   "key": "Cross-Origin-Embedder-Policy",
@@ -87,7 +87,7 @@ Added to prevent Firebase popup warnings:
 }
 ```
 
-**Result:** Firebase authentication popups can now call `window.close()` without COOP violations.
+**Result:** Firebase authentication popups can now call `window.close()` and check `window.closed` without COOP violations. The `unsafe-none` value disables Cross-Origin-Opener-Policy restrictions, which is required for Firebase's `signInWithPopup` method to work properly.
 
 #### 4. Feature Flags Loader (`frontend/src/lib/featureFlags.js`)
 **Improvements:**
