@@ -28,7 +28,7 @@ REACT_APP_FIREBASE_APP_ID=1:123456789:web:your_app_id
 
 #### API Configuration
 ```env
-REACT_APP_API_URL=https://api.yoohoo.guru
+REACT_APP_API_URL=https://api.yoohoo.guru/api
 ```
 
 #### App Branding (Public - Safe for Frontend)
@@ -217,8 +217,8 @@ ADMIN_WRITE_ENABLED=false
 ## 🚀 Deployment Checklist
 
 ### Frontend (Vercel)
-- [ ] Configure all `VITE_*` environment variables
-- [ ] Set correct API URL for your backend
+- [ ] Configure all `REACT_APP_*` environment variables
+- [ ] Set correct API URL for your backend (https://api.yoohoo.guru/api)
 - [ ] Add Firebase configuration
 - [ ] Add Stripe publishable key
 - [ ] Test build and deployment
