@@ -24,9 +24,16 @@ class FeatureFlagsService {
       // Validate Content-Type before parsing
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
-        // This is expected when API is unavailable, log at debug level
+
+        // Only log detailed warning in development mode to avoid console spam
         if (process.env.NODE_ENV === 'development') {
-          console.log('Feature flags endpoint returned non-JSON content, using defaults');
+          console.warn(
+            'Feature flags endpoint returned non-JSON content, using defaults.\n' +
+            `URL: ${flagsUrl}\n` +
+            `Status: ${response.status}\n` +
+            `Content-Type: ${contentType || 'not set'}\n` +
+            'Hint: Set REACT_APP_FLAGS_URL environment variable to point to your API server.'
+          );
         }
         this.flags = this.getDefaultFlags();
         this.loaded = true;
@@ -43,7 +50,6 @@ class FeatureFlagsService {
           this.loaded = true;
           return this.flags;
         } catch (parseError) {
-          // Only log in development to reduce console noise
           if (process.env.NODE_ENV === 'development') {
             console.warn('Failed to parse feature flags JSON, using defaults:', parseError.message);
           }
@@ -52,7 +58,6 @@ class FeatureFlagsService {
           return this.flags;
         }
       } else {
-        // Only log in development to reduce console noise
         if (process.env.NODE_ENV === 'development') {
           console.warn(`Failed to load feature flags (${response.status}), using defaults`);
         }
@@ -61,7 +66,6 @@ class FeatureFlagsService {
         return this.flags;
       }
     } catch (error) {
-      // Only log in development to reduce console noise
       if (process.env.NODE_ENV === 'development') {
         console.warn('Error loading feature flags, using defaults:', error.message);
       }
@@ -104,7 +108,9 @@ class FeatureFlagsService {
    */
   isEnabled(flagName) {
     if (!this.loaded) {
-      console.warn(`Feature flag ${flagName} checked before flags were loaded`);
+      if (process.env.NODE_ENV === 'development') {
+        console.warn(`Feature flag ${flagName} checked before flags were loaded`);
+      }
       return this.getDefaultFlags()[flagName] || false;
     }
     return this.flags[flagName] === true;
