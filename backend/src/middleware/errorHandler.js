@@ -11,6 +11,7 @@ const errorHandler = (err, req, res, next) => {
     url: req.originalUrl,
     ip: req.ip,
     userAgent: req.get('User-Agent'),
+    contentType: req.get('Content-Type'),
     stack: err.stack
   });
 
@@ -23,6 +24,10 @@ const errorHandler = (err, req, res, next) => {
     statusCode = 400;
     message = 'Validation Error';
     error.errors = Object.values(err.errors).map(val => val.message);
+    logger.warn(`Validation error on ${req.method} ${req.originalUrl}`, {
+      errors: error.errors,
+      ip: req.ip
+    });
   }
 
   // Firebase Auth error
