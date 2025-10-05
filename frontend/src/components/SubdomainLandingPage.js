@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
 import axios from 'axios';
@@ -9,7 +9,7 @@ import LoadingSpinner from './LoadingSpinner';
 import { 
   ChefHat, Music, Dumbbell, Laptop, Palette, MessageCircle, 
   Briefcase, Sparkles, PenTool, Camera, Sprout, Wrench, 
-  Heart, Target 
+  Heart, Target, ArrowLeft, Calendar, Clock, User 
 } from 'lucide-react';
 
 const PageContainer = styled.div`
@@ -346,13 +346,111 @@ const Footer = styled.footer`
   }
 `;
 
+// Blog detail view styled components
+const BackButton = styled(Button)`
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const ArticleContainer = styled.div`
+  max-width: 800px;
+  margin: 0 auto;
+  background: var(--surface, #1A1530);
+  padding: 3rem 2rem;
+  border-radius: 12px;
+`;
+
+const ArticleHeader = styled.div`
+  margin-bottom: 3rem;
+  text-align: center;
+`;
+
+const ArticleTitle = styled.h1`
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--text, #F8FAFC);
+  line-height: 1.3;
+`;
+
+const ArticleMeta = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  font-size: 0.95rem;
+  color: var(--muted, #B4C6E7);
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  
+  svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 0.25rem;
+  }
+`;
+
+const ArticleContent = styled.div`
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text, #F8FAFC);
+  
+  h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin: 2rem 0 1rem 0;
+    color: var(--text, #F8FAFC);
+  }
+  
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 1.5rem 0 1rem 0;
+    color: var(--text, #F8FAFC);
+  }
+  
+  p {
+    margin-bottom: 1.5rem;
+  }
+  
+  ul, ol {
+    margin: 1rem 0 1.5rem 2rem;
+    
+    li {
+      margin-bottom: 0.5rem;
+    }
+  }
+  
+  blockquote {
+    border-left: 4px solid var(--primary);
+    padding: 1rem 1.5rem;
+    margin: 2rem 0;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+    color: var(--muted, #B4C6E7);
+  }
+  
+  code {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.9em;
+  }
+`;
+
 function SubdomainLandingPage({ subdomain, config }) {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
+  const { slug } = useParams(); // Add useParams to get the slug
   const [homeData, setHomeData] = useState(null);
   const [newsData, setNewsData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedPost, setSelectedPost] = useState(null);
 
   // Professional icon mapping using Lucide React icons
   const getSubdomainIcon = (subdomain) => {
@@ -408,6 +506,14 @@ function SubdomainLandingPage({ subdomain, config }) {
         // Handle home data
         if (homeResponse.status === 'fulfilled') {
           setHomeData(homeResponse.value.data);
+          
+          // If slug is provided, find the post
+          if (slug && homeResponse.value.data?.posts) {
+            const post = homeResponse.value.data.posts.find(
+              p => p.slug === slug || p.id === slug
+            );
+            setSelectedPost(post);
+          }
         }
 
         // Handle news data  
@@ -520,6 +626,98 @@ function SubdomainLandingPage({ subdomain, config }) {
   const primaryColor = config?.theme?.primaryColor || '#6c5ce7';
   const secondaryColor = config?.theme?.secondaryColor || '#a29bfe';
   const IconComponent = getSubdomainIcon(subdomain);
+
+  // If viewing a specific blog post
+  if (selectedPost) {
+    return (
+      <PageContainer>
+        <Helmet>
+          <title>{selectedPost.title} - {subdomain}.yoohoo.guru</title>
+          <meta name="description" content={selectedPost.excerpt || selectedPost.content?.substring(0, 155)} />
+        </Helmet>
+        
+        <Container>
+          <BackButton
+            variant="outline"
+            onClick={() => navigate(`/blog`)}
+          >
+            <ArrowLeft size={16} />
+            Back to Blog
+          </BackButton>
+          
+          <ArticleContainer>
+            <ArticleHeader>
+              {selectedPost.featured && (
+                <div style={{ 
+                  display: 'inline-block',
+                  padding: '0.25rem 0.75rem',
+                  background: primaryColor,
+                  color: 'white',
+                  borderRadius: '20px',
+                  fontSize: '0.85rem',
+                  marginBottom: '1rem'
+                }}>
+                  Featured
+                </div>
+              )}
+              <ArticleTitle>{selectedPost.title}</ArticleTitle>
+              <ArticleMeta>
+                {selectedPost.author && (
+                  <span>
+                    <User size={16} />
+                    {selectedPost.author}
+                  </span>
+                )}
+                {selectedPost.publishedAt && (
+                  <span>
+                    <Calendar size={16} />
+                    {new Date(selectedPost.publishedAt).toLocaleDateString()}
+                  </span>
+                )}
+                {selectedPost.estimatedReadTime && (
+                  <span>
+                    <Clock size={16} />
+                    {selectedPost.estimatedReadTime}
+                  </span>
+                )}
+              </ArticleMeta>
+            </ArticleHeader>
+            
+            <ArticleContent>
+              {selectedPost.content ? (
+                selectedPost.content.split('\n\n').map((paragraph, index) => {
+                  if (paragraph.startsWith('# ')) {
+                    return <h2 key={index}>{paragraph.replace('# ', '')}</h2>;
+                  } else if (paragraph.startsWith('## ')) {
+                    return <h2 key={index}>{paragraph.replace('## ', '')}</h2>;
+                  } else if (paragraph.startsWith('### ')) {
+                    return <h3 key={index}>{paragraph.replace('### ', '')}</h3>;
+                  } else if (paragraph.startsWith('> ')) {
+                    return <blockquote key={index}>{paragraph.replace('> ', '')}</blockquote>;
+                  } else if (paragraph.startsWith('- ')) {
+                    const items = paragraph.split('\n').filter(line => line.startsWith('- '));
+                    return (
+                      <ul key={index}>
+                        {items.map((item, i) => (
+                          <li key={i}>{item.replace('- ', '')}</li>
+                        ))}
+                      </ul>
+                    );
+                  } else if (paragraph.trim() === '') {
+                    return null;
+                  } else {
+                    return <p key={index}>{paragraph}</p>;
+                  }
+                })
+              ) : (
+                <p>{selectedPost.excerpt}</p>
+              )}
+            </ArticleContent>
+          </ArticleContainer>
+        </Container>
+      </PageContainer>
+    );
+  }
 
   return (
     <PageContainer>
@@ -680,9 +878,7 @@ function SubdomainLandingPage({ subdomain, config }) {
               {newsData.articles.map((article, index) => (
                 <NewsCard key={article.id || index} $primaryColor={primaryColor}>
                   <NewsTitle>
-                    {article.url === '#' ? (
-                      article.title
-                    ) : (
+                    {article.url && article.url !== '#' ? (
                       <a 
                         href={article.url} 
                         target="_blank" 
@@ -691,10 +887,19 @@ function SubdomainLandingPage({ subdomain, config }) {
                       >
                         {article.title}
                       </a>
+                    ) : (
+                      <span style={{ opacity: 0.9 }}>{article.title}</span>
                     )}
                   </NewsTitle>
                   <NewsSummary>{article.summary}</NewsSummary>
-                  <NewsSource>{article.source}</NewsSource>
+                  <NewsSource>
+                    {article.source}
+                    {(!article.url || article.url === '#') && (
+                      <span style={{ marginLeft: '0.5rem', fontSize: '0.75rem', opacity: 0.7 }}>
+                        • Full article coming soon
+                      </span>
+                    )}
+                  </NewsSource>
                 </NewsCard>
               ))}
             </NewsGrid>

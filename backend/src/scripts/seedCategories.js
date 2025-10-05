@@ -1,5 +1,5 @@
 // Add-only seed for categories + category_requirements
-const { initializeFirebase, getFirestore } = require('../firebase/admin');
+const { initializeFirebase, getFirestore } = require('../config/firebase');
 
 const CATS = [
   // Lessons / tutoring / fitness
