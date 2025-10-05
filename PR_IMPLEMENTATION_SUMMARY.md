@@ -167,15 +167,23 @@ res.json({ features: flags, version: version });
 
 2. **Google Cloud Console → OAuth 2.0 Client ID**
    - Add redirect URIs:
-     - `https://yoohoo.guru/__/auth/handler`
-     - `https://www.yoohoo.guru/__/auth/handler`
-     - `https://art.yoohoo.guru/__/auth/handler`
+     - `https://ceremonial-tea-470904-f3.firebaseapp.com/__/auth/handler` (Required - current Firebase project)
+     - `https://yoohoo.guru/__/auth/handler` (Optional - custom domain)
+     - `https://www.yoohoo.guru/__/auth/handler` (Optional - custom domain)
+     - `https://art.yoohoo.guru/__/auth/handler` (Optional - subdomain)
 
 3. **Vercel Environment Variables**
-   - Update: `REACT_APP_FIREBASE_PROJECT_ID`
-   - Update: `REACT_APP_FIREBASE_AUTH_DOMAIN`
-   - Update: `REACT_APP_FIREBASE_API_KEY`
-   - Remove: References to wrong project (ceremonial-tea...)
+   - Update: `REACT_APP_FIREBASE_PROJECT_ID=ceremonial-tea-470904-f3`
+   - Update: `REACT_APP_FIREBASE_AUTH_DOMAIN=ceremonial-tea-470904-f3.firebaseapp.com`
+   - Update: `REACT_APP_FIREBASE_API_KEY` (from Firebase Console)
+   - Ensure all Firebase configuration uses the production project
+
+4. **Content Security Policy Updates**
+   - Updated vercel.json and index.html to allow oauth2.googleapis.com
+   - Updated connect-src to include oauth2.googleapis.com for token requests
+   - Updated img-src to include firebasestorage.googleapis.com for profile images
+   - Updated frame-src to include firestore.googleapis.com for Firebase Auth popup
+
 
 ## Testing Performed
 
