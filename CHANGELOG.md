@@ -21,11 +21,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved performance optimizations
 - Enhanced accessibility features
 - Better error handling and user feedback
+- **Session storage now uses Firestore in production/staging** - Prevents memory leaks and supports horizontal scaling
 
 ### Fixed
 - Mobile responsiveness issues
 - Form validation edge cases
 - Authentication flow improvements
+- **Railway build warning about MemoryStore** - Implemented Firestore session store for production environments
 
 ## [1.0.0] - 2024-01-30
 
