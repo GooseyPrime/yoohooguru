@@ -1,7 +1,7 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const rateLimit = require('express-rate-limit');
-const { getAuth } = require('../firebase/admin');
+const { getAuth } = require('../config/firebase');
 const usersDB = require('../db/users');
 const { authenticateUser } = require('../middleware/auth');
 const { logger } = require('../utils/logger');
