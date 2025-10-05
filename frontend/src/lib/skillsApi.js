@@ -18,12 +18,14 @@ export async function browseSkills({ category, search, popular = false } = {}) {
   
   try {
     const response = await apiGet(path);
+    // Backend returns { success, data: { skills, categories, total } }
+    const responseData = response.data || {};
     return {
       success: true,
-      data: response.data,
-      skills: response.data.skills || [],
-      categories: response.data.categories || [],
-      total: response.data.total || 0
+      data: responseData,
+      skills: responseData.skills || [],
+      categories: responseData.categories || [],
+      total: responseData.total || 0
     };
   } catch (error) {
     console.error('Browse skills error:', error);
@@ -45,9 +47,10 @@ export async function getSkillSuggestions(query, limit = 10) {
   
   try {
     const response = await apiGet(`/skills/suggestions/autocomplete?q=${encodeURIComponent(query)}&limit=${limit}`);
+    const responseData = response.data || {};
     return {
       success: true,
-      suggestions: response.data.suggestions || []
+      suggestions: responseData.suggestions || []
     };
   } catch (error) {
     console.error('Skill suggestions error:', error);
@@ -67,12 +70,13 @@ export async function getAiSkillMatches(userId, { limit = 10, minScore = 5 } = {
   
   try {
     const response = await apiGet(`/skills/matches/${userId}?limit=${limit}&minScore=${minScore}`);
+    const responseData = response.data || {};
     return {
       success: true,
-      data: response.data,
-      matches: response.data.matches || [],
-      targetUserId: response.data.targetUserId,
-      algorithm: response.data.algorithm
+      data: responseData,
+      matches: responseData.matches || [],
+      targetUserId: responseData.targetUserId,
+      algorithm: responseData.algorithm
     };
   } catch (error) {
     console.error('AI skill matches error:', error);
@@ -92,15 +96,16 @@ export async function getSkillDetails(skillName) {
   
   try {
     const response = await apiGet(`/skills/${encodeURIComponent(skillName)}`);
+    const responseData = response.data || {};
     return {
       success: true,
-      data: response.data,
-      skill: response.data.skill,
-      category: response.data.category,
-      teachers: response.data.teachers || [],
-      learners: response.data.learners || [],
-      totalTeachers: response.data.totalTeachers || 0,
-      totalLearners: response.data.totalLearners || 0
+      data: responseData,
+      skill: responseData.skill,
+      category: responseData.category,
+      teachers: responseData.teachers || [],
+      learners: responseData.learners || [],
+      totalTeachers: responseData.totalTeachers || 0,
+      totalLearners: responseData.totalLearners || 0
     };
   } catch (error) {
     console.error('Skill details error:', error);
@@ -117,12 +122,13 @@ export async function getSkillDetails(skillName) {
 export async function getSkillExchangePairs({ limit = 20, minScore = 10 } = {}) {
   try {
     const response = await apiGet(`/skills/exchange-pairs?limit=${limit}&minScore=${minScore}`);
+    const responseData = response.data || {};
     return {
       success: true,
-      data: response.data,
-      exchangePairs: response.data.exchangePairs || [],
-      totalPairs: response.data.totalPairs || 0,
-      algorithm: response.data.algorithm
+      data: responseData,
+      exchangePairs: responseData.exchangePairs || [],
+      totalPairs: responseData.totalPairs || 0,
+      algorithm: responseData.algorithm
     };
   } catch (error) {
     console.error('Exchange pairs error:', error);
