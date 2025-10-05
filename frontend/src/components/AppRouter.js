@@ -348,6 +348,9 @@ const NotFoundPage = React.lazy(() => import('../screens/NotFoundPage'));
 // Subdomain 404 Page - lazy loaded  
 const SubdomainNotFoundPage = React.lazy(() => import('../screens/SubdomainNotFoundPage'));
 
+// Cousin Subdomain Page - lazy loaded
+const CousinSubdomainPage = React.lazy(() => import('../screens/CousinSubdomainPage'));
+
 
 
 // Public Route (redirect to dashboard if authenticated)
@@ -389,7 +392,29 @@ function RedirectToMainSite({ path }) {
 }
 
 function AppRouter() {
-  const { isGuruSite, subdomain } = useGuru();
+  const { isGuruSite, isCousinSite, subdomain } = useGuru();
+
+  // If we're on a cousin subdomain (dynamic subdomain), show cousin page
+  if (isCousinSite) {
+    return (
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={
+            <Suspense fallback={<LoadingScreen />}>
+              <CousinSubdomainPage />
+            </Suspense>
+          } />
+          
+          {/* All paths on cousin subdomains go to the cousin page */}
+          <Route path="*" element={
+            <Suspense fallback={<LoadingScreen />}>
+              <CousinSubdomainPage />
+            </Suspense>
+          } />
+        </Route>
+      </Routes>
+    );
+  }
 
   // If we're on a guru subdomain, show guru-specific routes
   if (isGuruSite) {

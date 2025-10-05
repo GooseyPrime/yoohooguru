@@ -707,6 +707,112 @@ railway logs --tail
 - [ ] Mobile/PWA functionality verified
 - [ ] Performance monitoring setup (optional)
 
+---
+
+## 🌐 Subdomain Routing
+
+The YooHoo.guru platform supports **dynamic subdomain routing** for multiple use cases within a single Vercel deployment.
+
+### Subdomain Architecture
+
+The platform handles three types of subdomains:
+
+1. **Main Site** (`www.yoohoo.guru`, `yoohoo.guru`)
+   - Full skill-sharing marketplace
+   - User authentication and dashboard
+   - All core platform features
+
+2. **Special Feature Subdomains** (`masters.yoohoo.guru`, `coach.yoohoo.guru`, `angel.yoohoo.guru`)
+   - Dedicated feature experiences
+   - Route to specific platform sections
+   - Share authentication with main site
+
+3. **Cousin Subdomains** (`*.yoohoo.guru`)
+   - Any other subdomain (e.g., `art.yoohoo.guru`, `fitness.yoohoo.guru`, `tech.yoohoo.guru`)
+   - Dynamic landing pages with monetization placeholders
+   - Coming soon pages for future expansion
+
+### How It Works
+
+**Client-Side Detection:**
+```javascript
+// Automatic subdomain detection in useGuru hook
+const { subdomain, subdomainType, isCousinSite } = useGuru();
+
+// Types: 'main', 'masters', 'coach', 'angel', or 'cousin'
+```
+
+**Routing Logic:**
+- **Cousin subdomains** → `CousinSubdomainPage` with ad placeholders
+- **Special subdomains** → Feature-specific routing
+- **Main domain** → Full platform with all features
+
+**Vercel Configuration:**
+```json
+{
+  "redirects": [
+    {
+      "source": "/",
+      "has": [{"type": "host", "value": "yoohoo.guru"}],
+      "destination": "https://www.yoohoo.guru",
+      "permanent": true
+    }
+  ]
+}
+```
+
+### Adding New Cousin Subdomains
+
+**No code changes required!** New subdomains work automatically:
+
+1. **Add DNS Record:**
+   ```
+   Type: CNAME
+   Name: yoursubdomain
+   Value: cname.vercel-dns.com
+   ```
+
+2. **Add to Vercel:**
+   - Go to Vercel Dashboard → Domains
+   - Add `yoursubdomain.yoohoo.guru`
+   - Verify ownership
+
+3. **Deploy:**
+   - Subdomain automatically routes through existing build
+   - Shows cousin landing page with monetization placeholders
+
+### Customizing Cousin Content
+
+To customize content for specific cousin subdomains, edit:
+- **`frontend/src/screens/CousinSubdomainPage.js`** - Landing page component
+- **`frontend/src/hosting/hostRules.js`** - Subdomain detection logic
+
+### Environment Variables
+
+All subdomains share the same environment variables from the main Vercel project. No per-subdomain configuration is needed.
+
+### DNS Configuration
+
+For wildcard subdomain support, configure DNS:
+```
+Type: CNAME
+Name: *
+Value: cname.vercel-dns.com
+TTL: 3600
+```
+
+Then add each subdomain in Vercel Dashboard individually for SSL certificate provisioning.
+
+### Benefits
+
+✅ **Single Build** - One deployment serves all subdomains  
+✅ **Shared Auth** - Users stay logged in across subdomains  
+✅ **Instant Deployment** - New subdomains available immediately  
+✅ **SEO-Friendly** - Each subdomain can have unique meta tags  
+✅ **Monetization-Ready** - Built-in ad placement opportunities
+
+---
+
 ## 📱 User Manual & Platform Features
 
 ### 🎯 **Core Features Overview**
