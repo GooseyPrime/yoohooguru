@@ -63,7 +63,7 @@ CORS_ORIGIN_PRODUCTION=https://yoohoo.guru,https://www.yoohoo.guru,https://*.ver
 
 ### Vercel (Frontend)
 ```bash
-REACT_APP_API_URL=https://api.yoohoo.guru  # ← CRITICAL!
+REACT_APP_API_URL=https://api.yoohoo.guru/api  # ← CRITICAL!
 ```
 
 ## 📚 Documentation Updated

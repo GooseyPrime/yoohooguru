@@ -26,7 +26,7 @@ Environment variables are now configured directly in the Vercel dashboard under:
 **Project Settings → Environment Variables**
 
 Required environment variables for production:
-- `REACT_APP_API_URL=https://api.yoohoo.guru`
+- `REACT_APP_API_URL=https://api.yoohoo.guru/api`
 - `REACT_APP_FIREBASE_API_KEY=<your-firebase-key>`
 - `REACT_APP_FIREBASE_PROJECT_ID=<your-project-id>`
 - `REACT_APP_FIREBASE_AUTH_DOMAIN=<project-id>.firebaseapp.com`

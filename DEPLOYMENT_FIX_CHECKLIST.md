@@ -17,7 +17,7 @@
 - [x] **Fixed CSP headers** - Added `https://api.yoohoo.guru` to connect-src
 - [x] **Environment Variables Required:**
   ```
-  REACT_APP_API_URL=https://api.yoohoo.guru
+  REACT_APP_API_URL=https://api.yoohoo.guru/api
   REACT_APP_FIREBASE_API_KEY=<firebase-key>
   REACT_APP_FIREBASE_AUTH_DOMAIN=<project>.firebaseapp.com
   REACT_APP_FIREBASE_PROJECT_ID=<project-id>
@@ -84,7 +84,7 @@ fetch('https://api.yoohoo.guru/health')
 
 ### Issue: "www.yoohoo.guru shows blank screen"
 **Cause:** Frontend can't connect to API due to incorrect `REACT_APP_API_URL`  
-**Fix:** Set `REACT_APP_API_URL=https://api.yoohoo.guru` in Vercel
+**Fix:** Set `REACT_APP_API_URL=https://api.yoohoo.guru/api` in Vercel
 
 ### Issue: "Images not loading on yoohoo.guru"
 **Cause:** CSP blocking image sources  
