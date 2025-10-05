@@ -61,10 +61,11 @@ function hasApproved(docs, type, slug) {
 router.post('/profile', authenticateUser, async (req, res) => {
   try {
     const uid = req.user.uid;
-    const { displayName, photoUrl, city, zip, bio } = req.body;
+    const { displayName, photoUrl, city, zip, bio, userType } = req.body;
     const db = getFirestore();
     await db.collection('profiles').doc(uid).update({
       displayName, photoUrl, city, zip, bio,
+      ...(userType && { userType }),
       updatedAt: new Date().toISOString(),
       // surface badge placeholders
       is_id_verified: !!req.body.is_id_verified || false,

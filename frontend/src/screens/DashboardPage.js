@@ -192,6 +192,13 @@ function DashboardPage() {
   const navigate = useNavigate();
   const [bookingState, setBookingState] = useState(null);
   const [error, setError] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
+  const [userStats, setUserStats] = useState({
+    skillsLearning: 0,
+    skillsTeaching: 0,
+    sessionsBooked: 0,
+    profileComplete: 0
+  });
 
   // Handle incoming booking/action state from navigation
   useEffect(() => {
@@ -217,6 +224,44 @@ function DashboardPage() {
     }
   }, [location]);
 
+  // Fetch user profile and calculate stats
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!currentUser) return;
+      
+      try {
+        // Fetch user profile data
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/${currentUser.uid}/profile`, {
+          headers: {
+            'Authorization': `Bearer ${await currentUser.getIdToken()}`
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setUserProfile(data);
+          
+          // Calculate profile completion percentage
+          const profileFields = ['displayName', 'city', 'zip', 'bio'];
+          const completedFields = profileFields.filter(field => data[field]).length;
+          const profileComplete = Math.round((completedFields / profileFields.length) * 100);
+          
+          setUserStats({
+            skillsLearning: data.skillsLearning || 0,
+            skillsTeaching: data.skillsTeaching || 0,
+            sessionsBooked: data.sessionsBooked || 0,
+            profileComplete
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching user data:', err);
+        // Use defaults on error
+      }
+    };
+    
+    fetchUserData();
+  }, [currentUser]);
+
   const handleBookingAction = (actionType) => {
     if (actionType === 'continue' && bookingState) {
       // Navigate to appropriate page based on type
@@ -233,7 +278,70 @@ function DashboardPage() {
     }
   };
 
-  const quickActions = [
+  // Smart quick actions based on user state
+  const getSmartQuickActions = () => {
+    const actions = [];
+    
+    // If profile is incomplete, prioritize that
+    if (userStats.profileComplete < 100) {
+      actions.push({
+        icon: User,
+        title: 'Complete Profile',
+        description: `Your profile is ${userStats.profileComplete}% complete. Finish setting it up to connect with others.`,
+        action: () => navigate('/profile')
+      });
+    }
+    
+    // If no skills yet, encourage browsing
+    if (userStats.skillsLearning === 0 && userStats.skillsTeaching === 0) {
+      actions.push({
+        icon: BookOpen,
+        title: 'Browse Skills',
+        description: 'Find skills to learn or discover teaching opportunities',
+        action: () => navigate('/skills')
+      });
+      
+      actions.push({
+        icon: Users,
+        title: 'Angel\'s List',
+        description: 'Browse professional services or offer your expertise',
+        action: () => navigate('/angels-list')
+      });
+    }
+    
+    // If they have skills, encourage booking or onboarding
+    if (userStats.skillsTeaching === 0 && userProfile?.userType === 'skill_sharer') {
+      actions.push({
+        icon: Calendar,
+        title: 'Become a Teacher',
+        description: 'Share your expertise and start earning',
+        action: () => navigate('/onboarding')
+      });
+    }
+    
+    // Always show browse options
+    if (actions.length < 3) {
+      actions.push({
+        icon: BookOpen,
+        title: 'Explore Skills',
+        description: 'Discover new learning opportunities',
+        action: () => navigate('/skills')
+      });
+    }
+    
+    if (actions.length < 4) {
+      actions.push({
+        icon: Users,
+        title: 'Find Services',
+        description: 'Connect with service providers in your area',
+        action: () => navigate('/angels-list')
+      });
+    }
+    
+    return actions;
+  };
+
+  const quickActions = userProfile ? getSmartQuickActions() : [
     {
       icon: BookOpen,
       title: 'Browse Skills',
@@ -393,20 +501,20 @@ function DashboardPage() {
 
         <StatsGrid>
           <StatCard>
-            <div className="stat-number">12</div>
-            <div className="stat-label">Skills Available</div>
+            <div className="stat-number">{userStats.profileComplete}%</div>
+            <div className="stat-label">Profile Complete</div>
           </StatCard>
           <StatCard>
-            <div className="stat-number">8</div>
-            <div className="stat-label">Community Members</div>
+            <div className="stat-number">{userStats.skillsLearning}</div>
+            <div className="stat-label">Skills Learning</div>
           </StatCard>
           <StatCard>
-            <div className="stat-number">24</div>
-            <div className="stat-label">Services Listed</div>
+            <div className="stat-number">{userStats.skillsTeaching}</div>
+            <div className="stat-label">Skills Teaching</div>
           </StatCard>
           <StatCard>
-            <div className="stat-number">4.8</div>
-            <div className="stat-label">Avg Rating</div>
+            <div className="stat-number">{userStats.sessionsBooked}</div>
+            <div className="stat-label">Sessions Booked</div>
           </StatCard>
         </StatsGrid>
 
