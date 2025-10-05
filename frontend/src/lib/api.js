@@ -46,8 +46,17 @@ export async function api(path, opts = {}) {
   const token = await getAuthToken();
   const apiUrl = process.env.REACT_APP_API_URL || '/api';
   
+  // Ensure path starts with /api when using a full backend URL
+  // In development, apiUrl='/api' so path '/skills' becomes '/api/skills'
+  // In production with REACT_APP_API_URL='https://api.yoohoo.guru', 
+  // we need to prepend '/api' so path '/skills' becomes 'https://api.yoohoo.guru/api/skills'
+  let fullPath = path;
+  if (process.env.REACT_APP_API_URL && !path.startsWith('/api')) {
+    fullPath = `/api${path}`;
+  }
+  
   try {
-    const res = await fetch(`${apiUrl}${path}`, {
+    const res = await fetch(`${apiUrl}${fullPath}`, {
       headers: {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
