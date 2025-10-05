@@ -114,6 +114,15 @@ describe('Security and Performance Headers', () => {
       expect(response.headers['content-security-policy']).toContain('https://api.bigdatacloud.net');
     });
 
+    it('should include api-bdc.io in connect-src directive for BigDataCloud redirect', async () => {
+      const response = await request(app)
+        .get('/api')
+        .expect(200);
+
+      expect(response.headers['content-security-policy']).toBeDefined();
+      expect(response.headers['content-security-policy']).toContain('https://api-bdc.io');
+    });
+
     it('should include unsplash.com in connect-src directive', async () => {
       const response = await request(app)
         .get('/api')

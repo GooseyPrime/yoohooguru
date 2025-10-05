@@ -1,4 +1,4 @@
-const { getFirestore } = require('../firebase/admin');
+const { getFirestore } = require('../config/firebase');
 
 const getCollection = () => {
   const firestore = getFirestore();

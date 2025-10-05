@@ -4,6 +4,7 @@ import { Search, Calendar, Users, Star, Clock, ChevronRight, Loader, AlertCircle
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import Button from '../components/Button';
+import BookingModal from '../components/BookingModal';
 import { getSkillCategoriesForDisplay } from '../lib/skillCategorization';
 import { browseSkillsCached, getSkillSuggestions, getAiSkillMatches } from '../lib/skillsApi';
 
@@ -404,6 +405,8 @@ function SkillsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [selectedSkill, setSelectedSkill] = useState(null);
   
   // API data state
   const [apiSkills, setApiSkills] = useState([]);
@@ -500,14 +503,15 @@ function SkillsPage() {
       return;
     }
     
-    // For authenticated users, navigate to dashboard with booking intent
-    navigate('/dashboard', {
-      state: {
-        action: 'book-skill-session',
-        category: categoryName,
-        message: `Ready to book a ${categoryName} session. Complete your profile to continue.`
+    // Open booking modal
+    setSelectedSkill({
+      name: categoryName,
+      provider: {
+        id: 'placeholder',
+        name: 'Available Provider'
       }
     });
+    setShowBookingModal(true);
   };
 
   const handleFindTeachers = (categoryName) => {
@@ -756,6 +760,14 @@ function SkillsPage() {
         </>
         )}
       </Content>
+
+      <BookingModal
+        isOpen={showBookingModal}
+        onClose={() => setShowBookingModal(false)}
+        provider={selectedSkill?.provider}
+        skillName={selectedSkill?.name}
+        serviceType="skill"
+      />
     </Container>
   );
 }
