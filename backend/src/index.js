@@ -202,6 +202,25 @@ app.use('/api/webhooks/stripe', express.raw({ type: 'application/json' }), strip
 app.use(express.json({ limit: config.expressJsonLimit }));
 app.use(express.urlencoded({ extended: true, limit: config.expressUrlLimit }));
 
+// Handle body parser errors
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    logger.warn('Malformed request body', {
+      method: req.method,
+      url: req.originalUrl,
+      ip: req.ip,
+      error: err.message
+    });
+    return res.status(400).json({
+      success: false,
+      error: {
+        message: 'Invalid request body'
+      }
+    });
+  }
+  next(err);
+});
+
 // --- Static File Serving ---
 
 // Conditionally serve static files from the frontend build directory
