@@ -12,7 +12,7 @@ const session = require('express-session');
 const path = require('path');
 const csrf = require('lusca').csrf;
 
-const { initializeFirebase } = require('./config/firebase');
+const { initializeFirebase, getFirestore } = require('./config/firebase');
 const { getConfig, getCorsOrigins, validateConfig } = require('./config/appConfig');
 
 // Rate limiter for frontend catch-all route (serving index.html)
@@ -134,7 +134,10 @@ if (!process.env.SESSION_SECRET) {
   throw new Error('SESSION_SECRET is required for session management and CSRF protection. Please set it in your .env file.');
 }
 
-app.use(session({
+// Configure session store based on environment
+// In production, use Firestore to avoid memory leaks and support horizontal scaling
+// In development/test, use the default MemoryStore for simplicity
+let sessionConfig = {
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
@@ -143,7 +146,24 @@ app.use(session({
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
-}));
+};
+
+if (config.nodeEnv === 'production' || config.nodeEnv === 'staging') {
+  // Use Firestore session store in production/staging to prevent memory leaks
+  const FirestoreStore = require('firestore-store')(session);
+  const database = getFirestore();
+  
+  sessionConfig.store = new FirestoreStore({
+    database: database,
+    collection: 'sessions' // Store sessions in a dedicated Firestore collection
+  });
+  
+  logger.info('✅ Session store: Using Firestore for production-ready session management');
+} else {
+  logger.info('ℹ️  Session store: Using MemoryStore for development/testing');
+}
+
+app.use(session(sessionConfig));
 
 // CSRF protection (disabled in test environment to simplify testing)
 if (config.nodeEnv !== 'test') {
