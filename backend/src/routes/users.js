@@ -281,4 +281,57 @@ router.put('/:id/tier', authenticateUser, async (req, res) => {
   }
 });
 
+// @desc    Get user profile with stats (for authenticated user)
+// @route   GET /api/users/:id/profile
+// @access  Private
+router.get('/:id/profile', authenticateUser, async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Verify user is requesting their own profile
+    if (req.user.uid !== id) {
+      return res.status(403).json({
+        success: false,
+        error: { message: 'Access denied' }
+      });
+    }
+    
+    const db = getFirestore();
+    const [profileSnap, sessionsSnap] = await Promise.all([
+      db.collection('profiles').doc(id).get(),
+      db.collection('sessions').where('learnerId', '==', id).get()
+    ]);
+    
+    const profile = profileSnap.exists ? profileSnap.data() : {};
+    const sessionsBooked = sessionsSnap.size || 0;
+    
+    // Calculate profile stats
+    const skillsLearning = profile.skillsWanted?.length || 0;
+    const skillsTeaching = profile.skillsOffered?.length || 0;
+    
+    res.json({
+      success: true,
+      displayName: profile.displayName || '',
+      email: profile.email || '',
+      photoUrl: profile.photoUrl || '',
+      city: profile.city || '',
+      zip: profile.zip || '',
+      bio: profile.bio || '',
+      userType: profile.userType || '',
+      skillsOffered: profile.skillsOffered || [],
+      skillsWanted: profile.skillsWanted || [],
+      skillsLearning,
+      skillsTeaching,
+      sessionsBooked
+    });
+
+  } catch (error) {
+    logger.error('Get user profile error:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: 'Failed to fetch profile' }
+    });
+  }
+});
+
 module.exports = router;
