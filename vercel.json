@@ -11,6 +11,20 @@
   "buildCommand": "cd frontend && npm run build",
   "outputDirectory": "frontend/dist",
   "installCommand": "rm -rf .npm && npm ci && cd frontend && npm ci",
+  "redirects": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "yoohoo.guru"
+        }
+      ],
+      "destination": "https://www.yoohoo.guru",
+      "permanent": true,
+      "statusCode": 308
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",

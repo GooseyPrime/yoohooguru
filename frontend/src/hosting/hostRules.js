@@ -54,13 +54,64 @@ export const getSubdomainRoute = (host) => {
 /**
  * Get subdomain type for analytics or feature flags
  * @param {string} host - Optional host override
- * @returns {string} Subdomain type: 'masters', 'coach', 'angel', or 'main'
+ * @returns {string} Subdomain type: 'masters', 'coach', 'angel', 'cousin', or 'main'
  */
 export const getSubdomainType = (host) => {
   if (isMastersHost(host)) return 'masters';
   if (isCoachHost(host)) return 'coach';
   if (isAngelHost(host)) return 'angel';
+  if (isCousinHost(host)) return 'cousin';
   return 'main';
+};
+
+/**
+ * Check if current host is a "cousin" subdomain (any subdomain not in the special list)
+ * @param {string} host - Optional host override
+ * @returns {boolean} True if cousin subdomain
+ */
+export const isCousinHost = (host) => {
+  const hostname = host || (typeof window !== 'undefined' ? window.location.hostname : '');
+  const hostParts = hostname.toLowerCase().split('.');
+  
+  // Not a subdomain if less than 3 parts (e.g., yoohoo.guru or localhost)
+  if (hostParts.length < 3) {
+    return false;
+  }
+  
+  const subdomain = hostParts[0];
+  
+  // Exclude special subdomains
+  const excludedSubdomains = ['www', 'api', 'admin', 'staging', 'dev', 'test', 'masters', 'coach', 'angel'];
+  
+  // Check if it's not in the excluded list
+  return !excludedSubdomains.includes(subdomain) && 
+         subdomain !== 'localhost' && 
+         subdomain !== 'yoohoo';
+};
+
+/**
+ * Extract subdomain name from host
+ * @param {string} host - Optional host override
+ * @returns {string|null} Subdomain name or null if not a subdomain
+ */
+export const getSubdomainName = (host) => {
+  const hostname = host || (typeof window !== 'undefined' ? window.location.hostname : '');
+  const hostParts = hostname.toLowerCase().split('.');
+  
+  if (hostParts.length < 3) {
+    return null;
+  }
+  
+  const subdomain = hostParts[0];
+  
+  // Exclude special subdomains
+  const excludedSubdomains = ['www', 'api', 'admin', 'staging', 'dev', 'test'];
+  
+  if (excludedSubdomains.includes(subdomain) || subdomain === 'localhost' || subdomain === 'yoohoo') {
+    return null;
+  }
+  
+  return subdomain;
 };
 
 /**

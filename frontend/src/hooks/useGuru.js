@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { getSubdomainName, getSubdomainType } from '../hosting/hostRules';
 
 /**
  * Custom hook to detect and manage guru subdomain context
@@ -15,29 +16,11 @@ export function useGuru() {
   
   const location = useLocation();
   
-  // Detect subdomain from current hostname
-  const detectSubdomain = () => {
-    const hostname = window.location.hostname;
-    const hostParts = hostname.split('.');
-    
-    // Skip common non-guru subdomains
-    const excludedSubdomains = ['www', 'api', 'admin', 'staging', 'dev', 'test'];
-    
-    if (hostParts.length >= 2) {
-      const potentialSubdomain = hostParts[0];
-      
-      if (!excludedSubdomains.includes(potentialSubdomain) && 
-          potentialSubdomain !== 'localhost' && 
-          potentialSubdomain !== 'yoohoo') {
-        return potentialSubdomain;
-      }
-    }
-    
-    return null;
-  };
-  
-  const subdomain = detectSubdomain();
+  // Use centralized subdomain detection
+  const subdomain = getSubdomainName();
+  const subdomainType = getSubdomainType();
   const isGuruSite = subdomain !== null;
+  const isCousinSite = subdomainType === 'cousin';
   
   // Fetch guru data from API
   const fetchGuruData = async (subdomainName) => {
@@ -182,6 +165,12 @@ export function useGuru() {
   // Effect to load guru data on mount and location change
   useEffect(() => {
     if (isGuruSite && subdomain) {
+      // Skip API fetch for cousin subdomains (they use static content)
+      if (isCousinSite) {
+        setLoading(false);
+        return;
+      }
+      
       fetchGuruData(subdomain);
       fetchServices();
     } else {
@@ -200,7 +189,9 @@ export function useGuru() {
     
     // Computed
     subdomain,
+    subdomainType,
     isGuruSite,
+    isCousinSite,
     isMainSite: !isGuruSite,
     
     // Actions
