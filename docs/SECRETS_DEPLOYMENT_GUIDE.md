@@ -94,6 +94,17 @@ OPENROUTER_API_KEY=sk-or-v1-your_openrouter_key
 OPENROUTER_API_URL=https://openrouter.ai/api/v1
 ```
 
+#### Image Services (for location background images)
+```env
+UNSPLASH_ACCESS_KEY=your_unsplash_access_key_here
+```
+
+**🔑 Get Unsplash API Key**: 
+1. Visit https://unsplash.com/developers
+2. Create a new application
+3. Copy the "Access Key" from your app settings
+4. This enables dynamic, high-resolution location background images
+
 #### Email Configuration (Optional)
 ```env
 SMTP_HOST=smtp.gmail.com

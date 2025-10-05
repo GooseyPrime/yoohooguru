@@ -50,6 +50,7 @@ const sessionsRoutes = require('./routes/sessions');
 const modifiedMastersRoutes = require('./routes/modifiedMasters');
 const resourcesRoutes = require('./routes/resources');
 const locationsRoutes = require('./routes/locations');
+const imagesRoutes = require('./routes/images');
 
 
 const app = express();
@@ -338,6 +339,7 @@ app.use('/api/insurance', require('./routes/insurance'));
 app.use('/api/demo', require('./routes/demo'));
 app.use('/api/resources', resourcesRoutes);
 app.use('/api', locationsRoutes);
+app.use('/api/images', imagesRoutes);
 
 // Modified Masters routes (conditionally mounted)
 if (config.featureModifiedMasters) {

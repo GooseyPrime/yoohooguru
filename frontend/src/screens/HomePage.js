@@ -111,32 +111,32 @@ function HomePage() {
   const [location, setLocation] = useState('');
   const [backgroundImage, setBackgroundImage] = useState('');
 
-  // Unsplash API - using demo/development key, should be moved to env var for production
-  // const UNSPLASH_ACCESS_KEY = 'YOUR_UNSPLASH_ACCESS_KEY'; // This would be in env vars
-
-  const fetchCityImage = useCallback(async (cityName) => {
+  const fetchCityImage = useCallback(async (cityName, stateName, countryName) => {
     try {
-      // For demo purposes, we'll use a simple approach without requiring API key
-      // In production, this would use the Unsplash API with proper authentication
-      const mockImages = {
-        'New York': 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=1200',
-        'Los Angeles': 'https://images.unsplash.com/photo-1444927714506-8492d94b5ba0?w=1200',
-        'Chicago': 'https://images.unsplash.com/photo-1477414348463-c0eb7f1359b6?w=1200',
-        'Houston': 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1200',
-        'Phoenix': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200',
-        'Philadelphia': 'https://images.unsplash.com/photo-1486016006115-74a41448aea2?w=1200',
-        'San Antonio': 'https://images.unsplash.com/photo-1469344804473-ce7d7a5b6086?w=1200',
-        'San Diego': 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=1200',
-        'Dallas': 'https://images.unsplash.com/photo-1552659102-22faadfa16d7?w=1200',
-        'Austin': 'https://images.unsplash.com/photo-1531218150217-54595bc2b934?w=1200'
-      };
+      // Call backend API to fetch location image
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+      const params = new URLSearchParams({
+        city: cityName
+      });
       
-      const cityKey = Object.keys(mockImages).find(key => 
-        cityName.toLowerCase().includes(key.toLowerCase())
-      );
+      if (stateName) {
+        params.append('state', stateName);
+      }
       
-      if (cityKey) {
-        setBackgroundImage(mockImages[cityKey]);
+      if (countryName) {
+        params.append('country', countryName);
+      }
+
+      const response = await fetch(`${apiUrl}/images/location?${params.toString()}`);
+      const data = await response.json();
+      
+      if (data.success && data.data && data.data.url) {
+        // Use high-resolution image URL suitable for backgrounds
+        setBackgroundImage(data.data.url);
+        console.log('Background image loaded:', data.data.description || cityName);
+      } else {
+        // Graceful fallback - no background image
+        console.log('No background image found for location:', cityName);
       }
     } catch (error) {
       console.log('Could not fetch city image:', error);
@@ -147,10 +147,13 @@ function HomePage() {
   const handleLocationChange = useCallback((locationString, data) => {
     setLocation(locationString);
     
-    // Extract city name for background image
-    const cityName = data?.city || locationString.split(',')[0];
+    // Extract city, state, and country for background image
+    const cityName = data?.city || locationString.split(',')[0]?.trim();
+    const stateName = data?.state;
+    const countryName = data?.country;
+    
     if (cityName) {
-      fetchCityImage(cityName);
+      fetchCityImage(cityName, stateName, countryName);
     }
   }, [fetchCityImage]);
 
