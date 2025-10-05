@@ -24,7 +24,10 @@ class FeatureFlagsService {
       // Validate Content-Type before parsing
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
-        console.warn('Feature flags endpoint returned non-JSON content, using defaults');
+        // This is expected when API is unavailable, log at debug level
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Feature flags endpoint returned non-JSON content, using defaults');
+        }
         this.flags = this.getDefaultFlags();
         this.loaded = true;
         return this.flags;
@@ -40,19 +43,28 @@ class FeatureFlagsService {
           this.loaded = true;
           return this.flags;
         } catch (parseError) {
-          console.warn('Failed to parse feature flags JSON, using defaults:', parseError.message);
+          // Only log in development to reduce console noise
+          if (process.env.NODE_ENV === 'development') {
+            console.warn('Failed to parse feature flags JSON, using defaults:', parseError.message);
+          }
           this.flags = this.getDefaultFlags();
           this.loaded = true;
           return this.flags;
         }
       } else {
-        console.warn(`Failed to load feature flags (${response.status}), using defaults`);
+        // Only log in development to reduce console noise
+        if (process.env.NODE_ENV === 'development') {
+          console.warn(`Failed to load feature flags (${response.status}), using defaults`);
+        }
         this.flags = this.getDefaultFlags();
         this.loaded = true;
         return this.flags;
       }
     } catch (error) {
-      console.warn('Error loading feature flags, using defaults:', error.message);
+      // Only log in development to reduce console noise
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Error loading feature flags, using defaults:', error.message);
+      }
       this.flags = this.getDefaultFlags();
       this.loaded = true;
       return this.flags;
