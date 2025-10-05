@@ -9,11 +9,11 @@ This directory contains modules that were identified as orphaned during the modu
 - ~~**jest.config.js**~~ - **RESTORED** - Required for CI (Jest configuration)
 
 ### Duplicate/Redundant Components
-- **SubdomainLandingPages.js** - Duplicate subdomain configurations (already in AppRouter.js)
+- ~~**SubdomainLandingPages.js**~~ - **PARTIALLY RESTORED** - Photography and gardening subdomain configs integrated into AppRouter.js
 - **ThemeContext.js** - Alternative theme system (app uses styled-components theme)
 
 ### Demo/Development Scripts
-- **demo-auth.js** - Authentication demo script for development
+- ~~**demo-auth.js**~~ - **RESTORED** - Moved to scripts/ directory for development use
 
 ## Why These Were Archived
 
