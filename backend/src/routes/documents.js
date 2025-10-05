@@ -1,6 +1,6 @@
 const express = require('express');
 const { requireRole } = require('../middleware/auth');
-const { getFirestore } = require('../firebase/admin');
+const { getFirestore } = require('../config/firebase');
 
 const router = express.Router();
 
