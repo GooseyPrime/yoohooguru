@@ -130,6 +130,12 @@ All Firebase variables also need `REACT_APP_` prefixed versions for frontend use
 |----------|----------|-------------|
 | `SESSION_SECRET` | ✅ | Secret key for session encryption - Generate with: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
 
+**Note:** Session storage is automatically configured based on environment:
+- **Production/Staging**: Uses Firestore for persistent, scalable session storage (avoids memory leaks)
+- **Development/Test**: Uses MemoryStore for simplicity
+
+Sessions are stored in the `sessions` collection in Firestore in production environments.
+
 #### Stripe Configuration
 
 | Variable | Required | Description |
