@@ -118,9 +118,15 @@ Development utility for testing authentication functionality without requiring F
 - Tests error handling for various scenarios
 - Useful for development and debugging authentication logic
 
+**Prerequisites:**
+```bash
+# Install backend dependencies first
+cd backend && npm install
+```
+
 **Usage:**
 ```bash
-# From repository root
+# From repository root (after installing backend dependencies)
 node scripts/demo-auth.js
 ```
 
