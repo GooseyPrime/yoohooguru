@@ -5,6 +5,7 @@ import { MapPin, DollarSign, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import Button from '../components/Button';
+import BookingModal from '../components/BookingModal';
 
 const PageContainer = styled.div`
   max-width: 1200px;
@@ -148,6 +149,8 @@ function AngelsListPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCity, setSelectedCity] = useState('all');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
 
   const handleViewAngels = (categoryTitle) => {
     // Filter the current view to show only this category
@@ -184,15 +187,15 @@ function AngelsListPage() {
       return;
     }
     
-    // For authenticated users, navigate to booking flow
-    // In a full implementation, this would open a booking modal or navigate to booking page
-    navigate('/dashboard', {
-      state: {
-        action: 'book-service',
-        category: categoryTitle,
-        message: `Ready to book ${categoryTitle}. Complete your profile to continue.`
+    // Open booking modal
+    setSelectedService({
+      name: categoryTitle,
+      provider: {
+        id: 'placeholder',
+        name: 'Available Provider'
       }
     });
+    setShowBookingModal(true);
   };
 
   const categories = [
@@ -344,6 +347,14 @@ function AngelsListPage() {
           <p>No services found matching your criteria.</p>
         </div>
       )}
+
+      <BookingModal
+        isOpen={showBookingModal}
+        onClose={() => setShowBookingModal(false)}
+        provider={selectedService?.provider}
+        skillName={selectedService?.name}
+        serviceType="service"
+      />
     </PageContainer>
   );
 }
