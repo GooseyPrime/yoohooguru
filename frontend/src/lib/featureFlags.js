@@ -24,6 +24,7 @@ class FeatureFlagsService {
       // Validate Content-Type before parsing
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
+
         // Only log detailed warning in development mode to avoid console spam
         if (process.env.NODE_ENV === 'development') {
           console.warn(

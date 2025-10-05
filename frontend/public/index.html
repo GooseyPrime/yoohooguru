@@ -64,17 +64,29 @@
       }
       
       /* Enhanced font loading with fallbacks */
+      /* Load Inter font with proper format declaration for variable fonts */
+      /* Use separate font-face declarations for better browser compatibility */
       @font-face {
         font-family: 'Inter';
         src: url('/fonts/Inter-Variable.woff2') format('woff2');
         font-weight: 100 900;
         font-style: normal;
         font-display: swap;
+        /* Use font-display: swap to show fallback fonts immediately */
+        /* This prevents invisible text while fonts are loading */
       }
       
       /* CSS variables for font fallbacks */
+      /* Use system fonts as fallback to ensure text is always readable */
       :root {
         --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+      }
+      
+      /* Ensure body uses fallback fonts if Inter fails to load */
+      body {
+        font-family: var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
     </style>
 
