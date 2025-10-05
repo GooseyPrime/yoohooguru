@@ -158,7 +158,7 @@ function CousinSubdomainPage() {
         <Subtitle>Coming Soon to YooHoo.guru</Subtitle>
         
         <Description>
-          Welcome to the {subdomainName} community hub! We're building something special here - 
+          Welcome to the {subdomainName} community hub! We&apos;re building something special here - 
           a dedicated space for enthusiasts, learners, and experts to connect, share knowledge, 
           and grow together.
         </Description>
