@@ -1,7 +1,14 @@
 {
   "short_name": "yoohoo.guru",
   "name": "yoohoo.guru",
-  "icons": [],
+  "icons": [
+    {
+      "src": "/assets/images/YooHoo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#007BFF",
