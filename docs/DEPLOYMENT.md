@@ -4,7 +4,7 @@
 1. Project: `frontend/`
 2. Production domain: `https://yoohoo.guru`
 3. Env (Production):
-   - `REACT_APP_API_URL=https://api.yoohoo.guru`
+   - `REACT_APP_API_URL=https://api.yoohoo.guru/api`
    - `REACT_APP_FIREBASE_API_KEY=...`
    - `REACT_APP_FIREBASE_AUTH_DOMAIN=...`
    - `REACT_APP_FIREBASE_PROJECT_ID=...`
