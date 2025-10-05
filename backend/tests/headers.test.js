@@ -132,5 +132,14 @@ describe('Security and Performance Headers', () => {
       expect(response.headers['content-security-policy']).toContain('https://api.unsplash.com');
       expect(response.headers['content-security-policy']).toContain('https://images.unsplash.com');
     });
+
+    it('should include stats.g.doubleclick.net in connect-src directive for Google Analytics', async () => {
+      const response = await request(app)
+        .get('/api')
+        .expect(200);
+
+      expect(response.headers['content-security-policy']).toBeDefined();
+      expect(response.headers['content-security-policy']).toContain('https://stats.g.doubleclick.net');
+    });
   });
 });
