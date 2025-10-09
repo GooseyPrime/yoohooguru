@@ -92,6 +92,7 @@ function getConfig() {
     jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
     openrouterApiKey: process.env.OPENROUTER_API_KEY,
     openaiApiKey: process.env.OPENAI_API_KEY, // ChatGPT fallback
+    unsplashAccessKey: process.env.UNSPLASH_ACCESS_KEY,
     
     // Google OAuth Configuration
     googleOAuthClientId: process.env.GOOGLE_OAUTH_CLIENT_ID,

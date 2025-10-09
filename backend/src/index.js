@@ -50,6 +50,7 @@ const sessionsRoutes = require('./routes/sessions');
 const modifiedMastersRoutes = require('./routes/modifiedMasters');
 const resourcesRoutes = require('./routes/resources');
 const locationsRoutes = require('./routes/locations');
+const imagesRoutes = require('./routes/images');
 
 
 const app = express();
@@ -92,7 +93,7 @@ app.use(helmet({
       "script-src": ["'self'", "https://js.stripe.com", "https://apis.google.com", "https://www.google.com", "https://gstatic.com", "https://accounts.google.com", "https://www.googletagmanager.com", "https://www.google-analytics.com", "'unsafe-inline'"],
       "script-src-elem": ["'self'", "https://js.stripe.com", "https://apis.google.com", "https://www.google.com", "https://gstatic.com", "https://accounts.google.com", "https://www.googletagmanager.com", "https://www.google-analytics.com", "'unsafe-inline'"],
       "frame-src": ["'self'", "https://js.stripe.com", "https://accounts.google.com", "https://*.firebaseapp.com", "https://www.google.com"],
-      "connect-src": ["'self'", "https://api.stripe.com", "https://accounts.google.com", "https://www.googleapis.com", "https://identitytoolkit.googleapis.com", "https://securetoken.googleapis.com", "https://oauth2.googleapis.com", "https://api.unsplash.com", "https://images.unsplash.com", "https://api.bigdatacloud.net", "https://api-bdc.io", "https://www.google-analytics.com", "https://analytics.google.com"],
+      "connect-src": ["'self'", "https://api.stripe.com", "https://accounts.google.com", "https://www.googleapis.com", "https://identitytoolkit.googleapis.com", "https://securetoken.googleapis.com", "https://oauth2.googleapis.com", "https://api.unsplash.com", "https://images.unsplash.com", "https://api.bigdatacloud.net", "https://api-bdc.io", "https://www.google-analytics.com", "https://analytics.google.com", "https://stats.g.doubleclick.net"],
     },
   },
   // Add missing security headers
@@ -338,6 +339,7 @@ app.use('/api/insurance', require('./routes/insurance'));
 app.use('/api/demo', require('./routes/demo'));
 app.use('/api/resources', resourcesRoutes);
 app.use('/api', locationsRoutes);
+app.use('/api/images', imagesRoutes);
 
 // Modified Masters routes (conditionally mounted)
 if (config.featureModifiedMasters) {
