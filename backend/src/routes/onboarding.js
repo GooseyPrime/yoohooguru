@@ -61,17 +61,31 @@ function hasApproved(docs, type, slug) {
 router.post('/profile', authenticateUser, async (req, res) => {
   try {
     const uid = req.user.uid;
-    const { displayName, photoUrl, city, zip, bio, userType } = req.body;
+    const { displayName, photoUrl, city, zip, bio, wantsToTeach, wantsToLearn } = req.body;
     const db = getFirestore();
-    await db.collection('profiles').doc(uid).update({
-      displayName, photoUrl, city, zip, bio,
-      ...(userType && { userType }),
+    
+    const updateData = {
+      displayName, 
+      photoUrl, 
+      city, 
+      zip, 
+      bio,
       updatedAt: new Date().toISOString(),
       // surface badge placeholders
       is_id_verified: !!req.body.is_id_verified || false,
       insurance_status: 'unknown',
       license_status: 'unknown',
-    });
+    };
+    
+    // Add user interests if provided
+    if (typeof wantsToTeach !== 'undefined') {
+      updateData.wantsToTeach = wantsToTeach;
+    }
+    if (typeof wantsToLearn !== 'undefined') {
+      updateData.wantsToLearn = wantsToLearn;
+    }
+    
+    await db.collection('profiles').doc(uid).update(updateData);
     res.json({ success:true });
   } catch (e) {
     res.status(500).json({ success:false, error:{ message:'Failed to save profile' }});
