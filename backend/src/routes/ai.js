@@ -56,10 +56,25 @@ async function makeOpenRouterRequest(messages, model = 'anthropic/claude-3.5-son
 
 /**
  * Generate blog post content using AI
+ * Enhanced to support spec requirements:
+ * - 1200-2000 words
+ * - Proper structure (intro, subheadings, conclusion, CTA)
+ * - SEO optimization (≤60 char title, ≤160 char description)
+ * - Affiliate integration placeholders
+ * - Internal linking suggestions
  */
 router.post('/generate-blog-post', async (req, res) => {
   try {
-    const { topic, category, targetAudience, keywords } = req.body;
+    const { 
+      topic, 
+      category, 
+      targetAudience, 
+      keywords,
+      wordCount = 1500, // Default to middle of 1200-2000 range
+      includeAffiliateSection = false,
+      structure = {},
+      seo = {}
+    } = req.body;
 
     if (!topic || !category) {
       return res.status(400).json({
@@ -68,60 +83,128 @@ router.post('/generate-blog-post', async (req, res) => {
       });
     }
 
+    // Ensure word count is within spec (1200-2000)
+    const targetWordCount = Math.max(1200, Math.min(2000, wordCount));
+
     const messages = [
       {
         role: 'system',
-        content: `You are an expert content writer for yoohoo.guru, a skill-sharing platform. Create engaging, educational blog posts that help people learn and improve their skills. Write in a conversational yet professional tone that encourages community learning and skill exchange.`
+        content: `You are an expert content writer for yoohoo.guru, a U.S.-based skill-sharing platform. 
+Create SEO-optimized, engaging blog posts (${targetWordCount} words) that help people learn and improve their skills. 
+Write in a conversational yet professional tone that encourages community learning and skill exchange.
+Focus on U.S. market and cultural context.`
       },
       {
         role: 'user',
-        content: `Create a comprehensive blog post about "${topic}" for the ${category} category. 
+        content: `Create a comprehensive blog post about "${topic}" for the ${category} category targeting ${targetAudience || 'U.S. skill learners from beginners to intermediate levels'}.
 
 Requirements:
-- Target audience: ${targetAudience || 'beginners to intermediate learners'}
-- Keywords to include: ${keywords ? keywords.join(', ') : topic}
-- Include practical tips and actionable advice
-- Structure with clear headings and subheadings
-- Include examples and real-world applications
-- End with encouragement to connect with mentors on yoohoo.guru
-- Aim for 1500-2500 words
-- Use markdown formatting
+- Target word count: ${targetWordCount} words (minimum 1200, maximum 2000)
+- Keywords to naturally include: ${keywords ? keywords.join(', ') : topic}
+- SEO title: ≤60 characters, compelling and keyword-rich
+- Meta description: ≤160 characters, action-oriented
+- U.S. market focus with relevant examples and context
 
-Return ONLY the blog post content in markdown format, starting with the title as # heading.`
+Structure (MUST include):
+1. **Introduction** (engaging hook, problem statement, what readers will learn)
+2. **Main Content** with H2/H3 subheadings:
+   - 3-5 main sections with descriptive subheadings
+   - Practical tips and actionable advice
+   - Real-world examples and use cases
+   - Step-by-step guidance where applicable
+3. **Visual Suggestions** (describe where images/infographics would enhance content)
+4. **Conclusion** (key takeaways summary)
+5. **Call-to-Action** (encourage readers to book a session, join community)
+${includeAffiliateSection ? '6. **Recommended Resources** section with 2-4 product/tool suggestions (use placeholder links)' : ''}
+
+Additional Requirements:
+- Include 2-3 opportunities for internal links to related topics (mark as [INTERNAL: topic name])
+- Use markdown formatting with proper heading hierarchy
+- Add bullet points and numbered lists for readability
+- Include actionable tips readers can implement immediately
+- End with encouragement to connect with expert instructors on yoohoo.guru
+
+Return as JSON with this structure:
+{
+  "title": "SEO-optimized title (≤60 chars)",
+  "metaDescription": "Compelling description (≤160 chars)",
+  "excerpt": "2-3 sentence teaser (200 chars max)",
+  "content": "Full article in markdown",
+  "internalLinks": ["topic1", "topic2"],
+  "affiliateOpportunities": ["product1", "product2"],
+  "visualSuggestions": ["description of image 1", "description of image 2"]
+}`
       }
     ];
 
-    const content = await makeOpenRouterRequest(messages, 'anthropic/claude-3.5-sonnet', 6000);
+    const responseContent = await makeOpenRouterRequest(messages, 'anthropic/claude-3.5-sonnet', 8000);
 
-    // Extract title and create metadata
-    const lines = content.split('\n');
-    const titleLine = lines.find(line => line.startsWith('# '));
-    const title = titleLine ? titleLine.replace('# ', '') : topic;
-    const excerpt = lines.find(line => line.length > 100 && !line.startsWith('#'))?.substring(0, 200) + '...' || 
-                   `Learn about ${topic} and develop your skills in ${category}.`;
+    // Try to parse as JSON first
+    let blogData;
+    try {
+      // Remove markdown code blocks if present
+      const jsonContent = responseContent.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+      blogData = JSON.parse(jsonContent);
+    } catch {
+      // Fallback: Extract from markdown format
+      const lines = responseContent.split('\n');
+      const titleLine = lines.find(line => line.startsWith('# '));
+      const title = titleLine ? titleLine.replace('# ', '') : topic;
+      const excerpt = lines.find(line => line.length > 100 && !line.startsWith('#'))?.substring(0, 200) + '...' || 
+                     `Learn about ${topic} and develop your skills in ${category}.`;
+      
+      blogData = {
+        title,
+        metaDescription: excerpt.substring(0, 160),
+        excerpt,
+        content: responseContent,
+        internalLinks: [],
+        affiliateOpportunities: [],
+        visualSuggestions: []
+      };
+    }
 
     // Sanitize title for slug generation
-    // Limit input length to prevent ReDoS attacks (max 200 chars for titles)
-    const sanitizedTitle = title.substring(0, 200);
-    // Use safe character-by-character approach instead of regex with polynomial complexity
+    const sanitizedTitle = (blogData.title || topic).substring(0, 200);
     const slug = sanitizedTitle
       .toLowerCase()
       .split('')
       .map(char => /[a-z0-9]/.test(char) ? char : '-')
       .join('')
-      .replace(/-+/g, '-')  // Collapse multiple dashes
-      .replace(/^-+|-+$/g, '');  // Trim dashes from start/end
+      .replace(/-+/g, '-')
+      .replace(/^-+|-+$/g, '');
+
+    const wordCountActual = (blogData.content || '').split(/\s+/).length;
 
     const blogPost = {
-      title,
+      title: blogData.title || topic,
       slug,
-      excerpt,
-      content,
+      excerpt: blogData.excerpt || blogData.metaDescription,
+      content: blogData.content,
       category,
       tags: keywords || [topic.toLowerCase(), category.toLowerCase()],
-      estimatedReadTime: Math.ceil(content.split(' ').length / 200) + ' min',
+      estimatedReadTime: Math.ceil(wordCountActual / 200) + ' min',
       author: 'AI Content Assistant',
-      publishedAt: new Date().toISOString()
+      publishedAt: new Date().toISOString(),
+      // SEO metadata per spec
+      seo: {
+        metaTitle: (blogData.title || topic).substring(0, 60),
+        metaDescription: (blogData.metaDescription || blogData.excerpt || '').substring(0, 160),
+        keywords: keywords || [],
+        region: 'US'
+      },
+      // Internal linking suggestions
+      internalLinks: blogData.internalLinks || [],
+      // Affiliate opportunities
+      affiliateOpportunities: blogData.affiliateOpportunities || [],
+      // Visual suggestions
+      visualSuggestions: blogData.visualSuggestions || [],
+      // Metadata
+      metadata: {
+        wordCount: wordCountActual,
+        targetWordCount,
+        meetsWordCount: wordCountActual >= 1200 && wordCountActual <= 2000
+      }
     };
 
     res.json({
