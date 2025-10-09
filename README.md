@@ -856,12 +856,14 @@ Then add each subdomain in Vercel Dashboard individually for SSL certificate pro
 
 #### **User Registration**
 1. **Sign Up Options**:
-   - Email and password registration
+   - Email and password registration with password strength indicator
    - Google OAuth integration
    - Facebook social login (when enabled)
+   - **NEW: Dual-role selection** - Users can be both teachers and learners!
 
 2. **Profile Completion**:
    - Basic information (name, location, bio)
+   - **Interest Selection**: Choose to teach, learn, or both
    - Skill interests and teaching expertise
    - Verification documents (optional for basic features)
 
@@ -872,13 +874,17 @@ Then add each subdomain in Vercel Dashboard individually for SSL certificate pro
 
 #### **User Roles & Permissions**
 
+**All users can be BOTH teachers and learners simultaneously!**
+
 **Basic User** (Free):
 - Browse skills and teachers
+- Learn from local experts
 - Book standard lessons
 - Basic profile features
 - Community participation
 
 **Verified Guru** (Enhanced):
+- **Can also be a learner!**
 - Create skill offerings  
 - Receive payments via Stripe Connect
 - Advanced profile with media uploads
@@ -886,6 +892,7 @@ Then add each subdomain in Vercel Dashboard individually for SSL certificate pro
 - Access to analytics dashboard
 
 **Professional Service Provider**:
+- **Can also learn and book services!**
 - Angel's List marketplace access
 - Project bidding capabilities
 - Background check verification

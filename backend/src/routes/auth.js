@@ -65,7 +65,7 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
       });
     }
 
-    const { email, password, displayName, skills = [], location = '' } = req.body;
+    const { email, password, displayName, skills = [], location = '', wantsToTeach = false, wantsToLearn = false } = req.body;
 
     // Create user in Firebase Auth
     const userRecord = await getAuth().createUser({
@@ -81,6 +81,9 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
       // Legacy skill fields for backward compatibility
       skillsOffered: skills.offered || [],
       skillsWanted: skills.wanted || [],
+      // User interests for dual roles
+      wantsToTeach: wantsToTeach || false,
+      wantsToLearn: wantsToLearn || false,
       // User tier and metrics
       tier: 'Stone Dropper',
       exchangesCompleted: 0,

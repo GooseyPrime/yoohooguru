@@ -323,6 +323,19 @@ function LoginPage() {
           Don&apos;t have an account?{' '}
           <Link to="/signup">Sign up for free</Link>
         </SignupLink>
+        
+        <div style={{
+          marginTop: '1.5rem',
+          padding: '1rem',
+          background: 'rgba(124, 140, 255, 0.05)',
+          border: '1px solid rgba(124, 140, 255, 0.2)',
+          borderRadius: 'var(--r-md)',
+          fontSize: 'var(--text-sm)',
+          color: 'var(--muted)',
+          textAlign: 'center'
+        }}>
+          💡 <strong>Did you know?</strong> You can be both a teacher and a learner on {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}!
+        </div>
       </LoginCard>
     </LoginContainer>
   );

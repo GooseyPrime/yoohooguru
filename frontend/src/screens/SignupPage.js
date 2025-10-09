@@ -159,10 +159,13 @@ const UserTypeCard = styled.div`
   cursor: pointer;
   transition: all 0.2s ease;
   background: ${props => props.selected ? 'rgba(124, 140, 255, 0.05)' : props.theme.colors.surface};
+  position: relative;
   
   &:hover {
     border-color: ${props => props.theme.colors.pri};
     background: ${props => props.selected ? 'rgba(124, 140, 255, 0.05)' : 'rgba(124, 140, 255, 0.02)'};
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
   .icon {
@@ -175,6 +178,16 @@ const UserTypeCard = styled.div`
     align-items: center;
     justify-content: center;
     margin-bottom: 0.75rem;
+  }
+
+  .checkmark {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    color: ${props => props.theme.colors.pri};
+    background: white;
+    border-radius: 50%;
+    padding: 0.125rem;
   }
 
   h4 {
@@ -283,7 +296,8 @@ function SignupPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    userType: '' // 'skill_sharer' or 'service_poster'
+    wantsToTeach: false,
+    wantsToLearn: false
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -293,13 +307,43 @@ function SignupPage() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState({ score: 0, label: '', color: '' });
   const { signup, loginWithGoogle, isFirebaseConfigured } = useAuth();
   const navigate = useNavigate();
+
+  // Password strength calculator
+  const calculatePasswordStrength = (password) => {
+    if (!password) return { score: 0, label: '', color: '' };
+    
+    let score = 0;
+    
+    // Length check
+    if (password.length >= 8) score += 1;
+    if (password.length >= 12) score += 1;
+    
+    // Character variety
+    if (/[a-z]/.test(password)) score += 1;
+    if (/[A-Z]/.test(password)) score += 1;
+    if (/[0-9]/.test(password)) score += 1;
+    if (/[^a-zA-Z0-9]/.test(password)) score += 1;
+    
+    // Map score to label and color
+    if (score <= 2) return { score, label: 'Weak', color: '#ef4444' };
+    if (score <= 4) return { score, label: 'Fair', color: '#f59e0b' };
+    if (score <= 5) return { score, label: 'Good', color: '#10b981' };
+    return { score, label: 'Strong', color: '#059669' };
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const newValue = type === 'checkbox' ? checked : value;
     setFormData(prev => ({ ...prev, [name]: newValue }));
+    
+    // Update password strength when password changes
+    if (name === 'password') {
+      setPasswordStrength(calculatePasswordStrength(value));
+    }
+    
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
@@ -311,42 +355,44 @@ function SignupPage() {
     
     if (!formData.firstName.trim()) {
       newErrors.firstName = 'First name is required';
+    } else if (formData.firstName.trim().length < 2) {
+      newErrors.firstName = 'First name must be at least 2 characters';
     }
     
     if (!formData.lastName.trim()) {
       newErrors.lastName = 'Last name is required';
+    } else if (formData.lastName.trim().length < 2) {
+      newErrors.lastName = 'Last name must be at least 2 characters';
     }
     
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+      newErrors.email = 'Please enter a valid email address';
     }
     
     if (!formData.password) {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
+    } else if (passwordStrength.score <= 2) {
+      newErrors.password = 'Please use a stronger password (mix letters, numbers, and symbols)';
     }
     
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
 
-    if (!formData.userType) {
-      newErrors.userType = 'Please select how you plan to use yoohoo.guru';
+    if (!formData.wantsToTeach && !formData.wantsToLearn) {
+      newErrors.userInterests = 'Please select at least one option for how you plan to use yoohoo.guru';
     }
 
     if (!acceptedTerms) {
-      newErrors.terms = 'You must accept the Terms and Conditions';
+      newErrors.terms = 'You must accept the Terms and Conditions to create an account';
     }
 
     if (!acceptedPrivacy) {
-      newErrors.privacy = 'You must accept the Privacy Policy';
-    }
-    
-    if (!formData.acceptTerms) {
-      newErrors.acceptTerms = 'You must accept the Terms and Conditions to proceed';
+      newErrors.privacy = 'You must accept the Privacy Policy to create an account';
     }
     
     return newErrors;
@@ -367,7 +413,8 @@ function SignupPage() {
         firstName: formData.firstName,
         lastName: formData.lastName,
         displayName: `${formData.firstName} ${formData.lastName}`,
-        userType: formData.userType,
+        wantsToTeach: formData.wantsToTeach,
+        wantsToLearn: formData.wantsToLearn,
         acceptedTerms: true,
         acceptedPrivacy: true,
         termsAcceptedAt: new Date().toISOString(),
@@ -376,11 +423,9 @@ function SignupPage() {
       
       toast.success('Account created successfully! Please check your email to verify your account.');
       
-      // Guide user to complete their profile based on their type
-      if (formData.userType === 'skill_sharer') {
-        navigate('/profile/onboarding?type=sharer');
-      } else if (formData.userType === 'service_poster') {
-        navigate('/profile/onboarding?type=poster');
+      // Guide user to onboarding based on their interests
+      if (formData.wantsToTeach) {
+        navigate('/onboarding/profile');
       } else {
         navigate('/dashboard');
       }
@@ -410,10 +455,13 @@ function SignupPage() {
     }
   };
 
-  const handleUserTypeSelect = (type) => {
-    setFormData(prev => ({ ...prev, userType: type }));
-    if (errors.userType) {
-      setErrors(prev => ({ ...prev, userType: '' }));
+  const handleInterestToggle = (interest) => {
+    setFormData(prev => ({ 
+      ...prev, 
+      [interest]: !prev[interest] 
+    }));
+    if (errors.userInterests) {
+      setErrors(prev => ({ ...prev, userInterests: '' }));
     }
   };
 
@@ -441,37 +489,91 @@ function SignupPage() {
 
         <Title>Join {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}</Title>
         <Description>
-          Create your account to start sharing skills and building meaningful connections.
+          Create your account to start sharing skills and building meaningful connections. 
+          <strong style={{ display: 'block', marginTop: '0.5rem', color: 'var(--pri)' }}>
+            You can be both a teacher and a learner!
+          </strong>
         </Description>
+
+        {/* Social Proof */}
+        <div style={{
+          background: 'rgba(124, 140, 255, 0.05)',
+          border: '1px solid rgba(124, 140, 255, 0.2)',
+          borderRadius: 'var(--r-md)',
+          padding: '0.75rem 1rem',
+          marginBottom: '1.5rem',
+          textAlign: 'center'
+        }}>
+          <div style={{ 
+            fontSize: 'var(--text-sm)', 
+            color: 'var(--text)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.5rem',
+            flexWrap: 'wrap'
+          }}>
+            <span>✨ Join thousands of community members</span>
+            <span style={{ 
+              background: 'var(--pri)', 
+              color: 'white', 
+              padding: '0.125rem 0.5rem', 
+              borderRadius: '12px',
+              fontSize: 'var(--text-xs)',
+              fontWeight: '600'
+            }}>
+              FREE
+            </span>
+          </div>
+        </div>
         
         <Form onSubmit={handleSubmit}>
-          {/* User Type Selection */}
+          {/* User Interests Selection */}
           <UserTypeSection>
-            <h3>How do you plan to use yoohoo.guru?</h3>
+            <h3>What would you like to do? (Select all that apply)</h3>
             <UserTypeGrid>
               <UserTypeCard 
-                selected={formData.userType === 'skill_sharer'}
-                onClick={() => handleUserTypeSelect('skill_sharer')}
+                selected={formData.wantsToTeach}
+                onClick={() => handleInterestToggle('wantsToTeach')}
               >
                 <div className="icon">
                   <Users size={20} />
                 </div>
-                <h4>Skill Sharer</h4>
-                <p>Teach skills, offer services, and help your community</p>
+                <h4>Teach & Share Skills</h4>
+                <p>Become a guru, offer services, earn money teaching others</p>
+                {formData.wantsToTeach && (
+                  <div className="checkmark">
+                    <CheckCircle2 size={16} />
+                  </div>
+                )}
               </UserTypeCard>
               
               <UserTypeCard 
-                selected={formData.userType === 'service_poster'}
-                onClick={() => handleUserTypeSelect('service_poster')}
+                selected={formData.wantsToLearn}
+                onClick={() => handleInterestToggle('wantsToLearn')}
               >
                 <div className="icon">
                   <Briefcase size={20} />
                 </div>
-                <h4>Service Seeker</h4>
-                <p>Find local help, learn new skills, and post job opportunities</p>
+                <h4>Learn & Find Services</h4>
+                <p>Discover local experts, learn new skills, hire professionals</p>
+                {formData.wantsToLearn && (
+                  <div className="checkmark">
+                    <CheckCircle2 size={16} />
+                  </div>
+                )}
               </UserTypeCard>
             </UserTypeGrid>
-            {errors.userType && <ErrorMessage>{errors.userType}</ErrorMessage>}
+            {errors.userInterests && <ErrorMessage>{errors.userInterests}</ErrorMessage>}
+            <div style={{ 
+              fontSize: 'var(--text-xs)', 
+              color: 'var(--muted)', 
+              marginTop: '0.75rem',
+              textAlign: 'center',
+              fontStyle: 'italic'
+            }}>
+              💡 Tip: Most users select both! You can always update your preferences later.
+            </div>
           </UserTypeSection>
 
           <InputGroup>
@@ -528,7 +630,7 @@ function SignupPage() {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="Create a password"
+                placeholder="Create a password (at least 6 characters)"
                 autoComplete="new-password"
                 hasToggle={true}
                 required
@@ -541,6 +643,39 @@ function SignupPage() {
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </PasswordToggle>
             </InputWrapper>
+            {formData.password && (
+              <div style={{ marginTop: '0.5rem' }}>
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'space-between',
+                  fontSize: 'var(--text-xs)',
+                  marginBottom: '0.25rem'
+                }}>
+                  <span>Password Strength:</span>
+                  <span style={{ 
+                    color: passwordStrength.color,
+                    fontWeight: '600'
+                  }}>
+                    {passwordStrength.label}
+                  </span>
+                </div>
+                <div style={{ 
+                  width: '100%', 
+                  height: '4px', 
+                  background: '#e5e7eb', 
+                  borderRadius: '2px',
+                  overflow: 'hidden'
+                }}>
+                  <div style={{ 
+                    width: `${(passwordStrength.score / 6) * 100}%`, 
+                    height: '100%', 
+                    background: passwordStrength.color,
+                    transition: 'width 0.3s ease'
+                  }} />
+                </div>
+              </div>
+            )}
             {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
           </InputGroup>
 
@@ -635,6 +770,26 @@ function SignupPage() {
           >
             {loading ? 'Creating Account...' : 'Create Account'}
           </Button>
+          
+          <div style={{
+            marginTop: '1rem',
+            padding: '0.75rem',
+            background: 'rgba(16, 185, 129, 0.05)',
+            border: '1px solid rgba(16, 185, 129, 0.2)',
+            borderRadius: 'var(--r-md)',
+            fontSize: 'var(--text-xs)',
+            color: 'var(--text)'
+          }}>
+            <div style={{ fontWeight: '600', marginBottom: '0.25rem', color: '#059669' }}>
+              ✓ What you get:
+            </div>
+            <div style={{ display: 'grid', gap: '0.25rem', paddingLeft: '0.5rem' }}>
+              <div>• Unlimited access to all community features</div>
+              <div>• Connect with local experts and learners</div>
+              <div>• Start earning as a teacher or find services</div>
+              <div>• Secure payments through Stripe</div>
+            </div>
+          </div>
         </Form>
 
         <div style={{ 
