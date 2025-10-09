@@ -1,8 +1,39 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
+import { ThemeProvider } from 'styled-components';
 import '@testing-library/jest-dom';
 import DashboardPage from './DashboardPage';
+
+// Mock theme for styled-components
+const mockTheme = {
+  colors: {
+    bg: '#0F0A1E',
+    surface: '#1A1530',
+    elev: '#252142',
+    text: '#F8FAFC',
+    muted: '#B4C6E7',
+    border: '#2D2754',
+    pri: '#6366F1',
+    succ: '#10B981',
+    warn: '#F59E0B',
+    err: '#EF4444',
+    accent: '#8B5CF6'
+  },
+  radius: { sm: 6, md: 8, lg: 12, xl: 16 },
+  shadow: {
+    card: '0 4px 20px rgba(15,10,30,0.4)',
+    lg: '0 8px 32px rgba(15,10,30,0.5)',
+    xl: '0 12px 48px rgba(15,10,30,0.6)'
+  },
+  motion: {
+    fast: '120ms', med: '180ms', slow: '240ms',
+    in: 'cubic-bezier(.2,.7,.25,1)', out: 'cubic-bezier(.3,.1,.2,1)'
+  },
+  fonts: {
+    sans: `'Inter var', Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif`
+  }
+};
 
 // Mock the auth context
 jest.mock('../contexts/AuthContext', () => ({
@@ -45,7 +76,9 @@ describe('DashboardPage Navigation', () => {
   test('renders dashboard page without errors', () => {
     render(
       <BrowserRouter>
-        <DashboardPage />
+        <ThemeProvider theme={mockTheme}>
+          <DashboardPage />
+        </ThemeProvider>
       </BrowserRouter>
     );
 
@@ -73,7 +106,9 @@ describe('DashboardPage Navigation', () => {
 
     render(
       <BrowserRouter>
-        <DashboardPage />
+        <ThemeProvider theme={mockTheme}>
+          <DashboardPage />
+        </ThemeProvider>
       </BrowserRouter>
     );
 
