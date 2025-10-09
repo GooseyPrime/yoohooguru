@@ -194,7 +194,9 @@ export function AuthProvider({ children }) {
             email,
             displayName: userData.displayName || '',
             skills: userData.skills || { offered: [], wanted: [] },
-            location: userData.location || ''
+            location: userData.location || '',
+            wantsToTeach: userData.wantsToTeach || false,
+            wantsToLearn: userData.wantsToLearn || false
           })
         });
 

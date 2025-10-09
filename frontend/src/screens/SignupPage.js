@@ -355,22 +355,28 @@ function SignupPage() {
     
     if (!formData.firstName.trim()) {
       newErrors.firstName = 'First name is required';
+    } else if (formData.firstName.trim().length < 2) {
+      newErrors.firstName = 'First name must be at least 2 characters';
     }
     
     if (!formData.lastName.trim()) {
       newErrors.lastName = 'Last name is required';
+    } else if (formData.lastName.trim().length < 2) {
+      newErrors.lastName = 'Last name must be at least 2 characters';
     }
     
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+      newErrors.email = 'Please enter a valid email address';
     }
     
     if (!formData.password) {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
+    } else if (passwordStrength.score <= 2) {
+      newErrors.password = 'Please use a stronger password (mix letters, numbers, and symbols)';
     }
     
     if (formData.password !== formData.confirmPassword) {
@@ -382,11 +388,11 @@ function SignupPage() {
     }
 
     if (!acceptedTerms) {
-      newErrors.terms = 'You must accept the Terms and Conditions';
+      newErrors.terms = 'You must accept the Terms and Conditions to create an account';
     }
 
     if (!acceptedPrivacy) {
-      newErrors.privacy = 'You must accept the Privacy Policy';
+      newErrors.privacy = 'You must accept the Privacy Policy to create an account';
     }
     
     return newErrors;
@@ -488,6 +494,38 @@ function SignupPage() {
             You can be both a teacher and a learner!
           </strong>
         </Description>
+
+        {/* Social Proof */}
+        <div style={{
+          background: 'rgba(124, 140, 255, 0.05)',
+          border: '1px solid rgba(124, 140, 255, 0.2)',
+          borderRadius: 'var(--r-md)',
+          padding: '0.75rem 1rem',
+          marginBottom: '1.5rem',
+          textAlign: 'center'
+        }}>
+          <div style={{ 
+            fontSize: 'var(--text-sm)', 
+            color: 'var(--text)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.5rem',
+            flexWrap: 'wrap'
+          }}>
+            <span>✨ Join thousands of community members</span>
+            <span style={{ 
+              background: 'var(--pri)', 
+              color: 'white', 
+              padding: '0.125rem 0.5rem', 
+              borderRadius: '12px',
+              fontSize: 'var(--text-xs)',
+              fontWeight: '600'
+            }}>
+              FREE
+            </span>
+          </div>
+        </div>
         
         <Form onSubmit={handleSubmit}>
           {/* User Interests Selection */}
@@ -732,6 +770,26 @@ function SignupPage() {
           >
             {loading ? 'Creating Account...' : 'Create Account'}
           </Button>
+          
+          <div style={{
+            marginTop: '1rem',
+            padding: '0.75rem',
+            background: 'rgba(16, 185, 129, 0.05)',
+            border: '1px solid rgba(16, 185, 129, 0.2)',
+            borderRadius: 'var(--r-md)',
+            fontSize: 'var(--text-xs)',
+            color: 'var(--text)'
+          }}>
+            <div style={{ fontWeight: '600', marginBottom: '0.25rem', color: '#059669' }}>
+              ✓ What you get:
+            </div>
+            <div style={{ display: 'grid', gap: '0.25rem', paddingLeft: '0.5rem' }}>
+              <div>• Unlimited access to all community features</div>
+              <div>• Connect with local experts and learners</div>
+              <div>• Start earning as a teacher or find services</div>
+              <div>• Secure payments through Stripe</div>
+            </div>
+          </div>
         </Form>
 
         <div style={{ 
