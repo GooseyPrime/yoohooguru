@@ -221,31 +221,6 @@ function EnhancedLocationSelector({
   const addressInputRef = useRef(null);
   const autocompleteRef = useRef(null);
 
-  // Load Google Maps API and initialize autocomplete
-  useEffect(() => {
-    const loadGoogleMaps = async () => {
-      if (window.google && window.google.maps && window.google.maps.places) {
-        initializeAutocomplete();
-        return;
-      }
-
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 'YOUR_API_KEY'}&libraries=places`;
-      script.async = true;
-      script.defer = true;
-      script.onload = initializeAutocomplete;
-      document.head.appendChild(script);
-
-      return () => {
-        if (script.parentNode) {
-          script.parentNode.removeChild(script);
-        }
-      };
-    };
-
-    loadGoogleMaps();
-  }, [initializeAutocomplete]);
-
   const handlePlaceSelect = useCallback(() => {
     const place = autocompleteRef.current?.getPlace();
     if (!place || !place.address_components) return;
@@ -294,6 +269,31 @@ function EnhancedLocationSelector({
 
     autocompleteRef.current.addListener('place_changed', handlePlaceSelect);
   }, [handlePlaceSelect]);
+
+  // Load Google Maps API and initialize autocomplete
+  useEffect(() => {
+    const loadGoogleMaps = async () => {
+      if (window.google && window.google.maps && window.google.maps.places) {
+        initializeAutocomplete();
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 'YOUR_API_KEY'}&libraries=places`;
+      script.async = true;
+      script.defer = true;
+      script.onload = initializeAutocomplete;
+      document.head.appendChild(script);
+
+      return () => {
+        if (script.parentNode) {
+          script.parentNode.removeChild(script);
+        }
+      };
+    };
+
+    loadGoogleMaps();
+  }, [initializeAutocomplete]);
 
   const requestGPSLocation = useCallback(() => {
     if (!navigator.geolocation) {
