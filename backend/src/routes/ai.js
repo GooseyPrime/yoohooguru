@@ -71,9 +71,7 @@ router.post('/generate-blog-post', async (req, res) => {
       targetAudience, 
       keywords,
       wordCount = 1500, // Default to middle of 1200-2000 range
-      includeAffiliateSection = false,
-      structure = {},
-      seo = {}
+      includeAffiliateSection = false
     } = req.body;
 
     if (!topic || !category) {

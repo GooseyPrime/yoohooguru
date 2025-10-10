@@ -148,10 +148,8 @@ class NewsCurationAgent {
         return;
       }
 
-      // Get existing articles to check what we already have
+      // Get news collection reference
       const newsCollection = db.collection('gurus').doc(subdomain).collection('news');
-      const existingArticles = await newsCollection.get();
-      const existingCount = existingArticles.size;
 
       // Add metadata tags per spec: [subdomain_topic, US, YYYY-MM-DD]
       const today = new Date().toISOString().split('T')[0];
