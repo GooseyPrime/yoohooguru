@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { Star, MapPin, Zap, Brain, TrendingUp } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import Button from './Button';
@@ -210,6 +211,7 @@ const EmptyState = styled.div`
 
 function SkillMatchingComponent() {
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -310,7 +312,7 @@ function SkillMatchingComponent() {
           <div className="icon">🔍</div>
           <h4>No Matches Found</h4>
           <p>{isGuru ? 'Complete your profile to find understudies' : 'Complete your profile to find gurus'}</p>
-          <Button variant="primary" size="sm" onClick={() => window.location.href = '/profile'}>
+          <Button variant="primary" size="sm" onClick={() => navigate('/profile')}>
             Complete Profile
           </Button>
         </EmptyState>
@@ -391,7 +393,7 @@ function SkillMatchingComponent() {
           </MatchGrid>
 
           <div style={{textAlign: 'center', marginTop: '1.5rem'}}>
-            <Button variant="outline" onClick={() => window.location.href = '/skills'}>
+            <Button variant="outline" onClick={() => navigate('/skills')}>
               View All {isGuru ? 'Understudies' : 'Gurus'}
             </Button>
           </div>
