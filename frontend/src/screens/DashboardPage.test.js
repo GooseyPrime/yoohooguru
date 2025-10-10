@@ -41,7 +41,8 @@ jest.mock('../contexts/AuthContext', () => ({
     currentUser: {
       uid: 'test-user-id',
       displayName: 'Test User',
-      email: 'test@example.com'
+      email: 'test@example.com',
+      getIdToken: jest.fn().mockResolvedValue('mock-token')
     },
     loading: false
   })
