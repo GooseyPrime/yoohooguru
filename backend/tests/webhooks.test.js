@@ -203,5 +203,28 @@ describe('Stripe Webhooks', () => {
       expect(response.status).toBe(200);
       expect(response.body.received).toBe(true);
     });
+
+    test('should handle payout.updated events successfully', async () => {
+      const payload = JSON.stringify({
+        id: 'evt_test_payout',
+        type: 'payout.updated',
+        data: {
+          object: {
+            id: 'po_test_12345',
+            amount: 1414,
+            currency: 'usd',
+            status: 'paid'
+          }
+        }
+      });
+
+      const response = await request(app)
+        .post('/api/webhooks/stripe')
+        .set('content-type', 'application/json')
+        .send(payload);
+
+      expect(response.status).toBe(200);
+      expect(response.body.received).toBe(true);
+    });
   });
 });

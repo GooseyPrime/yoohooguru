@@ -82,6 +82,11 @@ Expected response:
 Currently handling:
 - `checkout.session.completed` - Payment completion for job bookings
 - `account.updated` - Stripe Connect account status updates
+- `payout.updated` - Payout status changes (logged for monitoring)
+- `payout.paid` - Successful payout completion (logged for monitoring)
+- `payout.failed` - Failed payout attempts (logged for monitoring)
+
+All other event types are logged as "Unhandled event type" but still return success to Stripe.
 
 ### Technical Details
 

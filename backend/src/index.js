@@ -166,6 +166,14 @@ if (config.nodeEnv === 'production' || config.nodeEnv === 'staging') {
 
 app.use(session(sessionConfig));
 
+// --- Webhook Routes (MUST be before CSRF to avoid token validation) ---
+
+// Stripe webhook route MUST:
+// 1. Come BEFORE CSRF middleware (webhooks don't have CSRF tokens)
+// 2. Use raw body parser to verify Stripe signatures
+// 3. Come BEFORE the general express.json() parser
+app.use('/api/webhooks/stripe', express.raw({ type: 'application/json' }), stripeWebhooks);
+
 // CSRF protection (disabled in test environment to simplify testing)
 if (config.nodeEnv !== 'test') {
   app.use(csrf());
@@ -194,10 +202,6 @@ app.use(morgan('combined', { stream: { write: message => logger.info(message.tri
 app.use(subdomainHandler);
 
 // --- Body Parsers ---
-
-// Stripe webhook route MUST use a raw parser to verify signatures.
-// It is critical this comes BEFORE the general express.json() parser.
-app.use('/api/webhooks/stripe', express.raw({ type: 'application/json' }), stripeWebhooks);
 
 // General JSON and URL-encoded parsers for all other routes
 app.use(express.json({ limit: config.expressJsonLimit }));
