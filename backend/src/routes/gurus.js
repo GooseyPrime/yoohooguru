@@ -704,6 +704,7 @@ router.get('/:subdomain/about', async (req, res) => {
 /**
  * GET /api/news/:subdomain
  * Get curated news articles for a subdomain
+ * Per spec: Show rotating 10 most recent articles
  */
 router.get('/news/:subdomain', guruPagesLimiter, async (req, res) => {
   try {
@@ -717,27 +718,24 @@ router.get('/news/:subdomain', guruPagesLimiter, async (req, res) => {
       });
     }
     
-    // Get curated news articles for the subdomain
+    // Get curated news articles for the subdomain (up to 10 most recent)
     const newsSnapshot = await db.collection('gurus').doc(subdomain).collection('news')
       .orderBy('publishedAt', 'desc')
-      .limit(3)
+      .limit(10)
       .get();
     
     const newsArticles = [];
     newsSnapshot.forEach(doc => {
       const article = doc.data();
-      // Only include articles from last 24 hours or existing ones if no new ones
-      const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
-      if (article.publishedAt >= oneDayAgo || newsArticles.length === 0) {
-        newsArticles.push({
-          id: doc.id,
-          title: article.title,
-          summary: article.summary,
-          url: article.url,
-          publishedAt: article.publishedAt,
-          source: article.source || 'News Source'
-        });
-      }
+      newsArticles.push({
+        id: doc.id,
+        title: article.title,
+        summary: article.summary,
+        url: article.url || '#',
+        publishedAt: article.publishedAt,
+        source: article.source || 'News Source',
+        timeSlot: article.timeSlot || null
+      });
     });
     
     // If no articles found, try to load from seeded content files
@@ -756,7 +754,7 @@ router.get('/news/:subdomain', guruPagesLimiter, async (req, res) => {
                 id: article.id,
                 title: article.title,
                 summary: article.summary,
-                url: article.url,
+                url: article.url || '#',
                 publishedAt: article.publishedAt,
                 source: article.source
               });
@@ -769,8 +767,8 @@ router.get('/news/:subdomain', guruPagesLimiter, async (req, res) => {
       }
     }
     
-    // If still no articles, fall back to generated placeholder content
-    if (newsArticles.length === 0) {
+    // If still no articles, fall back to generated placeholder content (development only)
+    if (newsArticles.length === 0 && process.env.NODE_ENV !== 'production') {
       const skills = guru.config.primarySkills.join(', ');
       newsArticles.push(
         {
@@ -803,7 +801,7 @@ router.get('/news/:subdomain', guruPagesLimiter, async (req, res) => {
     res.json({
       success: true,
       subdomain,
-      articles: newsArticles.slice(0, 3)
+      articles: newsArticles.slice(0, 10) // Return up to 10 articles
     });
     
   } catch (error) {
