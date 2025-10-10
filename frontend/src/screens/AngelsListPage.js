@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import Button from '../components/Button';
 import BookingModal from '../components/BookingModal';
+import EnhancedLocationSelector from '../components/EnhancedLocationSelector';
 
 const PageContainer = styled.div`
   max-width: 1200px;
@@ -33,6 +34,7 @@ const FilterBar = styled.div`
   gap: 1rem;
   margin-bottom: 2rem;
   align-items: center;
+  position: relative;
   
   @media (max-width: 768px) {
     flex-direction: column;
@@ -71,6 +73,26 @@ const FilterSelect = styled.select`
   &:focus {
     outline: 2px solid var(--pri);
     outline-offset: 2px;
+  }
+`;
+
+const LocationWrapper = styled.div`
+  position: relative;
+  min-width: 280px;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  /* Override EnhancedLocationSelector absolute positioning */
+  > div {
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
   }
 `;
 
@@ -147,7 +169,7 @@ function AngelsListPage() {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCity, setSelectedCity] = useState('all');
+  const [userLocation, setUserLocation] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
@@ -261,13 +283,26 @@ function AngelsListPage() {
     }
   ];
 
+  const handleLocationChange = (locationString) => {
+    setUserLocation(locationString);
+  };
+
+  const handleLocationError = (error) => {
+    console.error('Location error:', error);
+  };
+
   const filteredCategories = categories.filter(category => {
     const matchesSearch = category.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          category.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCity = selectedCity === 'all' || category.city === selectedCity;
+    
+    // If user has set a location, filter by it
+    const matchesLocation = !userLocation || 
+                           category.city.toLowerCase().includes(userLocation.toLowerCase()) ||
+                           userLocation.toLowerCase().includes(category.city.toLowerCase());
+    
     const matchesCategoryFilter = selectedCategory === 'all' || category.category === selectedCategory;
     
-    return matchesSearch && matchesCity && matchesCategoryFilter;
+    return matchesSearch && matchesLocation && matchesCategoryFilter;
   });
 
   return (
@@ -286,14 +321,14 @@ function AngelsListPage() {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <FilterSelect 
-          value={selectedCity}
-          onChange={(e) => setSelectedCity(e.target.value)}
-        >
-          <option value="all">All Cities</option>
-          <option value="Denver">Denver</option>
-          <option value="Boulder">Boulder</option>
-        </FilterSelect>
+        <LocationWrapper>
+          <EnhancedLocationSelector
+            location={userLocation}
+            onLocationChange={handleLocationChange}
+            onLocationError={handleLocationError}
+            autoRequestGPS={false}
+          />
+        </LocationWrapper>
         <FilterSelect 
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
