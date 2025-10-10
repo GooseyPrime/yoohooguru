@@ -65,7 +65,7 @@ jest.mock('./contexts/AuthContext', () => ({
 
 const renderSignupPage = () => {
   return render(
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <ThemeProvider theme={mockTheme}>
         <SignupPage />
       </ThemeProvider>

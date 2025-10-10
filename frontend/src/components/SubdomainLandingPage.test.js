@@ -92,7 +92,7 @@ const mockNewsData = {
 
 const renderSubdomainLandingPage = (subdomain = 'cooking', config = mockCookingConfig) => {
   return render(
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <ThemeProvider theme={mockTheme}>
         <SubdomainLandingPage subdomain={subdomain} config={config} />
       </ThemeProvider>
