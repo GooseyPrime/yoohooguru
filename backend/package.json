@@ -11,6 +11,7 @@
     "ensure-frontend-built": "cd ../frontend && (test -d dist || npm run build:fast)",
     "pretest": "node ../scripts/generate-cors-origins.js",
     "test": "firebase emulators:exec --project=yoohoo-dev-testing --only firestore,auth 'npm run jest'",
+    "test:agents": "node test-curation-agents.js",
     "jest": "NODE_ENV=test jest --forceExit --runInBand --detectOpenHandles --verbose",
     "jest-test": "NODE_ENV=test ./node_modules/.bin/jest --forceExit --runInBand --detectOpenHandles --verbose",
     "test:watch": "NODE_ENV=test jest --watch",
