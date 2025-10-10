@@ -48,7 +48,7 @@ jest.mock('./contexts/FeatureFlagsContext', () => ({
   useFeatureFlags: () => ({
     flags: {},
     loading: false,
-    isEnabled: jest.fn(() => false)
+    isEnabled: jest.fn().mockReturnValue(false)
   })
 }));
 
