@@ -59,6 +59,7 @@ jobs:
         # writes to production data. See docs/TESTING_WITH_FIREBASE_EMULATORS.md
         NODE_ENV: test
         FIREBASE_PROJECT_ID: yoohoo-dev-testing
+        FIREBASE_API_KEY: AIzaSyTest1234567890KeyForCITestingOnly
         FIRESTORE_EMULATOR_HOST: localhost:8080
         FIREBASE_AUTH_EMULATOR_HOST: localhost:9099
         JWT_SECRET: test-jwt-secret-key-for-ci-cd-testing-only-not-for-production
