@@ -346,25 +346,25 @@ function DashboardPage() {
       icon: BookOpen,
       title: 'Browse Skills',
       description: 'Find skills to learn or discover teaching opportunities',
-      action: () => window.location.href = '/skills'
+      action: () => navigate('/skills')
     },
     {
       icon: Users,
       title: 'Angel\'s List',
       description: 'Browse professional services or offer your expertise',
-      action: () => window.location.href = '/angels-list'
+      action: () => navigate('/angels-list')
     },
     {
       icon: User,
       title: 'Complete Profile',
       description: 'Finish setting up your profile to connect with others',
-      action: () => window.location.href = '/profile'
+      action: () => navigate('/profile')
     },
     {
       icon: Calendar,
       title: 'Start Onboarding',
       description: 'Begin your journey as a skill provider or guru',
-      action: () => window.location.href = '/onboarding'
+      action: () => navigate('/onboarding')
     }
   ];
 
@@ -487,7 +487,7 @@ function DashboardPage() {
           </p>
           <Button 
             variant="secondary" 
-            onClick={() => window.location.href = '/skills'}
+            onClick={() => navigate('/skills')}
             style={{background: 'rgba(255,255,255,0.2)', color: 'inherit', border: '1px solid rgba(255,255,255,0.3)'}}
           >
             Get Started
