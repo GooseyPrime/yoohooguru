@@ -9,8 +9,9 @@ This directory contains modules that were identified as orphaned during the modu
 - ~~**jest.config.js**~~ - **RESTORED** - Required for CI (Jest configuration)
 
 ### Duplicate/Redundant Components
-- ~~**SubdomainLandingPages.js**~~ - **PARTIALLY RESTORED** - Photography and gardening subdomain configs integrated into AppRouter.js
-- **ThemeContext.js** - Alternative theme system (app uses styled-components theme)
+- ~~**SubdomainLandingPages.js**~~ - **FULLY INTEGRATED** - All 15 subdomain configs (cooking, music, fitness, tech, art, language, business, design, writing, photography, gardening, crafts, wellness, finance, home) integrated into AppRouter.js (lines 17-306). Individual component exports not needed as AppRouter uses SubdomainLandingPage component directly with inline configs.
+- **ThemeContext.js** - **CORRECTLY ARCHIVED** - Alternative theme system; app uses styled-components ThemeProvider instead (App.js). This module is redundant and should remain archived.
+- **CitySelectionModal.js** - **ARCHIVED** - Simpler location selector replaced by EnhancedLocationSelector (used in OnboardingProfile). EnhancedLocationSelector provides Google Maps autocomplete, GPS, and zip code support.
 
 ### Demo/Development Scripts
 - ~~**demo-auth.js**~~ - **RESTORED** - Moved to scripts/ directory for development use
@@ -26,9 +27,10 @@ These modules were archived rather than deleted because:
 ## Integration Analysis Results
 
 **Total Modules Analyzed**: 160
-**Successfully Integrated**: 135+ modules  
-**Archived as Orphans**: 5-10 modules
-**Integration Success Rate**: 95%+
+**Successfully Integrated**: 157+ modules  
+**Archived as Orphans**: 2 modules (ThemeContext.js - intentionally redundant, CitySelectionModal.js - replaced by EnhancedLocationSelector)
+**Backup Files Removed**: 1 (frontend/package.json.bak)
+**Integration Success Rate**: 99%+ (all orphaned modules properly integrated or intentionally archived)
 
 ## Key Integrations Completed
 
@@ -38,6 +40,8 @@ These modules were archived rather than deleted because:
 ✅ Enhanced Location Selector → Onboarding flow
 ✅ Resources Section → Dashboard page
 ✅ Enhanced Protected Route → AppRouter security
+✅ SubdomainLandingPages.js → All 15 subdomain configs in AppRouter.js
+✅ demo-auth.js → Moved to scripts/ directory
 
 ## Future Considerations
 
