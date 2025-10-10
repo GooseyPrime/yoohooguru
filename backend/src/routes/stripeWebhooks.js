@@ -141,6 +141,16 @@ router.post('/', async (req, res) => {
         break;
       }
 
+      case 'payout.updated':
+      case 'payout.paid':
+      case 'payout.failed': {
+        const payout = event.data.object;
+        logger.info(`💰 Processing ${event.type}: ${payout.id} - Status: ${payout.status}, Amount: ${payout.amount} ${payout.currency}`);
+        // Payout events are logged for monitoring purposes
+        // Future: Add logic to update payout records in database if needed
+        break;
+      }
+
       default:
         logger.info(`ℹ️ Unhandled event type: ${event.type}`);
         break;
