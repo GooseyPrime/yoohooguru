@@ -42,6 +42,16 @@ jest.mock('./contexts/AuthContext', () => ({
   })
 }));
 
+// Mock FeatureFlagsContext to avoid async state updates in tests
+jest.mock('./contexts/FeatureFlagsContext', () => ({
+  FeatureFlagsProvider: ({ children }) => <div data-testid="feature-flags-provider">{children}</div>,
+  useFeatureFlags: () => ({
+    flags: {},
+    loading: false,
+    isEnabled: jest.fn().mockReturnValue(false)
+  })
+}));
+
 // Mock AppRouter
 jest.mock('./components/AppRouter', () => {
   return function MockAppRouter() {
