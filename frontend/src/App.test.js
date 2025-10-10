@@ -65,7 +65,7 @@ jest.mock('./contexts/AuthContext', () => ({
 
 const renderSignupPage = () => {
   return render(
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <ThemeProvider theme={mockTheme}>
         <SignupPage />
       </ThemeProvider>
@@ -131,7 +131,7 @@ describe('SignupPage', () => {
   test('contains password fields with proper placeholders', () => {
     renderSignupPage();
     
-    expect(screen.getByPlaceholderText('Create a password')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Create a password (at least 6 characters)')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Confirm your password')).toBeInTheDocument();
   });
 
