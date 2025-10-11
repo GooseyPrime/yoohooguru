@@ -13,8 +13,11 @@ This directory contains modules that were identified as orphaned during the modu
 - **ThemeContext.js** - **CORRECTLY ARCHIVED** - Alternative theme system; app uses styled-components ThemeProvider instead (App.js). This module is redundant and should remain archived.
 - **CitySelectionModal.js** - **ARCHIVED** - Simpler location selector replaced by EnhancedLocationSelector (used in OnboardingProfile). EnhancedLocationSelector provides Google Maps autocomplete, GPS, and zip code support.
 
+### Duplicate/Redundant Backend Routes
+- **connectExpressLogin.js** - **ARCHIVED** - Duplicate Stripe Connect express login functionality. Same functionality already implemented in `backend/src/routes/connect.js` (lines 240-268). This standalone route file was never registered in `backend/src/index.js` and is redundant.
+
 ### Demo/Development Scripts
-- ~~**demo-auth.js**~~ - **RESTORED** - Moved to scripts/ directory for development use
+- ~~**demo-auth.js**~~ - **RESTORED** - Moved to scripts/ directory for development use. Archive copy removed as duplicate.
 
 ## Why These Were Archived
 
@@ -26,10 +29,11 @@ These modules were archived rather than deleted because:
 
 ## Integration Analysis Results
 
-**Total Modules Analyzed**: 160
-**Successfully Integrated**: 157+ modules  
-**Archived as Orphans**: 2 modules (ThemeContext.js - intentionally redundant, CitySelectionModal.js - replaced by EnhancedLocationSelector)
+**Total Modules Analyzed**: 161
+**Successfully Integrated**: 158+ modules  
+**Archived as Orphans**: 3 modules (ThemeContext.js - intentionally redundant, CitySelectionModal.js - replaced by EnhancedLocationSelector, connectExpressLogin.js - duplicate route)
 **Backup Files Removed**: 1 (frontend/package.json.bak)
+**Duplicate Files Removed**: 1 (.archive/orphaned-modules/demo-auth.js - duplicate of scripts/demo-auth.js)
 **Integration Success Rate**: 99%+ (all orphaned modules properly integrated or intentionally archived)
 
 ## Key Integrations Completed

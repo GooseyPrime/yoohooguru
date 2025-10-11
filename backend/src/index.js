@@ -55,6 +55,9 @@ const imagesRoutes = require('./routes/images');
 
 const app = express();
 
+// Disable x-powered-by header for security (prevents exposing Express.js)
+app.disable('x-powered-by');
+
 // Load and validate configuration
 const config = getConfig();
 validateConfig(config);
@@ -175,8 +178,16 @@ app.use(session(sessionConfig));
 app.use('/api/webhooks/stripe', express.raw({ type: 'application/json' }), stripeWebhooks);
 
 // CSRF protection (disabled in test environment to simplify testing)
+// Skip CSRF validation for webhook endpoints (they use signature verification instead)
 if (config.nodeEnv !== 'test') {
-  app.use(csrf());
+  app.use((req, res, next) => {
+    // Skip CSRF for webhook routes
+    if (req.path.startsWith('/api/webhooks/')) {
+      return next();
+    }
+    // Apply CSRF protection to all other routes
+    return csrf()(req, res, next);
+  });
 }
 
 // Rate limiting for API routes

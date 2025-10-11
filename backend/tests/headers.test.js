@@ -104,6 +104,16 @@ describe('Security and Performance Headers', () => {
     });
   });
 
+  describe('Security Headers', () => {
+    it('should not include x-powered-by header', async () => {
+      const response = await request(app)
+        .get('/api')
+        .expect(200);
+
+      expect(response.headers['x-powered-by']).toBeUndefined();
+    });
+  });
+
   describe('Content Security Policy', () => {
     it('should include bigdatacloud.net in connect-src directive', async () => {
       const response = await request(app)

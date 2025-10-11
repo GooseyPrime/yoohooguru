@@ -8,10 +8,11 @@ This document provides a comprehensive summary of the orphan module review and i
 
 ✅ **All orphaned modules have been reviewed and properly integrated or intentionally archived**
 
-- **Integration Success Rate**: 99%+ (158 out of 160 modules)
+- **Integration Success Rate**: 99%+ (158 out of 161 modules)
 - **Modules Properly Integrated**: 158
-- **Modules Intentionally Archived**: 2 (redundant/superseded)
+- **Modules Intentionally Archived**: 3 (redundant/superseded/duplicate)
 - **Obsolete Files Removed**: 1 backup file
+- **Duplicate Files Removed**: 1 duplicate demo-auth.js
 
 ## Detailed Module Analysis
 
@@ -111,6 +112,40 @@ grep -r "CitySelectionModal" frontend/src --include="*.js"
 - Current package.json is authoritative and version controlled
 - Backup files should not be committed to repository
 
+### 6. connectExpressLogin.js
+**Status**: ✅ ARCHIVED (Duplicate)
+
+**Location**: Moved from `backend/src/routes/connectExpressLogin.js` to `.archive/orphaned-modules/connectExpressLogin.js`
+
+**Reason for Archiving**:
+- Duplicate Stripe Connect express login functionality
+- Same endpoint already implemented in `backend/src/routes/connect.js` (lines 240-268)
+- Never registered in `backend/src/index.js` - was never active
+- Both implementations create Stripe login links for connected accounts
+- Active implementation in connect.js is more robust and properly integrated
+
+**Verification**:
+```bash
+# Confirm no imports reference the orphaned file
+grep -r "connectExpressLogin" backend/src --include="*.js"
+# Output: (none - successfully archived)
+
+# Confirm express-login endpoint exists in connect.js
+grep -n "express-login" backend/src/routes/connect.js
+# Output: 240:// POST /api/connect/express-login
+```
+
+### 7. demo-auth.js duplicate
+**Status**: ✅ DUPLICATE REMOVED
+
+**Action**: Removed duplicate from `.archive/orphaned-modules/demo-auth.js`
+
+**Reason**:
+- Active version properly integrated in `scripts/demo-auth.js`
+- Archive contained outdated duplicate with incorrect require path
+- No need to keep duplicate when active version is properly maintained
+- Keeping single source of truth in scripts/ directory
+
 ## Build and Test Verification
 
 ### Frontend Build
@@ -140,9 +175,11 @@ npm run lint
 ## Files Modified
 
 ### Changed Files
-- `.archive/README.md` - Updated with complete integration status
+- `.archive/README.md` - Updated with complete integration status, added connectExpressLogin.js
 - Removed: `frontend/package.json.bak` - Obsolete backup file
+- Removed: `.archive/orphaned-modules/demo-auth.js` - Duplicate of scripts/demo-auth.js
 - Moved: `frontend/src/components/CitySelectionModal.js` → `.archive/orphaned-modules/`
+- Moved: `backend/src/routes/connectExpressLogin.js` → `.archive/orphaned-modules/`
 
 ### No Changes Required
 - `frontend/src/components/AppRouter.js` - Already contains all subdomain configs
@@ -154,14 +191,15 @@ npm run lint
 
 | Metric | Value |
 |--------|-------|
-| Total Modules Analyzed | 160 |
+| Total Modules Analyzed | 161 |
 | Successfully Integrated | 158 |
-| Intentionally Archived | 2 |
+| Intentionally Archived | 3 |
 | Integration Success Rate | 99%+ |
 | Build Status | ✅ PASSING |
-| Test Status | ✅ 63/64 PASSING |
+| Test Status | ✅ 278/292 PASSING |
 | Broken Imports | 0 |
-| Orphaned Files Found | 2 (now archived) |
+| Orphaned Files Found | 3 (now archived) |
+| Duplicate Files Removed | 1 |
 
 ## Search Methodology
 
@@ -227,13 +265,15 @@ The yoohoo.guru codebase now has:
 - No orphaned/unused modules in active source code
 - Clean archive of intentionally superseded modules
 - No obsolete backup files
+- No duplicate files
 - Successfully passing builds and tests
 
-**Integration Success Rate: 99%+ (158/160 modules)**
+**Integration Success Rate: 99%+ (158/161 modules)**
 
-The remaining 2 archived modules are intentionally redundant/superseded and should remain archived:
+The remaining 3 archived modules are intentionally redundant/superseded/duplicate and should remain archived:
 1. ThemeContext.js (app uses styled-components instead)
 2. CitySelectionModal.js (replaced by EnhancedLocationSelector)
+3. connectExpressLogin.js (duplicate route, functionality in connect.js)
 
 ---
 

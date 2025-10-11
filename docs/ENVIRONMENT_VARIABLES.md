@@ -155,6 +155,31 @@ Sessions are stored in the `sessions` collection in Firestore in production envi
 | `OPENROUTER_API_KEY` | ❌ | OpenRouter API key for AI features |
 | `OPENROUTER_API_URL` | ❌ | OpenRouter API URL (default: https://openrouter.ai/api/v1) |
 
+#### Google Maps API
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `REACT_APP_GOOGLE_MAPS_API_KEY` | ✅ | Google Maps API key for location features (autocomplete, geocoding, maps display). Get from https://console.cloud.google.com/google/maps-apis. Required APIs: Places API, Geocoding API, Maps JavaScript API |
+
+**Note:** The Google Maps API key is used for:
+- Location autocomplete on the homepage when autodetect is disabled
+- Map display showing angel job locations (Angels List page)
+- Map display showing guru/coach locations (Coach Dashboard)
+- Privacy protection: Locations are displayed with a small amount of spatial "fluff" for user privacy
+
+**Setup Instructions:**
+1. Go to [Google Cloud Console](https://console.cloud.google.com/google/maps-apis)
+2. Create a new project or select an existing one
+3. Enable the following APIs:
+   - **Maps JavaScript API** - For map display
+   - **Places API** - For location autocomplete
+   - **Geocoding API** - For address lookups
+4. Create credentials and get your API key
+5. Set API key restrictions (recommended):
+   - **Application restrictions**: HTTP referrers (for production: `https://yoohoo.guru/*`, `https://www.yoohoo.guru/*`)
+   - **API restrictions**: Restrict key to only the enabled APIs above
+6. Add the API key to your environment variables
+
 ### Caching & Performance
 
 | Variable | Default | Description |
