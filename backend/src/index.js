@@ -55,6 +55,9 @@ const imagesRoutes = require('./routes/images');
 
 const app = express();
 
+// Disable x-powered-by header for security (prevents exposing Express.js)
+app.disable('x-powered-by');
+
 // Load and validate configuration
 const config = getConfig();
 validateConfig(config);
