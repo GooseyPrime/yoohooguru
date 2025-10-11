@@ -19,6 +19,7 @@ All orphaned modules have been reviewed and properly integrated or archived.
 
 3. **demo-auth.js** - ✅ VERIFIED INTEGRATED
    - Already in scripts/ directory
+   - Removed duplicate from .archive/orphaned-modules/
    - No additional work required
 
 4. **CitySelectionModal.js** - ✅ NEWLY ARCHIVED
@@ -28,12 +29,19 @@ All orphaned modules have been reviewed and properly integrated or archived.
 5. **frontend/package.json.bak** - ✅ REMOVED
    - Obsolete backup file deleted
 
+6. **connectExpressLogin.js** - ✅ NEWLY ARCHIVED
+   - Duplicate Stripe Connect express login route
+   - Same functionality already in connect.js (lines 240-268)
+   - Never registered in backend/src/index.js
+   - Moved to .archive/orphaned-modules/
+
 ### Results
 
-- **Integration Success Rate**: 99%+ (158/160 modules)
+- **Integration Success Rate**: 99%+ (158/161 modules)
 - **Builds**: ✅ Passing (frontend & backend)
 - **Tests**: ✅ 63/64 passing (1 pre-existing failure)
 - **Orphaned Imports**: ✅ None found
+- **Duplicate Files**: ✅ Removed (1 duplicate demo-auth.js)
 
 ### Documentation
 
