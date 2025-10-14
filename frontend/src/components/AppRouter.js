@@ -575,15 +575,28 @@ function AppRouter() {
         {/* Public routes */}
         <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
-        {/* SkillShare (public label) – technical route remains /skills */}
+        
+        {/* Legacy routes - redirect to subdomains */}
         <Route path="skills" element={
           <Suspense fallback={<LoadingScreen />}>
-            <SkillsPage />
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', textAlign: 'center'}}>
+              <div>
+                <h2>Redirecting to Coach Guru...</h2>
+                <p>You&apos;ll be redirected to <a href="https://coach.yoohoo.guru">coach.yoohoo.guru</a></p>
+                {typeof window !== 'undefined' && window.location.replace('https://coach.yoohoo.guru')}
+              </div>
+            </div>
           </Suspense>
         } />
         <Route path="angels-list" element={
           <Suspense fallback={<LoadingScreen />}>
-            <AngelsListPage />
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', textAlign: 'center'}}>
+              <div>
+                <h2>Redirecting to Angel&apos;s List...</h2>
+                <p>You&apos;ll be redirected to <a href="https://angel.yoohoo.guru">angel.yoohoo.guru</a></p>
+                {typeof window !== 'undefined' && window.location.replace('https://angel.yoohoo.guru')}
+              </div>
+            </div>
           </Suspense>
         } />
         <Route path="about" element={
@@ -709,7 +722,13 @@ function AppRouter() {
           element={
             <ProtectedRoute>
               <Suspense fallback={<LoadingScreen />}>
-                <DashboardPage />
+                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', textAlign: 'center'}}>
+                  <div>
+                    <h2>Redirecting to Dashboard...</h2>
+                    <p>You&apos;ll be redirected to <a href="https://dashboard.yoohoo.guru">dashboard.yoohoo.guru</a></p>
+                    {typeof window !== 'undefined' && window.location.replace('https://dashboard.yoohoo.guru')}
+                  </div>
+                </div>
               </Suspense>
             </ProtectedRoute>
           } 
@@ -853,16 +872,28 @@ function AppRouter() {
           } 
         />
 
-        {/* Hero Guru's routes (formerly Modified Masters) */}
+        {/* Hero Guru's routes (formerly Modified Masters) - redirect to subdomain */}
         <Route path="heroes" element={
           <Suspense fallback={<LoadingScreen />}>
-            <HeroGurus />
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', textAlign: 'center'}}>
+              <div>
+                <h2>Redirecting to Hero Guru&apos;s...</h2>
+                <p>You&apos;ll be redirected to <a href="https://heroes.yoohoo.guru">heroes.yoohoo.guru</a></p>
+                {typeof window !== 'undefined' && window.location.replace('https://heroes.yoohoo.guru')}
+              </div>
+            </div>
           </Suspense>
         } />
         {/* Legacy route for backwards compatibility */}
         <Route path="modified" element={
           <Suspense fallback={<LoadingScreen />}>
-            <HeroGurus />
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', textAlign: 'center'}}>
+              <div>
+                <h2>Redirecting to Hero Guru&apos;s...</h2>
+                <p>You&apos;ll be redirected to <a href="https://heroes.yoohoo.guru">heroes.yoohoo.guru</a></p>
+                {typeof window !== 'undefined' && window.location.replace('https://heroes.yoohoo.guru')}
+              </div>
+            </div>
           </Suspense>
         } />
         <Route 
