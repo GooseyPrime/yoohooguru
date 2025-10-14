@@ -1,19 +1,13 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { Menu, X, User, LogOut, Settings, Shield, Star } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import Button from './Button';
 import Logo from './Logo';
-import AuthStatusIndicator from './auth/AuthStatusIndicator';
 
 const HeaderContainer = styled.header`
-  position: sticky; 
-  top: 0; 
-  z-index: 50;
-  backdrop-filter: saturate(140%) blur(10px);
-  background: rgba(11,13,16,.55);
-  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #1a1a2e;
+  border-bottom: 1px solid #2a2a3e;
   padding: 1rem 0;
 `;
 
@@ -22,105 +16,43 @@ const HeaderContent = styled.div`
   margin: 0 auto;
   padding: 0 1rem;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
 `;
 
 const Nav = styled.nav`
   display: flex;
-  align-items: center;
   gap: 2rem;
+  align-items: center;
 
   @media (max-width: 768px) {
-    display: ${props => props.$isOpen ? 'flex' : 'none'};
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: var(--surface);
-    flex-direction: column;
-    padding: 1rem;
-    border-bottom: 1px solid var(--border);
-    /* FIX: Replaced invalid theme variable with a valid CSS box-shadow */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    gap: 1rem;
+    display: none;
   }
 `;
 
-const NavLink = styled(Link)`
-  padding: 0.5rem 0.75rem; 
-  border-radius: var(--r-sm);
-  color: var(--muted);
+const NavLink = styled.a`
+  color: #b0b0b0;
   text-decoration: none;
   font-weight: 500;
-  transition: all var(--t-fast) ${({ theme }) => theme.motion.in};
-
-  &:hover { 
-    color: var(--text); 
-    background: rgba(255,255,255,.03); 
-  }
-  
-  &.active { 
-    color: var(--text); 
-    background: rgba(124,140,255,.10); 
-    border: 1px solid rgba(124,140,255,.35); 
-  }
-`;
-
-const UserMenu = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-`;
-
-const UserButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: none;
-  border: none;
-  color: var(--muted);
-  font-weight: 500;
-  cursor: pointer;
-  border-radius: var(--r-sm);
-  transition: background var(--t-fast) ${({ theme }) => theme.motion.in};
+  transition: color 0.2s;
 
   &:hover {
-    background: rgba(255,255,255,.03);
+    color: #667eea;
   }
 `;
 
-const Dropdown = styled.div`
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 0.5rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-md);
-  /* FIX: Replaced invalid theme variable with a valid CSS box-shadow */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  min-width: 160px;
-  overflow: hidden;
-`;
-
-const DropdownItem = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  width: 100%;
-  padding: 0.75rem 1rem;
-  background: none;
-  border: none;
-  color: var(--text);
-  text-align: left;
-  cursor: pointer;
-  transition: background var(--t-fast) ${({ theme }) => theme.motion.in};
+const Button = styled.a`
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s;
+  background: #667eea;
+  color: white;
 
   &:hover {
-    background: rgba(255,255,255,.03);
+    background: #5568d3;
+    transform: translateY(-1px);
   }
 `;
 
@@ -128,160 +60,60 @@ const MobileMenuButton = styled.button`
   display: none;
   background: none;
   border: none;
-  color: var(--muted);
+  color: #b0b0b0;
+  font-size: 1.5rem;
   cursor: pointer;
-  padding: 0.5rem;
 
   @media (max-width: 768px) {
     display: block;
   }
 `;
 
-function Header() {
-  const { currentUser, userProfile, logout } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+const MobileNav = styled.div<{ isOpen: boolean }>`
+  display: none;
+  
+  @media (max-width: 768px) {
+    display: ${props => props.isOpen ? 'flex' : 'none'};
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    background: #1a1a2e;
+    border-top: 1px solid #2a2a3e;
+  }
+`;
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate('/');
-      setIsUserMenuOpen(false);
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
-
-  const isActive = (path) => location.pathname === path;
-  const isHomePage = location.pathname === '/';
+const Header: React.FC = () => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <HeaderContainer>
-      <HeaderContent>
-        <Logo 
-          showImage={true} 
-          showText={isHomePage} 
-          showLettering={!isHomePage}
-          size="normal" 
-        />
+    <>
+      <HeaderContainer>
+        <HeaderContent>
+          <Logo showText={true} size="normal" to="/" />
+          
+          <Nav>
+            <NavLink href="https://www.yoohoo.guru">Home</NavLink>
+            <NavLink href="https://angel.yoohoo.guru">Angel's List</NavLink>
+            <NavLink href="https://coach.yoohoo.guru">Coach Guru</NavLink>
+            <NavLink href="https://heroes.yoohoo.guru">Hero Guru's</NavLink>
+            <Button href="https://dashboard.yoohoo.guru">Dashboard</Button>
+          </Nav>
 
-        <Nav $isOpen={isMenuOpen}>
-          <NavLink 
-            to="/" 
-            className={isActive('/') ? 'active' : ''}
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Home
-          </NavLink>
-          <NavLink 
-            as="a"
-            href="https://angel.yoohoo.guru" 
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Angel&apos;s List
-          </NavLink>
-          <NavLink 
-            as="a"
-            href="https://coach.yoohoo.guru" 
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Coach Guru
-          </NavLink>
-          <NavLink 
-            as="a"
-            href="https://heroes.yoohoo.guru" 
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Hero Guru&apos;s
-          </NavLink>
-          {currentUser && (
-            <NavLink 
-              as="a"
-              href="https://dashboard.yoohoo.guru" 
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Dashboard
-            </NavLink>
-          )}
-        </Nav>
-
-        <UserMenu>
-          {/* Show auth status indicator on mobile for better UX */}
-          <div style={{ display: 'none' }}>
-            <AuthStatusIndicator compact={true} />
-          </div>
-
-          {currentUser ? (
-            <>
-              <UserButton 
-                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-              >
-                <User size={18} />
-                {userProfile?.displayName || currentUser.displayName || currentUser.email?.split('@')[0] || 'User'}
-              </UserButton>
-              
-              {isUserMenuOpen && (
-                <Dropdown>
-                  <DropdownItem onClick={() => {
-                    navigate('/profile');
-                    setIsUserMenuOpen(false);
-                  }}>
-                    <Settings size={16} />
-                    Profile
-                  </DropdownItem>
-                  <DropdownItem onClick={() => {
-                    navigate('/compliance');
-                    setIsUserMenuOpen(false);
-                  }}>
-                    <Shield size={16} />
-                    Compliance
-                  </DropdownItem>
-                  <DropdownItem onClick={() => {
-                    navigate('/guru');
-                    setIsUserMenuOpen(false);
-                  }}>
-                    <Star size={16} />
-                    Guru Dashboard
-                  </DropdownItem>
-                  <DropdownItem onClick={handleLogout}>
-                    <LogOut size={16} />
-                    Sign Out
-                  </DropdownItem>
-                </Dropdown>
-              )}
-            </>
-          ) : (
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-              <AuthStatusIndicator showText={false} compact={true} />
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => navigate('/login')}
-              >
-                Sign In
-              </Button>
-              <Button 
-                variant="primary" 
-                size="sm"
-                onClick={() => navigate('/signup')}
-              >
-                Sign Up
-              </Button>
-            </div>
-          )}
-
-          <MobileMenuButton 
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label={isMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-          >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          <MobileMenuButton onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            ☰
           </MobileMenuButton>
-        </UserMenu>
-      </HeaderContent>
-    </HeaderContainer>
+        </HeaderContent>
+      </HeaderContainer>
+
+      <MobileNav isOpen={mobileMenuOpen}>
+        <NavLink href="https://www.yoohoo.guru">Home</NavLink>
+        <NavLink href="https://angel.yoohoo.guru">Angel's List</NavLink>
+        <NavLink href="https://coach.yoohoo.guru">Coach Guru</NavLink>
+        <NavLink href="https://heroes.yoohoo.guru">Hero Guru's</NavLink>
+        <NavLink href="https://dashboard.yoohoo.guru">Dashboard</NavLink>
+      </MobileNav>
+    </>
   );
-}
+};
 
 export default Header;

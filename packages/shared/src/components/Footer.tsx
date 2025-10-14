@@ -1,14 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Logo from './Logo';
 
 const FooterContainer = styled.footer`
-  background: var(--surface);
-  color: var(--muted);
+  background: #1a1a2e;
+  color: #b0b0b0;
   padding: 3rem 0 1.5rem;
   margin-top: auto;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid #2a2a3e;
 `;
 
 const FooterContent = styled.div`
@@ -31,7 +30,7 @@ const FooterGrid = styled.div`
 
 const FooterSection = styled.div`
   h3 {
-    color: var(--text);
+    color: #ffffff;
     font-size: 1.125rem;
     font-weight: 600;
     margin-bottom: 1rem;
@@ -40,17 +39,16 @@ const FooterSection = styled.div`
   p {
     margin-bottom: 0.5rem;
     line-height: 1.6;
-    color: var(--muted);
+    color: #b0b0b0;
   }
 
   a {
-    color: var(--muted);
+    color: #b0b0b0;
     text-decoration: none;
-    transition: color var(--t-fast);
+    transition: color 0.2s;
 
     &:hover {
-      color: var(--pri);
-      text-decoration: none;
+      color: #667eea;
     }
   }
 `;
@@ -66,96 +64,64 @@ const FooterLinks = styled.ul`
 `;
 
 const FooterBottom = styled.div`
-  border-top: 1px solid var(--border);
-  padding-top: 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    text-align: center;
-  }
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid #2a2a3e;
+  color: #b0b0b0;
+  font-size: 0.875rem;
 `;
 
-const SocialLinks = styled.div`
-  display: flex;
-  gap: 1rem;
+const Footer: React.FC = () => {
+  const currentYear = new Date().getFullYear();
 
-  a {
-    color: var(--muted);
-    font-size: 1.2rem;
-    transition: color var(--t-fast);
-
-    &:hover {
-      color: var(--pri);
-    }
-  }
-`;
-
-function Footer() {
   return (
     <FooterContainer>
       <FooterContent>
         <FooterGrid>
           <FooterSection>
-            <Logo showImage={true} showText={true} size="normal" to="/" />
+            <Logo showText={true} size="normal" to="/" />
             <p>
               A neighborhood-based skill-sharing platform where users exchange skills,
               discover purpose, and create exponential community impact.
             </p>
-            <p>
-              Join thousands of learners and teachers creating waves of positive change
-              in their communities.
-            </p>
           </FooterSection>
 
           <FooterSection>
-            <h3>Quick Links</h3>
+            <h3>Platform</h3>
             <FooterLinks>
-              <li><Link to="/skills">Browse Skills</Link></li>
-              <li><Link to="/angels-list">Angel&apos;s List</Link></li>
-              <li><Link to="/dashboard">Dashboard</Link></li>
-              <li><Link to="/about">About Us</Link></li>
-              <li><Link to="/how-it-works">How It Works</Link></li>
-              <li><Link to="/pricing">Pricing</Link></li>
-            </FooterLinks>
-          </FooterSection>
-
-          <FooterSection>
-            <h3>Community</h3>
-            <FooterLinks>
-              <li><Link to="/blog">Blog <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></Link></li>
-              <li><Link to="/success-stories">Success Stories <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></Link></li>
-              <li><Link to="/events">Community Events <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></Link></li>
-              <li><Link to="/forum">Discussion Forum <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></Link></li>
-              <li><Link to="/mentorship">Mentorship Program <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></Link></li>
+              <li><a href="/about">About Us</a></li>
+              <li><a href="/how-it-works">How It Works</a></li>
+              <li><a href="/pricing">Pricing</a></li>
+              <li><a href="/blog">Blog</a></li>
             </FooterLinks>
           </FooterSection>
 
           <FooterSection>
             <h3>Support</h3>
             <FooterLinks>
-              <li><Link to="/help">Help Center <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></Link></li>
-              <li><Link to="/contact">Contact Us <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></Link></li>
-              <li><Link to="/safety">Safety & Trust <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></Link></li>
-              <li><Link to="/privacy">Privacy Policy</Link></li>
-              <li><Link to="/terms">Terms of Service</Link></li>
+              <li><a href="/help">Help Center</a></li>
+              <li><a href="/safety">Safety</a></li>
+              <li><a href="/contact">Contact Us</a></li>
+              <li><a href="/faq">FAQ</a></li>
+            </FooterLinks>
+          </FooterSection>
+
+          <FooterSection>
+            <h3>Legal</h3>
+            <FooterLinks>
+              <li><a href="/terms">Terms of Service</a></li>
+              <li><a href="/privacy">Privacy Policy</a></li>
+              <li><a href="/cookies">Cookie Policy</a></li>
             </FooterLinks>
           </FooterSection>
         </FooterGrid>
 
         <FooterBottom>
-          <p>&copy; 2024 {process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}. All rights reserved.</p>
-          <SocialLinks>
-            <Link to="/contact">Follow Us <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>(Coming Soon)</span></Link>
-          </SocialLinks>
+          <p>&copy; {currentYear} YooHoo.Guru. All rights reserved.</p>
         </FooterBottom>
       </FooterContent>
     </FooterContainer>
   );
-}
+};
 
 export default Footer;
