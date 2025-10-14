@@ -3,6 +3,8 @@
  * Types and utilities for coaching styles, accessibility preferences, and skill extensions
  */
 
+const { validateResourceUrl } = require('../utils/urlValidation');
+
 const COACHING_STYLES = {
   STRUCTURED_CURRICULUM: 'structured-curriculum',
   HANDS_ON: 'hands-on',
@@ -165,11 +167,10 @@ function validateResourceLink(resource) {
   if (!resource.url || typeof resource.url !== 'string') {
     errors.push('Resource URL is required and must be a string');
   } else {
-    // Basic URL validation
-    try {
-      new URL(resource.url);
-    } catch {
-      errors.push('Resource URL must be a valid URL');
+    // Secure URL validation - prevents XSS and protocol bypass attacks
+    const validation = validateResourceUrl(resource.url);
+    if (!validation.valid) {
+      errors.push(`Resource URL validation failed: ${validation.error}`);
     }
   }
   
