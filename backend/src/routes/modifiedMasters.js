@@ -1,6 +1,6 @@
 /**
- * Modified Masters API Routes
- * Handles MM-specific skills, resources, and accessibility features
+ * Hero Guru's API Routes (formerly Modified Masters)
+ * Handles accessibility-focused skills, resources, and adaptive features
  */
 
 const express = require('express');
@@ -22,13 +22,13 @@ const router = express.Router();
 const config = getConfig();
 
 // Early return empty router if feature is disabled
-if (!config.featureModifiedMasters) {
+if (!config.featureHeroGurus && !config.featureModifiedMasters) {
   module.exports = router;
 } else {
 
 /**
- * @desc    Get Modified Masters skills
- * @route   GET /api/modified-masters/skills
+ * @desc    Get Hero Guru's skills
+ * @route   GET /api/heroes/skills (also /api/modified-masters/skills for legacy)
  * @access  Public
  */
 router.get('/skills', optionalAuth, async (req, res) => {
@@ -136,8 +136,8 @@ router.get('/skills', optionalAuth, async (req, res) => {
 });
 
 /**
- * @desc    Create/update Modified Masters skill
- * @route   POST /api/modified-masters/skills
+ * @desc    Create/update Hero Guru's skill
+ * @route   POST /api/heroes/skills (also /api/modified-masters/skills for legacy)
  * @access  Private
  */
 router.post('/skills', requireAuth, async (req, res) => {
@@ -360,7 +360,7 @@ router.get('/config', (req, res) => {
     success: true,
     data: {
       enabled: config.featureModifiedMasters,
-      donateUrl: config.modifiedMastersDonateUrl,
+      donateUrl: config.heroGurusDonateUrl || config.modifiedMastersDonateUrl,
       subdomainEnabled: config.modifiedMastersEnableSubdomain,
       reviewRequired: config.modifiedMastersRequireReview,
       coachingStyles: Object.values(COACHING_STYLES),

@@ -356,9 +356,12 @@ app.use('/api/resources', resourcesRoutes);
 app.use('/api', locationsRoutes);
 app.use('/api/images', imagesRoutes);
 
-// Modified Masters routes (conditionally mounted)
-if (config.featureModifiedMasters) {
+// Hero Guru's routes (formerly Modified Masters) - conditionally mounted
+if (config.featureHeroGurus || config.featureModifiedMasters) {
   app.use('/api/sessions', sessionsRoutes);
+  // New primary endpoint
+  app.use('/api/heroes', modifiedMastersRoutes);
+  // Legacy endpoint for backwards compatibility
   app.use('/api/modified-masters', modifiedMastersRoutes);
 }
 

@@ -176,30 +176,30 @@ function Header() {
             Home
           </NavLink>
           <NavLink 
-            to="/angels-list" 
-            className={isActive('/angels-list') ? 'active' : ''}
+            as="a"
+            href="https://angel.yoohoo.guru" 
             onClick={() => setIsMenuOpen(false)}
           >
             Angel&apos;s List
           </NavLink>
           <NavLink 
-            to="/skills" 
-            className={isActive('/skills') ? 'active' : ''}
+            as="a"
+            href="https://coach.yoohoo.guru" 
             onClick={() => setIsMenuOpen(false)}
           >
-            SkillShare
+            Coach Guru
           </NavLink>
           <NavLink 
-            to="/modified" 
-            className={isActive('/modified') ? 'active' : ''}
+            as="a"
+            href="https://heroes.yoohoo.guru" 
             onClick={() => setIsMenuOpen(false)}
           >
-            Modified Masters
+            Hero Guru&apos;s
           </NavLink>
           {currentUser && (
             <NavLink 
-              to="/dashboard" 
-              className={isActive('/dashboard') ? 'active' : ''}
+              as="a"
+              href="https://dashboard.yoohoo.guru" 
               onClick={() => setIsMenuOpen(false)}
             >
               Dashboard

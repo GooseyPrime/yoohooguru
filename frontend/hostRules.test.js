@@ -61,7 +61,8 @@ describe('Subdomain Detection', () => {
 
   describe('getSubdomainType', () => {
     it('should return correct type for special subdomains', () => {
-      expect(getSubdomainType('masters.yoohoo.guru')).toBe('masters');
+      expect(getSubdomainType('masters.yoohoo.guru')).toBe('masters'); // Legacy support
+      expect(getSubdomainType('heroes.yoohoo.guru')).toBe('heroes'); // New subdomain
       expect(getSubdomainType('coach.yoohoo.guru')).toBe('coach');
       expect(getSubdomainType('angel.yoohoo.guru')).toBe('angel');
     });
@@ -80,7 +81,8 @@ describe('Subdomain Detection', () => {
 
   describe('getSubdomainRoute', () => {
     it('should return correct routes for special subdomains', () => {
-      expect(getSubdomainRoute('masters.yoohoo.guru')).toBe('/modified');
+      expect(getSubdomainRoute('masters.yoohoo.guru')).toBe('/modified'); // Legacy support
+      expect(getSubdomainRoute('heroes.yoohoo.guru')).toBe('/heroes'); // New subdomain
       expect(getSubdomainRoute('coach.yoohoo.guru')).toBe('/skills');
       expect(getSubdomainRoute('angel.yoohoo.guru')).toBe('/angels-list');
     });

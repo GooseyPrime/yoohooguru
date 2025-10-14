@@ -1,5 +1,5 @@
 /**
- * Modified Masters Page
+ * Hero Guru's Page (formerly Modified Masters)
  * Accessibility-first skill sharing marketplace for disability communities
  */
 
@@ -233,7 +233,7 @@ const ErrorMessage = styled.div`
   margin-bottom: 2rem;
 `;
 
-function ModifiedMasters() {
+function HeroGurus() {
   const [skills, setSkills] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -261,10 +261,11 @@ function ModifiedMasters() {
 
   const fetchConfig = async () => {
     try {
-      const configData = await get('/modified-masters/config');
+      // Try new endpoint first, fallback to legacy
+      const configData = await get('/heroes/config').catch(() => get('/modified-masters/config'));
       setConfig(configData);
     } catch (error) {
-      console.warn('Failed to load MM config:', error);
+      console.warn('Failed to load Hero Guru\'s config:', error);
     }
   };
 
@@ -278,9 +279,11 @@ function ModifiedMasters() {
       if (filters.style) params.append('style', filters.style);
       
       const query = params.toString();
-      const endpoint = query ? `/modified-masters/skills?${query}` : '/modified-masters/skills';
+      // Try new endpoint first, fallback to legacy
+      const endpoint = query ? `/heroes/skills?${query}` : '/heroes/skills';
+      const legacyEndpoint = query ? `/modified-masters/skills?${query}` : '/modified-masters/skills';
       
-      const data = await get(endpoint);
+      const data = await get(endpoint).catch(() => get(legacyEndpoint));
       setSkills(data.skills || []);
       setError(null);
     } catch (error) {
@@ -312,7 +315,7 @@ function ModifiedMasters() {
     <>
       <Container>
         <Header>
-          <Title>Modified Masters</Title>
+          <Title>Hero Guru&apos;s</Title>
           <Subtitle>
             Accessibility-first skill sharing for disability communities. 
             Learn and teach with understanding, patience, and adaptive approaches.
@@ -323,9 +326,9 @@ function ModifiedMasters() {
               href={config.donateUrl}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Support Modified Masters with a donation"
+              aria-label="Support Hero Guru's with a donation"
             >
-              💝 Support Modified Masters
+              💝 Support Hero Guru&apos;s
             </DonateButton>
           )}
         </Header>
@@ -380,7 +383,7 @@ function ModifiedMasters() {
 
         {loading && (
           <LoadingMessage>
-            Loading Modified Masters skills...
+            Loading Hero Guru&apos;s skills...
           </LoadingMessage>
         )}
 
@@ -604,4 +607,7 @@ function RequestSessionModal({ skillId, onClose }) {
   );
 }
 
-export default ModifiedMasters;
+export default HeroGurus;
+
+// Legacy export for backwards compatibility
+export { HeroGurus as ModifiedMasters };

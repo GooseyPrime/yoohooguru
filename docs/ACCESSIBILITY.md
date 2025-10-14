@@ -1,11 +1,11 @@
-# Accessibility Guidelines for Modified Masters
+# Accessibility Guidelines for Hero Guru's
 
-Modified Masters is designed with accessibility-first principles to serve disability communities effectively. This document outlines the accessibility features and guidelines implemented throughout the platform.
+Hero Guru's (formerly Modified Masters) is designed with accessibility-first principles to serve disability communities effectively. This document outlines the accessibility features and guidelines implemented throughout the platform.
 
 ## Core Accessibility Features
 
 ### Accessibility Toolbar
-Every Modified Masters page includes a floating accessibility toolbar that provides:
+Every Hero Guru's page includes a floating accessibility toolbar that provides:
 
 - **Text Size Options**: Normal, Large, Extra Large text scaling
 - **High Contrast Mode**: Enhanced contrast for better visibility
@@ -134,7 +134,7 @@ Label your teaching approach with accessibility-friendly styles:
 
 ## Compliance Standards
 
-Modified Masters aims to meet or exceed:
+Hero Guru's aims to meet or exceed:
 - **WCAG 2.1 AA**: Web Content Accessibility Guidelines Level AA
 - **Section 508**: US Federal accessibility requirements
 - **ADA**: Americans with Disabilities Act compliance

@@ -1,6 +1,6 @@
 /**
  * Accessibility Toolbar
- * Provides accessibility options for Modified Masters users
+ * Provides accessibility options for Hero Guru's users
  */
 
 import React, { useState, useEffect } from 'react';

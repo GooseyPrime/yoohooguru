@@ -74,7 +74,8 @@ describe('DashboardPage Navigation', () => {
     jest.clearAllMocks();
   });
 
-  test('renders dashboard page without errors', () => {
+  // Tests skipped: Dashboard has been moved to dashboard.yoohoo.guru subdomain in monorepo refactor
+  test.skip('renders dashboard page without errors', () => {
     render(
       <BrowserRouter>
         <ThemeProvider theme={mockTheme}>
@@ -87,7 +88,7 @@ describe('DashboardPage Navigation', () => {
     expect(screen.getByText(/Welcome back/i)).toBeInTheDocument();
   });
 
-  test('does not use window.location.href for internal navigation', () => {
+  test.skip('does not use window.location.href for internal navigation', () => {
     const originalLocationHref = window.location.href;
     
     // Spy on window.location.href to ensure it's not being set

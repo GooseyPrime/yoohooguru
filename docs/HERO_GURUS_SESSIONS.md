@@ -1,10 +1,10 @@
-# Modified Masters Distance Sessions Documentation
+# Hero Guru's Distance Sessions Documentation
 
-This document explains how distance learning sessions work within the Modified Masters platform, including session lifecycle, accessibility accommodations, and technical integration.
+This document explains how distance learning sessions work within the Hero Guru's platform (formerly Modified Masters), including session lifecycle, accessibility accommodations, and technical integration.
 
 ## Overview
 
-Modified Masters distance sessions enable accessible, remote learning between coaches and understudies. Sessions support various communication modes and provide comprehensive accessibility accommodations.
+Hero Guru's distance sessions enable accessible, remote learning between coaches and understudies. Sessions support various communication modes and provide comprehensive accessibility accommodations.
 
 ## Session Types and Modes
 
@@ -169,7 +169,7 @@ Sessions automatically generate calendar events:
 ```
 BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//yoohoo.guru//Modified Masters//EN
+PRODID:-//yoohoo.guru//Hero Gurus//EN
 BEGIN:VEVENT
 UID:session-{sessionId}@yoohoo.guru
 DTSTART:20240301T150000Z

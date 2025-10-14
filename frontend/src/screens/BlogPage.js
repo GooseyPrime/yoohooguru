@@ -350,13 +350,13 @@ Ready to experience personalized learning? [Join our beta program](/signup) and 
     emoji: '🤖'
   },
   {
-    id: 'modified-masters-impact',
-    title: 'Modified Masters: Inclusive Skills for Every Ability',
-    excerpt: 'Discover how our Modified Masters program is making skill sharing accessible to people with disabilities and creating more inclusive communities.',
+    id: 'hero-gurus-impact',
+    title: 'Hero Guru\'s: Inclusive Skills for Every Ability',
+    excerpt: 'Discover how our Hero Guru\'s program is making skill sharing accessible to people with disabilities and creating more inclusive communities.',
     content: `
-# Modified Masters: Inclusive Skills for Every Ability
+# Hero Guru's: Inclusive Skills for Every Ability
 
-Skills don't discriminate, and neither should skill sharing. Our Modified Masters program ensures that everyone, regardless of ability, can participate fully in learning and teaching.
+Skills don't discriminate, and neither should skill sharing. Our Hero Guru's program ensures that everyone, regardless of ability, can participate fully in learning and teaching.
 
 ## The Accessibility Challenge
 
@@ -364,7 +364,7 @@ Traditional skill sharing often overlooks the unique needs of people with disabi
 
 ## Our Inclusive Approach
 
-Modified Masters adapts skill sharing through:
+Hero Guru's adapts skill sharing through:
 
 ### Universal Design Principles
 - Sessions designed to work for the widest range of abilities
@@ -391,7 +391,7 @@ Modified Masters adapts skill sharing through:
 
 ## Impact Beyond Individual Skills
 
-Modified Masters creates ripple effects:
+Hero Guru's creates ripple effects:
 - Employers discover untapped talent
 - Communities become more welcoming and accessible
 - Stereotypes about disability are replaced with recognition of capability
@@ -399,11 +399,11 @@ Modified Masters creates ripple effects:
 
 ## Join the Movement
 
-Whether you're a person with disabilities looking to share your skills, or someone wanting to learn from diverse teachers, Modified Masters welcomes you.
+Whether you're a person with disabilities looking to share your skills, or someone wanting to learn from diverse teachers, Hero Guru's welcomes you.
 
 > "The best teachers are often those who've had to find creative solutions. Disability often breeds the most innovative approaches to learning." - Program Participant
 
-Ready to be part of inclusive skill sharing? [Learn more about Modified Masters](/modified) and discover how diverse abilities create stronger communities.
+Ready to be part of inclusive skill sharing? [Learn more about Hero Guru's](https://heroes.yoohoo.guru) and discover how diverse abilities create stronger communities.
     `,
     author: 'Accessibility Team',
     date: '2024-02-01',

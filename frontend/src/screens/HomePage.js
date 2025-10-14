@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { ArrowRight, GraduationCap, Wrench } from 'lucide-react';
+import { ArrowRight, GraduationCap, Wrench, Heart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import HeroArt from '../components/HeroArt';
@@ -53,6 +53,30 @@ const HeroButtons = styled.div`
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: center;
+  }
+`;
+
+const HeroTagline = styled.div`
+  max-width: 900px;
+  margin: 3rem auto 2rem;
+  padding: 2rem;
+  text-align: center;
+  background: rgba(124, 140, 255, 0.05);
+  border: 1px solid rgba(124, 140, 255, 0.2);
+  border-radius: var(--r-lg);
+  
+  h2 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+    color: var(--text);
+  }
+  
+  p {
+    font-size: clamp(1rem, 2vw, 1.125rem);
+    color: var(--muted);
+    line-height: 1.8;
   }
 `;
 
@@ -218,7 +242,7 @@ function HomePage() {
             <Button 
               variant="outline" 
               size="lg"
-              onClick={() => navigate('/angels-list')}
+              onClick={() => window.location.href = 'https://angel.yoohoo.guru'}
             >
               Browse Services
             </Button>
@@ -226,16 +250,39 @@ function HomePage() {
         </HeroContent>
       </HeroSection>
 
+      <HeroTagline>
+        <h2>Learn. Earn. Empower.</h2>
+        <p>
+          Join a world where knowledge, kindness, and capability meet. Choose your path: 
+          <strong> Become a Guru. Learn from Gurus. List a Gig.</strong> Help or get help through Angel&apos;s List. 
+          <strong> Join the Heros.</strong> Empower and be empowered through adaptive teaching.
+        </p>
+      </HeroTagline>
+
       <WelcomeTiles>
+        <Tile>
+          <div className="icon">
+            <GraduationCap size={24} />
+          </div>
+          <h3>SkillShare with Coach Guru</h3>
+          <p>Learn from Gurus. Become a Guru. Exchange knowledge and skills through personalized coaching.</p>
+          <Button 
+            variant="ghost" 
+            onClick={() => window.location.href = 'https://coach.yoohoo.guru'}
+          >
+            Explore Coach Guru →
+          </Button>
+        </Tile>
+        
         <Tile>
           <div className="icon">
             <Wrench size={24} />
           </div>
           <h3>Angel&apos;s List</h3>
-          <p>Find help and odd jobs near you.</p>
+          <p>List a Gig. Help or get help through Angel&apos;s List. Find local services and offer your help.</p>
           <Button 
             variant="ghost" 
-            onClick={() => navigate('/angels-list')}
+            onClick={() => window.location.href = 'https://angel.yoohoo.guru'}
           >
             Explore Angel&apos;s List →
           </Button>
@@ -243,15 +290,15 @@ function HomePage() {
         
         <Tile>
           <div className="icon">
-            <GraduationCap size={24} />
+            <Heart size={24} />
           </div>
-          <h3>SkillShare</h3>
-          <p>Learn or teach. Book a Guru or swap skills.</p>
+          <h3>Hero Guru&apos;s</h3>
+          <p>Join the Heros. Empower and be empowered through adaptive teaching and inclusive learning.</p>
           <Button 
             variant="ghost" 
-            onClick={() => navigate('/skills')}
+            onClick={() => window.location.href = 'https://heroes.yoohoo.guru'}
           >
-            Explore Skills
+            Explore Hero Guru&apos;s →
           </Button>
         </Tile>
       </WelcomeTiles>

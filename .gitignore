@@ -21,6 +21,12 @@ env/
 dist/
 build/
 .webpack-cache/
+.next/
+.turbo/
+apps/*/.next/
+apps/*/out/
+apps/*/build/
+packages/*/dist/
 
 # Report directories (orphan detection, etc.)
 orphan-reports/
