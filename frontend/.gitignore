@@ -1,2 +1,11 @@
 .vercel
 coverage/
+
+# Next.js build outputs
+.next/
+out/
+next-env.d.ts
+
+# TypeScript
+*.tsbuildinfo
+
