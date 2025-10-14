@@ -121,10 +121,18 @@ function getConfig() {
     // Domain Configuration
     appDomain: process.env.APP_DOMAIN || 'localhost:3000',
     apiBaseUrl: process.env.NODE_ENV === 'production' ? 'https://api.yoohoo.guru' : `http://localhost:${process.env.PORT || 3001}`,
-    featureModifiedMasters: process.env.FEATURE_MODIFIED_MASTERS === 'true',
-    modifiedMastersDonateUrl: process.env.MODIFIED_MASTERS_DONATE_URL || '',
-    modifiedMastersEnableSubdomain: process.env.MODIFIED_MASTERS_ENABLE_SUBDOMAIN === 'true',
-    modifiedMastersRequireReview: process.env.MODIFIED_MASTERS_REQUIRE_REVIEW === 'true',
+    
+    // Hero Guru's Configuration (formerly Modified Masters)
+    featureHeroGurus: process.env.FEATURE_HERO_GURUS === 'true' || process.env.FEATURE_MODIFIED_MASTERS === 'true',
+    heroGurusDonateUrl: process.env.HERO_GURUS_DONATE_URL || process.env.MODIFIED_MASTERS_DONATE_URL || '',
+    heroGurusEnableSubdomain: process.env.HERO_GURUS_ENABLE_SUBDOMAIN === 'true' || process.env.MODIFIED_MASTERS_ENABLE_SUBDOMAIN === 'true',
+    heroGurusRequireReview: process.env.HERO_GURUS_REQUIRE_REVIEW === 'true' || process.env.MODIFIED_MASTERS_REQUIRE_REVIEW === 'true',
+    
+    // Legacy aliases for backwards compatibility
+    featureModifiedMasters: process.env.FEATURE_HERO_GURUS === 'true' || process.env.FEATURE_MODIFIED_MASTERS === 'true',
+    modifiedMastersDonateUrl: process.env.HERO_GURUS_DONATE_URL || process.env.MODIFIED_MASTERS_DONATE_URL || '',
+    modifiedMastersEnableSubdomain: process.env.HERO_GURUS_ENABLE_SUBDOMAIN === 'true' || process.env.MODIFIED_MASTERS_ENABLE_SUBDOMAIN === 'true',
+    modifiedMastersRequireReview: process.env.HERO_GURUS_REQUIRE_REVIEW === 'true' || process.env.MODIFIED_MASTERS_REQUIRE_REVIEW === 'true',
   };
 
   // Validate required environment variables in production and staging

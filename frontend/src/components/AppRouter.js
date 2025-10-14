@@ -442,8 +442,8 @@ const OnboardingReview = React.lazy(() => import('../screens/onboarding/Onboardi
 // Account screens - lazy loaded
 const PayoutsPanel = React.lazy(() => import('../screens/account/PayoutsPanel'));
 
-// Modified Masters screens - lazy loaded
-const ModifiedMasters = React.lazy(() => import('../screens/ModifiedMasters'));
+// Hero Guru's screens - lazy loaded (formerly Modified Masters)
+const HeroGurus = React.lazy(() => import('../screens/ModifiedMasters'));
 const DashboardCoach = React.lazy(() => import('../screens/DashboardCoach'));
 const DashboardUnderstudy = React.lazy(() => import('../screens/DashboardUnderstudy'));
 
@@ -853,10 +853,16 @@ function AppRouter() {
           } 
         />
 
-        {/* Modified Masters routes */}
+        {/* Hero Guru's routes (formerly Modified Masters) */}
+        <Route path="heroes" element={
+          <Suspense fallback={<LoadingScreen />}>
+            <HeroGurus />
+          </Suspense>
+        } />
+        {/* Legacy route for backwards compatibility */}
         <Route path="modified" element={
           <Suspense fallback={<LoadingScreen />}>
-            <ModifiedMasters />
+            <HeroGurus />
           </Suspense>
         } />
         <Route 

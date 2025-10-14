@@ -4,14 +4,17 @@
  */
 
 /**
- * Check if current host is masters.yoohoo.guru
+ * Check if current host is heroes.yoohoo.guru (formerly masters)
  * @param {string} host - Optional host override, defaults to window.location.hostname
- * @returns {boolean} True if masters subdomain
+ * @returns {boolean} True if heroes subdomain
  */
-export const isMastersHost = (host) => {
+export const isHeroesHost = (host) => {
   const hostname = host || (typeof window !== 'undefined' ? window.location.hostname : '');
-  return hostname.toLowerCase().startsWith('masters.');
+  return hostname.toLowerCase().startsWith('heroes.');
 };
+
+// Legacy alias for backwards compatibility
+export const isMastersHost = isHeroesHost;
 
 /**
  * Check if current host is coach.yoohoo.guru
@@ -39,8 +42,8 @@ export const isAngelHost = (host) => {
  * @returns {string|null} Route path or null if main site
  */
 export const getSubdomainRoute = (host) => {
-  if (isMastersHost(host)) {
-    return '/modified';
+  if (isHeroesHost(host)) {
+    return '/heroes';
   }
   if (isCoachHost(host)) {
     return '/skills';
@@ -54,10 +57,10 @@ export const getSubdomainRoute = (host) => {
 /**
  * Get subdomain type for analytics or feature flags
  * @param {string} host - Optional host override
- * @returns {string} Subdomain type: 'masters', 'coach', 'angel', 'cousin', or 'main'
+ * @returns {string} Subdomain type: 'heroes', 'coach', 'angel', 'cousin', or 'main'
  */
 export const getSubdomainType = (host) => {
-  if (isMastersHost(host)) return 'masters';
+  if (isHeroesHost(host)) return 'heroes';
   if (isCoachHost(host)) return 'coach';
   if (isAngelHost(host)) return 'angel';
   if (isCousinHost(host)) return 'cousin';
@@ -81,7 +84,7 @@ export const isCousinHost = (host) => {
   const subdomain = hostParts[0];
   
   // Exclude special subdomains
-  const excludedSubdomains = ['www', 'api', 'admin', 'staging', 'dev', 'test', 'masters', 'coach', 'angel'];
+  const excludedSubdomains = ['www', 'api', 'admin', 'staging', 'dev', 'test', 'heroes', 'masters', 'coach', 'angel', 'dashboard'];
   
   // Check if it's not in the excluded list
   return !excludedSubdomains.includes(subdomain) && 
@@ -115,19 +118,23 @@ export const getSubdomainName = (host) => {
 };
 
 /**
- * Check if Modified Masters features should be enabled
- * @returns {boolean} True if MM features enabled
+ * Check if Hero Guru's features should be enabled (formerly Modified Masters)
+ * @returns {boolean} True if Hero Guru's features enabled
  */
-export const isModifiedMastersEnabled = () => {
+export const isHeroGurusEnabled = () => {
   // Check environment variable or configuration
-  return process.env.REACT_APP_FEATURE_MODIFIED_MASTERS === 'true' || 
-         isMastersHost();
+  return process.env.REACT_APP_FEATURE_HERO_GURUS === 'true' || 
+         process.env.REACT_APP_FEATURE_MODIFIED_MASTERS === 'true' || 
+         isHeroesHost();
 };
+
+// Legacy alias for backwards compatibility
+export const isModifiedMastersEnabled = isHeroGurusEnabled;
 
 /**
  * Get the canonical URL for a given path and subdomain
  * @param {string} path - Path to construct URL for
- * @param {string} subdomain - Subdomain type: 'masters', 'coach', 'angel', or null
+ * @param {string} subdomain - Subdomain type: 'heroes', 'coach', 'angel', 'dashboard', or null
  * @returns {string} Full URL
  */
 export const getCanonicalUrl = (path = '', subdomain = null) => {
