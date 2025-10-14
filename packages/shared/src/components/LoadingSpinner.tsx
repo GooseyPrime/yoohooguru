@@ -12,28 +12,31 @@ const SpinnerWrapper = styled.div`
   justify-content: center;
 `;
 
-const Spinner = styled.div`
+interface SpinnerProps {
+  size?: string;
+  color?: string;
+}
+
+const Spinner = styled.div<SpinnerProps>`
   width: ${props => props.size || '24px'};
   height: ${props => props.size || '24px'};
   border: 2px solid transparent;
-  border-top: 2px solid ${props => props.color || 'var(--pri)'};
+  border-top: 2px solid ${props => props.color || '#667eea'};
   border-radius: 50%;
-  animation: ${spin} 1s linear infinite;
+  animation: ${spin} 0.6s linear infinite;
 `;
 
-const LoadingText = styled.span`
-  margin-left: 8px;
-  color: ${props => props.theme?.colors?.muted || 'var(--muted)'};
-  font-size: 14px;
-`;
+interface LoadingSpinnerProps {
+  size?: string;
+  color?: string;
+}
 
-function LoadingSpinner({ size, color, text, className }) {
+const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ size, color }) => {
   return (
-    <SpinnerWrapper className={className}>
+    <SpinnerWrapper>
       <Spinner size={size} color={color} />
-      {text && <LoadingText>{text}</LoadingText>}
     </SpinnerWrapper>
   );
-}
+};
 
 export default LoadingSpinner;

@@ -1,6 +1,5 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { Zap } from 'lucide-react';
 
 const fadeIn = keyframes`
   from { opacity: 0; }
@@ -24,57 +23,32 @@ const pulse = keyframes`
 
 const LoadingContainer = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--pri) 0%, var(--succ) 100%);
-  color: white;
-  font-family: ${({ theme }) => theme.fonts.sans};
-  animation: ${fadeIn} 0.5s ease-in-out;
+  animation: ${fadeIn} 0.3s ease-in;
 `;
 
-const LoadingContent = styled.div`
-  text-align: center;
-`;
-
-const YoohooLogo = styled.div`
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 0 auto 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  font-weight: bold;
+const LoadingIcon = styled.div`
+  font-size: 3rem;
   animation: ${pulse} 2s infinite;
+  margin-bottom: 1rem;
 `;
 
-const LoadingText = styled.div`
-  font-size: 18px;
-  margin-bottom: 10px;
-  font-weight: 600;
+const LoadingText = styled.p`
+  color: #b0b0b0;
+  font-size: 1.125rem;
+  margin-top: 1rem;
 `;
 
-const LoadingSubtitle = styled.div`
-  font-size: 14px;
-  opacity: 0.8;
-  font-weight: 400;
-`;
-
-function LoadingScreen({ message = 'Loading your skill-sharing platform...' }) {
+const LoadingScreen: React.FC = () => {
   return (
     <LoadingContainer>
-      <LoadingContent>
-        <YoohooLogo>
-          <Zap size={32} color="white" />
-        </YoohooLogo>
-        <LoadingText>{process.env.REACT_APP_BRAND_NAME || 'yoohoo.guru'}</LoadingText>
-        <LoadingSubtitle>{message}</LoadingSubtitle>
-      </LoadingContent>
+      <LoadingIcon>⚡</LoadingIcon>
+      <LoadingText>Loading...</LoadingText>
     </LoadingContainer>
   );
-}
+};
 
 export default LoadingScreen;

@@ -13,43 +13,21 @@ const ArtImage = styled.img`
   height: auto;
   max-height: 300px;
   object-fit: contain;
-  border-radius: var(--r-lg);
-  box-shadow: ${({ theme }) => theme.shadow.card};
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
-const PlaceholderArt = styled.div`
-  width: 100%;
-  height: 200px;
-  background: linear-gradient(135deg, var(--pri) 0%, var(--succ) 100%);
-  border-radius: var(--r-lg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 1.2rem;
-  font-weight: 600;
-  text-align: center;
-  padding: 2rem;
-  box-shadow: ${({ theme }) => theme.shadow.card};
-`;
+interface HeroArtProps {
+  src?: string;
+  alt?: string;
+}
 
-const HeroArt = ({ src, alt, className }) => {
+const HeroArt: React.FC<HeroArtProps> = ({ src, alt = "Hero artwork" }) => {
+  if (!src) return null;
+  
   return (
-    <HeroArtContainer className={className}>
-      {src ? (
-        <ArtImage 
-          src={src} 
-          alt={alt || "Hero artwork for yoohoo.guru"} 
-        />
-      ) : (
-        <PlaceholderArt>
-          🎨 Hero Artwork Placeholder
-          <br />
-          <small style={{ fontSize: '0.9rem', opacity: 0.8 }}>
-            Replace with community art piece
-          </small>
-        </PlaceholderArt>
-      )}
+    <HeroArtContainer>
+      <ArtImage src={src} alt={alt} loading="lazy" />
     </HeroArtContainer>
   );
 };

@@ -1,5 +1,17 @@
 import { useEffect } from 'react';
 
+interface SEOMetadataProps {
+  title?: string;
+  description?: string;
+  keywords?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  ogUrl?: string;
+  canonicalUrl?: string;
+  structuredData?: any;
+}
+
 function SEOMetadata({ 
   title, 
   description, 
@@ -10,125 +22,62 @@ function SEOMetadata({
   ogUrl,
   canonicalUrl,
   structuredData 
-}) {
+}: SEOMetadataProps) {
   useEffect(() => {
-    const finalUrl = window.location.href;
+    if (typeof window === 'undefined') return;
     
     // Update document title
     if (title) {
       document.title = title;
     }
 
-    // Update meta description and check for default descriptions
-    updateMetaTag('description', description);
-    
-    // SEO Warning: Check for default or missing meta descriptions
-    if (!description || description.length < 50 || 
-        description.includes('Learn') && description.includes('skills') && description.includes('expert')) {
-      console.warn(`SEO Warning: Page ${finalUrl} is using the default meta description. This may harm indexing.`);
-    }
-    
-    // Update meta keywords
-    if (keywords) {
-      updateMetaTag('keywords', keywords);
-    }
-
-    // Open Graph tags
-    updateMetaProperty('og:title', ogTitle || title);
-    updateMetaProperty('og:description', ogDescription || description);
-    updateMetaProperty('og:image', ogImage);
-    updateMetaProperty('og:url', ogUrl);
-    updateMetaProperty('og:type', 'website');
-    updateMetaProperty('og:site_name', 'yoohoo.guru');
-
-    // Twitter Card tags
-    updateMetaName('twitter:card', 'summary_large_image');
-    updateMetaName('twitter:title', ogTitle || title);
-    updateMetaName('twitter:description', ogDescription || description);
-    updateMetaName('twitter:image', ogImage);
-
-    // Canonical URL - ensure it's set
-    if (canonicalUrl) {
-      updateCanonicalLink(canonicalUrl);
-    } else {
-      // Set current URL as canonical if not explicitly provided
-      updateCanonicalLink(finalUrl);
-    }
-
-    // Structured data
-    if (structuredData) {
-      updateStructuredData(structuredData);
-    }
-
-    // Cleanup function to remove dynamically added elements
-    return () => {
-      // Remove any script tags added for structured data
-      const existingScripts = document.querySelectorAll('script[data-seo="true"]');
-      existingScripts.forEach(script => script.remove());
+    // Update or create meta tags
+    const updateMetaTag = (name: string, content: string | undefined, isProperty = false) => {
+      if (!content) return;
+      
+      const attribute = isProperty ? 'property' : 'name';
+      let tag = document.querySelector(`meta[${attribute}="${name}"]`) as HTMLMetaElement;
+      
+      if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute(attribute, name);
+        document.head.appendChild(tag);
+      }
+      
+      tag.content = content;
     };
+
+    updateMetaTag('description', description);
+    updateMetaTag('keywords', keywords);
+    updateMetaTag('og:title', ogTitle || title, true);
+    updateMetaTag('og:description', ogDescription || description, true);
+    updateMetaTag('og:image', ogImage, true);
+    updateMetaTag('og:url', ogUrl, true);
+
+    // Update canonical URL
+    if (canonicalUrl) {
+      let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+      if (!link) {
+        link = document.createElement('link');
+        link.rel = 'canonical';
+        document.head.appendChild(link);
+      }
+      link.href = canonicalUrl;
+    }
+
+    // Add structured data
+    if (structuredData) {
+      let script = document.querySelector('script[type="application/ld+json"]') as HTMLScriptElement;
+      if (!script) {
+        script = document.createElement('script');
+        script.type = 'application/ld+json';
+        document.head.appendChild(script);
+      }
+      script.textContent = JSON.stringify(structuredData);
+    }
   }, [title, description, keywords, ogTitle, ogDescription, ogImage, ogUrl, canonicalUrl, structuredData]);
 
-  return null; // This component doesn't render anything
-}
-
-// Helper functions
-function updateMetaTag(name, content) {
-  if (!content) return;
-  
-  let meta = document.querySelector(`meta[name="${name}"]`);
-  if (!meta) {
-    meta = document.createElement('meta');
-    meta.setAttribute('name', name);
-    document.head.appendChild(meta);
-  }
-  meta.setAttribute('content', content);
-}
-
-function updateMetaProperty(property, content) {
-  if (!content) return;
-  
-  let meta = document.querySelector(`meta[property="${property}"]`);
-  if (!meta) {
-    meta = document.createElement('meta');
-    meta.setAttribute('property', property);
-    document.head.appendChild(meta);
-  }
-  meta.setAttribute('content', content);
-}
-
-function updateMetaName(name, content) {
-  if (!content) return;
-  
-  let meta = document.querySelector(`meta[name="${name}"]`);
-  if (!meta) {
-    meta = document.createElement('meta');
-    meta.setAttribute('name', name);
-    document.head.appendChild(meta);
-  }
-  meta.setAttribute('content', content);
-}
-
-function updateCanonicalLink(url) {
-  let canonical = document.querySelector('link[rel="canonical"]');
-  if (!canonical) {
-    canonical = document.createElement('link');
-    canonical.setAttribute('rel', 'canonical');
-    document.head.appendChild(canonical);
-  }
-  canonical.setAttribute('href', url);
-}
-
-function updateStructuredData(data) {
-  // Remove existing structured data
-  const existingScripts = document.querySelectorAll('script[type="application/ld+json"][data-seo="true"]');
-  existingScripts.forEach(script => script.remove());
-
-  // Add new structured data
-  const script = document.createElement('script');
-  script.type = 'application/ld+json';
-  script.setAttribute('data-seo', 'true');
-  script.textContent = JSON.stringify(data);
-  document.head.appendChild(script);
+  return null;
 }
 
 export default SEOMetadata;
