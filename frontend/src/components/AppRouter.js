@@ -213,25 +213,7 @@ const subdomainConfigs = {
       keywords: ['gardening tips', 'plant care', 'vegetable gardening', 'landscaping', 'organic gardening']
     }
   },
-  garden: {
-    character: 'Garden Guru', 
-    category: 'lifestyle',
-    primarySkills: ['vegetable-gardening', 'flower-gardening', 'landscaping', 'composting', 'plant-care'],
-    affiliateCategories: ['tools', 'seeds', 'supplies', 'books'],
-    theme: {
-      primaryColor: '#4caf50',
-      secondaryColor: '#388e3c',
-      accentColor: '#2e7d32',
-      icon: '🌱',
-      emoji: '🌻'
-    },
-    seo: {
-      title: 'Garden Guru - Master Gardening & Plant Care',
-      description: 'Learn gardening, plant care, landscaping, and sustainable growing from expert gardeners.',
-      keywords: ['gardening tips', 'plant care', 'vegetable gardening', 'landscaping', 'organic gardening']
-    }
-  },
-  crafts: { 
+  crafts: {
     character: 'Crafts Guru', 
     category: 'creative',
     primarySkills: ['woodworking', 'knitting', 'pottery', 'jewelry-making', 'sewing'],
@@ -301,6 +283,96 @@ const subdomainConfigs = {
       title: 'Home Guru - Home Organization & Improvement',
       description: 'Learn home organization, cleaning, interior design, and home improvement from professional organizers.',
       keywords: ['home organization', 'interior design', 'home improvement', 'cleaning tips', 'home maintenance']
+    }
+  },
+  data: { 
+    character: 'Data Guru', 
+    category: 'technology',
+    primarySkills: ['data-science', 'analytics', 'machine-learning', 'sql', 'python'],
+    affiliateCategories: ['courses', 'books', 'software', 'tools'],
+    theme: {
+      primaryColor: '#00897b',
+      secondaryColor: '#00796b',
+      accentColor: '#00695c',
+      icon: '📊',
+      emoji: '📈'
+    },
+    seo: {
+      title: 'Data Guru - Master Data Science & Analytics',
+      description: 'Learn data science, analytics, machine learning, and data visualization from experienced data professionals.',
+      keywords: ['data science', 'data analytics', 'machine learning', 'data visualization', 'big data']
+    }
+  },
+  investing: { 
+    character: 'Investing Guru', 
+    category: 'finance',
+    primarySkills: ['stock-trading', 'portfolio-management', 'cryptocurrency', 'real-estate-investing', 'options-trading'],
+    affiliateCategories: ['courses', 'books', 'software', 'tools'],
+    theme: {
+      primaryColor: '#1b5e20',
+      secondaryColor: '#2e7d32',
+      accentColor: '#388e3c',
+      icon: '💹',
+      emoji: '📈'
+    },
+    seo: {
+      title: 'Investing Guru - Master Investment Strategies',
+      description: 'Learn stock trading, portfolio management, cryptocurrency, and investment strategies from experienced investors.',
+      keywords: ['investment strategies', 'stock trading', 'cryptocurrency', 'portfolio management', 'passive income']
+    }
+  },
+  marketing: { 
+    character: 'Marketing Guru', 
+    category: 'professional',
+    primarySkills: ['digital-marketing', 'seo', 'social-media', 'content-marketing', 'email-marketing'],
+    affiliateCategories: ['courses', 'books', 'software', 'tools'],
+    theme: {
+      primaryColor: '#f57c00',
+      secondaryColor: '#ef6c00',
+      accentColor: '#e65100',
+      icon: '📢',
+      emoji: '🎯'
+    },
+    seo: {
+      title: 'Marketing Guru - Digital Marketing & SEO',
+      description: 'Master digital marketing, SEO, social media, and content marketing from industry professionals.',
+      keywords: ['digital marketing', 'seo optimization', 'social media marketing', 'content strategy', 'marketing automation']
+    }
+  },
+  sales: { 
+    character: 'Sales Guru', 
+    category: 'professional',
+    primarySkills: ['sales-techniques', 'negotiation', 'cold-calling', 'closing', 'crm'],
+    affiliateCategories: ['courses', 'books', 'software', 'tools'],
+    theme: {
+      primaryColor: '#c62828',
+      secondaryColor: '#b71c1c',
+      accentColor: '#d32f2f',
+      icon: '💼',
+      emoji: '🤝'
+    },
+    seo: {
+      title: 'Sales Guru - Master Sales & Negotiation',
+      description: 'Learn sales techniques, negotiation, closing strategies, and CRM management from top sales professionals.',
+      keywords: ['sales training', 'negotiation skills', 'sales techniques', 'closing strategies', 'b2b sales']
+    }
+  },
+  coding: { 
+    character: 'Coding Guru', 
+    category: 'technology',
+    primarySkills: ['javascript', 'python', 'react', 'node-js', 'algorithms'],
+    affiliateCategories: ['courses', 'books', 'software', 'tools'],
+    theme: {
+      primaryColor: '#1565c0',
+      secondaryColor: '#0d47a1',
+      accentColor: '#01579b',
+      icon: '💻',
+      emoji: '⌨️'
+    },
+    seo: {
+      title: 'Coding Guru - Learn Programming & Software Development',
+      description: 'Master JavaScript, Python, React, and software development from experienced developers and engineers.',
+      keywords: ['coding tutorials', 'programming lessons', 'javascript', 'python', 'web development']
     }
   }
 };

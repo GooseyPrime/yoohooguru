@@ -218,11 +218,11 @@ The frontend is already configured to fetch and display content:
 ### News Agent
 - **6:00 AM EST**: Generate 2 morning news articles per subdomain
 - **3:00 PM EST**: Generate 2 afternoon news articles per subdomain
-- **Total**: 4 articles per day per subdomain (15 subdomains = 60 articles/day)
+- **Total**: 4 articles per day per subdomain (20 subdomains = 80 articles/day)
 
 ### Blog Agent
 - **Monday 10:00 AM EST**: Generate 1 blog post per subdomain
-- **Total**: 1 article per week per subdomain (15 subdomains = 15 articles/week)
+- **Total**: 1 article per week per subdomain (20 subdomains = 20 articles/week)
 
 ### Maintenance
 - **After each curation**: Cleanup old articles (keep 10 most recent)
@@ -374,7 +374,7 @@ Monitor application logs for:
 
 ## Conclusion
 
-The subdomain content curation system is now fully implemented and ready for deployment. All 15 subdomains will automatically receive:
+The subdomain content curation system is now fully implemented and ready for deployment. All 20 subdomains will automatically receive:
 - 4 news articles per day (2 morning, 2 afternoon)
 - 1 high-quality blog post per week
 - Proper metadata, SEO, and schema markup

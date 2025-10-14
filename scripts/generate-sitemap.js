@@ -25,8 +25,8 @@ const CURRENT_DATE = new Date().toISOString().split('T')[0]; // YYYY-MM-DD forma
 // Guru subdomains configuration (matches AppRouter.js)
 const GURU_SUBDOMAINS = [
   'cooking', 'music', 'fitness', 'tech', 'art', 'language', 
-  'business', 'design', 'writing', 'garden', 'crafts', 'wellness', 
-  'finance', 'home'
+  'business', 'design', 'writing', 'photography', 'gardening', 'crafts', 'wellness', 
+  'finance', 'home', 'data', 'investing', 'marketing', 'sales', 'coding'
 ];
 
 // Main site public routes

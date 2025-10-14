@@ -5,7 +5,7 @@
 ### News Agent
 - **Schedule**: 2x daily (6 AM & 3 PM EST)
 - **Output**: 2 articles per run = 4 articles/day per subdomain
-- **Total**: 60 articles/day across 15 subdomains
+- **Total**: 80 articles/day across 20 subdomains
 - **Format**: Title + 1-2 sentence summary (≤50 words)
 - **Age**: <48 hours preferred, ≤72 hours max
 - **Metadata**: [subdomain_topic, US, YYYY-MM-DD]
@@ -13,7 +13,7 @@
 ### Blog Agent
 - **Schedule**: Weekly (Monday 10 AM EST)
 - **Output**: 1 post per week per subdomain
-- **Total**: 15 posts/week across 15 subdomains
+- **Total**: 20 posts/week across 20 subdomains
 - **Length**: 1200-2000 words
 - **Structure**: Intro → H2/H3 → Visuals → Conclusion → CTA
 - **SEO**: Title ≤60 chars, Description ≤160 chars
