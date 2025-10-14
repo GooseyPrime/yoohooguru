@@ -362,7 +362,7 @@ function LocationMap({
             >
               <option value="skillshare">Skill Share</option>
               <option value="handyman">Handyman</option>
-              <option value="modified">Modified Masters</option>
+              <option value="heroes">Hero Guru's</option>
               <option value="event">Community Event</option>
             </TagSelect>
             <TagInput

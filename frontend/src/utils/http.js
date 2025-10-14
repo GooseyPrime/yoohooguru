@@ -1,5 +1,5 @@
 /**
- * HTTP Utilities for Modified Masters
+ * HTTP Utilities for Hero Guru's
  * Simple wrapper around the existing API utility for session management
  */
 
