@@ -1,7 +1,15 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-const StyledButton = styled.button`
+interface StyledButtonProps {
+  $primary?: boolean;
+  $secondary?: boolean;
+  $fullWidth?: boolean;
+  $small?: boolean;
+  $large?: boolean;
+}
+
+const StyledButton = styled.button<StyledButtonProps>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -13,13 +21,15 @@ const StyledButton = styled.button`
   cursor: pointer;
   transition: all 0.2s ease;
   text-decoration: none;
+  background-color: #667eea;
+  color: white;
   
   ${props => props.$primary && css`
-    background-color: ${props => props.theme.colors.primary};
+    background-color: #667eea;
     color: white;
     
     &:hover {
-      background-color: ${props => props.theme.colors.primaryDark || props.theme.colors.primary};
+      background-color: #5568d3;
       transform: translateY(-2px);
     }
     
@@ -32,11 +42,11 @@ const StyledButton = styled.button`
   
   ${props => props.$secondary && css`
     background-color: transparent;
-    color: ${props => props.theme.colors.primary};
-    border: 2px solid ${props => props.theme.colors.primary};
+    color: #667eea;
+    border: 2px solid #667eea;
     
     &:hover {
-      background-color: ${props => props.theme.colors.primary};
+      background-color: #667eea;
       color: white;
     }
     
@@ -62,7 +72,15 @@ const StyledButton = styled.button`
   `}
 `;
 
-const Button = ({ 
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+  variant?: 'primary' | 'secondary';
+  fullWidth?: boolean;
+  size?: 'small' | 'medium' | 'large';
+  loading?: boolean;
+}
+
+const Button: React.FC<ButtonProps> = ({ 
   children, 
   variant = 'primary',
   fullWidth = false,
