@@ -12,7 +12,7 @@ GET /api/skills
 **Query Parameters:**
 - `search` - Text search in title and summary
 - `category` - Filter by skill category
-- `isModifiedMasters` - Filter Modified Masters skills (true/false)
+- `isHeroGurus` - Filter Hero Guru's skills (true/false) [legacy: `isModifiedMasters`]
 - `tag` - Filter by accessibility tag
 - `style` - Filter by coaching style
 - `status` - Filter by status (published/pending)
@@ -20,7 +20,7 @@ GET /api/skills
 
 **Example:**
 ```bash
-curl "http://localhost:3001/api/skills?isModifiedMasters=true&tag=screen_reader_friendly"
+curl "http://localhost:3001/api/skills?isHeroGurus=true&tag=screen_reader_friendly"
 ```
 
 ### Create Skill
@@ -34,7 +34,7 @@ Authorization: Bearer <token>
 {
   "title": "Web Development for Screen Readers",
   "summary": "Learn accessible web development practices",
-  "isModifiedMasters": false,
+  "isHeroGurus": false,
   "accessibilityTags": ["screen_reader_friendly", "low_vision"],
   "coachingStyles": ["patient", "hands_on"]
 }
@@ -85,7 +85,7 @@ PUT /api/auth/profile
 Authorization: Bearer <token>
 ```
 
-**Body (supports accessibility and Modified Masters):**
+**Body (supports accessibility and Hero Guru's):**
 ```json
 {
   "displayName": "Jane Doe",
@@ -125,7 +125,7 @@ The session management system is built but routes are not yet exposed. The follo
   "title": "string",
   "summary": "string", 
   "createdBy": "userId",
-  "isModifiedMasters": false,
+  "isHeroGurus": false,
   "accessibilityTags": ["tag1", "tag2"],
   "coachingStyles": ["style1", "style2"],
   "resources": [
