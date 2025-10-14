@@ -4,13 +4,14 @@
  */
 
 /**
- * Check if current host is heroes.yoohoo.guru (formerly masters)
+ * Check if current host is heroes.yoohoo.guru or masters.yoohoo.guru (legacy)
  * @param {string} host - Optional host override, defaults to window.location.hostname
- * @returns {boolean} True if heroes subdomain
+ * @returns {boolean} True if heroes or masters subdomain
  */
 export const isHeroesHost = (host) => {
   const hostname = host || (typeof window !== 'undefined' ? window.location.hostname : '');
-  return hostname.toLowerCase().startsWith('heroes.');
+  const lower = hostname.toLowerCase();
+  return lower.startsWith('heroes.') || lower.startsWith('masters.');
 };
 
 // Legacy alias for backwards compatibility
@@ -42,7 +43,15 @@ export const isAngelHost = (host) => {
  * @returns {string|null} Route path or null if main site
  */
 export const getSubdomainRoute = (host) => {
-  if (isHeroesHost(host)) {
+  const hostname = host || (typeof window !== 'undefined' ? window.location.hostname : '');
+  const lower = hostname.toLowerCase();
+  
+  // Check for masters subdomain (legacy) - returns /modified
+  if (lower.startsWith('masters.')) {
+    return '/modified';
+  }
+  // Check for heroes subdomain (new) - returns /heroes
+  if (lower.startsWith('heroes.')) {
     return '/heroes';
   }
   if (isCoachHost(host)) {
@@ -57,10 +66,16 @@ export const getSubdomainRoute = (host) => {
 /**
  * Get subdomain type for analytics or feature flags
  * @param {string} host - Optional host override
- * @returns {string} Subdomain type: 'heroes', 'coach', 'angel', 'cousin', or 'main'
+ * @returns {string} Subdomain type: 'masters', 'heroes', 'coach', 'angel', 'cousin', or 'main'
  */
 export const getSubdomainType = (host) => {
-  if (isHeroesHost(host)) return 'heroes';
+  const hostname = host || (typeof window !== 'undefined' ? window.location.hostname : '');
+  const lower = hostname.toLowerCase();
+  
+  // Check for masters subdomain (legacy)
+  if (lower.startsWith('masters.')) return 'masters';
+  // Check for heroes subdomain (new)
+  if (lower.startsWith('heroes.')) return 'heroes';
   if (isCoachHost(host)) return 'coach';
   if (isAngelHost(host)) return 'angel';
   if (isCousinHost(host)) return 'cousin';
