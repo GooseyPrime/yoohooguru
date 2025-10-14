@@ -194,7 +194,6 @@ function validateUrl(urlString, options = {}) {
  */
 function validateRedirectUrl(urlString, options = {}) {
   const {
-    baseUrl = null,
     trustedDomains = TRUSTED_DOMAINS,
     requireHttps = process.env.NODE_ENV === 'production'
   } = options;
