@@ -1,6 +1,6 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { FirestoreAdapter } from "@auth/firestore-adapter";
+import { FirestoreAdapter } from "@next-auth/firebase-adapter";
 import type { Adapter } from "next-auth/adapters";
 
 // Import Firebase Admin SDK - we need to use a dynamic import to avoid build issues
@@ -9,6 +9,7 @@ let adminAuth: any;
 
 async function getFirebaseAdmin() {
   if (!adminDb) {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const admin = require('firebase-admin');
     
     // Initialize Firebase Admin if not already initialized
@@ -36,9 +37,7 @@ export const authOptions: NextAuthOptions = {
   // Firestore Adapter for session persistence
   adapter: (async () => {
     const { db } = await getFirebaseAdmin();
-    return FirestoreAdapter(db, {
-      namingStrategy: 'snake_case'
-    });
+    return FirestoreAdapter(db);
   })() as unknown as Adapter,
 
   providers: [
@@ -81,7 +80,7 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account: _account }) {
       if (user) {
         token.id = user.id;
 
