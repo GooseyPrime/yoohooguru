@@ -1,0 +1,34 @@
+# Netlify Configuration for yoohoo.guru Platform
+# 
+# Note: This is a Node.js/Next.js Turborepo monorepo
+# Python dependencies have been moved to python-mcp-server/ subdirectory
+# to prevent Netlify from auto-detecting and attempting to install them
+
+[build]
+  # Build command for Turborepo monorepo - builds the main app by default
+  # Note: Turborepo requires installing root dependencies first
+  command = "npm install && npx turbo run build --filter=@yoohooguru/main"
+  publish = "apps/main/.next"
+  
+[build.environment]
+  # Use Node.js 20 LTS - specify exact version for Netlify compatibility
+  NODE_VERSION = "20.18.0"
+
+# Next.js Runtime for Netlify
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# IMPORTANT: Recommended Deployment Architecture
+# This repository is designed for deploying each app separately:
+# - Frontend (Next.js apps): Deploy to Vercel (25 separate projects, one per app)
+# - Backend (Node.js/Express): Deploy to Railway
+# 
+# If using Netlify, you should create separate Netlify projects for each app
+# and configure the build command and publish directory accordingly.
+# 
+# Example for different apps:
+# - Main app: build="npm install && npx turbo run build --filter=@yoohooguru/main", publish="apps/main/.next"
+# - Angel app: build="npm install && npx turbo run build --filter=@yoohooguru/angel", publish="apps/angel/.next"
+# - Coach app: build="npm install && npx turbo run build --filter=@yoohooguru/coach", publish="apps/coach/.next"
+# 
+# See docs/DEPLOYMENT.md for complete deployment guide
