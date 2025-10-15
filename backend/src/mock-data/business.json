@@ -1,0 +1,116 @@
+{
+  "posts": [
+    {
+      "id": "from-side-hustle-to-six-figures-your-entrepreneuri",
+      "title": "From Side Hustle to Six Figures: Your Entrepreneurial Roadmap",
+      "slug": "from-side-hustle-to-six-figures-your-entrepreneuri",
+      "excerpt": "Expert insights and practical guidance on entrepreneurship. Learn proven techniques and strategies to excel in business.",
+      "content": "This is a comprehensive guide to from side hustle to six figures: your entrepreneurial roadmap. This article covers essential concepts, practical techniques, and actionable strategies that you can implement immediately.\n\n## Why This Matters\n\nMastering these skills will transform your business practice and help you achieve professional-level results.\n\n## Key Takeaways\n\n- Essential foundations you need to know\n- Practical techniques for immediate application\n- Common mistakes to avoid\n- Advanced strategies for growth\n- Resources for continued learning\n\n## Getting Started\n\nBegin with the fundamentals and build progressively. Practice consistently and seek feedback from experienced practitioners.\n\n## Next Steps\n\nApply what you've learned and continue your education journey. Join our community to connect with fellow learners and experts in business.",
+      "author": "Business Expert",
+      "category": "Entrepreneurship",
+      "tags": [
+        "entrepreneurship",
+        "startup",
+        "business-growth",
+        "strategy"
+      ],
+      "publishedAt": "2025-10-15T05:20:34.982Z",
+      "featured": true,
+      "estimatedReadTime": "6 min",
+      "viewCount": 3351,
+      "status": "published"
+    },
+    {
+      "id": "digital-marketing-mastery-proven-strategies-that-c",
+      "title": "Digital Marketing Mastery: Proven Strategies That Convert",
+      "slug": "digital-marketing-mastery-proven-strategies-that-c",
+      "excerpt": "Expert insights and practical guidance on marketing. Learn proven techniques and strategies to excel in business.",
+      "content": "This is a comprehensive guide to digital marketing mastery: proven strategies that convert. This article covers essential concepts, practical techniques, and actionable strategies that you can implement immediately.\n\n## Why This Matters\n\nMastering these skills will transform your business practice and help you achieve professional-level results.\n\n## Key Takeaways\n\n- Essential foundations you need to know\n- Practical techniques for immediate application\n- Common mistakes to avoid\n- Advanced strategies for growth\n- Resources for continued learning\n\n## Getting Started\n\nBegin with the fundamentals and build progressively. Practice consistently and seek feedback from experienced practitioners.\n\n## Next Steps\n\nApply what you've learned and continue your education journey. Join our community to connect with fellow learners and experts in business.",
+      "author": "Business Expert",
+      "category": "Marketing",
+      "tags": [
+        "digital-marketing",
+        "strategy",
+        "roi",
+        "growth"
+      ],
+      "publishedAt": "2025-10-08T05:20:34.982Z",
+      "featured": true,
+      "estimatedReadTime": "10 min",
+      "viewCount": 2455,
+      "status": "published"
+    },
+    {
+      "id": "leadership-excellence-building-high-performance-te",
+      "title": "Leadership Excellence: Building High-Performance Teams",
+      "slug": "leadership-excellence-building-high-performance-te",
+      "excerpt": "Expert insights and practical guidance on leadership. Learn proven techniques and strategies to excel in business.",
+      "content": "This is a comprehensive guide to leadership excellence: building high-performance teams. This article covers essential concepts, practical techniques, and actionable strategies that you can implement immediately.\n\n## Why This Matters\n\nMastering these skills will transform your business practice and help you achieve professional-level results.\n\n## Key Takeaways\n\n- Essential foundations you need to know\n- Practical techniques for immediate application\n- Common mistakes to avoid\n- Advanced strategies for growth\n- Resources for continued learning\n\n## Getting Started\n\nBegin with the fundamentals and build progressively. Practice consistently and seek feedback from experienced practitioners.\n\n## Next Steps\n\nApply what you've learned and continue your education journey. Join our community to connect with fellow learners and experts in business.",
+      "author": "Business Expert",
+      "category": "Leadership",
+      "tags": [
+        "leadership",
+        "team-building",
+        "management",
+        "culture"
+      ],
+      "publishedAt": "2025-10-01T05:20:34.982Z",
+      "featured": false,
+      "estimatedReadTime": "6 min",
+      "viewCount": 2769,
+      "status": "published"
+    },
+    {
+      "id": "business-finance-fundamentals-smart-money-manageme",
+      "title": "Business Finance Fundamentals: Smart Money Management",
+      "slug": "business-finance-fundamentals-smart-money-manageme",
+      "excerpt": "Expert insights and practical guidance on finance. Learn proven techniques and strategies to excel in business.",
+      "content": "This is a comprehensive guide to business finance fundamentals: smart money management. This article covers essential concepts, practical techniques, and actionable strategies that you can implement immediately.\n\n## Why This Matters\n\nMastering these skills will transform your business practice and help you achieve professional-level results.\n\n## Key Takeaways\n\n- Essential foundations you need to know\n- Practical techniques for immediate application\n- Common mistakes to avoid\n- Advanced strategies for growth\n- Resources for continued learning\n\n## Getting Started\n\nBegin with the fundamentals and build progressively. Practice consistently and seek feedback from experienced practitioners.\n\n## Next Steps\n\nApply what you've learned and continue your education journey. Join our community to connect with fellow learners and experts in business.",
+      "author": "Business Expert",
+      "category": "Finance",
+      "tags": [
+        "finance",
+        "accounting",
+        "budgeting",
+        "profit"
+      ],
+      "publishedAt": "2025-09-24T05:20:34.982Z",
+      "featured": false,
+      "estimatedReadTime": "7 min",
+      "viewCount": 1993,
+      "status": "published"
+    }
+  ],
+  "news": [
+    {
+      "id": "small-business-launches-hit-record-high-in-2024",
+      "title": "Small Business Launches Hit Record High in 2024",
+      "summary": "Entrepreneurship surges as remote work flexibility and digital tools lower barriers to entry for new business owners.",
+      "url": "#",
+      "publishedAt": "2025-10-15T05:20:34.982Z",
+      "source": "Industry News Network"
+    },
+    {
+      "id": "ai-tools-transform-business-operations-for-smbs",
+      "title": "AI Tools Transform Business Operations for SMBs",
+      "summary": "Small and medium businesses leverage artificial intelligence to compete with larger corporations in efficiency and innovation.",
+      "url": "#",
+      "publishedAt": "2025-10-12T05:20:34.982Z",
+      "source": "Industry News Network"
+    },
+    {
+      "id": "sustainability-focus-drives-consumer-purchasing-de",
+      "title": "Sustainability Focus Drives Consumer Purchasing Decisions",
+      "summary": "Businesses prioritizing environmental responsibility see significant competitive advantage as conscious consumerism grows.",
+      "url": "#",
+      "publishedAt": "2025-10-09T05:20:34.982Z",
+      "source": "Industry News Network"
+    }
+  ],
+  "stats": {
+    "totalPosts": 30,
+    "totalViews": 24999,
+    "totalLeads": 339,
+    "monthlyVisitors": 3356
+  }
+}

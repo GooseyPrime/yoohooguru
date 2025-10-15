@@ -1,0 +1,116 @@
+{
+  "posts": [
+    {
+      "id": "home-organization-systems-create-clutter-free-livi",
+      "title": "Home Organization Systems: Create Clutter-Free Living Spaces",
+      "slug": "home-organization-systems-create-clutter-free-livi",
+      "excerpt": "Expert insights and practical guidance on organization. Learn proven techniques and strategies to excel in home.",
+      "content": "This is a comprehensive guide to home organization systems: create clutter-free living spaces. This article covers essential concepts, practical techniques, and actionable strategies that you can implement immediately.\n\n## Why This Matters\n\nMastering these skills will transform your home practice and help you achieve professional-level results.\n\n## Key Takeaways\n\n- Essential foundations you need to know\n- Practical techniques for immediate application\n- Common mistakes to avoid\n- Advanced strategies for growth\n- Resources for continued learning\n\n## Getting Started\n\nBegin with the fundamentals and build progressively. Practice consistently and seek feedback from experienced practitioners.\n\n## Next Steps\n\nApply what you've learned and continue your education journey. Join our community to connect with fellow learners and experts in home.",
+      "author": "Home Expert",
+      "category": "Organization",
+      "tags": [
+        "organization",
+        "declutter",
+        "storage",
+        "systems"
+      ],
+      "publishedAt": "2025-10-15T05:20:34.985Z",
+      "featured": true,
+      "estimatedReadTime": "6 min",
+      "viewCount": 932,
+      "status": "published"
+    },
+    {
+      "id": "deep-cleaning-guide-professional-results-at-home",
+      "title": "Deep Cleaning Guide: Professional Results at Home",
+      "slug": "deep-cleaning-guide-professional-results-at-home",
+      "excerpt": "Expert insights and practical guidance on cleaning. Learn proven techniques and strategies to excel in home.",
+      "content": "This is a comprehensive guide to deep cleaning guide: professional results at home. This article covers essential concepts, practical techniques, and actionable strategies that you can implement immediately.\n\n## Why This Matters\n\nMastering these skills will transform your home practice and help you achieve professional-level results.\n\n## Key Takeaways\n\n- Essential foundations you need to know\n- Practical techniques for immediate application\n- Common mistakes to avoid\n- Advanced strategies for growth\n- Resources for continued learning\n\n## Getting Started\n\nBegin with the fundamentals and build progressively. Practice consistently and seek feedback from experienced practitioners.\n\n## Next Steps\n\nApply what you've learned and continue your education journey. Join our community to connect with fellow learners and experts in home.",
+      "author": "Home Expert",
+      "category": "Cleaning",
+      "tags": [
+        "cleaning",
+        "deep-clean",
+        "maintenance",
+        "techniques"
+      ],
+      "publishedAt": "2025-10-08T05:20:34.985Z",
+      "featured": true,
+      "estimatedReadTime": "9 min",
+      "viewCount": 2221,
+      "status": "published"
+    },
+    {
+      "id": "diy-home-improvement-transform-your-space-on-a-bud",
+      "title": "DIY Home Improvement: Transform Your Space on a Budget",
+      "slug": "diy-home-improvement-transform-your-space-on-a-bud",
+      "excerpt": "Expert insights and practical guidance on home improvement. Learn proven techniques and strategies to excel in home.",
+      "content": "This is a comprehensive guide to diy home improvement: transform your space on a budget. This article covers essential concepts, practical techniques, and actionable strategies that you can implement immediately.\n\n## Why This Matters\n\nMastering these skills will transform your home practice and help you achieve professional-level results.\n\n## Key Takeaways\n\n- Essential foundations you need to know\n- Practical techniques for immediate application\n- Common mistakes to avoid\n- Advanced strategies for growth\n- Resources for continued learning\n\n## Getting Started\n\nBegin with the fundamentals and build progressively. Practice consistently and seek feedback from experienced practitioners.\n\n## Next Steps\n\nApply what you've learned and continue your education journey. Join our community to connect with fellow learners and experts in home.",
+      "author": "Home Expert",
+      "category": "Home Improvement",
+      "tags": [
+        "diy",
+        "renovation",
+        "improvement",
+        "budget"
+      ],
+      "publishedAt": "2025-10-01T05:20:34.985Z",
+      "featured": false,
+      "estimatedReadTime": "6 min",
+      "viewCount": 1156,
+      "status": "published"
+    },
+    {
+      "id": "interior-design-basics-style-your-home-like-a-pro",
+      "title": "Interior Design Basics: Style Your Home Like a Pro",
+      "slug": "interior-design-basics-style-your-home-like-a-pro",
+      "excerpt": "Expert insights and practical guidance on interior design. Learn proven techniques and strategies to excel in home.",
+      "content": "This is a comprehensive guide to interior design basics: style your home like a pro. This article covers essential concepts, practical techniques, and actionable strategies that you can implement immediately.\n\n## Why This Matters\n\nMastering these skills will transform your home practice and help you achieve professional-level results.\n\n## Key Takeaways\n\n- Essential foundations you need to know\n- Practical techniques for immediate application\n- Common mistakes to avoid\n- Advanced strategies for growth\n- Resources for continued learning\n\n## Getting Started\n\nBegin with the fundamentals and build progressively. Practice consistently and seek feedback from experienced practitioners.\n\n## Next Steps\n\nApply what you've learned and continue your education journey. Join our community to connect with fellow learners and experts in home.",
+      "author": "Home Expert",
+      "category": "Interior Design",
+      "tags": [
+        "interior-design",
+        "styling",
+        "decor",
+        "aesthetics"
+      ],
+      "publishedAt": "2025-09-24T05:20:34.985Z",
+      "featured": false,
+      "estimatedReadTime": "10 min",
+      "viewCount": 1966,
+      "status": "published"
+    }
+  ],
+  "news": [
+    {
+      "id": "home-organization-industry-grows-as-minimalism-tre",
+      "title": "Home Organization Industry Grows as Minimalism Trends",
+      "summary": "Professional organizers see record demand as consumers embrace decluttering and intentional living philosophies.",
+      "url": "#",
+      "publishedAt": "2025-10-15T05:20:34.985Z",
+      "source": "Industry News Network"
+    },
+    {
+      "id": "smart-home-technology-adoption-reaches-50-of-us-ho",
+      "title": "Smart Home Technology Adoption Reaches 50% of US Households",
+      "summary": "Automation and IoT devices become standard features as homeowners prioritize convenience and efficiency.",
+      "url": "#",
+      "publishedAt": "2025-10-12T05:20:34.985Z",
+      "source": "Industry News Network"
+    },
+    {
+      "id": "diy-home-improvement-saves-homeowners-thousands-an",
+      "title": "DIY Home Improvement Saves Homeowners Thousands Annually",
+      "summary": "YouTube tutorials and accessible tools empower homeowners to tackle projects previously requiring contractors.",
+      "url": "#",
+      "publishedAt": "2025-10-09T05:20:34.985Z",
+      "source": "Industry News Network"
+    }
+  ],
+  "stats": {
+    "totalPosts": 38,
+    "totalViews": 18678,
+    "totalLeads": 159,
+    "monthlyVisitors": 7688
+  }
+}

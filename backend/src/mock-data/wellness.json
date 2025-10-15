@@ -1,0 +1,116 @@
+{
+  "posts": [
+    {
+      "id": "meditation-for-beginners-find-peace-in-daily-pract",
+      "title": "Meditation for Beginners: Find Peace in Daily Practice",
+      "slug": "meditation-for-beginners-find-peace-in-daily-pract",
+      "excerpt": "Expert insights and practical guidance on meditation. Learn proven techniques and strategies to excel in wellness.",
+      "content": "This is a comprehensive guide to meditation for beginners: find peace in daily practice. This article covers essential concepts, practical techniques, and actionable strategies that you can implement immediately.\n\n## Why This Matters\n\nMastering these skills will transform your wellness practice and help you achieve professional-level results.\n\n## Key Takeaways\n\n- Essential foundations you need to know\n- Practical techniques for immediate application\n- Common mistakes to avoid\n- Advanced strategies for growth\n- Resources for continued learning\n\n## Getting Started\n\nBegin with the fundamentals and build progressively. Practice consistently and seek feedback from experienced practitioners.\n\n## Next Steps\n\nApply what you've learned and continue your education journey. Join our community to connect with fellow learners and experts in wellness.",
+      "author": "Wellness Expert",
+      "category": "Meditation",
+      "tags": [
+        "meditation",
+        "mindfulness",
+        "stress-relief",
+        "beginners"
+      ],
+      "publishedAt": "2025-10-15T05:20:34.984Z",
+      "featured": true,
+      "estimatedReadTime": "10 min",
+      "viewCount": 1559,
+      "status": "published"
+    },
+    {
+      "id": "stress-management-techniques-that-actually-work",
+      "title": "Stress Management Techniques That Actually Work",
+      "slug": "stress-management-techniques-that-actually-work",
+      "excerpt": "Expert insights and practical guidance on stress management. Learn proven techniques and strategies to excel in wellness.",
+      "content": "This is a comprehensive guide to stress management techniques that actually work. This article covers essential concepts, practical techniques, and actionable strategies that you can implement immediately.\n\n## Why This Matters\n\nMastering these skills will transform your wellness practice and help you achieve professional-level results.\n\n## Key Takeaways\n\n- Essential foundations you need to know\n- Practical techniques for immediate application\n- Common mistakes to avoid\n- Advanced strategies for growth\n- Resources for continued learning\n\n## Getting Started\n\nBegin with the fundamentals and build progressively. Practice consistently and seek feedback from experienced practitioners.\n\n## Next Steps\n\nApply what you've learned and continue your education journey. Join our community to connect with fellow learners and experts in wellness.",
+      "author": "Wellness Expert",
+      "category": "Stress Management",
+      "tags": [
+        "stress",
+        "management",
+        "coping",
+        "resilience"
+      ],
+      "publishedAt": "2025-10-08T05:20:34.984Z",
+      "featured": true,
+      "estimatedReadTime": "7 min",
+      "viewCount": 753,
+      "status": "published"
+    },
+    {
+      "id": "mindful-living-bring-presence-to-every-moment",
+      "title": "Mindful Living: Bring Presence to Every Moment",
+      "slug": "mindful-living-bring-presence-to-every-moment",
+      "excerpt": "Expert insights and practical guidance on mindfulness. Learn proven techniques and strategies to excel in wellness.",
+      "content": "This is a comprehensive guide to mindful living: bring presence to every moment. This article covers essential concepts, practical techniques, and actionable strategies that you can implement immediately.\n\n## Why This Matters\n\nMastering these skills will transform your wellness practice and help you achieve professional-level results.\n\n## Key Takeaways\n\n- Essential foundations you need to know\n- Practical techniques for immediate application\n- Common mistakes to avoid\n- Advanced strategies for growth\n- Resources for continued learning\n\n## Getting Started\n\nBegin with the fundamentals and build progressively. Practice consistently and seek feedback from experienced practitioners.\n\n## Next Steps\n\nApply what you've learned and continue your education journey. Join our community to connect with fellow learners and experts in wellness.",
+      "author": "Wellness Expert",
+      "category": "Mindfulness",
+      "tags": [
+        "mindfulness",
+        "presence",
+        "awareness",
+        "living"
+      ],
+      "publishedAt": "2025-10-01T05:20:34.984Z",
+      "featured": false,
+      "estimatedReadTime": "6 min",
+      "viewCount": 1157,
+      "status": "published"
+    },
+    {
+      "id": "holistic-health-balance-mind-body-and-spirit",
+      "title": "Holistic Health: Balance Mind, Body, and Spirit",
+      "slug": "holistic-health-balance-mind-body-and-spirit",
+      "excerpt": "Expert insights and practical guidance on holistic health. Learn proven techniques and strategies to excel in wellness.",
+      "content": "This is a comprehensive guide to holistic health: balance mind, body, and spirit. This article covers essential concepts, practical techniques, and actionable strategies that you can implement immediately.\n\n## Why This Matters\n\nMastering these skills will transform your wellness practice and help you achieve professional-level results.\n\n## Key Takeaways\n\n- Essential foundations you need to know\n- Practical techniques for immediate application\n- Common mistakes to avoid\n- Advanced strategies for growth\n- Resources for continued learning\n\n## Getting Started\n\nBegin with the fundamentals and build progressively. Practice consistently and seek feedback from experienced practitioners.\n\n## Next Steps\n\nApply what you've learned and continue your education journey. Join our community to connect with fellow learners and experts in wellness.",
+      "author": "Wellness Expert",
+      "category": "Holistic Health",
+      "tags": [
+        "holistic",
+        "balance",
+        "integrative",
+        "wellness"
+      ],
+      "publishedAt": "2025-09-24T05:20:34.984Z",
+      "featured": false,
+      "estimatedReadTime": "6 min",
+      "viewCount": 667,
+      "status": "published"
+    }
+  ],
+  "news": [
+    {
+      "id": "meditation-apps-report-500-growth-in-active-users",
+      "title": "Meditation Apps Report 500% Growth in Active Users",
+      "summary": "Mental wellness focus drives adoption of digital mindfulness tools across all age demographics.",
+      "url": "#",
+      "publishedAt": "2025-10-15T05:20:34.984Z",
+      "source": "Industry News Network"
+    },
+    {
+      "id": "corporate-wellness-programs-reduce-healthcare-cost",
+      "title": "Corporate Wellness Programs Reduce Healthcare Costs 25%",
+      "summary": "Companies investing in employee wellbeing see significant returns through reduced absenteeism and medical claims.",
+      "url": "#",
+      "publishedAt": "2025-10-12T05:20:34.984Z",
+      "source": "Industry News Network"
+    },
+    {
+      "id": "breathwork-therapy-gains-recognition-in-mental-hea",
+      "title": "Breathwork Therapy Gains Recognition in Mental Health Field",
+      "summary": "Scientific studies validate ancient breathing techniques as powerful tools for anxiety and trauma treatment.",
+      "url": "#",
+      "publishedAt": "2025-10-09T05:20:34.984Z",
+      "source": "Industry News Network"
+    }
+  ],
+  "stats": {
+    "totalPosts": 34,
+    "totalViews": 18815,
+    "totalLeads": 313,
+    "monthlyVisitors": 3214
+  }
+}

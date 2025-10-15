@@ -1,0 +1,116 @@
+{
+  "posts": [
+    {
+      "id": "data-science-fundamentals-from-spreadsheets-to-ins",
+      "title": "Data Science Fundamentals: From Spreadsheets to Insights",
+      "slug": "data-science-fundamentals-from-spreadsheets-to-ins",
+      "excerpt": "Expert insights and practical guidance on data science. Learn proven techniques and strategies to excel in data.",
+      "content": "This is a comprehensive guide to data science fundamentals: from spreadsheets to insights. This article covers essential concepts, practical techniques, and actionable strategies that you can implement immediately.\n\n## Why This Matters\n\nMastering these skills will transform your data practice and help you achieve professional-level results.\n\n## Key Takeaways\n\n- Essential foundations you need to know\n- Practical techniques for immediate application\n- Common mistakes to avoid\n- Advanced strategies for growth\n- Resources for continued learning\n\n## Getting Started\n\nBegin with the fundamentals and build progressively. Practice consistently and seek feedback from experienced practitioners.\n\n## Next Steps\n\nApply what you've learned and continue your education journey. Join our community to connect with fellow learners and experts in data.",
+      "author": "Data Expert",
+      "category": "Data Science",
+      "tags": [
+        "data-science",
+        "analytics",
+        "fundamentals",
+        "insights"
+      ],
+      "publishedAt": "2025-10-15T05:20:34.985Z",
+      "featured": true,
+      "estimatedReadTime": "6 min",
+      "viewCount": 783,
+      "status": "published"
+    },
+    {
+      "id": "sql-mastery-query-databases-like-a-professional",
+      "title": "SQL Mastery: Query Databases Like a Professional",
+      "slug": "sql-mastery-query-databases-like-a-professional",
+      "excerpt": "Expert insights and practical guidance on sql. Learn proven techniques and strategies to excel in data.",
+      "content": "This is a comprehensive guide to sql mastery: query databases like a professional. This article covers essential concepts, practical techniques, and actionable strategies that you can implement immediately.\n\n## Why This Matters\n\nMastering these skills will transform your data practice and help you achieve professional-level results.\n\n## Key Takeaways\n\n- Essential foundations you need to know\n- Practical techniques for immediate application\n- Common mistakes to avoid\n- Advanced strategies for growth\n- Resources for continued learning\n\n## Getting Started\n\nBegin with the fundamentals and build progressively. Practice consistently and seek feedback from experienced practitioners.\n\n## Next Steps\n\nApply what you've learned and continue your education journey. Join our community to connect with fellow learners and experts in data.",
+      "author": "Data Expert",
+      "category": "SQL",
+      "tags": [
+        "sql",
+        "databases",
+        "queries",
+        "programming"
+      ],
+      "publishedAt": "2025-10-08T05:20:34.985Z",
+      "featured": true,
+      "estimatedReadTime": "8 min",
+      "viewCount": 3018,
+      "status": "published"
+    },
+    {
+      "id": "python-for-data-analysis-essential-libraries-and-t",
+      "title": "Python for Data Analysis: Essential Libraries and Techniques",
+      "slug": "python-for-data-analysis-essential-libraries-and-t",
+      "excerpt": "Expert insights and practical guidance on python. Learn proven techniques and strategies to excel in data.",
+      "content": "This is a comprehensive guide to python for data analysis: essential libraries and techniques. This article covers essential concepts, practical techniques, and actionable strategies that you can implement immediately.\n\n## Why This Matters\n\nMastering these skills will transform your data practice and help you achieve professional-level results.\n\n## Key Takeaways\n\n- Essential foundations you need to know\n- Practical techniques for immediate application\n- Common mistakes to avoid\n- Advanced strategies for growth\n- Resources for continued learning\n\n## Getting Started\n\nBegin with the fundamentals and build progressively. Practice consistently and seek feedback from experienced practitioners.\n\n## Next Steps\n\nApply what you've learned and continue your education journey. Join our community to connect with fellow learners and experts in data.",
+      "author": "Data Expert",
+      "category": "Python",
+      "tags": [
+        "python",
+        "pandas",
+        "numpy",
+        "analysis"
+      ],
+      "publishedAt": "2025-10-01T05:20:34.985Z",
+      "featured": false,
+      "estimatedReadTime": "9 min",
+      "viewCount": 1193,
+      "status": "published"
+    },
+    {
+      "id": "data-visualization-tell-compelling-stories-with-nu",
+      "title": "Data Visualization: Tell Compelling Stories with Numbers",
+      "slug": "data-visualization-tell-compelling-stories-with-nu",
+      "excerpt": "Expert insights and practical guidance on visualization. Learn proven techniques and strategies to excel in data.",
+      "content": "This is a comprehensive guide to data visualization: tell compelling stories with numbers. This article covers essential concepts, practical techniques, and actionable strategies that you can implement immediately.\n\n## Why This Matters\n\nMastering these skills will transform your data practice and help you achieve professional-level results.\n\n## Key Takeaways\n\n- Essential foundations you need to know\n- Practical techniques for immediate application\n- Common mistakes to avoid\n- Advanced strategies for growth\n- Resources for continued learning\n\n## Getting Started\n\nBegin with the fundamentals and build progressively. Practice consistently and seek feedback from experienced practitioners.\n\n## Next Steps\n\nApply what you've learned and continue your education journey. Join our community to connect with fellow learners and experts in data.",
+      "author": "Data Expert",
+      "category": "Visualization",
+      "tags": [
+        "visualization",
+        "charts",
+        "storytelling",
+        "dashboards"
+      ],
+      "publishedAt": "2025-09-24T05:20:34.985Z",
+      "featured": false,
+      "estimatedReadTime": "7 min",
+      "viewCount": 2026,
+      "status": "published"
+    }
+  ],
+  "news": [
+    {
+      "id": "data-scientist-named-top-job-for-fourth-consecutiv",
+      "title": "Data Scientist Named Top Job for Fourth Consecutive Year",
+      "summary": "Glassdoor rankings highlight sustained demand for professionals who can extract insights from complex datasets.",
+      "url": "#",
+      "publishedAt": "2025-10-15T05:20:34.985Z",
+      "source": "Industry News Network"
+    },
+    {
+      "id": "companies-increase-data-analytics-budgets-40-in-20",
+      "title": "Companies Increase Data Analytics Budgets 40% in 2024",
+      "summary": "Businesses prioritize data-driven decision making as competitive advantage in uncertain economic climate.",
+      "url": "#",
+      "publishedAt": "2025-10-12T05:20:34.985Z",
+      "source": "Industry News Network"
+    },
+    {
+      "id": "ai-and-machine-learning-transform-traditional-anal",
+      "title": "AI and Machine Learning Transform Traditional Analytics",
+      "summary": "Automated insights and predictive models become accessible to analysts beyond specialized data science teams.",
+      "url": "#",
+      "publishedAt": "2025-10-09T05:20:34.985Z",
+      "source": "Industry News Network"
+    }
+  ],
+  "stats": {
+    "totalPosts": 27,
+    "totalViews": 22441,
+    "totalLeads": 184,
+    "monthlyVisitors": 5987
+  }
+}
