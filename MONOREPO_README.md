@@ -125,24 +125,35 @@ npm run lint
 
 ## Deployment
 
-Each app in the `apps/` directory is deployed to its corresponding subdomain:
+The repository uses a **Gateway Architecture** for deployment - a single Vercel project handles all subdomains via Edge Middleware:
 
-- `apps/main` → www.yoohoo.guru
-- `apps/angel` → angel.yoohoo.guru
-- `apps/coach` → coach.yoohoo.guru
-- `apps/heroes` → heroes.yoohoo.guru
-- `apps/dashboard` → dashboard.yoohoo.guru
-- Subject apps (cooking, coding, etc.) → their respective subdomains
+- **Single Vercel project** deploys `apps/main`
+- **Edge Middleware** routes subdomains to appropriate pages
+- **Wildcard DNS** (`*.yoohoo.guru`) points to one deployment
+- **All apps** consolidated under `apps/main/pages/_apps/`
+
+### Subdomain Mapping
+
+- `www.yoohoo.guru` → `apps/main/pages/_apps/main`
+- `angel.yoohoo.guru` → `apps/main/pages/_apps/angel`
+- `coach.yoohoo.guru` → `apps/main/pages/_apps/coach`
+- `heroes.yoohoo.guru` → `apps/main/pages/_apps/heroes`
+- `dashboard.yoohoo.guru` → `apps/main/pages/_apps/dashboard`
+- Subject apps (cooking, coding, etc.) → their respective `_apps/` subdirectories
 
 ### Vercel Deployment
 
-Each app should be configured as a separate Vercel project:
+**One Vercel project for all subdomains:**
 
 1. Connect your repository to Vercel
-2. Create a new project for each app
-3. Set the root directory to the app's directory (e.g., `apps/main`)
-4. Configure environment variables for each project
-5. Set custom domain for each project
+2. Create a single project with:
+   - Root Directory: (leave empty)
+   - Build Command: `cd apps/main && npm run build`
+   - Output Directory: `apps/main/.next`
+3. Configure environment variables (see `.env.shared.example`)
+4. Add all custom domains (www, angel, coach, etc.) to the project
+
+For detailed deployment instructions, see **[GATEWAY_ARCHITECTURE.md](./GATEWAY_ARCHITECTURE.md)**.
 
 ### Environment Variables
 

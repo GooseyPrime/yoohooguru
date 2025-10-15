@@ -1,8 +1,22 @@
 # Deployment Guide for YooHoo.Guru Monorepo
 
-## Overview
+## ⚠️ DEPRECATED - See GATEWAY_ARCHITECTURE.md
 
-This guide explains how to deploy each app in the monorepo to Vercel.
+**This deployment guide is deprecated.** The platform has been refactored to use a single gateway architecture that eliminates the need for separate Vercel projects.
+
+**➡️ For current deployment instructions, see [GATEWAY_ARCHITECTURE.md](./GATEWAY_ARCHITECTURE.md)**
+
+The new gateway architecture:
+- Uses a single Vercel project for all subdomains
+- Supports unlimited subdomains via Edge Middleware
+- Simplifies environment variable management
+- Reduces deployment complexity
+
+---
+
+## Overview (Legacy)
+
+This guide explains the old multi-project deployment approach, which is no longer used.
 
 ## Prerequisites
 
