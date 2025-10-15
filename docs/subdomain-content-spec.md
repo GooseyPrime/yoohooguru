@@ -21,12 +21,12 @@ This document provides comprehensive content guidelines for AI agents that curat
 - **Frequency**: 2 news articles per subdomain per day (4 total across 2 time slots)
 - **Morning Slot**: 6:00 AM - 9:00 AM EST (publish 2 articles)
 - **Afternoon Slot**: 3:00 PM - 6:00 PM EST (publish 2 articles)
-- **Total Volume**: 80 articles per day across 20 subdomains
+- **Total Volume**: 96 articles per day across 24 subdomains
 
 #### Weekly Blog Posts
 - **Frequency**: 1 blog post per subdomain per week
 - **Schedule**: Monday, 10:00 AM EST
-- **Total Volume**: 20 blog posts per week across 20 subdomains
+- **Total Volume**: 24 blog posts per week across 24 subdomains
 
 ### Source Requirements
 
@@ -632,6 +632,90 @@ Rotate through these topic categories weekly:
 
 ---
 
+### 21. history.yoohoo.guru
+**Character**: History Guru  
+**Category**: Education  
+**Primary Skills**: world-history, american-history, ancient-civilizations, historical-research, social-studies
+
+#### News Topics
+- Historical discoveries and archaeology
+- Museum exhibitions and events
+- Historical documentaries and publications
+- Anniversary commemorations
+- Historical preservation news
+
+#### Blog Topics
+- Historical period overviews
+- Notable figures and biographies
+- Historical events analysis
+- Primary source interpretation
+- History learning resources
+
+---
+
+### 22. math.yoohoo.guru
+**Character**: Math Guru  
+**Category**: Education  
+**Primary Skills**: algebra, calculus, geometry, statistics, problem-solving
+
+#### News Topics
+- Mathematical discoveries and research
+- Math education policy and methods
+- Math competition results
+- STEM education initiatives
+- Applied mathematics in industry
+
+#### Blog Topics
+- Math concept explanations
+- Problem-solving strategies
+- Real-world applications
+- Study tips and exam prep
+- Math tools and resources
+
+---
+
+### 23. science.yoohoo.guru
+**Character**: Science Guru  
+**Category**: Education  
+**Primary Skills**: biology, chemistry, physics, earth-science, scientific-method
+
+#### News Topics
+- Scientific research breakthroughs
+- Science education updates
+- Environmental and climate news
+- Space exploration developments
+- Health and medical research
+
+#### Blog Topics
+- Science concept tutorials
+- Experiment guides and demos
+- Career paths in science
+- Science news explained
+- Laboratory techniques and safety
+
+---
+
+### 24. sports.yoohoo.guru
+**Character**: Sports Guru  
+**Category**: Athletics  
+**Primary Skills**: coaching, sports-training, athletic-performance, sports-psychology, team-management
+
+#### News Topics
+- Sports events and competitions
+- Athlete achievements and records
+- Sports training innovations
+- Sports science research
+- Coaching methodology updates
+
+#### Blog Topics
+- Training programs and drills
+- Sports technique breakdowns
+- Injury prevention and recovery
+- Mental game strategies
+- Equipment reviews and recommendations
+
+---
+
 ## Content Quality Standards
 
 ### Writing Quality
@@ -858,7 +942,7 @@ Track the following for each subdomain:
 
 ## Conclusion
 
-This specification provides comprehensive guidelines for AI agents curating news and generating blog content across all 20 yoohoo.guru subdomains. By following these standards, we ensure:
+This specification provides comprehensive guidelines for AI agents curating news and generating blog content across all 24 yoohoo.guru subdomains. By following these standards, we ensure:
 
 ✅ Consistent quality across all subdomains  
 ✅ SEO-optimized content for better discovery  
