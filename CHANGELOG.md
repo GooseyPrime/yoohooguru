@@ -7,7 +7,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+### Turborepo Monorepo Migration (Major Architecture Change)
+
+#### Added - Monorepo Architecture
+- **Turborepo setup** with 25+ Next.js applications under `/apps`
+- **Shared packages** under `/packages` for code reuse
+  - `@yoohooguru/shared` - UI components and utilities
+  - `@yoohooguru/auth` - NextAuth and Firebase authentication
+  - `@yoohooguru/db` - Firestore database access layer
+- **Core subdomain apps** (5 apps):
+  - `apps/main` - www.yoohoo.guru (homepage)
+  - `apps/angel` - angel.yoohoo.guru (Angel's List)
+  - `apps/coach` - coach.yoohoo.guru (Coach Guru)
+  - `apps/heroes` - heroes.yoohoo.guru (Hero Guru's)
+  - `apps/dashboard` - dashboard.yoohoo.guru (User Dashboard)
+- **Subject Guru apps** (20 apps):
+  - art, business, coding, cooking, crafts, data, design, finance, fitness
+  - gardening, home, investing, language, marketing, music, photography
+  - sales, tech, wellness, writing
+- **Cross-subdomain authentication** via NextAuth with shared cookie domain
+- **Turborepo build pipeline** for efficient parallel builds
+- **Workspace-based dependency management** using npm workspaces
+
+#### Changed - Migration from Single Frontend
+- Migrated from React/Webpack single frontend to Next.js 14 multi-app architecture
+- Replaced `frontend/` with individual Next.js apps in `apps/`
+- Updated deployment strategy: each subdomain as separate Vercel project
+- Refactored shared code into reusable packages
+- Updated all documentation to reflect monorepo structure
+- Renamed "Modified Masters" to "Hero Guru's" (heroes.yoohoo.guru)
+
+#### Migration Documentation
+- `MONOREPO_README.md` - Complete monorepo architecture guide
+- `MIGRATION_GUIDE.md` - Migration from old to new structure
+- `MONOREPO_STATUS.md` - Migration progress and completion status
+- `DEPLOYMENT_GUIDE.md` - Multi-app Vercel deployment guide
+- Updated `README.md` with Turborepo structure and commands
+- Updated `docs/DEPLOYMENT.md` with new DNS and routing configuration
+- Updated `docs/SITEMAP.md` with all 25 subdomain apps
+
+#### Technical Details
+- **Build System**: Turborepo 2.5.8 with task caching
+- **Framework**: Next.js 14.2.0 for all apps
+- **Package Manager**: npm 10.2.4 with workspaces
+- **Node Version**: 20.0.0+
+- **Legacy Support**: `frontend/` directory retained temporarily for backwards compatibility
+
+### Planned Features
+
+#### Added
 - Complete user registration and profile management
 - Advanced skill matching algorithm
 - Real-time messaging system
