@@ -1,17 +1,74 @@
-# Environment Variables Guide
+# Environment Variables Guide - Turborepo Monorepo
 
-This guide documents all environment variables used in the yoohoo.guru skill-sharing platform. All variables are defined in `.env.example` with default values and descriptions.
+This guide documents all environment variables used in the yoohoo.guru Turborepo monorepo platform with 25 Next.js applications.
+
+## Environment Variable Architecture
+
+### Shared Variables (.env.shared)
+Variables used across all 25 Next.js apps are defined in `.env.shared` at the repository root.
+
+### Per-App Variables
+Each app can have additional `.env.local` variables specific to that app.
+
+### Backend Variables (.env)
+Backend API has its own environment variables in `backend/.env`.
 
 ## Quick Start
 
-1. Copy the example environment file:
-   ```bash
-   cp .env.example .env
-   ```
+### 1. Shared Environment Setup (All Apps)
 
-2. Update the values in `.env` with your specific configuration
+```bash
+# Copy the shared environment template
+cp .env.shared.example .env.shared
 
-3. The application will load variables from `.env` automatically
+# Edit .env.shared with your configuration
+```
+
+**Minimum required shared variables:**
+```env
+# Firebase (required for all apps)
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+
+# API Configuration (required for all apps)
+NEXT_PUBLIC_API_URL=https://api.yoohoo.guru
+
+# NextAuth (required for authentication)
+NEXTAUTH_SECRET=your_super_secret_key
+
+# Cross-subdomain authentication
+AUTH_COOKIE_DOMAIN=.yoohoo.guru
+```
+
+### 2. Per-App Environment Setup
+
+Each app needs its own `NEXTAUTH_URL`:
+
+```bash
+# apps/main/.env.local
+NEXTAUTH_URL=https://www.yoohoo.guru
+
+# apps/angel/.env.local
+NEXTAUTH_URL=https://angel.yoohoo.guru
+
+# apps/coach/.env.local
+NEXTAUTH_URL=https://coach.yoohoo.guru
+
+# ...and so on for all 25 apps
+```
+
+### 3. Backend Environment Setup
+
+```bash
+# backend/.env
+cp backend/.env.example backend/.env
+
+# Edit backend/.env with backend-specific variables
+```
 
 ## Environment Variable Categories
 
@@ -72,22 +129,26 @@ This guide documents all environment variables used in the yoohoo.guru skill-sha
 | `WEBPACK_DEV_OPEN` | `true` | Auto-open browser on dev server start |
 | `WEBPACK_DEV_HOT` | `true` | Enable hot module replacement |
 
-### React App Variables (Frontend)
+### Next.js App Variables (Frontend - All 25 Apps)
 
-All React app variables must be prefixed with `REACT_APP_` to be accessible in the frontend:
+All Next.js app variables must be prefixed with `NEXT_PUBLIC_` to be accessible in the browser:
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `REACT_APP_API_URL` | `http://localhost:3001/api` | Frontend API endpoint |
-| `REACT_APP_ENVIRONMENT` | `development` | Frontend environment |
-| `REACT_APP_BRAND_NAME` | `yoohoo.guru` | Brand name used in UI components |
-| `REACT_APP_DISPLAY_NAME` | `yoohoo.guru` | Display name for headers |
-| `REACT_APP_LEGAL_EMAIL` | `legal@yoohoo.guru` | Legal email for frontend contact forms |
-| `REACT_APP_PRIVACY_EMAIL` | `privacy@yoohoo.guru` | Privacy email for frontend contact forms |
-| `REACT_APP_SUPPORT_EMAIL` | `support@yoohoo.guru` | Support email for frontend contact forms |
-| `REACT_APP_CONTACT_ADDRESS` | `yoohoo.guru, Legal Department` | Contact address for frontend |
+| Variable | Default | Description | Location |
+|----------|---------|-------------|----------|
+| `NEXT_PUBLIC_API_URL` | `https://api.yoohoo.guru` | Backend API endpoint | `.env.shared` |
+| `NEXT_PUBLIC_FIREBASE_API_KEY` | - | Firebase API key | `.env.shared` |
+| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | - | Firebase auth domain | `.env.shared` |
+| `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | - | Firebase project ID | `.env.shared` |
+| `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` | - | Firebase storage bucket | `.env.shared` |
+| `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | - | Firebase messaging sender ID | `.env.shared` |
+| `NEXT_PUBLIC_FIREBASE_APP_ID` | - | Firebase app ID | `.env.shared` |
+| `NEXTAUTH_URL` | varies by app | App-specific URL (e.g., https://www.yoohoo.guru) | `.env.local` per app |
+| `NEXTAUTH_SECRET` | - | NextAuth secret key | `.env.shared` |
+| `AUTH_COOKIE_DOMAIN` | `.yoohoo.guru` | Cookie domain for cross-subdomain auth | `.env.shared` |
 
-### External Services
+### Backend Variables (Node.js/Express)
+
+Backend-specific variables in `backend/.env`:
 
 #### Firebase Configuration (Firestore-only)
 

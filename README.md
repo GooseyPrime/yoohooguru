@@ -32,11 +32,12 @@ A comprehensive skill-sharing platform where users exchange skills, discover pur
 
 ## 🚀 Platform Overview
 
-**Status: 🟢 ACTIVE** | **Version: 1.0.0** | **Architecture: Full Stack**
+**Status: 🟢 ACTIVE** | **Version: 1.0.0** | **Architecture: Turborepo Monorepo**
 
 This is a modern, full-stack web application built with:
-- **Frontend**: React with Webpack, styled-components, and PWA support
+- **Frontend**: Next.js 14 apps with Turborepo, styled-components, and PWA support
 - **Backend**: Node.js with Express, Firebase integration, and comprehensive API
+- **Monorepo**: Turborepo for managing 25+ Next.js apps and shared packages
 - **Configuration**: Environment-driven architecture for flexible deployment
 
 ### ✅ Key Features
@@ -49,42 +50,69 @@ This is a modern, full-stack web application built with:
 - **🛡️ Enterprise Security** - Rate limiting, CORS protection, and input validation
 - **⚙️ Environment-Driven Configuration** - Fully configurable via environment variables
 
-## 📁 Project Structure
+## 📁 Turborepo Monorepo Structure
 
 ```
-├── frontend/                 # React frontend application
+yoohooguru/
+├── apps/                    # All Next.js applications (25 apps)
+│   ├── main/               # www.yoohoo.guru (homepage)
+│   ├── angel/              # angel.yoohoo.guru (Angel's List)
+│   ├── coach/              # coach.yoohoo.guru (Coach Guru)
+│   ├── heroes/             # heroes.yoohoo.guru (Hero Guru's)
+│   ├── dashboard/          # dashboard.yoohoo.guru (User Dashboard)
+│   ├── cooking/            # cooking.yoohoo.guru
+│   ├── coding/             # coding.yoohoo.guru
+│   ├── art/                # art.yoohoo.guru
+│   ├── business/           # business.yoohoo.guru
+│   ├── crafts/             # crafts.yoohoo.guru
+│   ├── data/               # data.yoohoo.guru
+│   ├── design/             # design.yoohoo.guru
+│   ├── finance/            # finance.yoohoo.guru
+│   ├── fitness/            # fitness.yoohoo.guru
+│   ├── gardening/          # gardening.yoohoo.guru
+│   ├── home/               # home.yoohoo.guru
+│   ├── investing/          # investing.yoohoo.guru
+│   ├── language/           # language.yoohoo.guru
+│   ├── marketing/          # marketing.yoohoo.guru
+│   ├── music/              # music.yoohoo.guru
+│   ├── photography/        # photography.yoohoo.guru
+│   ├── sales/              # sales.yoohoo.guru
+│   ├── tech/               # tech.yoohoo.guru
+│   ├── wellness/           # wellness.yoohoo.guru
+│   └── writing/            # writing.yoohoo.guru
+├── packages/               # Shared packages
+│   ├── shared/            # Shared UI components and utilities
+│   ├── auth/              # Authentication utilities (NextAuth, Firebase)
+│   └── db/                # Database access layer (Firestore)
+├── backend/               # Backend API (Railway deployment)
 │   ├── src/
-│   │   ├── components/      # Reusable UI components
-│   │   ├── screens/         # Main page components
-│   │   ├── contexts/        # React contexts (Auth, etc.)
-│   │   └── utils/           # Frontend utilities
-│   ├── public/              # Static assets
-│   ├── webpack.config.js    # Webpack configuration
-│   └── package.json         # Frontend dependencies
-├── backend/                  # Node.js backend API
-│   ├── src/
-│   │   ├── config/          # Configuration management
-│   │   ├── routes/          # API route handlers
-│   │   ├── middleware/      # Express middleware
-│   │   ├── utils/           # Backend utilities
-│   │   └── lib/             # Business logic libraries
-│   ├── tests/               # Backend test suites
-│   └── package.json         # Backend dependencies
-├── docs/                     # Documentation
+│   │   ├── config/       # Configuration management
+│   │   ├── routes/       # API route handlers
+│   │   ├── middleware/   # Express middleware
+│   │   ├── utils/        # Backend utilities
+│   │   └── lib/          # Business logic libraries
+│   ├── tests/            # Backend test suites
+│   └── package.json      # Backend dependencies
+├── frontend/             # Legacy frontend (being phased out)
+├── docs/                 # Documentation
 │   ├── ENVIRONMENT_VARIABLES.md  # Complete env var guide
-│   ├── DEPLOYMENT.md         # Deployment instructions
+│   ├── DEPLOYMENT.md      # Deployment instructions
+│   ├── SITEMAP.md         # Sitemap and routing guide
 │   ├── RAILWAY_DEPLOYMENT.md # Railway-specific guide
-│   └── FIREBASE_POLICY.md    # Firebase usage policy & standards
-├── .env.example             # Environment variables template
-├── package.json             # Root workspace configuration
-└── README.md                # This file
+│   └── FIREBASE_POLICY.md # Firebase usage policy & standards
+├── turbo.json            # Turborepo configuration
+├── package.json          # Root workspace configuration
+├── .env.shared.example   # Shared environment variables template
+└── README.md             # This file
+
+See MONOREPO_README.md and MIGRATION_GUIDE.md for complete documentation.
 ```
 
 ## 🏃‍♂️ Quick Start
 
 ### Prerequisites
 
-- **Node.js 18+** and npm
+- **Node.js 20+** and npm 9+
 - **Firebase project** (for authentication and data)
 - **Environment configuration** (see [Environment Variables Guide](./docs/ENVIRONMENT_VARIABLES.md))
 
@@ -94,57 +122,75 @@ This is a modern, full-stack web application built with:
 git clone https://github.com/GooseyPrime/yoohooguru.git
 cd yoohooguru
 
-# Install all dependencies (frontend + backend)
-npm run install:all
+# Install all dependencies (uses Turborepo workspaces)
+npm install
 ```
 
 ### 2. Environment Setup
 
 ```bash
-# Copy environment template
-cp .env.example .env
+# Copy shared environment template
+cp .env.shared.example .env.shared
 
-# Edit .env with your configuration
+# Edit .env.shared with your configuration
 # See docs/ENVIRONMENT_VARIABLES.md for complete guide
 ```
 
 **Minimum required variables:**
 ```env
 # Firebase (required)
-FIREBASE_PROJECT_ID=your_project_id
-FIREBASE_API_KEY=your_api_key
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
 
-# Security (required for production)
-JWT_SECRET=your_super_secret_key
-SESSION_SECRET=your_secure_session_secret
+# NextAuth (required for authentication)
+NEXTAUTH_SECRET=your_super_secret_key
+NEXTAUTH_URL=http://localhost:3000
 
-# Generate secure secrets with:
-# node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-
-# App Branding (optional, defaults to yoohoo.guru)
-APP_BRAND_NAME=yoohoo.guru
-REACT_APP_BRAND_NAME=yoohoo.guru
+# Auth Cookie Domain (for cross-subdomain authentication)
+AUTH_COOKIE_DOMAIN=.yoohoo.guru
 ```
 
-### 3. Development
+```
+
+### 3. Development with Turborepo
 
 ```bash
-# Run both frontend and backend
+# Run all apps in development mode
 npm run dev
 
-# Or run separately:
-npm run dev:frontend  # React dev server on port 3000
-npm run dev:backend   # Express API server on port 3001
+# Or run specific apps:
+npm run dev:main        # Homepage (www.yoohoo.guru)
+npm run dev:angel       # Angel's List
+npm run dev:coach       # Coach Guru
+npm run dev:heroes      # Hero Guru's
+npm run dev:dashboard   # User Dashboard
+
+# Run legacy frontend (being phased out)
+npm run dev:frontend
+
+# Run backend API
+npm run dev:backend
 ```
 
 ### 4. Production Build
 
 ```bash
-# Build everything (first build: 15-60+ seconds, subsequent: 4-15 seconds)
+# Build all apps with Turborepo
 npm run build
 
-# Fast build (skips some optimizations for development)
-npm run build:fast
+# Build specific apps:
+npm run build:main      # Homepage
+npm run build:angel     # Angel's List
+npm run build:coach     # Coach Guru
+npm run build:heroes    # Hero Guru's
+npm run build:dashboard # User Dashboard
+
+# Build legacy frontend (being phased out)
+npm run build:frontend
+
+# Build backend
+npm run build:backend
+```
 
 # Clean build with optimization and timing
 npm run build:clean
@@ -340,98 +386,75 @@ railway link   # Re-link Railway
 vercel link    # Re-link Vercel
 ```
 
-### 🚀 **Recommended: Vercel + Railway + Firebase Stack**
+### 🚀 **Deployment: Turborepo Multi-App Architecture**
 
-The optimal production setup for yoohoo.guru combines:
-- **[Vercel](https://vercel.com)** - Frontend deployment (React PWA)
-- **[Railway](https://railway.app)** - Backend API deployment (Node.js)  
+The yoohoo.guru platform uses a Turborepo monorepo with multiple deployments:
+- **[Vercel](https://vercel.com)** - All 25 Next.js apps (separate projects per subdomain)
+- **[Railway](https://railway.app)** - Backend API (Node.js/Express)  
 - **[Firebase](https://firebase.google.com)** - Database, authentication, and real-time features
 
-#### Quick Deploy (5 minutes)
+**See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for complete multi-app deployment instructions.**
 
-**Frontend to Vercel:**
-```powershell
-# Navigate to repository root and link project
+#### Vercel Multi-App Deployment Overview
+
+Each app in `/apps` should be deployed as a separate Vercel project with its own custom domain:
+
+| App | Directory | Domain | Vercel Project |
+|-----|-----------|--------|----------------|
+| Main | `apps/main` | www.yoohoo.guru | yoohooguru-main |
+| Angel | `apps/angel` | angel.yoohoo.guru | yoohooguru-angel |
+| Coach | `apps/coach` | coach.yoohoo.guru | yoohooguru-coach |
+| Heroes | `apps/heroes` | heroes.yoohoo.guru | yoohooguru-heroes |
+| Dashboard | `apps/dashboard` | dashboard.yoohoo.guru | yoohooguru-dashboard |
+| ...20 more | `apps/*` | *.yoohoo.guru | yoohooguru-* |
+
+**Quick Deploy Single App:**
+```bash
 cd yoohooguru
-vercel link
-
-# Configure in Vercel Dashboard → Settings → General:
-# - Root Directory: "frontend"
-# - Build Command: "npm run build" 
-# - Output Directory: "dist"
-# - Install Command: "npm install"
-
-# Deploy frontend (always from repository root)
 vercel --prod
 
-# Set environment variables in Vercel dashboard
-REACT_APP_API_URL=https://your-backend.railway.app/api
-REACT_APP_FIREBASE_API_KEY=your_firebase_key
-REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+# In Vercel Dashboard → Settings:
+# - Root Directory: "apps/main" (or apps/angel, apps/coach, etc.)
+# - Build Command: "cd ../.. && turbo run build --filter=@yoohooguru/main"
+# - Output Directory: "apps/main/.next"
+# - Install Command: "npm install"
 ```
 
-#### Detailed Vercel Frontend Setup
+**Deployment Documentation:**
+- **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - Complete step-by-step guide for all 25 apps
+- **[docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)** - DNS, Vercel, and Railway configuration
+- **[docs/ENVIRONMENT_VARIABLES.md](./docs/ENVIRONMENT_VARIABLES.md)** - All environment variables
+- **[MONOREPO_README.md](./MONOREPO_README.md)** - Monorepo architecture overview
+
+#### Railway Backend Deployment
 
 **Prerequisites:**
-- Vercel account ([sign up free](https://vercel.com))
-- GitHub repository connected to Vercel
+- Railway account ([sign up free](https://railway.app))
+- GitHub repository connected to Railway
 
-**Step 1: Initial Deployment**
-```powershell
-# Navigate to repository root and link project
-cd yoohooguru
-vercel link
-
-# Configure in Vercel Dashboard → Settings → General:
-# - Root Directory: "frontend"
-# - Build Command: "npm run build"
-# - Output Directory: "dist" 
-# - Install Command: "npm install"
-
-# Deploy to Vercel (always from repository root)
-vercel --prod
-```
-
-**Step 2: Project Configuration**
-The `vercel.json` configuration is already included in the repository root. It uses simplified patterns for Vercel compatibility:
-```json
-{
-  "buildCommand": "cd frontend && npm run build",
-  "outputDirectory": "frontend/dist",
-  "installCommand": "npm ci && cd frontend && npm ci",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline'..."
-        }
-      ]
-    },
-    {
-      "source": "/assets/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    }
-  ]
-}
-```
-
-**Step 3: Environment Variables in Vercel Dashboard**
+**Quick Deploy:**
 ```bash
-# Required - Set in Vercel project settings
-REACT_APP_API_URL=https://your-backend.railway.app/api
+cd yoohooguru/backend
+railway up
+
+# Or configure in Railway Dashboard:
+# - Root Directory: "backend"
+# - Build Command: "npm install && npm run build"
+# - Start Command: "npm start"
+```
+
+**Environment Variables in Railway Dashboard:**
+```bash
+NODE_ENV=production
+SERVE_FRONTEND=false
+CORS_ORIGIN_PRODUCTION=https://www.yoohoo.guru,https://angel.yoohoo.guru,https://coach.yoohoo.guru
+FIREBASE_PROJECT_ID=your_project_id
+FIREBASE_CLIENT_EMAIL=firebase-adminsdk@your-project.iam.gserviceaccount.com
+FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+JWT_SECRET=your_secure_jwt_secret
+```
+
+**See [docs/RAILWAY_DEPLOYMENT.md](./docs/RAILWAY_DEPLOYMENT.md) for complete backend deployment guide.**
 REACT_APP_FIREBASE_API_KEY=your_firebase_api_key
 REACT_APP_FIREBASE_PROJECT_ID=your_project_id
 REACT_APP_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
@@ -709,72 +732,68 @@ railway logs --tail
 
 ---
 
-## 🌐 Subdomain Routing
+## 🌐 Turborepo Multi-Subdomain Architecture
 
-The YooHoo.guru platform supports **dynamic subdomain routing** for multiple use cases within a single Vercel deployment.
+The YooHoo.guru platform uses **Turborepo to manage 25+ Next.js applications**, each deployed as a separate subdomain on Vercel.
 
-### Subdomain Architecture
+### All Subdomains (25 Apps)
 
-The platform handles three types of subdomains:
+**Core Platform Apps (5):**
+1. **www.yoohoo.guru** (`apps/main`) - Homepage and main platform
+2. **angel.yoohoo.guru** (`apps/angel`) - Angel's List service marketplace
+3. **coach.yoohoo.guru** (`apps/coach`) - Coach Guru skill-sharing
+4. **heroes.yoohoo.guru** (`apps/heroes`) - Hero Guru's (formerly Modified Masters)
+5. **dashboard.yoohoo.guru** (`apps/dashboard`) - User dashboard
 
-1. **Main Site** (`www.yoohoo.guru`, `yoohoo.guru`)
-   - Full skill-sharing marketplace
-   - User authentication and dashboard
-   - All core platform features
+**Subject Guru Apps (20):**
+6. **art.yoohoo.guru** (`apps/art`) - Art and creative skills
+7. **business.yoohoo.guru** (`apps/business`) - Business and entrepreneurship
+8. **coding.yoohoo.guru** (`apps/coding`) - Programming and development
+9. **cooking.yoohoo.guru** (`apps/cooking`) - Culinary arts and cooking
+10. **crafts.yoohoo.guru** (`apps/crafts`) - Crafts and DIY
+11. **data.yoohoo.guru** (`apps/data`) - Data science and analytics
+12. **design.yoohoo.guru** (`apps/design`) - Design and UX
+13. **finance.yoohoo.guru** (`apps/finance`) - Finance and accounting
+14. **fitness.yoohoo.guru** (`apps/fitness`) - Fitness and health
+15. **gardening.yoohoo.guru** (`apps/gardening`) - Gardening and horticulture
+16. **home.yoohoo.guru** (`apps/home`) - Home improvement
+17. **investing.yoohoo.guru** (`apps/investing`) - Investing and trading
+18. **language.yoohoo.guru** (`apps/language`) - Languages and linguistics
+19. **marketing.yoohoo.guru** (`apps/marketing`) - Marketing and sales
+20. **music.yoohoo.guru** (`apps/music`) - Music and performance
+21. **photography.yoohoo.guru** (`apps/photography`) - Photography and videography
+22. **sales.yoohoo.guru** (`apps/sales`) - Sales techniques
+23. **tech.yoohoo.guru** (`apps/tech`) - Technology and gadgets
+24. **wellness.yoohoo.guru** (`apps/wellness`) - Wellness and mindfulness
+25. **writing.yoohoo.guru** (`apps/writing`) - Writing and editing
 
-2. **Special Feature Subdomains** (`masters.yoohoo.guru`, `coach.yoohoo.guru`, `angel.yoohoo.guru`)
-   - Dedicated feature experiences
-   - Route to specific platform sections
-   - Share authentication with main site
+### Cross-Subdomain Authentication
 
-3. **Cousin Subdomains** (`*.yoohoo.guru`)
-   - Any other subdomain (e.g., `art.yoohoo.guru`, `fitness.yoohoo.guru`, `tech.yoohoo.guru`)
-   - Dynamic landing pages with monetization placeholders
-   - Coming soon pages for future expansion
+All apps share authentication via NextAuth with cross-subdomain cookie configuration:
 
-### How It Works
-
-**Client-Side Detection:**
-```javascript
-// Automatic subdomain detection in useGuru hook
-const { subdomain, subdomainType, isCousinSite } = useGuru();
-
-// Types: 'main', 'masters', 'coach', 'angel', or 'cousin'
-```
-
-**Routing Logic:**
-- **Cousin subdomains** → `CousinSubdomainPage` with ad placeholders
-- **Special subdomains** → Feature-specific routing
-- **Main domain** → Full platform with all features
-
-**Vercel Configuration:**
-```json
-{
-  "redirects": [
-    {
-      "source": "/",
-      "has": [{"type": "host", "value": "yoohoo.guru"}],
-      "destination": "https://www.yoohoo.guru",
-      "permanent": true
+```typescript
+// packages/auth/src/nextauth.ts
+cookies: {
+  sessionToken: {
+    options: {
+      domain: '.yoohoo.guru',  // Shared across all subdomains
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: true
     }
-  ]
+  }
 }
 ```
 
-### Adding New Cousin Subdomains
+### Shared Code Architecture
 
-**No code changes required!** New subdomains work automatically:
+All apps use shared packages via Turborepo workspaces:
 
-1. **Add DNS Record:**
-   ```
-   Type: CNAME
-   Name: yoursubdomain
-   Value: cname.vercel-dns.com
-   ```
+- **@yoohooguru/shared** - UI components, utilities, and styles
+- **@yoohooguru/auth** - NextAuth and Firebase authentication
+- **@yoohooguru/db** - Firestore database access layer
 
-2. **Add to Vercel:**
-   - Go to Vercel Dashboard → Domains
-   - Add `yoursubdomain.yoohoo.guru`
+**See [MONOREPO_README.md](./MONOREPO_README.md) for complete architecture documentation.**
    - Verify ownership
 
 3. **Deploy:**
@@ -1319,31 +1338,50 @@ For CI/CD backend testing workflow documentation, see [CI Backend Testing Guide]
 
 ## 🔍 Development Commands
 
+### Turborepo Commands
+
 ```bash
-# Install dependencies
-npm run install:all
+# Install all dependencies (uses npm workspaces)
+npm install
 
-# Development
-npm run dev                 # Start both frontend and backend
-npm run dev:frontend        # Frontend only (port 3000)
-npm run dev:backend         # Backend only (port 3001)
+# Development - Run all apps
+npm run dev                 # All apps in parallel with Turborepo
+npm run dev:main           # Homepage (www.yoohoo.guru)
+npm run dev:angel          # Angel's List subdomain
+npm run dev:coach          # Coach Guru subdomain
+npm run dev:heroes         # Hero Guru's subdomain
+npm run dev:dashboard      # User Dashboard
+npm run dev:frontend       # Legacy frontend (being phased out)
+npm run dev:backend        # Backend API (port 3001)
 
-# Building
-npm run build               # Build both for production (see performance notes above)
-npm run build:fast          # Fast build (skips optimizations)
-npm run build:clean         # Clean build with optimization script
-npm run build:analyze       # Build with bundle analysis
-npm run build:frontend      # Build React app only
-npm run build:backend       # Prepare backend for production
+# Building with Turborepo
+npm run build              # Build all apps with Turborepo
+npm run build:main         # Build homepage
+npm run build:angel        # Build Angel's List
+npm run build:coach        # Build Coach Guru
+npm run build:heroes       # Build Hero Guru's
+npm run build:dashboard    # Build User Dashboard
+npm run build:frontend     # Build legacy frontend
+npm run build:backend      # Build backend
 
 # Testing
-npm test                    # Run all tests
-npm run lint                # Check code style
-npm run format              # Format code
+npm run test               # Run all tests with Turborepo
+npm run test:frontend      # Frontend tests only
+npm run test:backend       # Backend tests only
+npm run lint               # Lint all apps with Turborepo
+npm run lint:frontend      # Lint frontend only
+npm run lint:backend       # Lint backend only
 
 # Deployment
-npm start                   # Start production server
-npm run deploy              # Deploy to configured services
+npm start                  # Start production backend server
+```
+
+### Legacy Commands (being phased out)
+
+```bash
+npm run install:all        # Install all dependencies (old method)
+npm run build:fast         # Fast build (skips optimizations)
+npm run build:clean        # Clean build with optimization script
 ```
 
 ## 🔒 Security Features
