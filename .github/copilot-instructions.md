@@ -145,7 +145,7 @@ Mock data has absolutely no place in this repository unless explicitly authorize
 **Required Approach:**
 - Use AI curation agents in `backend/src/agents/curationAgents.js` for all content generation
 - Content is curated by AI on a schedule (news: twice daily; blog: weekly)
-- For initial deployment or admin-triggered generation, use `scripts/initialize-ai-content.js`
+- For initial deployment or admin-triggered generation, use the admin API endpoint: `POST /api/admin/curate`
 - All content is stored in Firestore and served dynamically via API endpoints
 
 **AI Curation Schedule:**
@@ -154,12 +154,12 @@ Mock data has absolutely no place in this repository unless explicitly authorize
 - Maximum 10 news articles retained per subdomain (auto-cleanup)
 
 **Initialization for Deployment:**
-When initial content is needed (e.g., first deployment), run:
+When initial content is needed (e.g., first deployment), trigger the AI agents via the admin API endpoint:
 ```bash
-node scripts/initialize-ai-content.js
+curl -X POST ******/api/admin/curate
 ```
 
-This triggers AI agents to generate fresh content for all subdomains. Never create mock data files as a shortcut.
+Or use the admin dashboard to manually trigger curation. Never create mock data files as a shortcut.
 
 Resources and Helpful Scripts
 

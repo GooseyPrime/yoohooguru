@@ -21,7 +21,7 @@ This document provides a comprehensive review of the YooHoo.Guru platform, ident
 
 **Resolution:**
 - AI curation agents configured in `backend/src/agents/curationAgents.js`
-- Initialization script created: `scripts/initialize-ai-content.js`
+- Admin API endpoint exists: `POST /api/admin/curate`
 - Content generated on-demand via AI agents using OpenRouter/OpenAI APIs
 - All content stored in Firestore and served dynamically
 
@@ -31,16 +31,12 @@ This document provides a comprehensive review of the YooHoo.Guru platform, ident
 - **Retention:** Maximum 10 news articles per subdomain (auto-cleanup)
 
 **Initial Deployment Content Generation:**
+Trigger AI curation via the existing admin endpoint:
 ```bash
-# Generate all content for all subdomains
-node scripts/initialize-ai-content.js
-
-# Generate only news articles
-node scripts/initialize-ai-content.js --type=news
-
-# Generate content for specific subdomain
-node scripts/initialize-ai-content.js --subdomain=cooking
+curl -X POST ******/api/admin/curate
 ```
+
+Or use the admin dashboard to manually trigger content generation.
 
 **Content Storage:**
 - News: `Firestore: gurus/{subdomain}/news`
@@ -199,7 +195,7 @@ All guru subdomain endpoints are functional:
 - **AI Curation Agents:** `backend/src/agents/curationAgents.js`
 - **News Generation:** Twice daily (6 AM and 3 PM EST)
 - **Blog Generation:** Weekly (Mondays at 10 AM EST)
-- **Initialization Script:** `scripts/initialize-ai-content.js`
+- **Admin Endpoint:** `POST /api/admin/curate` for manual triggering
 
 **Providers:**
 - Primary: OpenRouter (Claude, Perplexity)
@@ -212,12 +208,13 @@ All guru subdomain endpoints are functional:
 **API Endpoints:**
 - `POST /api/ai/generate-news` - Generate news articles
 - `POST /api/ai/generate-blog-post` - Generate blog posts
-- Both endpoints integrated with curation agents
+- `POST /api/admin/curate` - Manually trigger all curation agents
+- All endpoints integrated with curation agents
 
 **Deployment:**
-For initial release, run the initialization script to populate all subdomains:
+For initial release, trigger the AI agents via the admin endpoint:
 ```bash
-node scripts/initialize-ai-content.js
+curl -X POST ******/api/admin/curate
 ```
 
 This triggers AI agents to generate fresh, AI-curated content for all 20 subdomains.
@@ -252,10 +249,10 @@ All 20 subdomains are configured with complete theme, SEO, and skill information
 ## Files Created/Modified
 
 ### New Files
-- `scripts/initialize-ai-content.js` - AI-based content initialization for deployment
-- `.github/copilot-instructions.md` - Added NO MOCK DATA policy
+- Admin API endpoint already exists: `POST /api/admin/curate` for manual content generation
 
 ### Modified Files
+- `.github/copilot-instructions.md` - Added NO MOCK DATA policy
 - `docs/SITE_REVIEW_AND_STATUS.md` - Updated to reflect AI-based content generation
 - `docs/PROBLEM_STATEMENT_RESOLUTION.md` - Updated documentation
 

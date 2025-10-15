@@ -100,7 +100,7 @@
 
 **Solution Implemented:**
 - AI curation agents already exist in `backend/src/agents/curationAgents.js`
-- Created initialization script: `scripts/initialize-ai-content.js`
+- Admin API endpoint already exists: `POST /api/admin/curate` for manual triggering
 - Agents generate content using OpenRouter (Claude/Perplexity) and OpenAI (GPT-4) as fallback
 
 **AI Content Generation:**
@@ -120,9 +120,9 @@
 - Includes affiliate links and internal linking
 
 **Initial Deployment:**
-For the initial release, run the initialization script:
+For the initial release, trigger the AI agents via the admin endpoint:
 ```bash
-node scripts/initialize-ai-content.js
+curl -X POST ******/api/admin/curate
 ```
 
 This triggers AI agents to generate fresh content for all 20 subdomains:
@@ -132,7 +132,7 @@ This triggers AI agents to generate fresh content for all 20 subdomains:
 - Served via existing API endpoints
 
 **Ongoing Operation:**
-After initialization, the AI curation agents run automatically on schedule:
+After manual triggering, the AI curation agents run automatically on schedule:
 - News: 6 AM and 3 PM EST daily
 - Blog: 10 AM EST every Monday
 
@@ -404,7 +404,7 @@ Features:
 
 ### Actions Taken
 1. ✅ Removed all mock data files and generator script
-2. ✅ Created `scripts/initialize-ai-content.js` for AI-based content initialization
+2. ✅ Documented existing admin API endpoint `POST /api/admin/curate` for manual content generation
 3. ✅ Updated `.github/copilot-instructions.md` with NO MOCK DATA policy
 4. ✅ Updated `docs/SITE_REVIEW_AND_STATUS.md` to reflect AI approach
 5. ✅ Updated `docs/PROBLEM_STATEMENT_RESOLUTION.md` with correct solution
@@ -433,17 +433,14 @@ After comprehensive review of the entire YooHoo.Guru platform:
 
 **THE SOLUTION IS AI-GENERATED CONTENT, NOT MOCK DATA.**
 
-All features and modules are present, functional, and properly integrated. The platform uses AI curation agents to generate fresh, high-quality content on a scheduled basis. For initial deployment, the initialization script triggers AI agents to populate all 20 subdomains with news articles and blog posts.
+All features and modules are present, functional, and properly integrated. The platform uses AI curation agents to generate fresh, high-quality content on a scheduled basis. For initial deployment, trigger the AI agents via the admin endpoint to populate all 20 subdomains with news articles and blog posts.
 
 **The platform is fully operational and ready for deployment.** 🎉
 
 **For Initial Deployment:**
 ```bash
-# Set required environment variables
-export OPENROUTER_API_KEY=your_key_here
-
-# Run AI content initialization
-node scripts/initialize-ai-content.js
+# Trigger AI content generation via admin endpoint
+curl -X POST ******/api/admin/curate
 ```
 
 This will generate AI-curated content for all 20 subdomains, with ongoing automated updates via scheduled curation agents.
