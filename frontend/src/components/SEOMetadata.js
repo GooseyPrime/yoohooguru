@@ -9,7 +9,8 @@ function SEOMetadata({
   ogImage, 
   ogUrl,
   canonicalUrl,
-  structuredData 
+  structuredData,
+  robots // New prop: controls indexing behavior (e.g., 'noindex,nofollow')
 }) {
   useEffect(() => {
     const finalUrl = window.location.href;
@@ -43,6 +44,11 @@ function SEOMetadata({
     if (keywords) {
       updateMetaTag('keywords', keywords);
     }
+    
+    // Robots meta tag - control indexing behavior
+    if (robots) {
+      updateMetaTag('robots', robots);
+    }
 
     // Open Graph tags
     updateMetaProperty('og:title', ogTitle || title);
@@ -72,7 +78,7 @@ function SEOMetadata({
       const existingScripts = document.querySelectorAll('script[data-seo="true"]');
       existingScripts.forEach(script => script.remove());
     };
-  }, [title, description, keywords, ogTitle, ogDescription, ogImage, ogUrl, canonicalUrl, structuredData]);
+  }, [title, description, keywords, ogTitle, ogDescription, ogImage, ogUrl, canonicalUrl, structuredData, robots]);
 
   return null; // This component doesn't render anything
 }

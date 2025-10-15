@@ -10,6 +10,7 @@ interface SEOMetadataProps {
   ogUrl?: string;
   canonicalUrl?: string;
   structuredData?: any;
+  robots?: string; // e.g., 'noindex,nofollow', 'index,follow', etc.
 }
 
 function SEOMetadata({ 
@@ -21,7 +22,8 @@ function SEOMetadata({
   ogImage, 
   ogUrl,
   canonicalUrl,
-  structuredData 
+  structuredData,
+  robots
 }: SEOMetadataProps) {
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -66,6 +68,7 @@ function SEOMetadata({
 
     updateMetaTag('description', description);
     updateMetaTag('keywords', keywords);
+    updateMetaTag('robots', robots); // Control indexing behavior
     updateMetaTag('og:title', ogTitle || title, true);
     updateMetaTag('og:description', ogDescription || description, true);
     updateMetaTag('og:image', ogImage, true);
@@ -100,7 +103,7 @@ function SEOMetadata({
       }
       script.textContent = JSON.stringify(structuredData);
     }
-  }, [title, description, keywords, ogTitle, ogDescription, ogImage, ogUrl, canonicalUrl, structuredData]);
+  }, [title, description, keywords, ogTitle, ogDescription, ogImage, ogUrl, canonicalUrl, structuredData, robots]);
 
   return null;
 }
