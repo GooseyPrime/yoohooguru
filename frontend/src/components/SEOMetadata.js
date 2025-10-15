@@ -14,6 +14,17 @@ function SEOMetadata({
   useEffect(() => {
     const finalUrl = window.location.href;
     
+    // Normalize URL to use canonical www subdomain for main domain
+    let normalizedCanonicalUrl = canonicalUrl;
+    if (!normalizedCanonicalUrl) {
+      const currentUrl = new URL(finalUrl);
+      // If on yoohoo.guru (without www), normalize to www.yoohoo.guru
+      if (currentUrl.hostname === 'yoohoo.guru') {
+        currentUrl.hostname = 'www.yoohoo.guru';
+      }
+      normalizedCanonicalUrl = currentUrl.href;
+    }
+    
     // Update document title
     if (title) {
       document.title = title;
@@ -37,7 +48,7 @@ function SEOMetadata({
     updateMetaProperty('og:title', ogTitle || title);
     updateMetaProperty('og:description', ogDescription || description);
     updateMetaProperty('og:image', ogImage);
-    updateMetaProperty('og:url', ogUrl);
+    updateMetaProperty('og:url', ogUrl || normalizedCanonicalUrl);
     updateMetaProperty('og:type', 'website');
     updateMetaProperty('og:site_name', 'yoohoo.guru');
 
@@ -47,13 +58,8 @@ function SEOMetadata({
     updateMetaName('twitter:description', ogDescription || description);
     updateMetaName('twitter:image', ogImage);
 
-    // Canonical URL - ensure it's set
-    if (canonicalUrl) {
-      updateCanonicalLink(canonicalUrl);
-    } else {
-      // Set current URL as canonical if not explicitly provided
-      updateCanonicalLink(finalUrl);
-    }
+    // Canonical URL - ensure it's set with normalized www URL
+    updateCanonicalLink(normalizedCanonicalUrl);
 
     // Structured data
     if (structuredData) {
