@@ -1,37 +1,14 @@
-# Production Split Deploy
+# Production Deployment Guide - Turborepo Monorepo
 
-## Frontend (Vercel)
-1. Project: `frontend/`
-2. Production domain: `https://yoohoo.guru`
-3. Env (Production):
-   - `REACT_APP_API_URL=https://api.yoohoo.guru/api`
-   - `REACT_APP_FIREBASE_API_KEY=...`
-   - `REACT_APP_FIREBASE_AUTH_DOMAIN=...`
-   - `REACT_APP_FIREBASE_PROJECT_ID=...`
-   - `REACT_APP_FIREBASE_STORAGE_BUCKET=...`
-   - `REACT_APP_FIREBASE_MESSAGING_SENDER_ID=...`
-   - `REACT_APP_FIREBASE_APP_ID=...`
-4. `frontend/vercel.json` provides CSP headers.
+## Overview
 
-## Backend (Railway)
-1. Service root: `backend/` (or repo root with Docker build context pointing to backend Dockerfile).
-2. Env:
-   - `NODE_ENV=production`
-   - `SERVE_FRONTEND=false`
-   - `CORS_ORIGIN_PRODUCTION=https://yoohoo.guru,https://*.vercel.app`
-   - `FIREBASE_PROJECT_ID=...`
-   - `FIREBASE_CLIENT_EMAIL=...`
-   - `FIREBASE_PRIVATE_KEY=...`  (use literal `\n` for newlines)
-   - `JWT_SECRET=...`
-3. Health: `GET /health` → 200
-4. API base: `/api/*`
+The yoohoo.guru platform uses a **Turborepo monorepo architecture** with 25+ Next.js applications. Each subdomain is deployed as a separate Vercel project with its own custom domain.
 
-## Firebase Auth
-Authorized domains:
-- `yoohoo.guru`
-- Vercel previews (e.g., `*.vercel.app`)
-- Default Firebase auth domain (`<project>.firebaseapp.com`)
-Callbacks/redirects occur on the **frontend** domain (`https://yoohoo.guru`).
+## Deployment Architecture
+
+- **Frontend Apps (25)**: Vercel - Each Next.js app deployed separately
+- **Backend API**: Railway - Single Node.js/Express API
+- **Database & Auth**: Firebase - Firestore and Authentication
 
 ## DNS Configuration - CRITICAL ⚠️
 
@@ -39,115 +16,248 @@ Callbacks/redirects occur on the **frontend** domain (`https://yoohoo.guru`).
 
 ```
 ✅ CORRECT CONFIGURATION:
-yoohoo.guru        → Vercel frontend (A/CNAME record)
-www.yoohoo.guru    → Vercel frontend (CNAME record) 
-api.yoohoo.guru    → Railway backend (CNAME record)
+www.yoohoo.guru     → Vercel (apps/main)
+angel.yoohoo.guru   → Vercel (apps/angel)
+coach.yoohoo.guru   → Vercel (apps/coach)
+heroes.yoohoo.guru  → Vercel (apps/heroes)
+dashboard.yoohoo.guru → Vercel (apps/dashboard)
+[20 more subdomains] → Vercel (apps/*)
+api.yoohoo.guru     → Railway (backend)
 
 ❌ COMMON MISTAKE:
-yoohoo.guru        → Railway backend (causes CSP/routing issues)
+Pointing frontend subdomains to Railway instead of Vercel
 ```
 
 ### DNS Verification Commands
 ```bash
-# Test DNS resolution
-dig yoohoo.guru
-dig www.yoohoo.guru  
+# Test DNS resolution for each subdomain
+dig www.yoohoo.guru
+dig angel.yoohoo.guru
 dig api.yoohoo.guru
 
 # Test actual routing
-curl -I https://yoohoo.guru/        # Should return HTML (Vercel)
-curl -I https://api.yoohoo.guru/    # Should return JSON (Railway)
+curl -I https://www.yoohoo.guru/        # Should return HTML (Vercel/Next.js)
+curl -I https://api.yoohoo.guru/health  # Should return JSON (Railway/Express)
 ```
 
-### ⚠️ Troubleshooting DNS Issues
+## Vercel Multi-App Deployment
 
-**If yoohoo.guru serves JSON instead of HTML:**
-- DNS points to Railway instead of Vercel
-- Update A/CNAME record to point to Vercel
+### Overview
 
-**If api.yoohoo.guru serves HTML instead of JSON:**  
-- DNS points to Vercel instead of Railway
-- Update CNAME record to point to Railway
+Each of the 25 Next.js apps in `/apps` must be deployed as a **separate Vercel project** with its own custom domain.
 
-**Verification Script:**
+### All Apps to Deploy
+
+| App | Directory | Domain | Vercel Project Name |
+|-----|-----------|--------|---------------------|
+| Main | `apps/main` | www.yoohoo.guru | yoohooguru-main |
+| Angel | `apps/angel` | angel.yoohoo.guru | yoohooguru-angel |
+| Coach | `apps/coach` | coach.yoohoo.guru | yoohooguru-coach |
+| Heroes | `apps/heroes` | heroes.yoohoo.guru | yoohooguru-heroes |
+| Dashboard | `apps/dashboard` | dashboard.yoohoo.guru | yoohooguru-dashboard |
+| Art | `apps/art` | art.yoohoo.guru | yoohooguru-art |
+| Business | `apps/business` | business.yoohoo.guru | yoohooguru-business |
+| Coding | `apps/coding` | coding.yoohoo.guru | yoohooguru-coding |
+| Cooking | `apps/cooking` | cooking.yoohoo.guru | yoohooguru-cooking |
+| Crafts | `apps/crafts` | crafts.yoohoo.guru | yoohooguru-crafts |
+| Data | `apps/data` | data.yoohoo.guru | yoohooguru-data |
+| Design | `apps/design` | design.yoohoo.guru | yoohooguru-design |
+| Finance | `apps/finance` | finance.yoohoo.guru | yoohooguru-finance |
+| Fitness | `apps/fitness` | fitness.yoohoo.guru | yoohooguru-fitness |
+| Gardening | `apps/gardening` | gardening.yoohoo.guru | yoohooguru-gardening |
+| Home | `apps/home` | home.yoohoo.guru | yoohooguru-home |
+| Investing | `apps/investing` | investing.yoohoo.guru | yoohooguru-investing |
+| Language | `apps/language` | language.yoohoo.guru | yoohooguru-language |
+| Marketing | `apps/marketing` | marketing.yoohoo.guru | yoohooguru-marketing |
+| Music | `apps/music` | music.yoohoo.guru | yoohooguru-music |
+| Photography | `apps/photography` | photography.yoohoo.guru | yoohooguru-photography |
+| Sales | `apps/sales` | sales.yoohoo.guru | yoohooguru-sales |
+| Tech | `apps/tech` | tech.yoohoo.guru | yoohooguru-tech |
+| Wellness | `apps/wellness` | wellness.yoohoo.guru | yoohooguru-wellness |
+| Writing | `apps/writing` | writing.yoohoo.guru | yoohooguru-writing |
+
+### Deploying a Single App
+
+**Step 1: Create Vercel Project**
 ```bash
-./scripts/verify-architecture.sh
+cd yoohooguru
+vercel
+
+# Follow prompts:
+# - Link to existing project or create new
+# - Set project name (e.g., yoohooguru-main)
 ```
 
-# Deployment Guide
+**Step 2: Configure in Vercel Dashboard**
 
-This guide covers deploying yoohoo.guru to various hosting platforms.
+Go to Vercel Dashboard → Project Settings → General:
 
-## Prerequisites
+```
+Root Directory: apps/main  (or apps/angel, apps/coach, etc.)
+Build Command: cd ../.. && turbo run build --filter=@yoohooguru/main
+Output Directory: apps/main/.next
+Install Command: npm install
+Framework Preset: Next.js
+Node.js Version: 20.x
+```
 
-- Node.js 18+ installed locally
-- Firebase project configured
-- Environment variables configured
-- Domain name (for production)
+**Step 3: Set Environment Variables**
 
-## Environment Setup
+In Vercel Dashboard → Project Settings → Environment Variables:
 
-### 1. Environment Variables
+```bash
+# Required for all apps
+NEXT_PUBLIC_API_URL=https://api.yoohoo.guru
+NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
 
-**Important**: For complete environment variable documentation, see [Environment Variables Guide](./ENVIRONMENT_VARIABLES.md).
+# NextAuth configuration (adjust URL per app)
+NEXTAUTH_URL=https://www.yoohoo.guru  # or angel.yoohoo.guru, etc.
+NEXTAUTH_SECRET=your_secure_secret_key
 
-Copy `.env.example` to `.env` and configure:
+# Cross-subdomain authentication
+AUTH_COOKIE_DOMAIN=.yoohoo.guru
+```
 
-```env
-# Production Environment
+**Step 4: Add Custom Domain**
+
+In Vercel Dashboard → Project Settings → Domains:
+- Add domain: `www.yoohoo.guru` (for main app)
+- Or: `angel.yoohoo.guru`, `coach.yoohoo.guru`, etc.
+
+**Step 5: Deploy**
+```bash
+vercel --prod
+```
+
+### Bulk Deployment Script
+
+For deploying all 25 apps, create a deployment script:
+
+```bash
+#!/bin/bash
+# deploy-all-apps.sh
+
+APPS=("main" "angel" "coach" "heroes" "dashboard" "art" "business" "coding" "cooking" "crafts" "data" "design" "finance" "fitness" "gardening" "home" "investing" "language" "marketing" "music" "photography" "sales" "tech" "wellness" "writing")
+
+for app in "${APPS[@]}"; do
+  echo "Deploying $app..."
+  cd apps/$app
+  vercel --prod --confirm
+  cd ../..
+done
+```
+
+## Railway Backend Deployment
+
+The backend API serves all 25 frontend apps and is deployed as a single Railway service.
+
+### Backend Configuration
+
+**Step 1: Create Railway Project**
+```bash
+cd yoohooguru/backend
+railway login
+railway link  # Link to existing project or create new
+```
+
+**Step 2: Configure Railway Settings**
+
+In Railway Dashboard → Settings:
+```
+Root Directory: backend
+Build Command: npm install && npm run build
+Start Command: npm start
+```
+
+**Step 3: Set Environment Variables**
+
+In Railway Dashboard → Variables:
+
+```bash
+# Core Configuration
 NODE_ENV=production
-PORT=3001
+PORT=8000
+SERVE_FRONTEND=false
 
-# App Branding (customize for your deployment)
-APP_BRAND_NAME=yoohoo.guru
-APP_DISPLAY_NAME=yoohoo.guru
-APP_LEGAL_EMAIL=legal@yoohoo.guru
-APP_PRIVACY_EMAIL=privacy@yoohoo.guru
-APP_SUPPORT_EMAIL=support@yoohoo.guru
-
-# CORS Origins (update with your actual domains)
-CORS_ORIGIN_PRODUCTION=https://your-domain.com,https://www.your-domain.com
+# CORS - Allow all frontend subdomains
+CORS_ORIGIN_PRODUCTION=https://www.yoohoo.guru,https://angel.yoohoo.guru,https://coach.yoohoo.guru,https://heroes.yoohoo.guru,https://dashboard.yoohoo.guru,https://art.yoohoo.guru,https://business.yoohoo.guru,https://coding.yoohoo.guru,https://cooking.yoohoo.guru,https://crafts.yoohoo.guru,https://data.yoohoo.guru,https://design.yoohoo.guru,https://finance.yoohoo.guru,https://fitness.yoohoo.guru,https://gardening.yoohoo.guru,https://home.yoohoo.guru,https://investing.yoohoo.guru,https://language.yoohoo.guru,https://marketing.yoohoo.guru,https://music.yoohoo.guru,https://photography.yoohoo.guru,https://sales.yoohoo.guru,https://tech.yoohoo.guru,https://wellness.yoohoo.guru,https://writing.yoohoo.guru
 
 # Firebase Configuration
-FIREBASE_API_KEY=your_firebase_api_key
-FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-FIREBASE_DATABASE_URL=https://your_project.firebaseio.com
 FIREBASE_PROJECT_ID=your_project_id
-FIREBASE_STORAGE_BUCKET=your_project.appspot.com
-FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-FIREBASE_APP_ID=your_app_id
+FIREBASE_CLIENT_EMAIL=firebase-adminsdk@your-project.iam.gserviceaccount.com
+FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
 
-# Frontend URLs
-REACT_APP_API_URL=https://your-api-domain.com/api
-REACT_APP_ENVIRONMENT=production
+# Security
+JWT_SECRET=your_secure_jwt_secret
+SESSION_SECRET=your_secure_session_secret
 
-# Frontend Branding (must use REACT_APP_ prefix)
-REACT_APP_BRAND_NAME=yoohoo.guru
-REACT_APP_DISPLAY_NAME=yoohoo.guru
-REACT_APP_LEGAL_EMAIL=legal@yoohoo.guru
-REACT_APP_PRIVACY_EMAIL=privacy@yoohoo.guru
-REACT_APP_SUPPORT_EMAIL=support@yoohoo.guru
-REACT_APP_CONTACT_ADDRESS=yoohoo.guru, Legal Department
-
-# Security & JWT (REQUIRED in production)
-JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
-JWT_EXPIRES_IN=7d
-
-# Rate Limiting (optional, has defaults)
-RATE_LIMIT_WINDOW_MS=900000
-RATE_LIMIT_MAX_REQUESTS=100
-
-# Add all other variables from .env.example
+# Stripe (if using payments)
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...
 ```
 
-### 2. Firebase Service Account
+**Step 4: Deploy**
+```bash
+cd backend
+railway up
+```
 
-For backend deployment, you'll need a Firebase service account:
+**Step 5: Configure Custom Domain**
 
-1. Go to Firebase Console → Project Settings → Service Accounts
-2. Generate new private key
-3. Save as `firebase-service-account.json`
-4. Set environment variable: `GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json`
+In Railway Dashboard → Settings → Networking:
+- Add custom domain: `api.yoohoo.guru`
+- Update DNS CNAME record to point to Railway
+
+### Health Check
+
+Verify backend is running:
+```bash
+curl https://api.yoohoo.guru/health
+# Should return: {"status":"ok","timestamp":"..."}
+```
+
+## Firebase Configuration
+
+### Authorized Domains
+
+Add all subdomains to Firebase Console → Authentication → Settings → Authorized domains:
+
+```
+www.yoohoo.guru
+angel.yoohoo.guru
+coach.yoohoo.guru
+heroes.yoohoo.guru
+dashboard.yoohoo.guru
+art.yoohoo.guru
+business.yoohoo.guru
+coding.yoohoo.guru
+cooking.yoohoo.guru
+crafts.yoohoo.guru
+data.yoohoo.guru
+design.yoohoo.guru
+finance.yoohoo.guru
+fitness.yoohoo.guru
+gardening.yoohoo.guru
+home.yoohoo.guru
+investing.yoohoo.guru
+language.yoohoo.guru
+marketing.yoohoo.guru
+music.yoohoo.guru
+photography.yoohoo.guru
+sales.yoohoo.guru
+tech.yoohoo.guru
+wellness.yoohoo.guru
+writing.yoohoo.guru
+```
+
+### Cross-Subdomain Authentication
+
+The platform uses NextAuth with a shared cookie domain (`.yoohoo.guru`) to enable single sign-on across all subdomains. Users authenticated on one subdomain will remain authenticated when navigating to any other subdomain.
 
 ## Frontend Deployment
 
