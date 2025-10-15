@@ -1,0 +1,19 @@
+# Netlify Configuration for yoohoo.guru Platform
+# 
+# Note: This is a Node.js/Next.js monorepo
+# Python dependencies have been moved to python-mcp-server/ subdirectory
+# to prevent Netlify from auto-detecting and attempting to install them
+
+[build]
+  # Default build command for Node.js projects
+  command = "npm install && npm run build"
+  publish = "dist"
+  
+[build.environment]
+  # Use Node.js 20 LTS
+  NODE_VERSION = "20"
+
+# Recommended Deployment Architecture:
+# - Frontend (Next.js apps): Deploy to Vercel (25 separate projects)
+# - Backend (Node.js/Express): Deploy to Railway
+# - See docs/DEPLOYMENT.md for complete deployment guide

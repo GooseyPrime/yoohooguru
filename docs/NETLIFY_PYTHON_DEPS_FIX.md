@@ -1,7 +1,7 @@
 # Netlify Deployment Fix - Python Dependencies
 
 ## Issue
-Netlify deployment was failing when trying to install Python dependencies from `requirements.txt` because `pydantic-core==2.14.1` required the Rust compiler to build from source, which is not available in Netlify's build environment.
+Netlify deployment was failing when trying to install Python dependencies from `requirements.txt` because `pydantic-core` required the Rust compiler to build from source, which is not available in Netlify's build environment.
 
 ## Error Message
 ```
@@ -11,34 +11,47 @@ This package requires Rust and Cargo to compile extensions.
 ```
 
 ## Root Cause
-- The repository contains a Python FastAPI MCP (Multi-Component Platform) server for testing
-- When Netlify detects `requirements.txt` in the root, it tries to install Python dependencies
-- The old `pydantic==2.5.0` depended on `pydantic-core==2.14.1`, which required Rust compilation
-- Early versions of pydantic-core didn't have pre-built wheels for all platforms
+- Netlify auto-detects Python projects when it finds `requirements.txt` in the repository root
+- The repository is primarily a Node.js/Next.js monorepo
+- Python dependencies are only needed for the FastAPI MCP server (used for testing/development)
+- Netlify was attempting to install Python dependencies even though they're not needed for the frontend build
 
 ## Solution
-Updated `pydantic` from version 2.5.0 to 2.10.6:
-- Version 2.10.6 uses `pydantic-core==2.27.2`
-- Newer pydantic-core versions include pre-built manylinux wheels
-- No Rust compiler needed - installs directly from wheel files
+Moved all Python-related files to a `python-mcp-server/` subdirectory:
+- `requirements.txt` → `python-mcp-server/requirements.txt`
+- `src/` → `python-mcp-server/src/`
+- `tests/` → `python-mcp-server/tests/`
+- `pyproject.toml` → `python-mcp-server/pyproject.toml`
 
-## Changes Made
-```diff
-- pydantic==2.5.0
-+ pydantic==2.10.6
-```
+By moving these files out of the repository root, Netlify no longer auto-detects Python and will not attempt to install Python dependencies during the build process.
+
+## Additional Changes
+- Created `netlify.toml` to explicitly configure Node.js build settings
+- Added `python-mcp-server/README.md` with instructions for using the Python MCP server
+- Updated `pydantic` to version 2.10.6 (has pre-built wheels if Python is needed)
 
 ## Verification
-✅ All 7 Python tests pass with the new version
-✅ Installation completes without requiring Rust
-✅ Pre-built wheels available for common platforms
-✅ No breaking changes to FastAPI functionality
-✅ Compatible with existing fastapi==0.104.1 and other dependencies
+✅ Python files no longer in repository root  
+✅ Netlify will not auto-detect Python  
+✅ Node.js build will proceed without Python dependency installation  
+✅ Python MCP server still accessible in `python-mcp-server/` subdirectory  
+✅ All Python tests can still be run from the subdirectory  
 
-## Note for Future
-While this fixes the immediate issue, the recommended deployment architecture is:
+## Running the Python MCP Server
+If you need to run the Python MCP server locally:
+
+```bash
+cd python-mcp-server
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python src/main.py
+```
+
+## Deployment Architecture
+The recommended production deployment architecture is:
 - **Frontend (Next.js apps)**: Deploy to Vercel (25 separate projects)
 - **Backend (Node.js/Express)**: Deploy to Railway
-- **Python MCP Server**: Deploy separately if needed (not to Netlify)
+- **Python MCP Server**: Not deployed to production (dev/testing only)
 
-Netlify should ideally only build the frontend applications, not Python dependencies.
+See `docs/DEPLOYMENT.md` for complete deployment instructions.
