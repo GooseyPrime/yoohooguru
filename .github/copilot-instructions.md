@@ -131,6 +131,36 @@ Consistent naming and style: Maintain consistent naming conventions and project 
 
 Prohibited behaviours: Truncating instructions, stonewalling user requests compatible with the repository, injecting irrelevant alternatives, or proceeding with major changes without approval constitute insubordination and will not be tolerated.
 
+Content Generation Policy
+
+**CRITICAL: NO MOCK DATA ALLOWED**
+
+Mock data has absolutely no place in this repository unless explicitly authorized by the admin. All content must be generated using AI curation agents. Key policies:
+
+**Prohibited Actions:**
+- Creating mock/placeholder data files (e.g., JSON files with static content)
+- Generating static content to simulate AI-generated articles or blog posts
+- Committing any form of mock data to the repository without explicit prior authorization
+
+**Required Approach:**
+- Use AI curation agents in `backend/src/agents/curationAgents.js` for all content generation
+- Content is curated by AI on a schedule (news: twice daily; blog: weekly)
+- For initial deployment or admin-triggered generation, use `scripts/initialize-ai-content.js`
+- All content is stored in Firestore and served dynamically via API endpoints
+
+**AI Curation Schedule:**
+- News articles: Twice daily at 6 AM and 3 PM EST (2 articles per run, per subdomain)
+- Blog posts: Weekly on Mondays at 10 AM EST (1 post per week, per subdomain)
+- Maximum 10 news articles retained per subdomain (auto-cleanup)
+
+**Initialization for Deployment:**
+When initial content is needed (e.g., first deployment), run:
+```bash
+node scripts/initialize-ai-content.js
+```
+
+This triggers AI agents to generate fresh content for all subdomains. Never create mock data files as a shortcut.
+
 Resources and Helpful Scripts
 
 Point Copilot to existing scripts and resources to speed up work
