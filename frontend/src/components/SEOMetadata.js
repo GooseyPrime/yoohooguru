@@ -9,10 +9,22 @@ function SEOMetadata({
   ogImage, 
   ogUrl,
   canonicalUrl,
-  structuredData 
+  structuredData,
+  robots // New prop: controls indexing behavior (e.g., 'noindex,nofollow')
 }) {
   useEffect(() => {
     const finalUrl = window.location.href;
+    
+    // Normalize URL to use canonical www subdomain for main domain
+    let normalizedCanonicalUrl = canonicalUrl;
+    if (!normalizedCanonicalUrl) {
+      const currentUrl = new URL(finalUrl);
+      // If on yoohoo.guru (without www), normalize to www.yoohoo.guru
+      if (currentUrl.hostname === 'yoohoo.guru') {
+        currentUrl.hostname = 'www.yoohoo.guru';
+      }
+      normalizedCanonicalUrl = currentUrl.href;
+    }
     
     // Update document title
     if (title) {
@@ -32,12 +44,17 @@ function SEOMetadata({
     if (keywords) {
       updateMetaTag('keywords', keywords);
     }
+    
+    // Robots meta tag - control indexing behavior
+    if (robots) {
+      updateMetaTag('robots', robots);
+    }
 
     // Open Graph tags
     updateMetaProperty('og:title', ogTitle || title);
     updateMetaProperty('og:description', ogDescription || description);
     updateMetaProperty('og:image', ogImage);
-    updateMetaProperty('og:url', ogUrl);
+    updateMetaProperty('og:url', ogUrl || normalizedCanonicalUrl);
     updateMetaProperty('og:type', 'website');
     updateMetaProperty('og:site_name', 'yoohoo.guru');
 
@@ -47,13 +64,8 @@ function SEOMetadata({
     updateMetaName('twitter:description', ogDescription || description);
     updateMetaName('twitter:image', ogImage);
 
-    // Canonical URL - ensure it's set
-    if (canonicalUrl) {
-      updateCanonicalLink(canonicalUrl);
-    } else {
-      // Set current URL as canonical if not explicitly provided
-      updateCanonicalLink(finalUrl);
-    }
+    // Canonical URL - ensure it's set with normalized www URL
+    updateCanonicalLink(normalizedCanonicalUrl);
 
     // Structured data
     if (structuredData) {
@@ -66,7 +78,7 @@ function SEOMetadata({
       const existingScripts = document.querySelectorAll('script[data-seo="true"]');
       existingScripts.forEach(script => script.remove());
     };
-  }, [title, description, keywords, ogTitle, ogDescription, ogImage, ogUrl, canonicalUrl, structuredData]);
+  }, [title, description, keywords, ogTitle, ogDescription, ogImage, ogUrl, canonicalUrl, structuredData, robots]);
 
   return null; // This component doesn't render anything
 }

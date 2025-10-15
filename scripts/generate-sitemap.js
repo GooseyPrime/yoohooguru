@@ -19,7 +19,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Main domain configuration
-const MAIN_DOMAIN = 'https://yoohoo.guru';
+const MAIN_DOMAIN = 'https://www.yoohoo.guru';
 const CURRENT_DATE = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
 
 // Guru subdomains configuration (matches AppRouter.js)
@@ -57,7 +57,11 @@ const MAIN_ROUTES = [
   
   // Authentication pages (publicly accessible)
   { url: '/login', priority: '0.4', changefreq: 'yearly' },
-  { url: '/signup', priority: '0.4', changefreq: 'yearly' }
+  { url: '/signup', priority: '0.4', changefreq: 'yearly' },
+  { url: '/forgot-password', priority: '0.4', changefreq: 'yearly' },
+  
+  // User dashboard (publicly accessible but requires auth)
+  { url: '/dashboard', priority: '0.5', changefreq: 'weekly' }
 ];
 
 // Guru subdomain routes
@@ -66,7 +70,15 @@ const GURU_ROUTES = [
   { url: '/about', priority: '0.6', changefreq: 'monthly' },
   { url: '/blog', priority: '0.6', changefreq: 'weekly' },
   { url: '/services', priority: '0.7', changefreq: 'weekly' },
-  { url: '/contact', priority: '0.5', changefreq: 'monthly' }
+  { url: '/contact', priority: '0.5', changefreq: 'monthly' },
+  { url: '/skills', priority: '0.7', changefreq: 'weekly' },
+  { url: '/angels-list', priority: '0.7', changefreq: 'weekly' },
+  { url: '/mentorship', priority: '0.6', changefreq: 'weekly' },
+  { url: '/success-stories', priority: '0.6', changefreq: 'weekly' },
+  { url: '/pricing', priority: '0.6', changefreq: 'monthly' },
+  { url: '/safety', priority: '0.5', changefreq: 'monthly' },
+  { url: '/privacy', priority: '0.3', changefreq: 'yearly' },
+  { url: '/modified', priority: '0.4', changefreq: 'weekly' }
 ];
 
 /**

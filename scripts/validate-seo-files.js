@@ -20,6 +20,8 @@ try {
   
   if (robotsContent.includes('https://www.yoohoo.guru/sitemap.xml')) {
     console.log('✅ robots.txt contains correct canonical sitemap URL');
+  } else if (robotsContent.includes('https://yoohoo.guru/sitemap.xml')) {
+    console.log('⚠️  robots.txt uses non-canonical URL (should use www.yoohoo.guru)');
   } else {
     console.log('❌ robots.txt does not contain correct canonical sitemap URL');
   }
@@ -38,6 +40,7 @@ try {
   
   let canonicalCount = 0;
   let nonCanonicalCount = 0;
+  let guruSubdomainCount = 0;
   
   urlLines.forEach(line => {
     // Extract the URL within the <loc> tag
@@ -49,6 +52,8 @@ try {
           canonicalCount++;
         } else if (locUrl.hostname === 'yoohoo.guru') {
           nonCanonicalCount++;
+        } else if (locUrl.hostname.endsWith('.yoohoo.guru')) {
+          guruSubdomainCount++;
         }
       } catch (e) {
         // Invalid URL, skip
@@ -58,19 +63,37 @@ try {
   
   console.log(`✅ Found ${canonicalCount} canonical www URLs`);
   if (nonCanonicalCount > 0) {
-    console.log(`⚠️  Found ${nonCanonicalCount} non-canonical URLs (should be updated)`);
+    console.log(`⚠️  Found ${nonCanonicalCount} non-canonical URLs (should be updated to www.yoohoo.guru)`);
   } else {
     console.log('✅ All main domain URLs use canonical www format');
   }
   
-  // Check for guru subdomain URLs
-  const guruSubdomainCount = lines.filter(line => 
-    line.includes('<loc>') && 
-    line.includes('.yoohoo.guru/') && 
-    !line.includes('www.yoohoo.guru/')
-  ).length;
-  
   console.log(`✅ Found ${guruSubdomainCount} guru subdomain URLs`);
+  
+  // Check for critical routes
+  console.log('\n📋 Checking critical routes...');
+  const criticalRoutes = [
+    'www.yoohoo.guru/',
+    'www.yoohoo.guru/skills',
+    'www.yoohoo.guru/angels-list',
+    'www.yoohoo.guru/forgot-password',
+    'www.yoohoo.guru/dashboard',
+    'www.yoohoo.guru/pricing',
+    'www.yoohoo.guru/terms',
+    'design.yoohoo.guru/about',
+    'design.yoohoo.guru/pricing',
+    'design.yoohoo.guru/modified',
+    'music.yoohoo.guru/about',
+    'writing.yoohoo.guru/about'
+  ];
+  
+  criticalRoutes.forEach(route => {
+    if (sitemapContent.includes(`https://${route}`)) {
+      console.log(`  ✅ ${route}`);
+    } else {
+      console.log(`  ❌ Missing: ${route}`);
+    }
+  });
   
 } catch (error) {
   console.log('❌ sitemap.xml not found or unreadable');
