@@ -10,8 +10,8 @@
   publish = "dist"
   
 [build.environment]
-  # Use Node.js 20 LTS
-  NODE_VERSION = "20"
+  # Use Node.js 20 LTS - specify exact version for Netlify compatibility
+  NODE_VERSION = "20.18.0"
 
 # Recommended Deployment Architecture:
 # - Frontend (Next.js apps): Deploy to Vercel (25 separate projects)
