@@ -7,7 +7,8 @@
 [build]
   # Build command for Turborepo monorepo - builds the main app by default
   # Note: Turborepo requires installing root dependencies first
-  command = "npm install && npx turbo run build --filter=@yoohooguru/main"
+  # Then install apps/main dependencies before building
+  command = "npm install && cd apps/main && npm install && cd ../.. && npx turbo run build --filter=@yoohooguru/main"
   publish = "apps/main/.next"
   
 [build.environment]

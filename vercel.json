@@ -8,10 +8,12 @@
     "autoAlias": false,
     "autoJobCancelation": true
   },
-  "buildCommand": "cd frontend && npm run build",
-  "outputDirectory": "frontend/dist",
-  "installCommand": "rm -rf .npm && npm ci && cd frontend && npm ci",
-
+  
+  "buildCommand": "cd apps/main && npm run build",
+  "outputDirectory": "apps/main/.next",
+  "installCommand": "npm ci && cd apps/main && npm ci",
+  "framework": "nextjs",
+  
   "redirects": [
     {
       "source": "/",
@@ -26,53 +28,17 @@
     }
   ],
 
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ],
-
   "headers": [
     {
-      "source": "/manifest.json",
+      "source": "/:path*",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=86400"
-        },
-        {
-          "key": "Content-Type",
-          "value": "application/manifest+json"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        }
-      ]
-    },
-    {
-      "source": "/((?!manifest\\.json$).*)",
-      "headers": [
-        {
-          "key": "Cross-Origin-Opener-Policy",
-          "value": "unsafe-none"
-        },
-        {
-          "key": "Cross-Origin-Embedder-Policy",
-          "value": "unsafe-none"
-        },
-        {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://js.stripe.com https://apis.google.com https://www.google.com https://www.gstatic.com https://accounts.google.com https://maps.googleapis.com; script-src-elem 'self' 'unsafe-inline' https://www.googletagmanager.com https://js.stripe.com https://apis.google.com https://www.google.com https://www.gstatic.com https://accounts.google.com https://maps.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com; connect-src 'self' https://api.yoohoo.guru https://api.stripe.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://*.googleapis.com https://www.googleapis.com https://firestore.googleapis.com https://accounts.google.com https://oauth2.googleapis.com https://api.unsplash.com https://images.unsplash.com https://api.bigdatacloud.net https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://maps.googleapis.com; frame-src 'self' https://js.stripe.com https://*.google.com https://*.firebaseapp.com https://accounts.google.com https://www.youtube.com https://player.vimeo.com; img-src 'self' data: blob: https://lh3.googleusercontent.com https://firebasestorage.googleapis.com https://images.unsplash.com https://www.yoohoo.guru https://yoohoo.guru https://maps.gstatic.com https://maps.googleapis.com; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com; object-src 'none'; base-uri 'self'"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
         {
           "key": "X-Frame-Options",
           "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
         },
         {
           "key": "X-XSS-Protection",
@@ -81,50 +47,6 @@
         {
           "key": "Referrer-Policy",
           "value": "strict-origin-when-cross-origin"
-        }
-      ]
-    },
-    {
-      "source": "/:path*.(js|css|woff|woff2|ttf|eot|ico|png|jpg|jpeg|gif|svg)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    },
-    {
-      "source": "/assets/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    },
-    {
-      "source": "/fonts/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        },
-        {
-          "key": "Content-Type",
-          "value": "font/woff2"
-        },
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        }
-      ]
-    },
-    {
-      "source": "/(.*)\\.html$",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=3600"
         }
       ]
     }
