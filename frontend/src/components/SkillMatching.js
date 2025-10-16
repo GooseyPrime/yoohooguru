@@ -393,7 +393,7 @@ function SkillMatchingComponent() {
           </MatchGrid>
 
           <div style={{textAlign: 'center', marginTop: '1.5rem'}}>
-            <Button variant="outline" onClick={() => navigate('/skills')}>
+            <Button variant="outline" onClick={() => window.location.href = 'https://coach.yoohoo.guru'}>
               View All {isGuru ? 'Understudies' : 'Gurus'}
             </Button>
           </div>
