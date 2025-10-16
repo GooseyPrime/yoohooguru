@@ -154,4 +154,36 @@ describe('Guru Subdomain Validation Fix', () => {
       expect(response.body.subdomain).toBe('tech');
     });
   });
+
+  describe('Special platform subdomains (angel, coach, heroes)', () => {
+    it('should work for angel subdomain in home endpoint', async () => {
+      const response = await request(app)
+        .get('/gurus/angel/home')
+        .set('Origin', 'http://localhost:3000');
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.guru.character).toBe('Angel\'s List');
+    });
+
+    it('should work for coach subdomain in services endpoint', async () => {
+      const response = await request(app)
+        .get('/gurus/coach/services')
+        .set('Origin', 'http://localhost:3000');
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.guru.character).toBe('Coach Guru');
+    });
+
+    it('should work for heroes subdomain in news endpoint', async () => {
+      const response = await request(app)
+        .get('/api/gurus/news/heroes')
+        .set('Origin', 'http://localhost:3000');
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.subdomain).toBe('heroes');
+    });
+  });
 });
