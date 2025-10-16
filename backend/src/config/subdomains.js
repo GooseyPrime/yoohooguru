@@ -1,4 +1,58 @@
 const subdomainConfig = {
+  'angel': {
+    character: 'Angel\'s List',
+    category: 'services',
+    primarySkills: ['handyman', 'cleaning', 'moving', 'repairs', 'errands'],
+    affiliateCategories: ['tools', 'services', 'equipment', 'supplies'],
+    theme: {
+      primaryColor: '#3498db',
+      secondaryColor: '#2980b9',
+      accentColor: '#1f618d',
+      icon: '😇',
+      emoji: '🛠️'
+    },
+    seo: {
+      title: 'Angel\'s List - Local Services & Small Jobs',
+      description: 'Find trusted local help for rentals, repairs, cleaning, moving, and small jobs. Post projects and hire skilled professionals.',
+      keywords: ['local services', 'handyman', 'home repairs', 'small jobs', 'service marketplace']
+    }
+  },
+  'coach': {
+    character: 'Coach Guru',
+    category: 'coaching',
+    primarySkills: ['life-coaching', 'career-coaching', 'skill-swap', 'mentoring', 'teaching'],
+    affiliateCategories: ['courses', 'books', 'tools', 'resources'],
+    theme: {
+      primaryColor: '#27ae60',
+      secondaryColor: '#229954',
+      accentColor: '#1e8449',
+      icon: '🏆',
+      emoji: '🎯'
+    },
+    seo: {
+      title: 'Coach Guru - Skill Swap & Structured Learning',
+      description: 'Connect with coaches and teachers for structured skill-sharing sessions. Learn new skills and teach what you know.',
+      keywords: ['coaching', 'skill swap', 'mentoring', 'teaching', 'learning']
+    }
+  },
+  'heroes': {
+    character: 'Hero Guru\'s',
+    category: 'community',
+    primarySkills: ['community-service', 'volunteering', 'local-heroes', 'helping', 'support'],
+    affiliateCategories: ['resources', 'tools', 'supplies', 'services'],
+    theme: {
+      primaryColor: '#e74c3c',
+      secondaryColor: '#c0392b',
+      accentColor: '#a93226',
+      icon: '🦸',
+      emoji: '⭐'
+    },
+    seo: {
+      title: 'Hero Guru\'s - Community Heroes & Local Support',
+      description: 'Connect with local heroes and community champions. Find help and offer support in your community.',
+      keywords: ['community heroes', 'local support', 'volunteering', 'community service', 'helping']
+    }
+  },
   'cooking': { 
     character: 'Chef Guru', 
     category: 'culinary',
