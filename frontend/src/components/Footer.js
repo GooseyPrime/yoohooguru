@@ -115,9 +115,9 @@ function Footer() {
           <FooterSection>
             <h3>Quick Links</h3>
             <FooterLinks>
-              <li><Link to="/skills">Browse Skills</Link></li>
-              <li><Link to="/angels-list">Angel&apos;s List</Link></li>
-              <li><Link to="/dashboard">Dashboard</Link></li>
+              <li><a href="https://coach.yoohoo.guru">Browse Skills</a></li>
+              <li><a href="https://angel.yoohoo.guru">Angel&apos;s List</a></li>
+              <li><a href="https://dashboard.yoohoo.guru">Dashboard</a></li>
               <li><Link to="/about">About Us</Link></li>
               <li><Link to="/how-it-works">How It Works</Link></li>
               <li><Link to="/pricing">Pricing</Link></li>

@@ -266,12 +266,12 @@ function DashboardPage() {
     if (actionType === 'continue' && bookingState) {
       // Navigate to appropriate page based on type
       if (bookingState.type === 'service') {
-        navigate('/angels-list', { state: { category: bookingState.category } });
+        window.location.href = 'https://angel.yoohoo.guru';
       } else if (bookingState.type === 'teachers') {
         // For now, redirect to skills page with teacher filter - this could be enhanced later
-        navigate('/skills', { state: { category: bookingState.category, showTeachers: true } });
+        window.location.href = 'https://coach.yoohoo.guru';
       } else {
-        navigate('/skills', { state: { category: bookingState.category } });
+        window.location.href = 'https://coach.yoohoo.guru';
       }
     } else if (actionType === 'dismiss') {
       setBookingState(null);
@@ -298,14 +298,14 @@ function DashboardPage() {
         icon: BookOpen,
         title: 'Browse Skills',
         description: 'Find skills to learn or discover teaching opportunities',
-        action: () => navigate('/skills')
+        action: () => window.location.href = 'https://coach.yoohoo.guru'
       });
       
       actions.push({
         icon: Users,
         title: 'Angel\'s List',
         description: 'Browse professional services or offer your expertise',
-        action: () => navigate('/angels-list')
+        action: () => window.location.href = 'https://angel.yoohoo.guru'
       });
     }
     
@@ -325,7 +325,7 @@ function DashboardPage() {
         icon: BookOpen,
         title: 'Explore Skills',
         description: 'Discover new learning opportunities',
-        action: () => navigate('/skills')
+        action: () => window.location.href = 'https://coach.yoohoo.guru'
       });
     }
     
@@ -334,7 +334,7 @@ function DashboardPage() {
         icon: Users,
         title: 'Find Services',
         description: 'Connect with service providers in your area',
-        action: () => navigate('/angels-list')
+        action: () => window.location.href = 'https://angel.yoohoo.guru'
       });
     }
     
@@ -346,13 +346,13 @@ function DashboardPage() {
       icon: BookOpen,
       title: 'Browse Skills',
       description: 'Find skills to learn or discover teaching opportunities',
-      action: () => navigate('/skills')
+      action: () => window.location.href = 'https://coach.yoohoo.guru'
     },
     {
       icon: Users,
       title: 'Angel\'s List',
       description: 'Browse professional services or offer your expertise',
-      action: () => navigate('/angels-list')
+      action: () => window.location.href = 'https://angel.yoohoo.guru'
     },
     {
       icon: User,
@@ -487,7 +487,7 @@ function DashboardPage() {
           </p>
           <Button 
             variant="secondary" 
-            onClick={() => navigate('/skills')}
+            onClick={() => window.location.href = 'https://coach.yoohoo.guru'}
             style={{background: 'rgba(255,255,255,0.2)', color: 'inherit', border: '1px solid rgba(255,255,255,0.3)'}}
           >
             Get Started

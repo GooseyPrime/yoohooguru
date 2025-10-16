@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff, Users, Briefcase, CheckCircle2 } from 'lucide-react';
 import Button from '../components/Button';
 import toast from 'react-hot-toast';
@@ -820,7 +820,7 @@ function SignupPage() {
         </Button>
 
         <LoginLink>
-          Already have an account? <a href="/login">Sign in</a>
+          Already have an account? <Link to="/login">Sign in</Link>
         </LoginLink>
       </Content>
     </Container>
