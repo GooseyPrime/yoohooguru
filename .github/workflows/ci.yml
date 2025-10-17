@@ -64,6 +64,7 @@ jobs:
         FIREBASE_API_KEY: AIzaSyTest1234567890KeyForCITestingOnly
        # FIRESTORE_EMULATOR_HOST: localhost:8080
        # FIREBASE_AUTH_EMULATOR_HOST: localhost:9099
+        SESSION_SECRET: ci-test-session-secret-key-32chars-minimum-for-security-purposes
         JWT_SECRET: test-jwt-secret-key-for-ci-cd-testing-only-not-for-production
         STRIPE_SECRET_KEY: sk_test_51AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQr
         STRIPE_PUBLISHABLE_KEY: pk_test_51AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOp
