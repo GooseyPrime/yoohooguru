@@ -43,6 +43,8 @@
     "multer": "^2.0.2",
     "node-cron": "^3.0.3",
     "stripe": "^18.5.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^8.3.2",
     "winston": "^3.18.2"
   },

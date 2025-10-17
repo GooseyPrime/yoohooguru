@@ -27,6 +27,8 @@ const errorHandler = require('./middleware/errorHandler');
 const { subdomainHandler } = require('./middleware/subdomainHandler');
 const { requestIdMiddleware } = require('./middleware/requestId');
 const { startCurationAgents, getCurationAgentStatus } = require('./agents/curationAgents');
+const swaggerUi = require('swagger-ui-express');
+const { swaggerSpec } = require('./config/swagger');
 
 // Route Imports
 const authRoutes = require('./routes/auth');
@@ -377,6 +379,40 @@ app.get('/health', async (req, res) => {
     });
   }
 });
+
+// Swagger API documentation
+// Serve Swagger UI at /api-docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  customSiteTitle: 'YoohooGuru API Documentation',
+  customCss: '.swagger-ui .topbar { display: none }',
+  swaggerOptions: {
+    persistAuthorization: true,
+    displayRequestDuration: true,
+    filter: true
+  }
+}));
+
+// OpenAPI JSON spec endpoint
+app.get('/api-docs.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
+
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     summary: Health check endpoint
+ *     description: Returns the health status of the API and its dependencies
+ *     tags: [Health]
+ *     responses:
+ *       200:
+ *         description: Service is healthy
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HealthCheck'
+ */
 
 // API v1 routes (versioned)
 const v1Routes = require('./routes/v1');

@@ -6,9 +6,72 @@ const { handleValidationErrors, query } = require('../middleware/validation');
 
 const router = express.Router();
 
-// @desc    Get all users (with optional filters)
-// @route   GET /api/users
-// @access  Public/Private
+/**
+ * @swagger
+ * /api/users:
+ *   get:
+ *     summary: Get all users
+ *     description: Retrieve a list of users with optional filtering by tier, skills, and location
+ *     tags: [Users]
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 50
+ *         description: Maximum number of users to return
+ *       - in: query
+ *         name: offset
+ *         schema:
+ *           type: integer
+ *           minimum: 0
+ *           default: 0
+ *         description: Number of users to skip
+ *       - in: query
+ *         name: tier
+ *         schema:
+ *           type: string
+ *           enum: [free, premium, enterprise]
+ *         description: Filter by subscription tier
+ *       - in: query
+ *         name: skills
+ *         schema:
+ *           type: string
+ *         description: Comma-separated list of skills to filter by
+ *       - in: query
+ *         name: location
+ *         schema:
+ *           type: string
+ *         description: Filter by location (partial match)
+ *     responses:
+ *       200:
+ *         description: List of users retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 users:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/User'
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     total:
+ *                       type: number
+ *                     limit:
+ *                       type: number
+ *                     offset:
+ *                       type: number
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ */
 router.get('/', [
   query('limit').optional().isInt({ min: 1, max: 100 }).toInt().withMessage('Limit must be between 1 and 100'),
   query('offset').optional().isInt({ min: 0 }).toInt().withMessage('Offset must be a non-negative integer'),
