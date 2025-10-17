@@ -1,6 +1,16 @@
+/**
+ * Button Component
+ * A reusable button component with multiple variants and sizes
+ * 
+ * @module components/Button
+ */
+
 import React from 'react';
 import styled, { css } from 'styled-components';
 
+/**
+ * Styled button props using transient props to avoid DOM warnings
+ */
 interface StyledButtonProps {
   $primary?: boolean;
   $secondary?: boolean;
@@ -72,15 +82,36 @@ const StyledButton = styled.button<StyledButtonProps>`
   `}
 `;
 
+/**
+ * Button component props
+ */
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Button content */
   children: React.ReactNode;
+  /** Button variant style */
   variant?: 'primary' | 'secondary';
+  /** Whether button should take full width of container */
   fullWidth?: boolean;
+  /** Button size */
   size?: 'small' | 'medium' | 'large';
+  /** Whether to show loading state */
   loading?: boolean;
 }
 
-const Button: React.FC<ButtonProps> = ({ 
+/**
+ * Button component
+ * 
+ * @param {ButtonProps} props - Component props
+ * @returns {React.FC<ButtonProps>} Rendered button component
+ * 
+ * @example
+ * ```tsx
+ * <Button variant="primary" size="large" onClick={handleClick}>
+ *   Click Me
+ * </Button>
+ * ```
+ */
+const Button: React.FC<ButtonProps> = ({
   children, 
   variant = 'primary',
   fullWidth = false,
