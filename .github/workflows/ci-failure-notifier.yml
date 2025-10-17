@@ -1,0 +1,211 @@
+name: CI Failure Notifier
+
+# This workflow runs after the main CI workflow completes
+# It fetches the logs and posts detailed failure information to the PR
+on:
+  workflow_run:
+    workflows: ["Continuous Integration"]
+    types: [completed]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  actions: read
+
+jobs:
+  notify-failure:
+    name: Post Detailed Failure Info
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' && github.event.workflow_run.event == 'pull_request' }}
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Get PR number from workflow run
+      id: pr
+      run: |
+        PR_NUMBER=$(gh api \
+          "/repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}" \
+          --jq '.pull_requests[0].number')
+        
+        if [ -z "$PR_NUMBER" ] || [ "$PR_NUMBER" = "null" ]; then
+          echo "No PR found for this workflow run"
+          echo "pr_number=0" >> $GITHUB_OUTPUT
+        else
+          echo "Found PR #${PR_NUMBER}"
+          echo "pr_number=${PR_NUMBER}" >> $GITHUB_OUTPUT
+        fi
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Download workflow logs
+      if: steps.pr.outputs.pr_number != '0'
+      id: download-logs
+      run: |
+        echo "Downloading logs for workflow run ${{ github.event.workflow_run.id }}..."
+        
+        # Create temp directory for logs
+        mkdir -p /tmp/workflow-logs
+        
+        # Download logs using GitHub API
+        gh api \
+          "/repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}/logs" \
+          > /tmp/workflow-logs/logs.zip || {
+            echo "Failed to download logs"
+            echo "logs_available=false" >> $GITHUB_OUTPUT
+            exit 0
+          }
+        
+        # Extract logs
+        cd /tmp/workflow-logs
+        unzip -q logs.zip || {
+          echo "Failed to extract logs"
+          echo "logs_available=false" >> $GITHUB_OUTPUT
+          exit 0
+        }
+        
+        # Combine all log files
+        cat *.txt > combined-logs.txt 2>/dev/null || {
+          echo "Failed to combine logs"
+          echo "logs_available=false" >> $GITHUB_OUTPUT
+          exit 0
+        }
+        
+        echo "Logs downloaded and extracted successfully"
+        echo "logs_available=true" >> $GITHUB_OUTPUT
+        echo "log_file=/tmp/workflow-logs/combined-logs.txt" >> $GITHUB_OUTPUT
+        
+        # Show log file size
+        ls -lh /tmp/workflow-logs/combined-logs.txt
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      continue-on-error: true
+    
+    - name: Extract failure details
+      if: steps.pr.outputs.pr_number != '0' && steps.download-logs.outputs.logs_available == 'true'
+      id: extract
+      run: |
+        echo "Extracting failure details from logs..."
+        
+        chmod +x .github/scripts/extract-failure-logs.sh
+        
+        LOG_FILE="${{ steps.download-logs.outputs.log_file }}"
+        OUTPUT_FILE="/tmp/failure-details.md"
+        
+        # Extract errors
+        .github/scripts/extract-failure-logs.sh extract "$LOG_FILE" > "$OUTPUT_FILE"
+        
+        echo "Extraction complete"
+        echo "output_file=${OUTPUT_FILE}" >> $GITHUB_OUTPUT
+        
+        # Check if we got meaningful output
+        if [ -s "$OUTPUT_FILE" ]; then
+          echo "has_details=true" >> $GITHUB_OUTPUT
+          echo "Output file size: $(wc -c < "$OUTPUT_FILE") bytes"
+        else
+          echo "has_details=false" >> $GITHUB_OUTPUT
+          echo "No details extracted"
+        fi
+      continue-on-error: true
+    
+    - name: Post detailed failure to PR
+      if: steps.pr.outputs.pr_number != '0'
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        PR_NUMBER="${{ steps.pr.outputs.pr_number }}"
+        WORKFLOW_URL="${{ github.event.workflow_run.html_url }}"
+        RUN_NUMBER="${{ github.event.workflow_run.run_number }}"
+        SHA="${{ github.event.workflow_run.head_sha }}"
+        BRANCH="${{ github.event.workflow_run.head_branch }}"
+        ACTOR="${{ github.event.workflow_run.actor.login }}"
+        
+        # Build the comment
+        if [ "${{ steps.extract.outputs.has_details }}" = "true" ] && [ -f "${{ steps.extract.outputs.output_file }}" ]; then
+          # Use extracted details
+          FAILURE_DETAILS=$(cat "${{ steps.extract.outputs.output_file }}")
+        else
+          # Fallback to generic message with structured format
+          {
+            echo "### Recent Log Output"
+            echo ""
+            echo "<details><summary>View Log Information</summary>"
+            echo ""
+            echo "Unable to extract specific error details from the workflow logs."
+            echo ""
+            echo "Please check the [full workflow logs](${WORKFLOW_URL}) for complete error information."
+            echo ""
+            echo "</details>"
+          } > /tmp/fallback-details.txt
+          FAILURE_DETAILS=$(cat /tmp/fallback-details.txt)
+        fi
+        
+        # Create full comment using printf to avoid YAML parsing issues
+        {
+          echo "@copilot"
+          echo ""
+          echo "## ❌ CI Workflow Failed"
+          echo ""
+          echo "**Workflow Run:** [#${RUN_NUMBER}](${WORKFLOW_URL})"
+          echo "**Commit:** \`${SHA}\`"
+          echo "**Branch:** \`${BRANCH}\`"
+          echo "**Triggered by:** @${ACTOR}"
+          echo ""
+          echo "### 📋 Failure Details"
+          echo ""
+          echo "${FAILURE_DETAILS}"
+          echo ""
+          echo "### 🔍 How to Debug"
+          echo ""
+          echo "1. **Review the error details above** for specific failure information"
+          echo "2. **[View Full Workflow Logs](${WORKFLOW_URL})** for complete output"
+          echo "3. **Run tests locally** to reproduce the issue:"
+          echo "   \`\`\`bash"
+          echo "   # Frontend tests"
+          echo "   cd frontend && npm run test"
+          echo "   "
+          echo "   # Backend tests"
+          echo "   cd backend && npm test"
+          echo "   "
+          echo "   # Linting"
+          echo "   cd backend && npm run lint"
+          echo "   \`\`\`"
+          echo ""
+          echo "### 🛠️ Common Fixes"
+          echo ""
+          echo "- **Test failures:** Check assertion errors and fix the test logic"
+          echo "- **Linting errors:** Run \`npm run lint -- --fix\` to auto-fix style issues"
+          echo "- **Build errors:** Check for missing dependencies or syntax errors"
+          echo "- **Environment issues:** Verify required environment variables are set"
+          echo ""
+          echo "### ✅ Next Steps"
+          echo ""
+          echo "1. Fix the identified issues locally"
+          echo "2. Run \`npm test\` and \`npm run lint\` to verify fixes"
+          echo "3. Push the corrected code to this PR"
+          echo "4. The CI will automatically re-run"
+          echo ""
+          echo "---"
+          echo ""
+          echo "💡 **Tip:** Click the \"View Full Workflow Logs\" link above for the most detailed error information."
+        } > /tmp/pr-comment.md
+        
+        COMMENT_BODY=$(cat /tmp/pr-comment.md)
+        
+        # Post comment using GitHub CLI
+        gh pr comment "${PR_NUMBER}" \
+          --body "${COMMENT_BODY}" \
+          --repo "${{ github.repository }}" || {
+            echo "Failed to post comment using gh CLI, trying curl as fallback..."
+            
+            # Fallback to curl if gh fails
+            curl -X POST \
+              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              -d "$(jq -n --arg body "$COMMENT_BODY" '{body: $body}')" \
+              "https://api.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/comments"
+          }
+        
+        echo "Posted failure details to PR #${PR_NUMBER}"
