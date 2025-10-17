@@ -4,6 +4,7 @@ const { stripe } = require('../lib/stripe');
 const { getFirestore } = require('../config/firebase');
 const { authenticateUser } = require('../middleware/auth');
 const { logger } = require('../utils/logger');
+const { SUPPORTED_CURRENCIES, MIN_PAYOUT_AMOUNT_CENTS } = require('../utils/constants');
 
 const router = express.Router();
 
@@ -51,8 +52,8 @@ router.get('/balance', authenticateUser, async (req, res) => {
 
 // Validation for instant payout
 const validateInstantPayout = [
-  body('amountCents').optional().isInt({ min: 1 }).withMessage('Amount must be a positive integer'),
-  body('currency').optional().isIn(['usd', 'eur', 'gbp']).withMessage('Invalid currency')
+  body('amountCents').optional().isInt({ min: MIN_PAYOUT_AMOUNT_CENTS }).withMessage(`Amount must be at least ${MIN_PAYOUT_AMOUNT_CENTS} cents`),
+  body('currency').optional().isIn(SUPPORTED_CURRENCIES).withMessage(`Currency must be one of: ${SUPPORTED_CURRENCIES.join(', ')}`)
 ];
 
 // POST /api/payouts/instant

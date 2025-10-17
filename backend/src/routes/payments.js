@@ -3,6 +3,7 @@ const rateLimit = require('express-rate-limit');
 const { body, validationResult } = require('express-validator');
 const { getConfig } = require('../config/appConfig');
 const { logger } = require('../utils/logger');
+const { SUPPORTED_CURRENCIES, MIN_PAYMENT_AMOUNT_CENTS } = require('../utils/constants');
 
 const router = express.Router();
 
@@ -53,8 +54,8 @@ router.get('/', (req, res) => {
 
 // Validation for payment intent creation
 const validatePaymentIntent = [
-  body('amount').isInt({ min: 50 }).withMessage('Amount must be at least 50 cents'),
-  body('currency').optional().isIn(['usd', 'eur', 'gbp']).withMessage('Invalid currency'),
+  body('amount').isInt({ min: MIN_PAYMENT_AMOUNT_CENTS }).withMessage(`Amount must be at least ${MIN_PAYMENT_AMOUNT_CENTS} cents`),
+  body('currency').optional().isIn(SUPPORTED_CURRENCIES).withMessage(`Currency must be one of: ${SUPPORTED_CURRENCIES.join(', ')}`),
   body('description').optional().trim().isLength({ max: 200 }).withMessage('Description too long')
 ];
 

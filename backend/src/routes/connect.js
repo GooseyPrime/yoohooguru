@@ -5,6 +5,7 @@ const { getFirestore } = require('../config/firebase'); // Correctly import getF
 const { authenticateUser } = require('../middleware/auth');
 const { isFeatureEnabled } = require('../lib/featureFlags');
 const { logger } = require('../utils/logger');
+const { SUPPORTED_CURRENCIES, MIN_PAYOUT_AMOUNT_CENTS } = require('../utils/constants');
 
 const router = express.Router();
 
@@ -155,8 +156,8 @@ router.get('/balance', authenticateUser, async (req, res) => {
 
 // Validation for instant payout
 const validateInstantPayout = [
-  body('amount').isInt({ min: 1 }).withMessage('Amount must be a positive integer'),
-  body('currency').optional().isIn(['usd', 'eur', 'gbp']).withMessage('Invalid currency')
+  body('amount').isInt({ min: MIN_PAYOUT_AMOUNT_CENTS }).withMessage(`Amount must be at least ${MIN_PAYOUT_AMOUNT_CENTS} cents`),
+  body('currency').optional().isIn(SUPPORTED_CURRENCIES).withMessage(`Currency must be one of: ${SUPPORTED_CURRENCIES.join(', ')}`)
 ];
 
 // Create instant payout
@@ -211,9 +212,9 @@ router.post('/instant-payout', authenticateUser, validateInstantPayout, async (r
       });
     }
 
-    // Create instant payout
+    // Create instant payout (amount is already in cents from validation)
     const payout = await stripe.payouts.create({
-      amount: Math.round(amount * 100), // Convert to cents
+      amount: amount,
       currency: currency,
       method: 'instant'
     }, {
