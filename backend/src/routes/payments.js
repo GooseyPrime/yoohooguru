@@ -1,7 +1,21 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const { getConfig } = require('../config/appConfig');
 
 const router = express.Router();
+
+// Strict rate limiter for payment endpoints to prevent abuse
+const paymentLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 payment requests per windowMs
+  message: 'Too many payment requests from this IP, please try again after 15 minutes',
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: false,
+  keyGenerator: (req) => {
+    return req.ip || req.connection.remoteAddress || 'unknown';
+  }
+});
 
 // Get payment configuration
 router.get('/config', (req, res) => {
@@ -36,7 +50,7 @@ router.get('/', (req, res) => {
 });
 
 // Create payment intent (placeholder for future implementation)
-router.post('/create-payment-intent', (req, res) => {
+router.post('/create-payment-intent', paymentLimiter, (req, res) => {
   // TODO: Implement Stripe payment intent creation
   res.json({
     success: false,

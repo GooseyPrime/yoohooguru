@@ -159,6 +159,35 @@ function getConfig() {
       }
     }
     
+    // Validate JWT_SECRET is not using insecure defaults
+    const insecureSecretPatterns = [
+      'your_super_secret',
+      'change_this',
+      'changethis',
+      'example',
+      'default',
+      'secret123',
+      'password',
+      'test'
+    ];
+    
+    if (config.jwtSecret) {
+      const jwtSecretLower = config.jwtSecret.toLowerCase();
+      const isInsecureJwt = insecureSecretPatterns.some(pattern => 
+        jwtSecretLower.includes(pattern)
+      );
+      
+      if (isInsecureJwt && !isTestEnvironment) {
+        logger.error('❌ SECURITY ERROR: JWT_SECRET contains insecure/default value');
+        throw new Error('JWT_SECRET contains insecure/default value. Generate a secure secret.');
+      }
+      
+      if (config.jwtSecret.length < 32 && !isTestEnvironment) {
+        logger.error('❌ SECURITY ERROR: JWT_SECRET is too short (must be at least 32 characters)');
+        throw new Error('JWT_SECRET is too short. Generate a secure secret with at least 32 characters.');
+      }
+    }
+    
     const missingVars = requiredVars.filter(varName => !process.env[varName]);
     
     if (missingVars.length > 0) {

@@ -1,10 +1,25 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const { stripe } = require('../lib/stripe');
 const { getFirestore } = require('../config/firebase');
 const { logger } = require('../utils/logger');
 const escapeHtml = require('escape-html');
 
 const router = express.Router();
+
+// Strict rate limiter for webhook endpoints
+// Webhooks should be infrequent; excessive requests may indicate an attack
+const webhookLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  max: 50, // Limit each IP to 50 webhook requests per 5 minutes
+  message: 'Too many webhook requests from this IP, please try again later',
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: false,
+  keyGenerator: (req) => {
+    return req.ip || req.connection.remoteAddress || 'unknown';
+  }
+});
 
 // Health check endpoint for webhook debugging
 router.get('/health', (req, res) => {
@@ -21,7 +36,7 @@ router.get('/health', (req, res) => {
   });
 });
 
-router.post('/', async (req, res) => {
+router.post('/', webhookLimiter, async (req, res) => {
   const sig = req.headers['stripe-signature'];
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
   let event;
