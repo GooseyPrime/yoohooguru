@@ -1,10 +1,19 @@
 const express = require('express');
+const { body, validationResult } = require('express-validator');
 const { stripe } = require('../lib/stripe');
 const { getFirestore } = require('../config/firebase');
 const { authenticateUser } = require('../middleware/auth');
+const { logger } = require('../utils/logger');
+const { SUPPORTED_CURRENCIES, MIN_PAYOUT_AMOUNT_CENTS } = require('../utils/constants');
 
 const router = express.Router();
 
+/**
+ * Get Stripe account ID for a user from Firestore
+ * 
+ * @param {string} uid - User ID to look up
+ * @returns {Promise<string|null>} Stripe account ID or null if not found
+ */
 async function getAccountId(uid) {
   const db = getFirestore();
   const snap = await db.collection('profiles').doc(uid).get();
@@ -36,14 +45,37 @@ router.get('/balance', authenticateUser, async (req, res) => {
       }
     });
   } catch (e) {
-    console.error('payouts/balance', e);
+    logger.error('payouts/balance', { error: e.message, stack: e.stack });
     res.status(500).json({ ok: false, error: 'Failed to load balance' });
   }
 });
 
-// POST /api/payouts/instant
-// body: { amountCents?: number, currency?: 'usd' }
-router.post('/instant', authenticateUser, async (req, res) => {
+/**
+ * Validation for instant payout
+ * Note: amountCents should be provided in cents (e.g., 1000 = $10.00)
+ */
+const validateInstantPayout = [
+  body('amountCents').optional().isInt({ min: MIN_PAYOUT_AMOUNT_CENTS }).withMessage(`Amount must be at least ${MIN_PAYOUT_AMOUNT_CENTS} cents`),
+  body('currency').optional().isIn(SUPPORTED_CURRENCIES).withMessage(`Currency must be one of: ${SUPPORTED_CURRENCIES.join(', ')}`)
+];
+
+/**
+ * Create instant payout
+ * @route POST /api/payouts/instant
+ * @param {number} amountCents - Optional payout amount in cents (defaults to max available)
+ * @param {string} currency - Currency code (default: 'usd')
+ */
+router.post('/instant', authenticateUser, validateInstantPayout, async (req, res) => {
+  // Validate input
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      ok: false,
+      error: 'Validation failed',
+      details: errors.array()
+    });
+  }
+  
   try {
     if (!stripe && process.env.NODE_ENV !== 'test') {
       return res.status(503).json({ 
@@ -101,7 +133,7 @@ router.post('/instant', authenticateUser, async (req, res) => {
       }
     });
   } catch (e) {
-    console.error('payouts/instant', e);
+    logger.error('payouts/instant', { error: e.message, code: e.code, stack: e.stack });
     
     // Handle common Stripe errors with user-friendly messages
     let errorMessage = 'Failed to create instant payout';

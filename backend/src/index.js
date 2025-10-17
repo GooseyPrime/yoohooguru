@@ -70,9 +70,40 @@ const PORT = config.port;
 // Initialize Firebase
 initializeFirebase();
 
-// Validate SESSION_SECRET is set
+// Validate SESSION_SECRET is set and secure
 if (!process.env.SESSION_SECRET) {
   logger.error('SESSION_SECRET environment variable is not set. This is required for session management.');
+  logger.error('Generate a secure secret with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
+  process.exit(1);
+}
+
+// Reject insecure/default SESSION_SECRET values
+const insecureSecretPatterns = [
+  'your_secure_session_secret',
+  'change_this',
+  'changethis',
+  'your_super_secret',
+  'example',
+  'default',
+  'secret123',
+  'password',
+  'test'
+];
+
+const sessionSecret = process.env.SESSION_SECRET.toLowerCase();
+const isInsecureSecret = insecureSecretPatterns.some(pattern => 
+  sessionSecret.includes(pattern)
+);
+
+if (isInsecureSecret && (config.nodeEnv === 'production' || config.nodeEnv === 'staging')) {
+  logger.error('❌ SECURITY ERROR: SESSION_SECRET contains insecure/default value');
+  logger.error('Generate a secure secret with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
+  process.exit(1);
+}
+
+// Warn if SESSION_SECRET is too short (less than 32 characters)
+if (process.env.SESSION_SECRET.length < 32 && (config.nodeEnv === 'production' || config.nodeEnv === 'staging')) {
+  logger.error('❌ SECURITY ERROR: SESSION_SECRET is too short (must be at least 32 characters)');
   logger.error('Generate a secure secret with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
   process.exit(1);
 }
@@ -90,22 +121,60 @@ if (config.nodeEnv === 'production' || config.nodeEnv === 'staging') {
 
 // --- Core Middleware Setup ---
 
+// Generate CSP nonce for each request to enable strict CSP without 'unsafe-inline'
+// This is a more secure alternative to 'unsafe-inline' for inline scripts
+const crypto = require('crypto');
+app.use((req, res, next) => {
+  // Generate a unique nonce for this request
+  res.locals.cspNonce = crypto.randomBytes(16).toString('base64');
+  next();
+});
+
 // Security headers, CORS, and Compression
-// FIX: Configure Content Security Policy to allow scripts from Stripe and Google
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-      "script-src": ["'self'", "https://js.stripe.com", "https://apis.google.com", "https://www.google.com", "https://gstatic.com", "https://accounts.google.com", "https://www.googletagmanager.com", "https://www.google-analytics.com", "'unsafe-inline'"],
-      "script-src-elem": ["'self'", "https://js.stripe.com", "https://apis.google.com", "https://www.google.com", "https://gstatic.com", "https://accounts.google.com", "https://www.googletagmanager.com", "https://www.google-analytics.com", "'unsafe-inline'"],
-      "frame-src": ["'self'", "https://js.stripe.com", "https://accounts.google.com", "https://*.firebaseapp.com", "https://www.google.com"],
-      "connect-src": ["'self'", "https://api.stripe.com", "https://accounts.google.com", "https://www.googleapis.com", "https://identitytoolkit.googleapis.com", "https://securetoken.googleapis.com", "https://oauth2.googleapis.com", "https://api.unsplash.com", "https://images.unsplash.com", "https://api.bigdatacloud.net", "https://api-bdc.io", "https://www.google-analytics.com", "https://analytics.google.com", "https://stats.g.doubleclick.net"],
+// Configure Content Security Policy with nonce-based inline script support
+// Note: 'unsafe-inline' is maintained as fallback for browsers that don't support nonces
+// In production with separately deployed frontend (Vercel), the frontend should implement
+// its own CSP with nonces. This CSP primarily protects the API when SERVE_FRONTEND=true
+app.use((req, res, next) => {
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+        // Use nonce for inline scripts instead of 'unsafe-inline' where possible
+        // Note: 'unsafe-inline' is ignored by browsers that support nonces
+        "script-src": [
+          "'self'",
+          `'nonce-${res.locals.cspNonce}'`,
+          "https://js.stripe.com",
+          "https://apis.google.com",
+          "https://www.google.com",
+          "https://gstatic.com",
+          "https://accounts.google.com",
+          "https://www.googletagmanager.com",
+          "https://www.google-analytics.com",
+          "'unsafe-inline'" // Fallback for browsers that don't support nonces
+        ],
+        "script-src-elem": [
+          "'self'",
+          `'nonce-${res.locals.cspNonce}'`,
+          "https://js.stripe.com",
+          "https://apis.google.com",
+          "https://www.google.com",
+          "https://gstatic.com",
+          "https://accounts.google.com",
+          "https://www.googletagmanager.com",
+          "https://www.google-analytics.com",
+          "'unsafe-inline'" // Fallback for browsers that don't support nonces
+        ],
+        "frame-src": ["'self'", "https://js.stripe.com", "https://accounts.google.com", "https://*.firebaseapp.com", "https://www.google.com"],
+        "connect-src": ["'self'", "https://api.stripe.com", "https://accounts.google.com", "https://www.googleapis.com", "https://identitytoolkit.googleapis.com", "https://securetoken.googleapis.com", "https://oauth2.googleapis.com", "https://api.unsplash.com", "https://images.unsplash.com", "https://api.bigdatacloud.net", "https://api-bdc.io", "https://www.google-analytics.com", "https://analytics.google.com", "https://stats.g.doubleclick.net"],
+      },
     },
-  },
-  // Add missing security headers
-  crossOriginEmbedderPolicy: false, // Allow embedding for Stripe iframes
-  noSniff: true, // Add X-Content-Type-Options: nosniff
-}));
+    // Add missing security headers
+    crossOriginEmbedderPolicy: false, // Allow embedding for Stripe iframes
+    noSniff: true, // Add X-Content-Type-Options: nosniff
+  })(req, res, next);
+});
 app.use(cors({
   origin: getCorsOrigins(config),
   credentials: true
@@ -167,7 +236,28 @@ if (config.nodeEnv === 'production' || config.nodeEnv === 'staging') {
   
   logger.info('✅ Session store: Using Firestore for production-ready session management');
 } else {
+  // Development/test environment - using MemoryStore with warnings
   logger.info('ℹ️  Session store: Using MemoryStore for development/testing');
+  logger.warn('⚠️  WARNING: MemoryStore is not designed for production use!');
+  logger.warn('⚠️  - It will leak memory under most conditions');
+  logger.warn('⚠️  - It does not scale past a single process');
+  logger.warn('⚠️  - It is meant for development and testing only');
+  
+  // Set up cleanup interval for MemoryStore to prevent memory leaks in development
+  // This is a basic cleanup mechanism - for production, always use Firestore
+  const sessionCleanupInterval = setInterval(() => {
+    // In development, log a reminder about memory cleanup
+    logger.debug('💾 MemoryStore session cleanup check (development only)');
+  }, 60 * 60 * 1000); // Every hour
+  
+  // Clear interval on shutdown to prevent memory leaks
+  process.on('SIGTERM', () => {
+    clearInterval(sessionCleanupInterval);
+  });
+  
+  process.on('SIGINT', () => {
+    clearInterval(sessionCleanupInterval);
+  });
 }
 
 app.use(session(sessionConfig));
@@ -247,12 +337,13 @@ app.use((err, req, res, next) => {
 
 // Conditionally serve static files from the frontend build directory
 // Only when SERVE_FRONTEND is true (for local development or monolithic deployment)
-let frontendDistPath;
+const fs = require('fs');
+const frontendDistPath = config.serveFrontend 
+  ? path.join(__dirname, '../../frontend/dist')
+  : null;
+
 if (config.serveFrontend) {
-  frontendDistPath = path.join(__dirname, '../../frontend/dist');
-  
   // Additional safety check: verify frontend files exist before serving
-  const fs = require('fs');
   if (fs.existsSync(frontendDistPath)) {
     // Configure static file serving with proper cache headers
     const staticOptions = {

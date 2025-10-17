@@ -8,6 +8,9 @@ const { logger } = require('../utils/logger');
 /**
  * Sanitize CORS origins to prevent overly permissive wildcard patterns
  * This prevents configuration errors that could accidentally allow all origins
+ * 
+ * @param {string[]} origins - Array of origin patterns to sanitize
+ * @returns {string[]} Sanitized array of safe origin patterns
  */
 function sanitizeCorsOrigins(origins) {
   const sanitized = [];
@@ -38,6 +41,10 @@ function sanitizeCorsOrigins(origins) {
 
 /**
  * Get and validate required environment variables
+ * Loads configuration from environment variables with sensible defaults
+ * 
+ * @returns {Object} Configuration object with all app settings
+ * @throws {Error} If required environment variables are missing in production
  */
 function getConfig() {
   const config = {
@@ -159,6 +166,35 @@ function getConfig() {
       }
     }
     
+    // Validate JWT_SECRET is not using insecure defaults
+    const insecureSecretPatterns = [
+      'your_super_secret',
+      'change_this',
+      'changethis',
+      'example',
+      'default',
+      'secret123',
+      'password',
+      'test'
+    ];
+    
+    if (config.jwtSecret) {
+      const jwtSecretLower = config.jwtSecret.toLowerCase();
+      const isInsecureJwt = insecureSecretPatterns.some(pattern => 
+        jwtSecretLower.includes(pattern)
+      );
+      
+      if (isInsecureJwt && !isTestEnvironment) {
+        logger.error('❌ SECURITY ERROR: JWT_SECRET contains insecure/default value');
+        throw new Error('JWT_SECRET contains insecure/default value. Generate a secure secret.');
+      }
+      
+      if (config.jwtSecret.length < 32 && !isTestEnvironment) {
+        logger.error('❌ SECURITY ERROR: JWT_SECRET is too short (must be at least 32 characters)');
+        throw new Error('JWT_SECRET is too short. Generate a secure secret with at least 32 characters.');
+      }
+    }
+    
     const missingVars = requiredVars.filter(varName => !process.env[varName]);
     
     if (missingVars.length > 0) {
@@ -172,6 +208,9 @@ function getConfig() {
 
 /**
  * Get CORS origins as array for logging/display purposes
+ * 
+ * @param {Object} config - Application configuration object
+ * @returns {string[]} Array of CORS origin patterns
  */
 function getCorsOriginsArray(config) {
   return config.nodeEnv === 'production' 
@@ -182,6 +221,9 @@ function getCorsOriginsArray(config) {
 /**
  * Get CORS origins based on environment
  * Supports wildcard matching for domains like *.vercel.app
+ * 
+ * @param {Object} config - Application configuration object
+ * @returns {Function} CORS origin validator function for use with cors middleware
  */
 function getCorsOrigins(config) {
   const origins = config.nodeEnv === 'production' 
@@ -220,6 +262,9 @@ function getCorsOrigins(config) {
 
 /**
  * Validate configuration and log warnings for missing optional variables
+ * 
+ * @param {Object} config - Application configuration object to validate
+ * @returns {string[]} Array of warning messages for missing optional variables
  */
 function validateConfig(config) {
   const warnings = [];
