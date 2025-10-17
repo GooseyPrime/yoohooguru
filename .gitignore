@@ -95,3 +95,6 @@ merged-*
 *design-system*
 # Branch cleanup artifacts
 copilot-branch-cleanup-commands.txt
+
+# Local Netlify folder
+.netlify

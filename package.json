@@ -39,7 +39,7 @@
     "railway:validate": "./scripts/validate-railway.sh",
     "firebase:validate": "./scripts/validate-firebase-production.sh",
     "firebase:validate:win": "node scripts/validate-firebase-production.js",
-	"deploy": "npm run build && npm run deploy:frontend && npm run deploy:backend",
+    "deploy": "npm run build && npm run deploy:frontend && npm run deploy:backend",
     "deploy:frontend": "cd frontend && npm run deploy",
     "deploy:backend": "cd backend && npm run deploy",
     "copilot:demo": "node scripts/copilot-agent.js --demo",
@@ -82,6 +82,7 @@
   },
   "dependencies": {
     "dig": "^0.0.6",
-    "firebase-admin": "^13.5.0"
+    "firebase-admin": "^13.5.0",
+    "netlify": "^23.9.1"
   }
 }
