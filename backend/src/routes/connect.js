@@ -3,6 +3,7 @@ const { stripe } = require('../lib/stripe');
 const { getFirestore } = require('../config/firebase'); // Correctly import getFirestore
 const { authenticateUser } = require('../middleware/auth');
 const { isFeatureEnabled } = require('../lib/featureFlags');
+const { logger } = require('../utils/logger');
 
 const router = express.Router();
 
@@ -57,7 +58,7 @@ router.post('/start', authenticateUser, async (req, res) => {
 
     res.json({ ok: true, url: link.url, accountId });
   } catch (err) {
-    console.error('connect/start error', err);
+    logger.error('connect/start error', { error: err.message, stack: err.stack });
     res.status(500).json({ ok: false, error: 'Failed to start onboarding' });
   }
 });
@@ -90,7 +91,7 @@ router.get('/status', authenticateUser, async (req, res) => {
       currently_due: requirements.currently_due || []
     });
   } catch (err) {
-    console.error('connect/status error', err);
+    logger.error('connect/status error', { error: err.message, stack: err.stack });
     res.status(500).json({ ok: false, error: 'Failed to load status' });
   }
 });
@@ -146,7 +147,7 @@ router.get('/balance', authenticateUser, async (req, res) => {
       balance: responseBalance
     });
   } catch (err) {
-    console.error('connect/balance error', err);
+    logger.error('connect/balance error', { error: err.message, stack: err.stack });
     res.status(500).json({ ok: false, error: 'Failed to retrieve balance' });
   }
 });
@@ -222,7 +223,7 @@ router.post('/instant-payout', authenticateUser, async (req, res) => {
       }
     });
   } catch (err) {
-    console.error('connect/instant-payout error', err);
+    logger.error('connect/instant-payout error', { error: err.message, type: err.type, stack: err.stack });
     
     // Handle common Stripe errors gracefully
     if (err.type === 'StripeCardError' || err.type === 'StripeInvalidRequestError') {
@@ -263,7 +264,7 @@ router.post('/express-login', authenticateUser, async (req, res) => {
     const link = await stripe.accounts.createLoginLink(profile.stripe_account_id);
     res.json({ ok: true, url: link.url });
   } catch (err) {
-    console.error('connect/express-login error', err);
+    logger.error('connect/express-login error', { error: err.message, stack: err.stack });
     res.status(500).json({ ok: false, error: 'Failed to create login link' });
   }
 });

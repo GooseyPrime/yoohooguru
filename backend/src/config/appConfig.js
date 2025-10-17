@@ -8,6 +8,9 @@ const { logger } = require('../utils/logger');
 /**
  * Sanitize CORS origins to prevent overly permissive wildcard patterns
  * This prevents configuration errors that could accidentally allow all origins
+ * 
+ * @param {string[]} origins - Array of origin patterns to sanitize
+ * @returns {string[]} Sanitized array of safe origin patterns
  */
 function sanitizeCorsOrigins(origins) {
   const sanitized = [];
@@ -38,6 +41,10 @@ function sanitizeCorsOrigins(origins) {
 
 /**
  * Get and validate required environment variables
+ * Loads configuration from environment variables with sensible defaults
+ * 
+ * @returns {Object} Configuration object with all app settings
+ * @throws {Error} If required environment variables are missing in production
  */
 function getConfig() {
   const config = {
@@ -201,6 +208,9 @@ function getConfig() {
 
 /**
  * Get CORS origins as array for logging/display purposes
+ * 
+ * @param {Object} config - Application configuration object
+ * @returns {string[]} Array of CORS origin patterns
  */
 function getCorsOriginsArray(config) {
   return config.nodeEnv === 'production' 
@@ -211,6 +221,9 @@ function getCorsOriginsArray(config) {
 /**
  * Get CORS origins based on environment
  * Supports wildcard matching for domains like *.vercel.app
+ * 
+ * @param {Object} config - Application configuration object
+ * @returns {Function} CORS origin validator function for use with cors middleware
  */
 function getCorsOrigins(config) {
   const origins = config.nodeEnv === 'production' 
@@ -249,6 +262,9 @@ function getCorsOrigins(config) {
 
 /**
  * Validate configuration and log warnings for missing optional variables
+ * 
+ * @param {Object} config - Application configuration object to validate
+ * @returns {string[]} Array of warning messages for missing optional variables
  */
 function validateConfig(config) {
   const warnings = [];

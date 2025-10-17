@@ -25,6 +25,12 @@ let firebaseApp;
  * Validates that test environment is properly configured for emulator use
  * This prevents CI failures when emulators are used in non-test environments
  */
+/**
+ * Validates that test environment is properly configured for emulator use
+ * This prevents CI failures when emulators are used in non-test environments
+ * 
+ * @throws {Error} If emulator hosts are configured with wrong NODE_ENV
+ */
 const validateTestEnvironmentSetup = () => {
   const env = process.env.NODE_ENV;
   
@@ -72,6 +78,10 @@ const validateTestEnvironmentSetup = () => {
 
 /**
  * Validates Firebase configuration for production environments
+ * Ensures no emulators or mocks are configured and credentials are valid
+ * 
+ * @param {Object} config - Firebase configuration object to validate
+ * @throws {Error} If configuration is invalid for production/staging
  */
 const validateProductionFirebaseConfig = (config) => {
   const env = process.env.NODE_ENV;
@@ -256,6 +266,13 @@ const initializeFirebase = () => {
   }
 };
 
+/**
+ * Get Firebase Realtime Database instance (DEPRECATED)
+ * 
+ * @deprecated Use getFirestore() instead. This app uses Firestore, not Realtime Database.
+ * @returns {Object} Firebase Realtime Database instance
+ * @throws {Error} If Firebase is not initialized or database URL not configured
+ */
 const getDatabase = () => {
   if (!firebaseApp) {
     throw new Error('Firebase not initialized. Call initializeFirebase() first.');
@@ -272,6 +289,12 @@ const getDatabase = () => {
   return admin.database();
 };
 
+/**
+ * Get Firebase Auth instance for authentication operations
+ * 
+ * @returns {Object} Firebase Auth instance
+ * @throws {Error} If Firebase is not initialized
+ */
 const getAuth = () => {
   if (!firebaseApp) {
     throw new Error('Firebase not initialized. Call initializeFirebase() first.');
@@ -279,6 +302,12 @@ const getAuth = () => {
   return admin.auth();
 };
 
+/**
+ * Get Firestore database instance for data operations
+ * 
+ * @returns {Object} Firestore database instance
+ * @throws {Error} If Firebase is not initialized
+ */
 const getFirestore = () => {
   if (!firebaseApp) {
     throw new Error('Firebase not initialized. Call initializeFirebase() first.');

@@ -2,9 +2,16 @@ const express = require('express');
 const { stripe } = require('../lib/stripe');
 const { getFirestore } = require('../config/firebase');
 const { authenticateUser } = require('../middleware/auth');
+const { logger } = require('../utils/logger');
 
 const router = express.Router();
 
+/**
+ * Get Stripe account ID for a user from Firestore
+ * 
+ * @param {string} uid - User ID to look up
+ * @returns {Promise<string|null>} Stripe account ID or null if not found
+ */
 async function getAccountId(uid) {
   const db = getFirestore();
   const snap = await db.collection('profiles').doc(uid).get();
@@ -36,7 +43,7 @@ router.get('/balance', authenticateUser, async (req, res) => {
       }
     });
   } catch (e) {
-    console.error('payouts/balance', e);
+    logger.error('payouts/balance', { error: e.message, stack: e.stack });
     res.status(500).json({ ok: false, error: 'Failed to load balance' });
   }
 });
@@ -101,7 +108,7 @@ router.post('/instant', authenticateUser, async (req, res) => {
       }
     });
   } catch (e) {
-    console.error('payouts/instant', e);
+    logger.error('payouts/instant', { error: e.message, code: e.code, stack: e.stack });
     
     // Handle common Stripe errors with user-friendly messages
     let errorMessage = 'Failed to create instant payout';

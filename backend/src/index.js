@@ -331,12 +331,13 @@ app.use((err, req, res, next) => {
 
 // Conditionally serve static files from the frontend build directory
 // Only when SERVE_FRONTEND is true (for local development or monolithic deployment)
-let frontendDistPath;
+const fs = require('fs');
+const frontendDistPath = config.serveFrontend 
+  ? path.join(__dirname, '../../frontend/dist')
+  : null;
+
 if (config.serveFrontend) {
-  frontendDistPath = path.join(__dirname, '../../frontend/dist');
-  
   // Additional safety check: verify frontend files exist before serving
-  const fs = require('fs');
   if (fs.existsSync(frontendDistPath)) {
     // Configure static file serving with proper cache headers
     const staticOptions = {

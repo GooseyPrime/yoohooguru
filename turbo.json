@@ -4,18 +4,21 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**", "build/**"],
+      "inputs": ["src/**", "public/**", "package.json", "tsconfig.json", "webpack.config.js"]
     },
     "dev": {
       "cache": false,
       "persistent": true
     },
     "lint": {
-      "outputs": []
+      "outputs": [],
+      "inputs": ["src/**", ".eslintrc*", "package.json"]
     },
     "test": {
       "dependsOn": ["build"],
-      "outputs": ["coverage/**"]
+      "outputs": ["coverage/**"],
+      "inputs": ["src/**", "tests/**", "test/**", "jest.config.*", "package.json"]
     }
   }
 }
