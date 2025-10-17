@@ -157,7 +157,7 @@ EOF
         curl -X POST \
           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           -H "Accept: application/vnd.github.v3+json" \
-          -d "{\"body\": $(echo "$COMMENT_BODY" | jq -Rs .)}" \
+          -d "$(jq -n --arg body "$COMMENT_BODY" '{body: $body}')" \
           "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
 
   deploy-production:
