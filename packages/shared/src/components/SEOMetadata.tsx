@@ -28,7 +28,7 @@ interface SEOMetadataProps {
   /** Canonical URL for the page */
   canonicalUrl?: string;
   /** Structured data JSON-LD object */
-  structuredData?: any;
+  structuredData?: Record<string, unknown>;
   /** Robots meta tag value (e.g., 'noindex,nofollow', 'index,follow') */
   robots?: string;
 }
