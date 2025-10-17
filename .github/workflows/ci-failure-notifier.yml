@@ -112,6 +112,8 @@ jobs:
     
     - name: Post detailed failure to PR
       if: steps.pr.outputs.pr_number != '0'
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         PR_NUMBER="${{ steps.pr.outputs.pr_number }}"
         WORKFLOW_URL="${{ github.event.workflow_run.html_url }}"
@@ -126,71 +128,66 @@ jobs:
           FAILURE_DETAILS=$(cat "${{ steps.extract.outputs.output_file }}")
         else
           # Fallback to generic message
-          FAILURE_DETAILS="### Recent Log Output
-
-<details><summary>View Log Information</summary>
-
-Unable to extract specific error details. Please check the [full workflow logs](${WORKFLOW_URL}) for more information.
-
-</details>"
+          FAILURE_DETAILS="Unable to extract specific error details. Please check the full workflow logs."
         fi
         
-        # Create full comment
-        COMMENT_BODY=$(cat <<EOF
-@copilot
-
-## ❌ CI Workflow Failed
-
-**Workflow Run:** [#${RUN_NUMBER}](${WORKFLOW_URL})
-**Commit:** \`${SHA}\`
-**Branch:** \`${BRANCH}\`
-**Triggered by:** @${ACTOR}
-
-### 📋 Failure Details
-
-${FAILURE_DETAILS}
-
-### 🔍 How to Debug
-
-1. **Review the error details above** for specific failure information
-2. **[View Full Workflow Logs](${WORKFLOW_URL})** for complete output
-3. **Run tests locally** to reproduce the issue:
-   \`\`\`bash
-   # Frontend tests
-   cd frontend && npm run test
-   
-   # Backend tests
-   cd backend && npm test
-   
-   # Linting
-   cd backend && npm run lint
-   \`\`\`
-
-### 🛠️ Common Fixes
-
-- **Test failures:** Check assertion errors and fix the test logic
-- **Linting errors:** Run \`npm run lint -- --fix\` to auto-fix style issues
-- **Build errors:** Check for missing dependencies or syntax errors
-- **Environment issues:** Verify required environment variables are set
-
-### ✅ Next Steps
-
-1. Fix the identified issues locally
-2. Run \`npm test\` and \`npm run lint\` to verify fixes
-3. Push the corrected code to this PR
-4. The CI will automatically re-run
-
----
-
-💡 **Tip:** Click the "View Full Workflow Logs" link above for the most detailed error information.
-EOF
-)
+        # Create full comment using printf to avoid YAML parsing issues
+        {
+          echo "@copilot"
+          echo ""
+          echo "## ❌ CI Workflow Failed"
+          echo ""
+          echo "**Workflow Run:** [#${RUN_NUMBER}](${WORKFLOW_URL})"
+          echo "**Commit:** \`${SHA}\`"
+          echo "**Branch:** \`${BRANCH}\`"
+          echo "**Triggered by:** @${ACTOR}"
+          echo ""
+          echo "### 📋 Failure Details"
+          echo ""
+          echo "${FAILURE_DETAILS}"
+          echo ""
+          echo "### 🔍 How to Debug"
+          echo ""
+          echo "1. **Review the error details above** for specific failure information"
+          echo "2. **[View Full Workflow Logs](${WORKFLOW_URL})** for complete output"
+          echo "3. **Run tests locally** to reproduce the issue:"
+          echo "   \`\`\`bash"
+          echo "   # Frontend tests"
+          echo "   cd frontend && npm run test"
+          echo "   "
+          echo "   # Backend tests"
+          echo "   cd backend && npm test"
+          echo "   "
+          echo "   # Linting"
+          echo "   cd backend && npm run lint"
+          echo "   \`\`\`"
+          echo ""
+          echo "### 🛠️ Common Fixes"
+          echo ""
+          echo "- **Test failures:** Check assertion errors and fix the test logic"
+          echo "- **Linting errors:** Run \`npm run lint -- --fix\` to auto-fix style issues"
+          echo "- **Build errors:** Check for missing dependencies or syntax errors"
+          echo "- **Environment issues:** Verify required environment variables are set"
+          echo ""
+          echo "### ✅ Next Steps"
+          echo ""
+          echo "1. Fix the identified issues locally"
+          echo "2. Run \`npm test\` and \`npm run lint\` to verify fixes"
+          echo "3. Push the corrected code to this PR"
+          echo "4. The CI will automatically re-run"
+          echo ""
+          echo "---"
+          echo ""
+          echo "💡 **Tip:** Click the \"View Full Workflow Logs\" link above for the most detailed error information."
+        } > /tmp/pr-comment.md
+        
+        COMMENT_BODY=$(cat /tmp/pr-comment.md)
         
         # Post comment using GitHub API
         gh pr comment "${PR_NUMBER}" \
           --body "${COMMENT_BODY}" \
           --repo "${{ github.repository }}" || {
-            echo "Failed to post comment, trying with curl..."
+            echo "Failed to post comment with gh, trying curl..."
             
             # Fallback to curl if gh fails
             curl -X POST \
@@ -201,5 +198,3 @@ EOF
           }
         
         echo "Posted failure details to PR #${PR_NUMBER}"
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
