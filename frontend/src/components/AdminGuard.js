@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoadingScreen from './LoadingScreen';
+import logger from '../utils/logger';
 
 /**
  * AdminGuard component to protect admin routes
@@ -25,7 +26,7 @@ function AdminGuard({ children }) {
           navigate('/admin/login', { replace: true });
         }
       } catch (error) {
-        console.error('Admin auth check failed:', error);
+        logger.error('Admin auth check failed:', error);
         setIsAuthenticated(false);
         navigate('/admin/login', { replace: true });
       }

@@ -4,6 +4,7 @@
  */
 
 import { api } from '../lib/api';
+import logger from './logger';
 
 /**
  * Make a GET request
@@ -24,7 +25,7 @@ export async function get(path, options = {}) {
     
     throw new Error(response.error?.message || 'Request failed');
   } catch (error) {
-    console.error('GET request failed:', error);
+    logger.error('GET request failed:', error);
     throw error;
   }
 }
@@ -54,7 +55,7 @@ export async function post(path, data = {}, options = {}) {
     
     throw new Error(response.error?.message || 'Request failed');
   } catch (error) {
-    console.error('POST request failed:', error);
+    logger.error('POST request failed:', error);
     throw error;
   }
 }
@@ -84,7 +85,7 @@ export async function patch(path, data = {}, options = {}) {
     
     throw new Error(response.error?.message || 'Request failed');
   } catch (error) {
-    console.error('PATCH request failed:', error);
+    logger.error('PATCH request failed:', error);
     throw error;
   }
 }
@@ -108,7 +109,7 @@ export async function del(path, options = {}) {
     
     throw new Error(response.error?.message || 'Request failed');
   } catch (error) {
-    console.error('DELETE request failed:', error);
+    logger.error('DELETE request failed:', error);
     throw error;
   }
 }

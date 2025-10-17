@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
 import BadgeDisplay from './BadgeDisplay';
 import LiabilityWaiverModal from './LiabilityWaiverModal';
+import logger from '../utils/logger';
 
 const Container = styled.div`
   max-width: 1000px;
@@ -302,7 +303,7 @@ function ComplianceSetup({ onComplete }) {
         throw new Error('Failed to load compliance data');
       }
     } catch (err) {
-      console.error('Compliance data error:', err);
+      logger.error('Compliance data error:', err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -341,7 +342,7 @@ function ComplianceSetup({ onComplete }) {
         onComplete(waiverData);
       }
     } catch (error) {
-      console.error('Post-waiver refresh failed:', error);
+      logger.error('Post-waiver refresh failed:', error);
     } finally {
       setSubmitting(false);
     }
@@ -493,7 +494,7 @@ function ComplianceSetup({ onComplete }) {
                       showRequestOptions={true}
                       onBadgeRequest={(badgeType) => {
                         // Handle badge request
-                        console.log('Badge request:', badgeType);
+                        logger.info('Badge request:', badgeType);
                       }}
                     />
                   )}

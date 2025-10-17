@@ -7,6 +7,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styled from 'styled-components';
 import { MapPin, AlertCircle, Navigation, Search, Edit2 } from 'lucide-react';
 import Button from './Button';
+import logger from '../utils/logger';
 
 const LocationContainer = styled.div`
   position: absolute;
@@ -333,7 +334,7 @@ function EnhancedLocationSelector({
           
           setIsLoading(false);
         } catch (err) {
-          console.error('Error reverse geocoding:', err);
+          logger.error('Error reverse geocoding:', err);
           setError('Could not determine location details.');
           onLocationError?.('Could not determine location details.');
           setIsLoading(false);

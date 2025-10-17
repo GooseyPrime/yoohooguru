@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import logger from '../utils/logger';
 
 const VideoChatContainer = styled.div`
   display: flex;
@@ -162,7 +163,7 @@ function VideoChat({ sessionId, onEnd }) {
       // or your backend service here
       
     } catch (error) {
-      console.error('Error initializing video chat:', error);
+      logger.error('Error initializing video chat:', error);
       setConnectionStatus('Connection failed');
     }
   };
