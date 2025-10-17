@@ -12,8 +12,9 @@
   publish = "apps/main/.next"
   
 [build.environment]
-  # Use Node.js 20 LTS - specify exact version for Netlify compatibility
-  NODE_VERSION = "20.18.0"
+  # Use Node.js 20 LTS - Netlify will use the latest available Node 20.x version
+  # Specifying just "20" ensures compatibility with Netlify's build image
+  NODE_VERSION = "20"
 
 # Next.js Runtime for Netlify
 [[plugins]]
