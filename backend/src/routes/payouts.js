@@ -50,14 +50,21 @@ router.get('/balance', authenticateUser, async (req, res) => {
   }
 });
 
-// Validation for instant payout
+/**
+ * Validation for instant payout
+ * Note: amountCents should be provided in cents (e.g., 1000 = $10.00)
+ */
 const validateInstantPayout = [
   body('amountCents').optional().isInt({ min: MIN_PAYOUT_AMOUNT_CENTS }).withMessage(`Amount must be at least ${MIN_PAYOUT_AMOUNT_CENTS} cents`),
   body('currency').optional().isIn(SUPPORTED_CURRENCIES).withMessage(`Currency must be one of: ${SUPPORTED_CURRENCIES.join(', ')}`)
 ];
 
-// POST /api/payouts/instant
-// body: { amountCents?: number, currency?: 'usd' }
+/**
+ * Create instant payout
+ * @route POST /api/payouts/instant
+ * @param {number} amountCents - Optional payout amount in cents (defaults to max available)
+ * @param {string} currency - Currency code (default: 'usd')
+ */
 router.post('/instant', authenticateUser, validateInstantPayout, async (req, res) => {
   // Validate input
   const errors = validationResult(req);

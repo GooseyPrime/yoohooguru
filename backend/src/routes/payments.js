@@ -52,14 +52,23 @@ router.get('/', (req, res) => {
   });
 });
 
-// Validation for payment intent creation
+/**
+ * Validation for payment intent creation
+ * Note: amount should be provided in cents (e.g., 1000 = $10.00)
+ */
 const validatePaymentIntent = [
   body('amount').isInt({ min: MIN_PAYMENT_AMOUNT_CENTS }).withMessage(`Amount must be at least ${MIN_PAYMENT_AMOUNT_CENTS} cents`),
   body('currency').optional().isIn(SUPPORTED_CURRENCIES).withMessage(`Currency must be one of: ${SUPPORTED_CURRENCIES.join(', ')}`),
   body('description').optional().trim().isLength({ max: 200 }).withMessage('Description too long')
 ];
 
-// Create payment intent (placeholder for future implementation)
+/**
+ * Create payment intent (placeholder for future implementation)
+ * @route POST /api/payments/create-payment-intent
+ * @param {number} amount - Payment amount in cents (e.g., 1000 = $10.00)
+ * @param {string} currency - Currency code (usd, eur, gbp)
+ * @param {string} description - Optional payment description
+ */
 router.post('/create-payment-intent', paymentLimiter, validatePaymentIntent, (req, res) => {
   try {
     const errors = validationResult(req);

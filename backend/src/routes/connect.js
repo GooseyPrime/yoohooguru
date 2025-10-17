@@ -154,13 +154,21 @@ router.get('/balance', authenticateUser, async (req, res) => {
   }
 });
 
-// Validation for instant payout
+/**
+ * Validation for instant payout creation
+ * Note: amount should be provided in cents (e.g., 1000 = $10.00)
+ */
 const validateInstantPayout = [
   body('amount').isInt({ min: MIN_PAYOUT_AMOUNT_CENTS }).withMessage(`Amount must be at least ${MIN_PAYOUT_AMOUNT_CENTS} cents`),
   body('currency').optional().isIn(SUPPORTED_CURRENCIES).withMessage(`Currency must be one of: ${SUPPORTED_CURRENCIES.join(', ')}`)
 ];
 
-// Create instant payout
+/**
+ * Create instant payout
+ * @route POST /api/connect/instant-payout
+ * @param {number} amount - Payout amount in cents (e.g., 1000 = $10.00)
+ * @param {string} currency - Currency code (usd, eur, gbp)
+ */
 router.post('/instant-payout', authenticateUser, validateInstantPayout, async (req, res) => {
   try {
     // Validate input
@@ -212,9 +220,11 @@ router.post('/instant-payout', authenticateUser, validateInstantPayout, async (r
       });
     }
 
-    // Create instant payout (amount is already in cents from validation)
+    // Create instant payout
+    // Amount is provided in cents from client (validated above)
+    // Stripe API expects amount in cents, so no conversion needed
     const payout = await stripe.payouts.create({
-      amount: amount,
+      amount: amount, // Already in cents
       currency: currency,
       method: 'instant'
     }, {
