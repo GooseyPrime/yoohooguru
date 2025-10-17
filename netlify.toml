@@ -1,10 +1,12 @@
 # Netlify Configuration for yoohoo.guru Platform
-# 
+#
 # Note: This is a Node.js/Next.js Turborepo monorepo
 # Python dependencies have been moved to python-mcp-server/ subdirectory
 # to prevent Netlify from auto-detecting and attempting to install them
 
 [build]
+  # CRITICAL FIX: Explicitly set base to the repository root to correctly resolve the 'publish' path for monorepos.
+  base = "/"
   # Build command for Turborepo monorepo - builds the main app by default
   # Note: Root npm install handles all workspace dependencies including devDependencies
   # Using npm ci for cleaner, reproducible installs in CI environments
