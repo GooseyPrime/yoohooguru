@@ -116,50 +116,20 @@ jobs:
         if-no-files-found: ignore
       continue-on-error: true
 
-    - name: Dump failure logs to PR comment
+    - name: Post failure notification
       if: failure() && github.event.pull_request
       run: |
-        # Collect failure information
+        # Post a quick notification - detailed logs will be posted by ci-failure-notifier workflow
         WORKFLOW_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         
-        # Create comment body with @copilot mention using a here document
-        COMMENT_BODY=$(cat <<EOF
-@copilot
-
-## ❌ CI Workflow Failed
-
-**Workflow Run:** [#${{ github.run_number }}](${WORKFLOW_URL})
-**Commit:** \`${{ github.sha }}\`
-**Branch:** \`${{ github.head_ref }}\`
-**Triggered by:** @${{ github.actor }}
-
-### 📋 Failure Summary
-
-One or more steps in the CI workflow failed. Please review the logs in the workflow run linked above.
-
-### 🔍 Common Issues to Check
-
-- Linting errors in backend code
-- Frontend test failures
-- Backend test failures
-- Build errors
-- Orphan module analysis issues
-
-### 🔗 Quick Links
-
-- [View full workflow logs](${WORKFLOW_URL})
-- [View job logs](${WORKFLOW_URL}/job/${{ github.job }})
-
-Please review the failure and make necessary corrections.
-EOF
-)
+        COMMENT_BODY="@copilot ⚠️ CI workflow failed. Detailed failure analysis is being generated and will be posted shortly. [View workflow run](${WORKFLOW_URL})"
         
-        # Post comment to PR using GitHub API
         curl -X POST \
           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           -H "Accept: application/vnd.github.v3+json" \
           -d "$(jq -n --arg body "$COMMENT_BODY" '{body: $body}')" \
           "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
+      continue-on-error: true
 
   deploy-production:
     name: Deploy to Production
