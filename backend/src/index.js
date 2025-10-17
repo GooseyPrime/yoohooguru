@@ -307,18 +307,63 @@ app.get('/favicon.ico', (req, res) => {
   res.send(transparentGif);
 });
 
-// Health check endpoint
-app.get('/health', (req, res) => {
+// Health check endpoint (enhanced for better observability)
+app.get('/health', async (req, res) => {
   try {
     const agentStatus = getCurationAgentStatus();
+    const firestore = getFirestore();
+    
+    // Check Firestore connection
+    let firestoreStatus = 'unknown';
+    try {
+      await firestore.collection('_health').doc('check').set({ 
+        timestamp: new Date().toISOString() 
+      }, { merge: true });
+      firestoreStatus = 'connected';
+    } catch (firestoreError) {
+      logger.error('Firestore health check failed:', firestoreError);
+      firestoreStatus = 'error';
+    }
+    
+    // Memory usage
+    const memoryUsage = process.memoryUsage();
+    const memoryUsageMB = {
+      rss: Math.round(memoryUsage.rss / 1024 / 1024),
+      heapTotal: Math.round(memoryUsage.heapTotal / 1024 / 1024),
+      heapUsed: Math.round(memoryUsage.heapUsed / 1024 / 1024),
+      external: Math.round(memoryUsage.external / 1024 / 1024)
+    };
+    
+    // System info
+    const uptimeSeconds = process.uptime();
+    const uptimeFormatted = `${Math.floor(uptimeSeconds / 3600)}h ${Math.floor((uptimeSeconds % 3600) / 60)}m ${Math.floor(uptimeSeconds % 60)}s`;
+    
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.status(200).json({
       status: 'OK',
       timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
+      uptime: {
+        seconds: Math.floor(uptimeSeconds),
+        formatted: uptimeFormatted
+      },
       environment: config.nodeEnv,
-      version: config.apiVersion,
-      curationAgents: agentStatus
+      version: config.apiVersion || '1.0.0',
+      services: {
+        api: 'operational',
+        firestore: firestoreStatus,
+        curationAgents: agentStatus
+      },
+      system: {
+        nodeVersion: process.version,
+        platform: process.platform,
+        memory: memoryUsageMB,
+        pid: process.pid
+      },
+      features: {
+        apiVersioning: true,
+        requestIdTracking: true,
+        csrfProtection: config.nodeEnv !== 'test'
+      }
     });
   } catch (error) {
     logger.error('Health check failed:', error);

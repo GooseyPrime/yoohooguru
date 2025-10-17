@@ -2,13 +2,21 @@ const express = require('express');
 const { getFirestore } = require('../config/firebase');
 const { authenticateUser, optionalAuth } = require('../middleware/auth');
 const { logger } = require('../utils/logger');
+const { handleValidationErrors, query } = require('../middleware/validation');
 
 const router = express.Router();
 
 // @desc    Get all users (with optional filters)
 // @route   GET /api/users
 // @access  Public/Private
-router.get('/', optionalAuth, async (req, res) => {
+router.get('/', [
+  query('limit').optional().isInt({ min: 1, max: 100 }).toInt().withMessage('Limit must be between 1 and 100'),
+  query('offset').optional().isInt({ min: 0 }).toInt().withMessage('Offset must be a non-negative integer'),
+  query('tier').optional().trim(),
+  query('skills').optional().trim(),
+  query('location').optional().trim(),
+  handleValidationErrors
+], optionalAuth, async (req, res) => {
   try {
     const { tier, skills, location, limit = 50, offset = 0 } = req.query;
     

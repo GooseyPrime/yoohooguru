@@ -5,6 +5,7 @@ const admin = require('firebase-admin');
 const { getSubdomainConfig, isValidSubdomain } = require('../config/subdomains');
 const { logger } = require('../utils/logger');
 const { v4: uuidv4 } = require('uuid');
+const { cacheMiddleware } = require('../middleware/cache');
 
 const router = express.Router();
 
@@ -125,7 +126,7 @@ router.use('/news/:subdomain', (req, res, next) => {
  * GET /:subdomain/home
  * Get guru homepage data including featured posts and character info
  */
-router.get('/:subdomain/home', guruPagesLimiter, async (req, res) => {
+router.get('/:subdomain/home', guruPagesLimiter, cacheMiddleware(300), async (req, res) => {
   try {
     const { subdomain } = req.params;
     const guru = req.guru;
@@ -279,7 +280,7 @@ router.get('/:subdomain/home', guruPagesLimiter, async (req, res) => {
  * GET /:subdomain/posts
  * Get all blog posts for a guru subdomain with filtering and pagination
  */
-router.get('/:subdomain/posts', async (req, res) => {
+router.get('/:subdomain/posts', cacheMiddleware(180), async (req, res) => {
   try {
     const { subdomain } = req.params;
     const { 
@@ -706,7 +707,7 @@ router.get('/:subdomain/about', async (req, res) => {
  * Get curated news articles for a subdomain
  * Per spec: Show rotating 10 most recent articles
  */
-router.get('/news/:subdomain', guruPagesLimiter, async (req, res) => {
+router.get('/news/:subdomain', guruPagesLimiter, cacheMiddleware(300), async (req, res) => {
   try {
     const { subdomain } = req.params;
     const guru = req.guru;

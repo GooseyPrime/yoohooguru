@@ -1,6 +1,7 @@
 const express = require('express');
 const { logger } = require('../utils/logger');
 const { triggerManualCuration } = require('../agents/curationAgents');
+const { getCacheStats, clearCache } = require('../middleware/cache');
 
 const router = express.Router();
 
@@ -368,6 +369,53 @@ router.get('/agents-status', (req, res) => {
       blog: 'Running - Bi-weekly on Mondays at 8 AM'
     },
     environment: process.env.NODE_ENV || 'development',
+    timestamp: new Date().toISOString()
+  });
+});
+
+/**
+ * Get cache statistics (admin only)
+ */
+router.get('/cache/stats', (req, res) => {
+  const adminCookie = req.cookies?.yoohoo_admin;
+  if (adminCookie !== '1') {
+    return res.status(401).json({ 
+      success: false, 
+      error: { message: 'Admin authentication required' } 
+    });
+  }
+  
+  const stats = getCacheStats();
+  res.json({
+    success: true,
+    cache: stats,
+    timestamp: new Date().toISOString()
+  });
+});
+
+/**
+ * Clear cache (admin only)
+ */
+router.post('/cache/clear', (req, res) => {
+  const adminCookie = req.cookies?.yoohoo_admin;
+  if (adminCookie !== '1') {
+    return res.status(401).json({ 
+      success: false, 
+      error: { message: 'Admin authentication required' } 
+    });
+  }
+  
+  const { pattern } = req.body;
+  clearCache(pattern);
+  
+  logger.info('Cache cleared by admin', { 
+    ip: req.ip, 
+    pattern: pattern || 'all' 
+  });
+  
+  res.json({
+    success: true,
+    message: pattern ? `Cache cleared for pattern: ${pattern}` : 'All cache cleared',
     timestamp: new Date().toISOString()
   });
 });
