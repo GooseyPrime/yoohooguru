@@ -1,60 +1,22 @@
+// Load firebase-admin, using mock only in test environment
 let admin;
 try {
   admin = require('firebase-admin');
 } catch (error) {
+  // Only allow mocks in test environment
   if (process.env.NODE_ENV === 'test') {
-    // firebase-admin not available in test environment via npx
-    // Create a minimal mock for testing
-    admin = {
-      apps: { length: 0 },
-      initializeApp: (config) => ({
-        options: config
-      }),
-      app: () => ({}),
-      auth: () => ({
-        verifyIdToken: (_token) => Promise.resolve({
-          uid: 'test-user-123',
-          email: 'test@example.com'
-        })
-      }),
-      firestore: () => ({
-        collection: (_name) => ({
-          doc: (_id) => ({
-            get: () => Promise.resolve({ exists: false }),
-            set: () => Promise.resolve(),
-            update: () => Promise.resolve(),
-            delete: () => Promise.resolve()
-          }),
-          get: () => Promise.resolve({ docs: [] }),
-          add: () => Promise.resolve({ id: 'test-doc-id' }),
-          where: () => ({
-            get: () => Promise.resolve({ docs: [] })
-          }),
-          orderBy: () => ({
-            get: () => Promise.resolve({ docs: [] }),
-            limit: () => ({
-              get: () => Promise.resolve({ docs: [] })
-            })
-          }),
-          limit: () => ({
-            get: () => Promise.resolve({ docs: [] })
-          })
-        }),
-        batch: () => ({
-          set: () => {},
-          update: () => {},
-          delete: () => {},
-          commit: () => Promise.resolve()
-        })
-      }),
-      credential: {
-        cert: () => ({})
-      }
-    };
+    // Load mock from dedicated test directory
+    const { createFirebaseAdminMock } = require('../test/mocks/firebase-admin-mock');
+    admin = createFirebaseAdminMock();
   } else {
-    throw error;
+    // In non-test environments, firebase-admin must be available
+    throw new Error(
+      'firebase-admin module not found. This is required for production, staging, and development. ' +
+      'Run: npm install firebase-admin'
+    );
   }
 }
+
 const { logger } = require('../utils/logger');
 
 let firebaseApp;
@@ -62,6 +24,12 @@ let firebaseApp;
 /**
  * Validates that test environment is properly configured for emulator use
  * This prevents CI failures when emulators are used in non-test environments
+ */
+/**
+ * Validates that test environment is properly configured for emulator use
+ * This prevents CI failures when emulators are used in non-test environments
+ * 
+ * @throws {Error} If emulator hosts are configured with wrong NODE_ENV
  */
 const validateTestEnvironmentSetup = () => {
   const env = process.env.NODE_ENV;
@@ -110,6 +78,10 @@ const validateTestEnvironmentSetup = () => {
 
 /**
  * Validates Firebase configuration for production environments
+ * Ensures no emulators or mocks are configured and credentials are valid
+ * 
+ * @param {Object} config - Firebase configuration object to validate
+ * @throws {Error} If configuration is invalid for production/staging
  */
 const validateProductionFirebaseConfig = (config) => {
   const env = process.env.NODE_ENV;
@@ -203,11 +175,29 @@ const validateProductionFirebaseConfig = (config) => {
   logger.info(`🔥 Using Firebase project: ${projectId}`);
 };
 
+/**
+ * Initialize Firebase Admin SDK
+ * 
+ * In production/staging: Requires real Firebase credentials
+ * In development: Uses Firebase with optional credentials
+ * In test: Uses Firebase emulator or mock
+ * 
+ * @returns {Object} Firebase app instance
+ * @throws {Error} If configuration is invalid or mocks are used in production
+ */
 const initializeFirebase = () => {
   try {
+    // Validate that mocks are never used in production or staging
+    const env = process.env.NODE_ENV || 'development';
+    if ((env === 'production' || env === 'staging') && !admin.apps) {
+      throw new Error(
+        'CRITICAL SECURITY ERROR: Firebase mock detected in production/staging environment. ' +
+        'Mocks are only allowed in test environments. Check your NODE_ENV configuration.'
+      );
+    }
+    
     // Initialize Firebase Admin SDK
     if (!admin.apps.length) {
-      const env = process.env.NODE_ENV || 'development';
       
       // TEST ENVIRONMENT: Use Firebase Emulator
       if (env === 'test') {
@@ -276,6 +266,13 @@ const initializeFirebase = () => {
   }
 };
 
+/**
+ * Get Firebase Realtime Database instance (DEPRECATED)
+ * 
+ * @deprecated Use getFirestore() instead. This app uses Firestore, not Realtime Database.
+ * @returns {Object} Firebase Realtime Database instance
+ * @throws {Error} If Firebase is not initialized or database URL not configured
+ */
 const getDatabase = () => {
   if (!firebaseApp) {
     throw new Error('Firebase not initialized. Call initializeFirebase() first.');
@@ -292,6 +289,12 @@ const getDatabase = () => {
   return admin.database();
 };
 
+/**
+ * Get Firebase Auth instance for authentication operations
+ * 
+ * @returns {Object} Firebase Auth instance
+ * @throws {Error} If Firebase is not initialized
+ */
 const getAuth = () => {
   if (!firebaseApp) {
     throw new Error('Firebase not initialized. Call initializeFirebase() first.');
@@ -299,6 +302,12 @@ const getAuth = () => {
   return admin.auth();
 };
 
+/**
+ * Get Firestore database instance for data operations
+ * 
+ * @returns {Object} Firestore database instance
+ * @throws {Error} If Firebase is not initialized
+ */
 const getFirestore = () => {
   if (!firebaseApp) {
     throw new Error('Firebase not initialized. Call initializeFirebase() first.');

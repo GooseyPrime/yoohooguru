@@ -6,14 +6,15 @@
 
 [build]
   # Build command for Turborepo monorepo - builds the main app by default
-  # Note: Turborepo requires installing root dependencies first
-  # Then install apps/main dependencies before building
-  command = "npm install && cd apps/main && npm install && cd ../.. && npx turbo run build --filter=@yoohooguru/main"
+  # Note: Root npm install handles all workspace dependencies including devDependencies
+  # Using npm ci for cleaner, reproducible installs in CI environments
+  command = "npm ci && npx turbo run build --filter=@yoohooguru/main"
   publish = "apps/main/.next"
   
 [build.environment]
-  # Use Node.js 20 LTS - specify exact version for Netlify compatibility
-  NODE_VERSION = "20.18.0"
+  # Use Node.js 20 LTS - Netlify will use the latest available Node 20.x version
+  # Specifying just "20" ensures compatibility with Netlify's build image
+  NODE_VERSION = "20"
 
 # Next.js Runtime for Netlify
 [[plugins]]
@@ -27,9 +28,11 @@
 # If using Netlify, you should create separate Netlify projects for each app
 # and configure the build command and publish directory accordingly.
 # 
-# Example for different apps:
-# - Main app: build="npm install && npx turbo run build --filter=@yoohooguru/main", publish="apps/main/.next"
-# - Angel app: build="npm install && npx turbo run build --filter=@yoohooguru/angel", publish="apps/angel/.next"
-# - Coach app: build="npm install && npx turbo run build --filter=@yoohooguru/coach", publish="apps/coach/.next"
+# Example build commands for different apps (npm ci for reproducible builds):
+# - Main app: build="npm ci && npx turbo run build --filter=@yoohooguru/main", publish="apps/main/.next"
+# - Angel app: build="npm ci && npx turbo run build --filter=@yoohooguru/angel", publish="apps/angel/.next"
+# - Coach app: build="npm ci && npx turbo run build --filter=@yoohooguru/coach", publish="apps/coach/.next"
+# - Heroes app: build="npm ci && npx turbo run build --filter=@yoohooguru/heroes", publish="apps/heroes/.next"
+# - Dashboard app: build="npm ci && npx turbo run build --filter=@yoohooguru/dashboard", publish="apps/dashboard/.next"
 # 
 # See docs/DEPLOYMENT.md for complete deployment guide

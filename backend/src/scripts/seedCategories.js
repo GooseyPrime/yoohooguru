@@ -1,5 +1,11 @@
-// Add-only seed for categories + category_requirements
+/**
+ * Add-only seed for categories + category_requirements
+ * This script seeds Firestore with initial category data
+ * @module scripts/seedCategories
+ */
+
 const { initializeFirebase, getFirestore } = require('../config/firebase');
+const { logger } = require('../utils/logger');
 
 const CATS = [
   // Lessons / tutoring / fitness
@@ -64,7 +70,10 @@ async function run() {
   });
   
   await batch.commit();
-  console.log('✅ Firestore seed complete - categories and requirements added');
+  logger.info('✅ Firestore seed complete - categories and requirements added');
   process.exit(0);
 }
-run().catch(e=>{ console.error(e); process.exit(1); });
+run().catch(e=>{ 
+  logger.error('Seed script failed:', { error: e.message, stack: e.stack }); 
+  process.exit(1); 
+});
