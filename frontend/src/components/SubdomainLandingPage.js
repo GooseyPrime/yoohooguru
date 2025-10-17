@@ -6,8 +6,8 @@ import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import Button from './Button';
 import LoadingSpinner from './LoadingSpinner';
-import { 
 import logger from '../utils/logger';
+import { 
   ChefHat, Music, Dumbbell, Laptop, Palette, MessageCircle, 
   Briefcase, Sparkles, PenTool, Camera, Sprout, Wrench, 
   Heart, Target, ArrowLeft, Calendar, Clock, User 
