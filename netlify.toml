@@ -8,10 +8,9 @@
   # CRITICAL FIX: Explicitly set base to the repository root to correctly resolve the 'publish' path for monorepos.
   base = "/"
   # Build command for Turborepo monorepo - builds the main app by default
-  # Note: Root npm install handles all workspace dependencies including devDependencies
-  # Using npm ci for cleaner, reproducible installs in CI environments
-  # The --include=dev flag ensures devDependencies are installed (required for TypeScript)
-  command = "npm ci --include=dev && npx turbo run build --filter=@yoohooguru/main"
+  # Using npm install instead of npm ci to ensure proper workspace dependency resolution
+  # npm install handles workspace devDependencies better than npm ci in some environments
+  command = "npm install && npx turbo run build --filter=@yoohooguru/main"
   publish = "apps/main/.next"
   
 [build.environment]
