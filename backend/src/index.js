@@ -25,6 +25,7 @@ const frontendLimiter = rateLimit({
 const { logger } = require('./utils/logger');
 const errorHandler = require('./middleware/errorHandler');
 const { subdomainHandler } = require('./middleware/subdomainHandler');
+const { requestIdMiddleware } = require('./middleware/requestId');
 const { startCurationAgents, getCurationAgentStatus } = require('./agents/curationAgents');
 
 // Route Imports
@@ -206,6 +207,9 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
+// Request ID tracking middleware (must come early for comprehensive tracking)
+app.use(requestIdMiddleware);
+
 // Request logging
 app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
 
@@ -329,7 +333,12 @@ app.get('/health', (req, res) => {
   }
 });
 
-// Main API routes
+// API v1 routes (versioned)
+const v1Routes = require('./routes/v1');
+app.use('/api/v1', v1Routes);
+
+// Legacy API routes (for backwards compatibility) - redirect to v1
+// These will be maintained for backward compatibility but /api/v1/* is preferred
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/skills', skillRoutes);
