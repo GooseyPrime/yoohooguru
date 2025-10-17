@@ -121,34 +121,37 @@ jobs:
         # Collect failure information
         WORKFLOW_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         
-        # Create comment body with @copilot mention
-        COMMENT_BODY="@copilot
-        
-        ## ❌ CI Workflow Failed
-        
-        **Workflow Run:** [#${{ github.run_number }}](${WORKFLOW_URL})
-        **Commit:** \`${{ github.sha }}\`
-        **Branch:** \`${{ github.head_ref }}\`
-        **Triggered by:** @${{ github.actor }}
-        
-        ### 📋 Failure Summary
-        
-        One or more steps in the CI workflow failed. Please review the logs in the workflow run linked above.
-        
-        ### 🔍 Common Issues to Check
-        
-        - Linting errors in backend code
-        - Frontend test failures
-        - Backend test failures
-        - Build errors
-        - Orphan module analysis issues
-        
-        ### 🔗 Quick Links
-        
-        - [View full workflow logs](${WORKFLOW_URL})
-        - [View job logs](${WORKFLOW_URL}/job/${{ github.job }})
-        
-        Please review the failure and make necessary corrections."
+        # Create comment body with @copilot mention using a here document
+        COMMENT_BODY=$(cat <<EOF
+@copilot
+
+## ❌ CI Workflow Failed
+
+**Workflow Run:** [#${{ github.run_number }}](${WORKFLOW_URL})
+**Commit:** \`${{ github.sha }}\`
+**Branch:** \`${{ github.head_ref }}\`
+**Triggered by:** @${{ github.actor }}
+
+### 📋 Failure Summary
+
+One or more steps in the CI workflow failed. Please review the logs in the workflow run linked above.
+
+### 🔍 Common Issues to Check
+
+- Linting errors in backend code
+- Frontend test failures
+- Backend test failures
+- Build errors
+- Orphan module analysis issues
+
+### 🔗 Quick Links
+
+- [View full workflow logs](${WORKFLOW_URL})
+- [View job logs](${WORKFLOW_URL}/job/${{ github.job }})
+
+Please review the failure and make necessary corrections.
+EOF
+)
         
         # Post comment to PR using GitHub API
         curl -X POST \
