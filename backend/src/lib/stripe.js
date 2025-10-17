@@ -1,6 +1,11 @@
-// Lightweight Stripe client
+/**
+ * Lightweight Stripe client configuration
+ * @module lib/stripe
+ */
+
 const Stripe = require('stripe');
 const crypto = require('crypto');
+const { logger } = require('../utils/logger');
 
 let stripe;
 
@@ -56,10 +61,10 @@ if (!process.env.STRIPE_SECRET_KEY) {
       }
     };
   } else if (isDevelopment) {
-    console.warn('[stripe] STRIPE_SECRET_KEY not set. For local development, add STRIPE_SECRET_KEY=sk_test_... to your .env file. Stripe features will be disabled.');
+    logger.warn('[stripe] STRIPE_SECRET_KEY not set. For local development, add STRIPE_SECRET_KEY=sk_test_... to your .env file. Stripe features will be disabled.');
     stripe = null;
   } else {
-    console.warn('[stripe] STRIPE_SECRET_KEY not set. Set this in Railway or your production environment.');
+    logger.warn('[stripe] STRIPE_SECRET_KEY not set. Set this in Railway or your production environment.');
     stripe = null;
   }
 } else {
@@ -68,4 +73,13 @@ if (!process.env.STRIPE_SECRET_KEY) {
   });
 }
 
+/**
+ * Stripe client instance for payment processing
+ * 
+ * @type {Object|null} Stripe instance or null if not configured
+ * @property {Object} webhooks - Webhook verification utilities
+ * @property {Object} accounts - Stripe Connect account management
+ * @property {Object} balance - Balance retrieval for Connect accounts
+ * @property {Object} payouts - Payout creation and management
+ */
 module.exports = { stripe };

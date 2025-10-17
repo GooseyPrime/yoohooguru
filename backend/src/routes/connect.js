@@ -1,8 +1,11 @@
 const express = require('express');
+const { body, validationResult } = require('express-validator');
 const { stripe } = require('../lib/stripe');
 const { getFirestore } = require('../config/firebase'); // Correctly import getFirestore
 const { authenticateUser } = require('../middleware/auth');
 const { isFeatureEnabled } = require('../lib/featureFlags');
+const { logger } = require('../utils/logger');
+const { SUPPORTED_CURRENCIES, MIN_PAYOUT_AMOUNT_CENTS } = require('../utils/constants');
 
 const router = express.Router();
 
@@ -57,7 +60,7 @@ router.post('/start', authenticateUser, async (req, res) => {
 
     res.json({ ok: true, url: link.url, accountId });
   } catch (err) {
-    console.error('connect/start error', err);
+    logger.error('connect/start error', { error: err.message, stack: err.stack });
     res.status(500).json({ ok: false, error: 'Failed to start onboarding' });
   }
 });
@@ -90,7 +93,7 @@ router.get('/status', authenticateUser, async (req, res) => {
       currently_due: requirements.currently_due || []
     });
   } catch (err) {
-    console.error('connect/status error', err);
+    logger.error('connect/status error', { error: err.message, stack: err.stack });
     res.status(500).json({ ok: false, error: 'Failed to load status' });
   }
 });
@@ -146,14 +149,38 @@ router.get('/balance', authenticateUser, async (req, res) => {
       balance: responseBalance
     });
   } catch (err) {
-    console.error('connect/balance error', err);
+    logger.error('connect/balance error', { error: err.message, stack: err.stack });
     res.status(500).json({ ok: false, error: 'Failed to retrieve balance' });
   }
 });
 
-// Create instant payout
-router.post('/instant-payout', authenticateUser, async (req, res) => {
+/**
+ * Validation for instant payout creation
+ * Note: amount should be provided in cents (e.g., 1000 = $10.00)
+ */
+const validateInstantPayout = [
+  body('amount').isInt({ min: MIN_PAYOUT_AMOUNT_CENTS }).withMessage(`Amount must be at least ${MIN_PAYOUT_AMOUNT_CENTS} cents`),
+  body('currency').optional().isIn(SUPPORTED_CURRENCIES).withMessage(`Currency must be one of: ${SUPPORTED_CURRENCIES.join(', ')}`)
+];
+
+/**
+ * Create instant payout
+ * @route POST /api/connect/instant-payout
+ * @param {number} amount - Payout amount in cents (e.g., 1000 = $10.00)
+ * @param {string} currency - Currency code (usd, eur, gbp)
+ */
+router.post('/instant-payout', authenticateUser, validateInstantPayout, async (req, res) => {
   try {
+    // Validate input
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        ok: false,
+        error: 'Validation failed',
+        details: errors.array()
+      });
+    }
+
     // Check if instant payouts feature is enabled
     if (!isFeatureEnabled('instantPayouts')) {
       return res.status(404).json({ 
@@ -171,13 +198,6 @@ router.post('/instant-payout', authenticateUser, async (req, res) => {
 
     const { uid } = req.user;
     const { amount, currency = 'usd' } = req.body;
-    
-    if (!amount || amount <= 0) {
-      return res.status(400).json({ 
-        ok: false, 
-        error: 'Valid amount is required for payout' 
-      });
-    }
 
     const db = getFirestore(); // Initialize Firestore
     const profileRef = db.collection('profiles').doc(uid); // Get document reference
@@ -201,8 +221,10 @@ router.post('/instant-payout', authenticateUser, async (req, res) => {
     }
 
     // Create instant payout
+    // Amount is provided in cents from client (validated above)
+    // Stripe API expects amount in cents, so no conversion needed
     const payout = await stripe.payouts.create({
-      amount: Math.round(amount * 100), // Convert to cents
+      amount: amount, // Already in cents
       currency: currency,
       method: 'instant'
     }, {
@@ -222,7 +244,7 @@ router.post('/instant-payout', authenticateUser, async (req, res) => {
       }
     });
   } catch (err) {
-    console.error('connect/instant-payout error', err);
+    logger.error('connect/instant-payout error', { error: err.message, type: err.type, stack: err.stack });
     
     // Handle common Stripe errors gracefully
     if (err.type === 'StripeCardError' || err.type === 'StripeInvalidRequestError') {
@@ -263,7 +285,7 @@ router.post('/express-login', authenticateUser, async (req, res) => {
     const link = await stripe.accounts.createLoginLink(profile.stripe_account_id);
     res.json({ ok: true, url: link.url });
   } catch (err) {
-    console.error('connect/express-login error', err);
+    logger.error('connect/express-login error', { error: err.message, stack: err.stack });
     res.status(500).json({ ok: false, error: 'Failed to create login link' });
   }
 });
