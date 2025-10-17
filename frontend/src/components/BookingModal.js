@@ -4,6 +4,7 @@ import { X, Calendar, Clock, Video, MapPin } from 'lucide-react';
 import Button from './Button';
 import { api } from '../lib/api';
 import toast from 'react-hot-toast';
+import logger from '../utils/logger';
 
 const Overlay = styled.div`
   position: fixed;
@@ -252,7 +253,7 @@ function BookingModal({ isOpen, onClose, provider, skillName, serviceType = 'ski
         throw new Error(data.error?.message || 'Failed to book session');
       }
     } catch (error) {
-      console.error('Booking error:', error);
+      logger.error('Booking error:', error);
       toast.error(error.message || 'Failed to book session. Please try again.');
     } finally {
       setLoading(false);

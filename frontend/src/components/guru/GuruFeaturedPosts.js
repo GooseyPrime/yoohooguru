@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import logger from '../../utils/logger';
 
 const FeaturedContainer = styled.section`
   padding: 4rem 2rem;
@@ -195,7 +196,7 @@ function GuruFeaturedPosts({ posts, guru, showViewAll = true }) {
     if (identifier) {
       navigate(`/blog/${identifier}`);
     } else {
-      console.warn('Post missing slug and id:', post);
+      logger.warn('Post missing slug and id:', post);
     }
   };
 

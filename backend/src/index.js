@@ -25,7 +25,10 @@ const frontendLimiter = rateLimit({
 const { logger } = require('./utils/logger');
 const errorHandler = require('./middleware/errorHandler');
 const { subdomainHandler } = require('./middleware/subdomainHandler');
+const { requestIdMiddleware } = require('./middleware/requestId');
 const { startCurationAgents, getCurationAgentStatus } = require('./agents/curationAgents');
+const swaggerUi = require('swagger-ui-express');
+const { swaggerSpec } = require('./config/swagger');
 
 // Route Imports
 const authRoutes = require('./routes/auth');
@@ -296,6 +299,9 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
+// Request ID tracking middleware (must come early for comprehensive tracking)
+app.use(requestIdMiddleware);
+
 // Request logging
 app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
 
@@ -394,18 +400,63 @@ app.get('/favicon.ico', (req, res) => {
   res.send(transparentGif);
 });
 
-// Health check endpoint
-app.get('/health', (req, res) => {
+// Health check endpoint (enhanced for better observability)
+app.get('/health', async (req, res) => {
   try {
     const agentStatus = getCurationAgentStatus();
+    const firestore = getFirestore();
+    
+    // Check Firestore connection
+    let firestoreStatus = 'unknown';
+    try {
+      await firestore.collection('_health').doc('check').set({ 
+        timestamp: new Date().toISOString() 
+      }, { merge: true });
+      firestoreStatus = 'connected';
+    } catch (firestoreError) {
+      logger.error('Firestore health check failed:', firestoreError);
+      firestoreStatus = 'error';
+    }
+    
+    // Memory usage
+    const memoryUsage = process.memoryUsage();
+    const memoryUsageMB = {
+      rss: Math.round(memoryUsage.rss / 1024 / 1024),
+      heapTotal: Math.round(memoryUsage.heapTotal / 1024 / 1024),
+      heapUsed: Math.round(memoryUsage.heapUsed / 1024 / 1024),
+      external: Math.round(memoryUsage.external / 1024 / 1024)
+    };
+    
+    // System info
+    const uptimeSeconds = process.uptime();
+    const uptimeFormatted = `${Math.floor(uptimeSeconds / 3600)}h ${Math.floor((uptimeSeconds % 3600) / 60)}m ${Math.floor(uptimeSeconds % 60)}s`;
+    
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.status(200).json({
       status: 'OK',
       timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
+      uptime: {
+        seconds: Math.floor(uptimeSeconds),
+        formatted: uptimeFormatted
+      },
       environment: config.nodeEnv,
-      version: config.apiVersion,
-      curationAgents: agentStatus
+      version: config.apiVersion || '1.0.0',
+      services: {
+        api: 'operational',
+        firestore: firestoreStatus,
+        curationAgents: agentStatus
+      },
+      system: {
+        nodeVersion: process.version,
+        platform: process.platform,
+        memory: memoryUsageMB,
+        pid: process.pid
+      },
+      features: {
+        apiVersioning: true,
+        requestIdTracking: true,
+        csrfProtection: config.nodeEnv !== 'test'
+      }
     });
   } catch (error) {
     logger.error('Health check failed:', error);
@@ -420,7 +471,46 @@ app.get('/health', (req, res) => {
   }
 });
 
-// Main API routes
+// Swagger API documentation
+// Serve Swagger UI at /api-docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  customSiteTitle: 'YoohooGuru API Documentation',
+  customCss: '.swagger-ui .topbar { display: none }',
+  swaggerOptions: {
+    persistAuthorization: true,
+    displayRequestDuration: true,
+    filter: true
+  }
+}));
+
+// OpenAPI JSON spec endpoint
+app.get('/api-docs.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
+
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     summary: Health check endpoint
+ *     description: Returns the health status of the API and its dependencies
+ *     tags: [Health]
+ *     responses:
+ *       200:
+ *         description: Service is healthy
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HealthCheck'
+ */
+
+// API v1 routes (versioned)
+const v1Routes = require('./routes/v1');
+app.use('/api/v1', v1Routes);
+
+// Legacy API routes (for backwards compatibility) - redirect to v1
+// These will be maintained for backward compatibility but /api/v1/* is preferred
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/skills', skillRoutes);

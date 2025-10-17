@@ -1,19 +1,57 @@
+/**
+ * SEO Metadata Component
+ * Manages page metadata for SEO and social media sharing
+ * 
+ * @module components/SEOMetadata
+ */
+
 import { useEffect } from 'react';
 
+/**
+ * SEO Metadata props
+ */
 interface SEOMetadataProps {
+  /** Page title */
   title?: string;
+  /** Page description */
   description?: string;
+  /** Comma-separated keywords */
   keywords?: string;
+  /** Open Graph title (defaults to title) */
   ogTitle?: string;
+  /** Open Graph description (defaults to description) */
   ogDescription?: string;
+  /** Open Graph image URL */
   ogImage?: string;
+  /** Open Graph URL (defaults to current page) */
   ogUrl?: string;
+  /** Canonical URL for the page */
   canonicalUrl?: string;
-  structuredData?: any;
-  robots?: string; // e.g., 'noindex,nofollow', 'index,follow', etc.
+  /** Structured data JSON-LD object */
+  structuredData?: Record<string, unknown>;
+  /** Robots meta tag value (e.g., 'noindex,nofollow', 'index,follow') */
+  robots?: string;
 }
 
-function SEOMetadata({ 
+/**
+ * SEO Metadata component
+ * Updates document metadata for SEO and social sharing
+ * 
+ * @param {SEOMetadataProps} props - Component props
+ * @returns {null} This component renders nothing
+ * 
+ * @example
+ * ```tsx
+ * <SEOMetadata
+ *   title="YoohooGuru - Skill Sharing Platform"
+ *   description="Share and learn skills with the community"
+ *   keywords="skills, learning, teaching, community"
+ *   ogImage="https://yoohoo.guru/og-image.png"
+ *   robots="index,follow"
+ * />
+ * ```
+ */
+function SEOMetadata({
   title, 
   description, 
   keywords, 

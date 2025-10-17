@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import logger from '../utils/logger';
 
 const ToolbarContainer = styled.div`
   position: fixed;
@@ -166,7 +167,7 @@ function AccessibilityToolbar() {
         const parsedSettings = JSON.parse(saved);
         setSettings(prev => ({ ...prev, ...parsedSettings }));
       } catch (error) {
-        console.warn('Failed to load accessibility settings:', error);
+        logger.warn('Failed to load accessibility settings:', error);
       }
     }
   }, []);

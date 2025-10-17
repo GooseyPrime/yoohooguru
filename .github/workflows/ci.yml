@@ -60,8 +60,8 @@ jobs:
         NODE_ENV: test
         FIREBASE_PROJECT_ID: yoohoo-dev-testing
         FIREBASE_API_KEY: AIzaSyTest1234567890KeyForCITestingOnly
-        FIRESTORE_EMULATOR_HOST: localhost:8080
-        FIREBASE_AUTH_EMULATOR_HOST: localhost:9099
+       # FIRESTORE_EMULATOR_HOST: localhost:8080
+       # FIREBASE_AUTH_EMULATOR_HOST: localhost:9099
         JWT_SECRET: test-jwt-secret-key-for-ci-cd-testing-only-not-for-production
         STRIPE_SECRET_KEY: sk_test_51AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQr
         STRIPE_PUBLISHABLE_KEY: pk_test_51AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOp

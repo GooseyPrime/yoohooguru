@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import LoadingSpinner from '../LoadingSpinner';
+import logger from '../../utils/logger';
 
 /**
  * Protected Route component that requires authentication
@@ -27,7 +28,7 @@ function ProtectedRoute({ children, requireProfile = false }) {
 
   // If Firebase is not configured, allow access but show warning
   if (!isFirebaseConfigured) {
-    console.warn('⚠️ ProtectedRoute: Firebase not configured, allowing access in development');
+    logger.warn('⚠️ ProtectedRoute: Firebase not configured, allowing access in development');
     return children;
   }
 

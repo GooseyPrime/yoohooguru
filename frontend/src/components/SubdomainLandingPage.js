@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import Button from './Button';
 import LoadingSpinner from './LoadingSpinner';
+import logger from '../utils/logger';
 import { 
   ChefHat, Music, Dumbbell, Laptop, Palette, MessageCircle, 
   Briefcase, Sparkles, PenTool, Camera, Sprout, Wrench, 
@@ -523,7 +524,7 @@ function SubdomainLandingPage({ subdomain, config }) {
 
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching subdomain data:', err);
+        logger.error('Error fetching subdomain data:', err);
         setError(err.message);
         setLoading(false);
       }
@@ -565,7 +566,7 @@ function SubdomainLandingPage({ subdomain, config }) {
     if (identifier) {
       navigate(`/blog/${identifier}`);
     } else {
-      console.warn('Post missing slug and id:', post);
+      logger.warn('Post missing slug and id:', post);
     }
   };
 

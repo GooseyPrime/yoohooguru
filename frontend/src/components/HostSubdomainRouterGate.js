@@ -6,6 +6,7 @@
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getSubdomainRoute } from '../hosting/hostRules';
+import logger from '../utils/logger';
 
 export function HostSubdomainRouterGate() {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ export function HostSubdomainRouterGate() {
     
     // If we're on a subdomain and not already on the target route, redirect
     if (targetRoute && location.pathname !== targetRoute) {
-      console.log(`Redirecting ${host} from ${location.pathname} to ${targetRoute}`);
+      logger.info(`Redirecting ${host} from ${location.pathname} to ${targetRoute}`);
       navigate(targetRoute, { replace: true });
     }
   }, [navigate, location.pathname]);
