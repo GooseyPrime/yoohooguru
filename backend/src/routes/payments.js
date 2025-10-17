@@ -1,6 +1,8 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
+const { body, validationResult } = require('express-validator');
 const { getConfig } = require('../config/appConfig');
+const { logger } = require('../utils/logger');
 
 const router = express.Router();
 
@@ -49,13 +51,41 @@ router.get('/', (req, res) => {
   });
 });
 
+// Validation for payment intent creation
+const validatePaymentIntent = [
+  body('amount').isInt({ min: 50 }).withMessage('Amount must be at least 50 cents'),
+  body('currency').optional().isIn(['usd', 'eur', 'gbp']).withMessage('Invalid currency'),
+  body('description').optional().trim().isLength({ max: 200 }).withMessage('Description too long')
+];
+
 // Create payment intent (placeholder for future implementation)
-router.post('/create-payment-intent', paymentLimiter, (req, res) => {
-  // TODO: Implement Stripe payment intent creation
-  res.json({
-    success: false,
-    message: 'Payment intent creation - Coming soon'
-  });
+router.post('/create-payment-intent', paymentLimiter, validatePaymentIntent, (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        error: { message: 'Validation failed', details: errors.array() }
+      });
+    }
+
+    // TODO: Implement Stripe payment intent creation
+    logger.info('Payment intent creation requested', { 
+      amount: req.body.amount, 
+      currency: req.body.currency 
+    });
+    
+    res.json({
+      success: false,
+      message: 'Payment intent creation - Coming soon'
+    });
+  } catch (error) {
+    logger.error('Payment intent creation error', { error: error.message, stack: error.stack });
+    res.status(500).json({
+      success: false,
+      error: { message: 'Failed to create payment intent' }
+    });
+  }
 });
 
 // Get subscription status (placeholder for future implementation)

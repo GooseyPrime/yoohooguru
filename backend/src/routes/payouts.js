@@ -1,4 +1,5 @@
 const express = require('express');
+const { body, validationResult } = require('express-validator');
 const { stripe } = require('../lib/stripe');
 const { getFirestore } = require('../config/firebase');
 const { authenticateUser } = require('../middleware/auth');
@@ -48,9 +49,25 @@ router.get('/balance', authenticateUser, async (req, res) => {
   }
 });
 
+// Validation for instant payout
+const validateInstantPayout = [
+  body('amountCents').optional().isInt({ min: 1 }).withMessage('Amount must be a positive integer'),
+  body('currency').optional().isIn(['usd', 'eur', 'gbp']).withMessage('Invalid currency')
+];
+
 // POST /api/payouts/instant
 // body: { amountCents?: number, currency?: 'usd' }
-router.post('/instant', authenticateUser, async (req, res) => {
+router.post('/instant', authenticateUser, validateInstantPayout, async (req, res) => {
+  // Validate input
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      ok: false,
+      error: 'Validation failed',
+      details: errors.array()
+    });
+  }
+  
   try {
     if (!stripe && process.env.NODE_ENV !== 'test') {
       return res.status(503).json({ 
