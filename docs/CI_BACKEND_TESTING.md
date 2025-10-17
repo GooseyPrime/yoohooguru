@@ -223,9 +223,31 @@ This script checks for:
 - Proper firebase-tools installation
 - Correct working directory configuration
 
+## PR Failure Notifications
+
+The CI workflow automatically posts failure notifications to pull requests when any step fails.
+
+### Feature Details
+
+- **Trigger**: Runs only when `failure()` is detected and the workflow is triggered by a pull request
+- **Addressee**: Comments are addressed to `@copilot` for automated attention
+- **Content**: Includes workflow run details, commit information, and direct links to logs
+- **Permissions**: Requires `pull-requests: write` and `issues: write` permissions
+
+### Comment Format
+
+When a CI workflow fails on a PR, a comment is posted with:
+- @copilot mention at the top
+- Workflow run number and link
+- Commit SHA and branch name
+- List of common failure points to check
+- Quick links to full logs and job-specific logs
+
+This feature helps maintain quick feedback loops for contributors by providing immediate visibility into CI failures directly in the PR context.
+
 ---
 
-**Last Updated**: December 2024
+**Last Updated**: October 2025
 **CI Workflow File**: `.github/workflows/ci.yml`
 **Backend Package**: `backend/package.json`
 **Validation Script**: `scripts/validate-ci-workflow.sh`
