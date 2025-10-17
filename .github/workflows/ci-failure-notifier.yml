@@ -127,8 +127,19 @@ jobs:
           # Use extracted details
           FAILURE_DETAILS=$(cat "${{ steps.extract.outputs.output_file }}")
         else
-          # Fallback to generic message
-          FAILURE_DETAILS="Unable to extract specific error details. Please check the full workflow logs."
+          # Fallback to generic message with structured format
+          {
+            echo "### Recent Log Output"
+            echo ""
+            echo "<details><summary>View Log Information</summary>"
+            echo ""
+            echo "Unable to extract specific error details from the workflow logs."
+            echo ""
+            echo "Please check the [full workflow logs](${WORKFLOW_URL}) for complete error information."
+            echo ""
+            echo "</details>"
+          } > /tmp/fallback-details.txt
+          FAILURE_DETAILS=$(cat /tmp/fallback-details.txt)
         fi
         
         # Create full comment using printf to avoid YAML parsing issues
@@ -183,11 +194,11 @@ jobs:
         
         COMMENT_BODY=$(cat /tmp/pr-comment.md)
         
-        # Post comment using GitHub API
+        # Post comment using GitHub CLI
         gh pr comment "${PR_NUMBER}" \
           --body "${COMMENT_BODY}" \
           --repo "${{ github.repository }}" || {
-            echo "Failed to post comment with gh, trying curl..."
+            echo "Failed to post comment using gh CLI, trying curl as fallback..."
             
             # Fallback to curl if gh fails
             curl -X POST \
