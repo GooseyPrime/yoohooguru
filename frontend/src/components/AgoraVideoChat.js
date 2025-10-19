@@ -127,9 +127,12 @@ function AgoraVideoChat({ sessionId, userId, onEnd, apiUrl = '/api/v1' }) {
   const localTracksRef = useRef({ audio: null, video: null });
 
   useEffect(() => {
-    // Generate a random numeric UID if userId is not provided
+    // Generate a unique numeric UID if userId is not provided
+    // Use timestamp for uniqueness (not for security)
+    // Note: The actual security comes from the backend-generated token,
+    // not from the UID. The UID is just an identifier within the channel.
     // Agora accepts both string and numeric UIDs
-    const uid = userId || Math.floor(Math.random() * 100000);
+    const uid = userId || Date.now();
     initializeAgoraChat(uid);
     
     return () => {
@@ -169,7 +172,7 @@ function AgoraVideoChat({ sessionId, userId, onEnd, apiUrl = '/api/v1' }) {
       }
 
       const { data } = await response.json();
-      const { token, uid } = data;
+      const { token, uid: returnedUid } = data;
 
       // Create Agora client
       const client = AgoraRTC.createClient({ 
@@ -185,11 +188,11 @@ function AgoraVideoChat({ sessionId, userId, onEnd, apiUrl = '/api/v1' }) {
       client.on('user-left', handleUserLeft);
       client.on('connection-state-change', handleConnectionStateChange);
 
-      // Join the channel
-      await client.join(appId, sessionId, token, uid);
+      // Join the channel using the returned UID from backend
+      await client.join(appId, sessionId, token, returnedUid);
       
       setConnectionStatus('Joined channel');
-      logger.info('Joined Agora channel', { sessionId, uid });
+      logger.info('Joined Agora channel', { sessionId, uid: returnedUid });
 
       // Create and publish local tracks
       const [audioTrack, videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks(
