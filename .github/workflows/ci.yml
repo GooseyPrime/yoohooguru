@@ -173,14 +173,11 @@ jobs:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NODE_ENV: production
         run: |
-          echo "🟢 Starting Netlify production deployment..."
-          echo "📦 Installing Netlify CLI globally..."
+          echo "🟢 Netlify prod deploy"
           npm install -g netlify-cli
-
-          echo "🚀 Deploying apps/main/.next to production..."
-          if netlify deploy --dir=apps/main/.next --prod --message "CI auto-deploy from $GITHUB_REF"; then
-            echo "✅ Netlify deploy succeeded."
+          if netlify deploy --dir=apps/main/.next --prod --message "CI auto-deploy $GITHUB_RUN_NUMBER"; then
+            echo "✅ Netlify deploy ok"
           else
-            echo "⚠️ Netlify deploy failed — skipping failure (non-blocking for CI)."
+            echo "⚠️ Netlify deploy failed — non-blocking"
           fi
         continue-on-error: true
