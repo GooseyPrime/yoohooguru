@@ -3,4 +3,4 @@ uvicorn[standard]==0.24.0
 pydantic==2.12.3
 pytest==7.4.4
 pytest-asyncio==0.26.0
-httpx==0.25.2
+httpx==0.28.1
