@@ -22,6 +22,7 @@
     "deploy": "railway up"
   },
   "dependencies": {
+    "agora-token": "^2.0.5",
     "axios": "^1.12.2",
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
