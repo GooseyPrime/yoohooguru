@@ -1,0 +1,62 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base"],
+
+  "enabled": true,
+  "autodiscover": true,
+  "dependencyDashboard": true,
+  "prConcurrentLimit": 5,
+  "rebaseWhen": "conflicted",
+  "rangeStrategy": "replace",
+
+  "branchPrefix": "renovate/",
+  "commitMessagePrefix": "chore(deps): ",
+  "commitMessageAction": "update",
+  "commitMessageTopic": "{{depName}}",
+
+  "automerge": false,
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true,
+      "automergeType": "branch",
+      "labels": ["CI-safe", "automerge"]
+    },
+    {
+      "groupName": "React Monorepo",
+      "matchPackagePrefixes": ["react", "@types/react", "react-dom"],
+      "automerge": false,
+      "labels": ["frontend", "react"]
+    },
+    {
+      "groupName": "Next.js Core",
+      "matchPackagePrefixes": ["next", "eslint-config-next"],
+      "automerge": false,
+      "labels": ["frontend", "nextjs"]
+    },
+    {
+      "groupName": "Firebase Suite",
+      "matchPackagePrefixes": ["firebase", "firebase-admin", "firebase-tools"],
+      "automerge": false,
+      "labels": ["backend", "firebase"]
+    },
+    {
+      "groupName": "Build Tools",
+      "matchPackagePrefixes": ["eslint", "jest", "typescript"],
+      "automerge": false,
+      "labels": ["ci", "build-tools"]
+    },
+    {
+      "groupName": "Security Patches",
+      "matchPackagePatterns": ["security", "vulnerability"],
+      "labels": ["security-critical"],
+      "automerge": false
+    }
+  ],
+
+  "dependencyDashboardAutoclose": false,
+  "labels": ["dependencies", "renovate"],
+
+  "ignoreDeps": ["node", "npm"],
+  "separateMajorMinor": true
+}
