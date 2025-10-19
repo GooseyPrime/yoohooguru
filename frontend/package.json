@@ -27,7 +27,7 @@
     "@vercel/speed-insights": "^1.2.0",
     "axios": "^1.6.2",
     "date-fns": "^3.0.6",
-    "dotenv": "^16.6.1",
+    "dotenv": "^17.0.0",
     "firebase": "^10.7.1",
     "firebase-admin": "^12.7.0",
     "framer-motion": "^10.16.16",
