@@ -1,0 +1,166 @@
+As- Built Specification: www.yoohoo.guru
+Revision Date: October 2025 (Finalized Specification with Resolutions)
+Purpose: Detailed documentation for disaster recovery, reconstruction, feature development, and architectural audits, support      ing current and future
+funding efforts.
+
+
+1. Overview and Core Pillars
+
+  Metric                                                            Description
+
+
+  Site Name                                                         Yoohoo Guru
+
+
+  Domain                                                            www.yoohoo.guru (Main Entry Point)
+
+
+  Primary Goal (Updated)                                            To operate a multi - vertical expertise platform connecting
+                                                                    Gurus/Angels with users for paid/free skill sessions
+                                                                    (SkillShare/Hero Gurus) and transactional gigs (Angel's
+                                                                    List), leveraging AI for matching, scheduling, and ensuring
+                                                                    maximum safety and accessibil ity.
+
+
+  Core Pillars                                                      1. SkillShare (Coach Guru) : Paid Mentorship Platform. 2.
+                                                                    Hero Gurus : Free/Accessible Mentorship Platform. 3.
+                                                                    Angel's List : Paid Gig/Service Marketplace.
+
+
+  Architecture Type                                                 Modular Micro - Frontend / Monolithic Backend (Monorepo
+                                                                    via TurboRepo)
+
+
+  Primary Technologies                                              Frontend: Next.js / React, TypeScript, Tailwind CSS
+                                                                    Backend: Node.js (Express.js), Google Firestore, Stripe,
+                                                                    AI/LLM Services.
+
+
+  Monetization Model                                                Commission on paid sessions/gigs, certification
+                                                                    management fees, and affiliate monetization on
+                                                                    subdomains.
+
+
+
+
+2. Design and Brand Identity
+
+  Element                                     Description                                 Implementation Detail
+
+
+  Overall Theme                               Dark Theme (High Quality) : Very            Primary background color suggested:
+                                              dark, almost black, indigo blue             #0E0E2E (Deep Indigo).
+                                              background.
+
+
+  Typography/Contrast                         White, Gold, or other highly                White (#FFFFFF) for
+                                              contrasting fonts.                          accents/headings. Gold accent
+                                                                                          suggested: #FBBF24 . Off- white
+                                                                                          (#E0E0E0) for body text.
+
+
+  Mascots                                     A large family of Sasquatches               High- resolution, AI- generated images
+                                              ("Gurus"). The main mascot is Coach         of Sasquatches working with humans
+                                              Guru (summoned by "Yoo- hoo                 will be featured prominently on
+                                              Guru"). Each subject category is            subdomains.
+                                              represented by a Cousin Guru
+                                              specializing in that niche.
+3. Architecture and Content Structure
+3.1. Content Structure (Three Pillars & Subdomains)
+The platform routes to three distinct applications sharing the core API gateway.
+
+
+
+  Pillar                            Subdomain(s)                     Focus & Audience                 Payment Status
+
+
+  SkillShare                        coach.yoohoo.guru & 24           Gurus teaching skills to         Paid (Commission- based)
+                                    Category Subdomains              Gunus .
+
+
+  Hero Gurus                        heroes.yoohoo.guru               Mentors teaching adapted         Free (Non- profit)
+                                                                     skills to individuals with
+                                                                     disabilities.
+
+
+  Angel's List                      angel.yoohoo.guru                Angels performing                Paid (Commission- based)
+                                                                     gigs/services for Basic
+                                                                     Users (Gig Posters).
+
+
+
+
+List of Category Subdomains:   art, business, coding, cooking, crafts, data, design, finance, fitness, gardening, heroes, history, home, investing,
+language, marketing, math, music, photography, sales, science, sports, tech, wellness, writing.
+ 4. Key Functional Discrepancies and Resolution Plan
+ This outlines major missing features required for the full vision and the concrete steps to implement them.
+
+
+
+Missing Critical Feature                   Discrepancy / Impact                                 Resolution Plan
+
+
+Production Image/Asset Storage             No dedicated storage solution for user -             Implement Firebase Cloud Storage:       Configure a bucket and update
+                                           uploaded profile photos or session media.            the profile API routes to handle image uploads, generating public
+                                                                                                URLs and storing references in Firestore.
+
+
+Escrow Management Logic                    Funds cannot currently be held in escrow until       Implement Stripe Payment Intent + Webhook Flow:           Utilize Stripe
+                                           Gunu satisfaction is confirmed.                      Payment Intents with manual capture, requiring a Gunu confirmation
+                                                                                                trigger via the UI before releasing funds to the Guru's connected
+                                                                                                account via a webhook handler.
+
+
+AI Assistant - VC Residency                The AI guide cannot participate in video             Integrate Agora/Twilio with LLM Endpoint:      Update VideoChat.js
+                                           conference sessions for guidance/assessment.         and develop a new backend AI service (/api/v1/ai/session - guide) that
+                                                                                                consumes the VC stream (audio/text) via webhook, processes it with
+                                                                                                an LLM for real - time guidance, and streams suggestions back to the
+                                                                                                Guru.
+
+
+Advanced Geospatial Logic                  No logic for intelligently suggesting a safe,        Implement Google Places API Filtering:        Use the Google Places API
+                                           neutral, public meeting location for in - person     to query meeting points (e.g., libraries, cafes) within the overlap of
+                                           sessions.                                            Guru/Gunu travel radii and filter results based on safety/convenience
+                                                                                                using the AI service.
+
+
+Superb Adaptive Accessibility              Specialized features required for disabled users     Mandate WCAG 2.1 AA Audit & Component Overhaul:            Perform a
+                                           on the Hero Gurus platform are missing beyond        full audit on the apps/heroes environment. Overhaul the UI and
+                                           basic toolbar components.                            VideoChat component to support advanced screen reader
+                                                                                                compatibility, customizable contrast, and keyboard/switch controls.
+
+
+Affiliate Monetization Framework           The system lacks components/API routes to            Implement Dedicated Affiliate Service:        Create a new Firestore
+                                           manage, track, and dynamically display affiliate     collection (affiliates) managed via an Admin API. Develop a
+                                           links on subdomain resource pages.                   backend/src/routes/resources.js endpoint that retrieves and injects
+                                                                                                the relevant affiliate links for a given subdomain category.
+
+
+Group Session/Gig Capacity                 No dedicated data model or UI logic to handle        Update Firestore Data Model:     Add a capacity: number field to the
+                                           multiple simultaneous participants in a              sessions collection and implement a concurrent write transaction
+                                           session/gig.                                         (Firestore Transactions) during booking to ensure atomic capacity
+                                                                                                checks and reservations.
+
+
+Guru Certification Verification            The process for verifying, storing, and displaying   Implement Document Storage & Admin Review UI:             Store uploaded
+                                           Guru certifications is incomplete.                   certification documents in Cloud Storage. Create a dedicated section
+                                                                                                in the Admin Dashboard to allow Admin users to visually verify the
+                                                                                                documents and update a certification_status: 'Verified' flag in the
+                                                                                                Guru's profile.
+
+
+AI Matchmaker (Gunu Learning Needs)        UI/UX for assessing and capturing the Gunu's         Implement Onboarding Questionnaire/Chatbot:             Develop a
+                                           learning needs, style, or personality for proper     mandatory Gunu Onboarding flow that uses either a guided form or
+                                           matching is missing.                                 a conversational chatbot interface to profile the Gunu's needs and
+                                                                                                store this structured data in the Gunu's Firestore profile.
+
+
+Project Financials/Budgets                 No documentation of allocated development,           Action: External Documentation Required:      Project Sponsor/Owner
+                                           infrastructure, or marketing budgets.                must provide an external document detailing budget and
+                                                                                                infrastructure expenditures.
+
+
+External Service API Keys                  All keys (Stripe, Google Maps, AI/LLM Provider,      Action: Secrets Deployment Guide Required:       Ensure all keys are
+                                           Firebase) are undocumented in the code.              secured and loaded via Vercel/Railway environment variables during
+                                                                                                deployment (validated by existing CI/CD checks).
+

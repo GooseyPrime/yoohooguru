@@ -1,0 +1,100 @@
+User Dashboard UI Specification: The Unified Hub
+Objective: Provide a centralized, intuitive, role - based dashboard for all users (Gurus, Gunus, Angels, Basic Users) to manage all
+interactions across the three pillars.
+
+Design: Deep Indigo background, Gold accents for active tabs/CTAs, clear iconography, and a responsive, mobile - friendly layout.
+
+
+
+
+1. Dashboard Structure and Navigation
+The dashboard uses a fixed navigation structure (horizontal tabs on desktop, vertical sidebar/dropdown on mobile) to switch
+between the user's active roles/perspectives.
+
+
+
+Main Navigation Tabs         User Role(s)                 Purpose
+
+
+My Learning                  Gunu                         Track learning goals, discover new Gurus, manage bookings.
+
+My Business                  Guru / Hero Guru             Manage Guru profile, schedule, pricing, and performance statistics.
+
+My Gigs                      Angel / Basic User           Manage job applications (Angel) or posted gigs (Basic User).
+
+Settings / Profile           All Roles                    Account management, authentication, and compliance documents.
+
+
+
+
+2. Role- Based Dashboard Sections (Tabs)
+A. My Learning (The Gunu Hub)
+
+  Section                                                    Core Functionalities
+
+
+  Current Sessions / Gigs                                    List upcoming booked sessions/gigs (SkillShare, Hero, Angel).
+                                                             Includes Video Chat link (when active) and integrated Google Maps
+                                                             directions/neutral meeting point details for in - person bookings.
+
+  Learning Path                                              Gunu Profiling Chatbot Link:  Must be visible until completed.
+                                                             Displays recommended Cousin Gurus based on profile and next
+                                                             steps suggested by the AI Matchmaker.
+
+  History & Ratings                                          Archive of completed sessions/gigs. Escrow Release Button:
+                                                             Button to manually release funds to Guru/Angel upon satisfaction.
+
+  Search & Map                                               Quick search interface. Map visualization showing available Gurus
+                                                             (filtered by skill/location/radius).
+B. My Business (The Guru/Hero Guru Hub)
+
+ Section                      Core Functionalities
+
+
+ Dashboard Overview           Financial summary (projected payouts, commission breakdown, total sessions taught).
+                              Performance statistics (Gunu ratings, conversion rate, platform loyalty score).
+
+ Scheduling & Availability    Drag- and- drop calendar interface. Set availability for video vs. in - person sessions (including
+                              travel radius for in - person).
+
+ Profile & Skills             Manage bio, photos (Cloud Storage integration), set session pricing/group capacity, and
+                              upload Certifications (linked to Admin Review UI).
+
+ Session Planning             AI Guru - Assistant Chatbot: Interface to converse with the AI for session planning, content
+                              ideas, and instructional flow suggestions.
+
+
+
+
+C. My Gigs (The Angel / Gig Poster Hub)
+
+ Section                                                 Core Functionalities (Split View)
+
+
+ Angel View (Applications)                               List of open gigs applied to. Status tracker (Pending
+                                                         Vetting, Candidate Selected, Job Booked). Payout
+                                                         status/history.
+
+ Basic User View (Postings)                              Post New Gig CTA: Form input for job details,
+                                                         required Angel qualifications, and job rate (with AI
+                                                         Rate Suggestion tool). Review applicant list and
+                                                         select the final Angel (triggers Escrow flow).
+
+
+
+
+D. Settings / Compliance
+
+ Section                                                 Core Functionalities
+
+
+ Account & Security                                      Manage password, email, and authentication
+                                                         methods.
+
+ Payout Setup                                            Stripe Connect onboarding management. View
+                                                         payout history and status.
+
+ Compliance Docs                                         View and agree to the current Liability Waiver .
+                                                         Display Guru/Angel Vetting Status (Pending,
+                                                         Verified, Flagged).
+
