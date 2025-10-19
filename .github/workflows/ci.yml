@@ -1,4 +1,5 @@
 name: Continuous Integration
+
 permissions:
   contents: read
   pull-requests: write
@@ -21,109 +22,111 @@ jobs:
       orphan-reports-available: ${{ steps.orphan-analysis.outcome == 'success' || steps.orphan-analysis.outcome == 'failure' }}
     strategy:
       matrix:
-        node-version: [20.x]
+        node-version: [20.19.5]
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
-    - name: Install all dependencies
-      run: |
-        npm ci
-        cd frontend && npm ci
-        cd ../backend && npm install
+      - name: Install root dependencies
+        run: npm install --include=dev
 
-    - name: Lint backend code
-      run: cd backend && npm run lint
+      - name: Install workspace dependencies
+        run: |
+          cd frontend && npm ci
+          cd ../backend && npm install
 
-    - name: Run frontend tests
-      run: cd frontend && npm run test:ci
+      - name: Verify TypeScript installation
+        run: |
+          if ! npm ls typescript > /dev/null 2>&1; then
+            echo "⚠️ TypeScript missing - installing for CI"
+            npm install --save-dev typescript @types/react @types/node
+          fi
+          npx tsc --version
 
-    - name: Run backend tests
-      run: |
-        cd backend
-        npm install -g firebase-tools
-        npm test
-      # IMPORTANT: This step uses 'npm test' as defined in backend/package.json
-      # DO NOT use nonexistent commands like 'backend-check', 'job', or custom shell commands
-      # The correct command is: npm test (which runs Firebase emulators + Jest)
-      # See docs/CI_BACKEND_TESTING.md for complete documentation
-      # Validate with: scripts/validate-ci-workflow.sh
-      env:
-        # IMPORTANT: NODE_ENV must be 'test' when using Firebase emulators
-        # This is enforced in backend/src/config/firebase.js to prevent accidental
-        # writes to production data. See docs/TESTING_WITH_FIREBASE_EMULATORS.md
-        NODE_ENV: test
-        FIREBASE_PROJECT_ID: yoohoo-dev-testing
-        FIREBASE_API_KEY: AIzaSyTest1234567890KeyForCITestingOnly
-       # FIRESTORE_EMULATOR_HOST: localhost:8080
-       # FIREBASE_AUTH_EMULATOR_HOST: localhost:9099
-        SESSION_SECRET: ci-test-session-secret-key-32chars-minimum-for-security-purposes
-        JWT_SECRET: test-jwt-secret-key-for-ci-cd-testing-only-not-for-production
-        STRIPE_SECRET_KEY: sk_test_51AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQr
-        STRIPE_PUBLISHABLE_KEY: pk_test_51AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOp
-        STRIPE_WEBHOOK_SECRET: whsec_1AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWx
-        STRIPE_WEBHOOK_ID: we_1AbCdEfGhIjKlMnOpQrStUv
-        STRIPE_GURU_PASS_PRICE_ID: price_1AbCdEfGhIjKlMnOpQrStUvWxYzAbCd
-        STRIPE_SKILL_VERIFICATION_PRICE_ID: price_1SkillVerificationTestId1234567
-        STRIPE_TRUST_SAFETY_PRICE_ID: price_1TrustSafetyTestId1234567890
+      - name: Lint backend code
+        run: cd backend && npm run lint
 
-    - name: Build frontend
-      run: cd frontend && npm run build
-      env:
-        CI: false
+      - name: Run frontend tests
+        run: cd frontend && npm run test:ci
 
-    - name: Analyze orphan modules
-      id: orphan-analysis
-      run: |
-        chmod +x scripts/ci-orphan-detection.sh
-        scripts/ci-orphan-detection.sh
-      env:
-        ORPHAN_ERROR_THRESHOLD: 50
-      continue-on-error: true
+      - name: Run backend tests
+        run: |
+          cd backend
+          npm install -g firebase-tools
+          npm test
+        env:
+          NODE_ENV: test
+          FIREBASE_PROJECT_ID: yoohoo-dev-testing
+          FIREBASE_API_KEY: AIzaSyTest1234567890KeyForCITestingOnly
+          SESSION_SECRET: ci-test-session-secret-key-32chars-minimum-for-security-purposes
+          JWT_SECRET: test-jwt-secret-key-for-ci-cd-testing-only-not-for-production
+          STRIPE_SECRET_KEY: sk_test_51AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQr
+          STRIPE_PUBLISHABLE_KEY: pk_test_51AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQr
+          STRIPE_WEBHOOK_SECRET: whsec_1AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWx
+          STRIPE_WEBHOOK_ID: we_1AbCdEfGhIjKlMnOpQrStUv
+          STRIPE_GURU_PASS_PRICE_ID: price_1AbCdEfGhIjKlMnOpQrStUvWxYzAbCd
+          STRIPE_SKILL_VERIFICATION_PRICE_ID: price_1SkillVerificationTestId1234567
+          STRIPE_TRUST_SAFETY_PRICE_ID: price_1TrustSafetyTestId1234567890
 
-    - name: Handle runtime log artifacts
-      id: check-artifacts
-      run: |
-        chmod +x .github/scripts/handle-artifacts.sh
-        .github/scripts/handle-artifacts.sh check
-    
-    - name: Upload runtime log artifacts (conditional)
-      if: steps.check-artifacts.outputs.has-artifacts == 'true'
-      uses: actions/upload-artifact@v4
-      with:
-        name: runtime-logs
-        path: |
-          /home/runner/work/_temp/runtime-logs/blocked.jsonl
-          /home/runner/work/_temp/runtime-logs/blocked.md
-        retention-days: 30
-        if-no-files-found: ignore
-      continue-on-error: true
+      - name: Build main app (Netlify parity)
+        run: |
+          npm install --include=dev
+          npx turbo run build --filter=@yoohooguru/main
+        env:
+          NODE_ENV: development
+          NPM_FLAGS: "--include=dev"
+          TURBO_CACHE_DIR: ".turbo"
+          CI: false
 
-    - name: Upload orphan module reports
-      uses: actions/upload-artifact@v4
-      with:
-        name: orphan-module-reports-${{ github.run_number }}
-        path: |
-          /home/runner/work/_temp/orphan-reports/
-        retention-days: 90
-        if-no-files-found: ignore
-      continue-on-error: true
+      - name: Analyze orphan modules
+        id: orphan-analysis
+        run: |
+          chmod +x scripts/ci-orphan-detection.sh
+          scripts/ci-orphan-detection.sh
+        env:
+          ORPHAN_ERROR_THRESHOLD: 50
+        continue-on-error: true
 
-    - name: Dump failure logs to PR comment
-      if: failure() && github.event.pull_request
-      run: |
-        # Collect failure information
-        WORKFLOW_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-        
-        # Create comment body with @copilot mention using a here document
-        COMMENT_BODY=$(cat <<EOF
+      - name: Handle runtime log artifacts
+        id: check-artifacts
+        run: |
+          chmod +x .github/scripts/handle-artifacts.sh
+          .github/scripts/handle-artifacts.sh check
+
+      - name: Upload runtime log artifacts (conditional)
+        if: steps.check-artifacts.outputs.has-artifacts == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-logs
+          path: |
+            /home/runner/work/_temp/runtime-logs/blocked.jsonl
+            /home/runner/work/_temp/runtime-logs/blocked.md
+          retention-days: 30
+          if-no-files-found: ignore
+        continue-on-error: true
+
+      - name: Upload orphan module reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: orphan-module-reports-${{ github.run_number }}
+          path: |
+            /home/runner/work/_temp/orphan-reports/
+          retention-days: 90
+          if-no-files-found: ignore
+        continue-on-error: true
+
+      - name: Dump failure logs to PR comment
+        if: failure() && github.event.pull_request
+        run: |
+          WORKFLOW_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          COMMENT_BODY=$(cat <<EOF
 @copilot
 
 ## ❌ CI Workflow Failed
@@ -153,13 +156,11 @@ One or more steps in the CI workflow failed. Please review the logs in the workf
 Please review the failure and make necessary corrections.
 EOF
 )
-        
-        # Post comment to PR using GitHub API
-        curl -X POST \
-          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Accept: application/vnd.github.v3+json" \
-          -d "$(jq -n --arg body "$COMMENT_BODY" '{body: $body}')" \
-          "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d "$(jq -n --arg body "$COMMENT_BODY" '{body: $body}')" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
 
   deploy-production:
     name: Deploy to Production
@@ -169,43 +170,29 @@ EOF
     outputs:
       deployment-status: ${{ steps.deployment.outputs.status }}
       artifact-errors-only: ${{ steps.check-errors.outputs.artifact-errors-only }}
-    
-    # NOTE: This job intentionally does NOT set emulator environment variables.
-    # Production deployments must never use Firebase emulators.
-    # See docs/TESTING_WITH_FIREBASE_EMULATORS.md for details.
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-    
-    - name: Check for artifact-only errors
-      id: check-errors
-      run: |
-        ARTIFACT_ERRORS_ONLY="false"
-        
-        if [ "${{ needs.build-and-test.outputs.artifact-errors-only || 'false' }}" == "true" ]; then
-          ARTIFACT_ERRORS_ONLY="true"
-          echo "✅ Detected artifact-only error condition"
-          echo "📝 This indicates a successful build with missing optional runtime logs"
-        else
-          echo "ℹ️ No artifact-only error conditions detected"
-        fi
-        
-        echo "artifact-errors-only=${ARTIFACT_ERRORS_ONLY}" >> $GITHUB_OUTPUT
-        
-        if [ -n "${{ github.event.pull_request }}" ]; then
-          echo "🔍 PR context detected - checking for artifact-only issues"
-          if [ "${ARTIFACT_ERRORS_ONLY}" == "true" ]; then
-            echo "pr-safe-to-close=true" >> $GITHUB_OUTPUT
-            echo "✅ PR appears to have only artifact issues - safe for auto-closure"
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for artifact-only errors
+        id: check-errors
+        run: |
+          ARTIFACT_ERRORS_ONLY="false"
+          if [ "${{ needs.build-and-test.outputs.artifact-errors-only || 'false' }}" == "true" ]; then
+            ARTIFACT_ERRORS_ONLY="true"
+            echo "✅ Detected artifact-only error condition"
+            echo "📝 This indicates a successful build with missing optional runtime logs"
           else
-            echo "pr-safe-to-close=false" >> $GITHUB_OUTPUT
-            echo "⚠️ PR has non-artifact issues - manual review required"
+            echo "ℹ️ No artifact-only error conditions detected"
           fi
-        fi
-    
-    - name: Deploy to production
-      id: deployment
-      run: |
-        echo "Deploy to production environment"
-        echo "status=success" >> $GITHUB_OUTPUT
-        # Replace with your actual production deployment commands
+          echo "artifact-errors-only=${ARTIFACT_ERRORS_ONLY}" >> $GITHUB_OUTPUT
+
+      - name: Deploy via Netlify CLI
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NODE_ENV: production
+        run: |
+          npm install -g netlify-cli
+          netlify deploy --dir=apps/main/.next --prod
