@@ -10,6 +10,10 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+    
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true    
 
 jobs:
   build-and-test:
@@ -158,11 +162,25 @@ jobs:
           fi
           echo "artifact-errors-only=${ARTIFACT_ERRORS_ONLY}" >> $GITHUB_OUTPUT
 
-      - name: Deploy via Netlify CLI
+      - name: Deploy via Netlify CLI (main branch only)
+        if: >
+          github.ref == 'refs/heads/main' &&
+          github.event_name != 'pull_request' &&
+          github.actor != 'app/renovate' &&
+          github.repository_owner == 'GooseyPrime'
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NODE_ENV: production
         run: |
+          echo "🟢 Starting Netlify production deployment..."
+          echo "📦 Installing Netlify CLI globally..."
           npm install -g netlify-cli
-          netlify deploy --dir=apps/main/.next --prod
+
+          echo "🚀 Deploying apps/main/.next to production..."
+          if netlify deploy --dir=apps/main/.next --prod --message "CI auto-deploy from $GITHUB_REF"; then
+            echo "✅ Netlify deploy succeeded."
+          else
+            echo "⚠️ Netlify deploy failed — skipping failure (non-blocking for CI)."
+          fi
+        continue-on-error: true
