@@ -10,6 +10,10 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+    
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true    
 
 jobs:
   build-and-test:
@@ -166,7 +170,6 @@ EOF
     name: Deploy to Production
     runs-on: ubuntu-latest
     needs: [build-and-test]
-    if: github.ref == 'refs/heads/main'
     if: github.ref == 'refs/heads/main' && github.actor != 'renovate[bot]'
     outputs:
       deployment-status: ${{ steps.deployment.outputs.status }}
@@ -189,11 +192,22 @@ EOF
           fi
           echo "artifact-errors-only=${ARTIFACT_ERRORS_ONLY}" >> $GITHUB_OUTPUT
 
-      - name: Deploy via Netlify CLI
+      - name: Deploy via Netlify CLI (main branch only)
+        if: >
+          github.ref == 'refs/heads/main' &&
+          github.event_name != 'pull_request' &&
+          github.actor != 'app/renovate' &&
+          github.repository_owner == 'GooseyPrime'
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NODE_ENV: production
         run: |
+          echo "🟢 Netlify prod deploy"
           npm install -g netlify-cli
-          netlify deploy --dir=apps/main/.next --prod
+          if netlify deploy --dir=apps/main/.next --prod --message "CI auto-deploy $GITHUB_RUN_NUMBER"; then
+            echo "✅ Netlify deploy ok"
+          else
+            echo "⚠️ Netlify deploy failed — non-blocking"
+          fi
+        continue-on-error: true
