@@ -127,14 +127,17 @@ function AgoraVideoChat({ sessionId, userId, onEnd, apiUrl = '/api/v1' }) {
   const localTracksRef = useRef({ audio: null, video: null });
 
   useEffect(() => {
-    initializeAgoraChat();
+    // Generate a random numeric UID if userId is not provided
+    // Agora accepts both string and numeric UIDs
+    const uid = userId || Math.floor(Math.random() * 100000);
+    initializeAgoraChat(uid);
     
     return () => {
       cleanup();
     };
   }, [sessionId, userId]);
 
-  const initializeAgoraChat = async () => {
+  const initializeAgoraChat = async (uid) => {
     try {
       setConnectionStatus('Connecting...');
       setIsJoining(true);
@@ -155,7 +158,7 @@ function AgoraVideoChat({ sessionId, userId, onEnd, apiUrl = '/api/v1' }) {
         },
         body: JSON.stringify({ 
           channel: sessionId, 
-          uid: userId, 
+          uid: uid, 
           role: 'publisher' 
         })
       });
