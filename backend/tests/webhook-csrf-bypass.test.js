@@ -46,7 +46,7 @@ describe('Webhook CSRF Bypass', () => {
     // Set environment to production-like to enable CSRF
     process.env.NODE_ENV = 'production';
     process.env.SERVE_FRONTEND = 'false';
-    process.env.SESSION_SECRET = 'test-secret-for-csrf-testing';
+    process.env.SESSION_SECRET = 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6';
     process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
     
     // Clear the require cache
