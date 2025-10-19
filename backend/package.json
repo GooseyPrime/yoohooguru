@@ -41,7 +41,7 @@
     "lusca": "^1.7.0",
     "morgan": "^1.10.0",
     "multer": "^2.0.2",
-    "node-cron": "^3.0.3",
+    "node-cron": "^4.0.0",
     "stripe": "^18.5.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
