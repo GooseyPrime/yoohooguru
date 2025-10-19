@@ -61,7 +61,7 @@
     "compression-webpack-plugin": "^11.1.0",
     "copy-webpack-plugin": "^13.0.1",
     "css-loader": "^6.8.1",
-    "eslint": "^8.55.0",
+    "eslint": "^9.0.0",
     "eslint-config-next": "^14.2.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
