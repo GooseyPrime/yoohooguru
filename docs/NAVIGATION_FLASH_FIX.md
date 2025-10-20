@@ -59,8 +59,8 @@ RESULT: Clean redirect to main site signup page
 ## Changes Made
 
 ### File: `frontend/src/components/AppRouter.js`
-- Removed import of `HostSubdomainRouterGate` component (line ~451)
-- Removed rendering of `HostSubdomainRouterGate` component (lines ~941-944)
+- Removed import of `HostSubdomainRouterGate` component
+- Removed rendering of `HostSubdomainRouterGate` component and its Suspense wrapper
 
 ### File: `frontend/src/components/AppRouter.test.js` (NEW)
 - Added comprehensive tests to verify AppRouter behavior
