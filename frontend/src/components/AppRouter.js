@@ -447,9 +447,6 @@ const HeroGurus = React.lazy(() => import('../screens/ModifiedMasters'));
 const DashboardCoach = React.lazy(() => import('../screens/DashboardCoach'));
 const DashboardUnderstudy = React.lazy(() => import('../screens/DashboardUnderstudy'));
 
-// Host routing - lazy loaded
-const HostSubdomainRouterGate = React.lazy(() => import('./HostSubdomainRouterGate'));
-
 // 404 Page - lazy loaded
 const NotFoundPage = React.lazy(() => import('../screens/NotFoundPage'));
 
@@ -937,11 +934,6 @@ function AppRouter() {
         } />
       </Route>
     </Routes>
-    
-    {/* Host Subdomain Router Gate - handles subdomain routing */}
-    <Suspense fallback={<LoadingScreen />}>
-      <HostSubdomainRouterGate />
-    </Suspense>
     </>
   );
 }
