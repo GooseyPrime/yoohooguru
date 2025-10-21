@@ -29,20 +29,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Turborepo build pipeline** for efficient parallel builds
 - **Workspace-based dependency management** using npm workspaces
 
-#### Changed - Migration from Single Frontend
-- Migrated from React/Webpack single frontend to Next.js 14 multi-app architecture
-- Replaced `frontend/` with individual Next.js apps in `apps/`
-- Updated deployment strategy: each subdomain as separate Vercel project
+#### Changed - Migration to Gateway Architecture
+- Migrated from React/Webpack single frontend to Next.js 14 with gateway architecture
+- Consolidated all 29 subdomains under `apps/main/pages/_apps/`
+- Implemented Edge Middleware for intelligent subdomain routing
+- Updated deployment strategy: single Vercel project with unlimited subdomain support
 - Refactored shared code into reusable packages
-- Updated all documentation to reflect monorepo structure
+- Updated all documentation to reflect gateway architecture
 - Renamed "Modified Masters" to "Hero Guru's" (heroes.yoohoo.guru)
 
 #### Migration Documentation
 - `MONOREPO_README.md` - Complete monorepo architecture guide
+- `GATEWAY_ARCHITECTURE.md` - Gateway architecture and deployment guide
 - `MIGRATION_GUIDE.md` - Migration from old to new structure
 - `MONOREPO_STATUS.md` - Migration progress and completion status
-- `DEPLOYMENT_GUIDE.md` - Multi-app Vercel deployment guide
-- Updated `README.md` with Turborepo structure and commands
+- Updated `README.md` with gateway architecture and commands
 - Updated `docs/DEPLOYMENT.md` with new DNS and routing configuration
 - Updated `docs/SITEMAP.md` with all 25 subdomain apps
 
