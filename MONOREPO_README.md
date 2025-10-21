@@ -6,36 +6,43 @@ This is the monorepo for yoohoo.guru, a comprehensive skill-sharing platform. Th
 
 ```
 yoohooguru/
-├── apps/                    # All Next.js applications
-│   ├── main/               # www.yoohoo.guru (homepage)
-│   ├── angel/              # angel.yoohoo.guru (Angel's List)
-│   ├── coach/              # coach.yoohoo.guru (Coach Guru)
-│   ├── heroes/             # heroes.yoohoo.guru (Hero Guru's)
-│   ├── dashboard/          # dashboard.yoohoo.guru (User Dashboard)
-│   ├── cooking/            # cooking.yoohoo.guru
-│   ├── coding/             # coding.yoohoo.guru
-│   ├── art/                # art.yoohoo.guru
-│   ├── business/           # business.yoohoo.guru
-│   ├── crafts/             # crafts.yoohoo.guru
-│   ├── data/               # data.yoohoo.guru
-│   ├── design/             # design.yoohoo.guru
-│   ├── finance/            # finance.yoohoo.guru
-│   ├── fitness/            # fitness.yoohoo.guru
-│   ├── gardening/          # gardening.yoohoo.guru
-│   ├── history/            # history.yoohoo.guru
-│   ├── home/               # home.yoohoo.guru
-│   ├── investing/          # investing.yoohoo.guru
-│   ├── language/           # language.yoohoo.guru
-│   ├── marketing/          # marketing.yoohoo.guru
-│   ├── math/               # math.yoohoo.guru
-│   ├── music/              # music.yoohoo.guru
-│   ├── photography/        # photography.yoohoo.guru
-│   ├── sales/              # sales.yoohoo.guru
-│   ├── science/            # science.yoohoo.guru
-│   ├── sports/             # sports.yoohoo.guru
-│   ├── tech/               # tech.yoohoo.guru
-│   ├── wellness/           # wellness.yoohoo.guru
-│   └── writing/            # writing.yoohoo.guru
+├── apps/                    # Next.js application with gateway architecture
+│   └── main/               # Single app serving all subdomains
+│       ├── middleware.ts   # Edge Middleware for subdomain routing
+│       ├── pages/
+│       │   ├── _app.tsx
+│       │   ├── index.tsx
+│       │   └── _apps/      # All subdomain pages consolidated here
+│       │       ├── main/           # www.yoohoo.guru
+│       │       ├── angel/          # angel.yoohoo.guru
+│       │       ├── coach/          # coach.yoohoo.guru
+│       │       ├── heroes/         # heroes.yoohoo.guru
+│       │       ├── dashboard/      # dashboard.yoohoo.guru
+│       │       ├── art/            # art.yoohoo.guru
+│       │       ├── business/       # business.yoohoo.guru
+│       │       ├── coding/         # coding.yoohoo.guru
+│       │       ├── cooking/        # cooking.yoohoo.guru
+│       │       ├── crafts/         # crafts.yoohoo.guru
+│       │       ├── data/           # data.yoohoo.guru
+│       │       ├── design/         # design.yoohoo.guru
+│       │       ├── finance/        # finance.yoohoo.guru
+│       │       ├── fitness/        # fitness.yoohoo.guru
+│       │       ├── gardening/      # gardening.yoohoo.guru
+│       │       ├── history/        # history.yoohoo.guru
+│       │       ├── home/           # home.yoohoo.guru
+│       │       ├── investing/      # investing.yoohoo.guru
+│       │       ├── language/       # language.yoohoo.guru
+│       │       ├── marketing/      # marketing.yoohoo.guru
+│       │       ├── math/           # math.yoohoo.guru
+│       │       ├── music/          # music.yoohoo.guru
+│       │       ├── photography/    # photography.yoohoo.guru
+│       │       ├── sales/          # sales.yoohoo.guru
+│       │       ├── science/        # science.yoohoo.guru
+│       │       ├── sports/         # sports.yoohoo.guru
+│       │       ├── tech/           # tech.yoohoo.guru
+│       │       ├── wellness/       # wellness.yoohoo.guru
+│       │       └── writing/        # writing.yoohoo.guru
+│       └── ...
 ├── packages/               # Shared packages
 │   ├── shared/            # Shared UI components and utilities
 │   ├── auth/              # Authentication utilities (NextAuth, Firebase)
@@ -61,50 +68,38 @@ npm install
 
 ### Development
 
-Run all apps in development mode:
+Run the main app in development mode (all subdomains route through this):
 
 ```bash
-npm run dev
-```
-
-Run specific apps:
-
-```bash
-# Homepage
+# Homepage (serves all subdomains via middleware)
 npm run dev:main
-
-# Angel's List
-npm run dev:angel
-
-# Coach Guru
-npm run dev:coach
-
-# Hero Guru's
-npm run dev:heroes
-
-# User Dashboard
-npm run dev:dashboard
 
 # Backend API
 npm run dev:backend
 ```
 
+To test different subdomains locally, modify your `/etc/hosts` file:
+```
+127.0.0.1  www.yoohoo.local
+127.0.0.1  angel.yoohoo.local
+127.0.0.1  coach.yoohoo.local
+```
+
+Then access: `http://www.yoohoo.local:3000`, `http://angel.yoohoo.local:3000`, etc.
+
 ### Building
 
-Build all apps:
+Build the main app (serves all subdomains):
 
 ```bash
 npm run build
 ```
 
-Build specific apps:
+Build specific components:
 
 ```bash
 npm run build:main
-npm run build:angel
-npm run build:coach
-npm run build:heroes
-npm run build:dashboard
+npm run build:backend
 ```
 
 ### Testing
@@ -130,16 +125,44 @@ The repository uses a **Gateway Architecture** for deployment - a single Vercel 
 - **Single Vercel project** deploys `apps/main`
 - **Edge Middleware** routes subdomains to appropriate pages
 - **Wildcard DNS** (`*.yoohoo.guru`) points to one deployment
-- **All apps** consolidated under `apps/main/pages/_apps/`
+- **All subdomain pages** consolidated under `apps/main/pages/_apps/`
 
 ### Subdomain Mapping
 
+All 29 subdomains are routed through Edge Middleware:
+
+**Core Subdomains (5):**
 - `www.yoohoo.guru` → `apps/main/pages/_apps/main`
 - `angel.yoohoo.guru` → `apps/main/pages/_apps/angel`
 - `coach.yoohoo.guru` → `apps/main/pages/_apps/coach`
 - `heroes.yoohoo.guru` → `apps/main/pages/_apps/heroes`
 - `dashboard.yoohoo.guru` → `apps/main/pages/_apps/dashboard`
-- Subject apps (cooking, coding, etc.) → their respective `_apps/` subdirectories
+
+**Subject Subdomains (24):**
+- `art.yoohoo.guru` → `apps/main/pages/_apps/art`
+- `business.yoohoo.guru` → `apps/main/pages/_apps/business`
+- `coding.yoohoo.guru` → `apps/main/pages/_apps/coding`
+- `cooking.yoohoo.guru` → `apps/main/pages/_apps/cooking`
+- `crafts.yoohoo.guru` → `apps/main/pages/_apps/crafts`
+- `data.yoohoo.guru` → `apps/main/pages/_apps/data`
+- `design.yoohoo.guru` → `apps/main/pages/_apps/design`
+- `finance.yoohoo.guru` → `apps/main/pages/_apps/finance`
+- `fitness.yoohoo.guru` → `apps/main/pages/_apps/fitness`
+- `gardening.yoohoo.guru` → `apps/main/pages/_apps/gardening`
+- `history.yoohoo.guru` → `apps/main/pages/_apps/history`
+- `home.yoohoo.guru` → `apps/main/pages/_apps/home`
+- `investing.yoohoo.guru` → `apps/main/pages/_apps/investing`
+- `language.yoohoo.guru` → `apps/main/pages/_apps/language`
+- `marketing.yoohoo.guru` → `apps/main/pages/_apps/marketing`
+- `math.yoohoo.guru` → `apps/main/pages/_apps/math`
+- `music.yoohoo.guru` → `apps/main/pages/_apps/music`
+- `photography.yoohoo.guru` → `apps/main/pages/_apps/photography`
+- `sales.yoohoo.guru` → `apps/main/pages/_apps/sales`
+- `science.yoohoo.guru` → `apps/main/pages/_apps/science`
+- `sports.yoohoo.guru` → `apps/main/pages/_apps/sports`
+- `tech.yoohoo.guru` → `apps/main/pages/_apps/tech`
+- `wellness.yoohoo.guru` → `apps/main/pages/_apps/wellness`
+- `writing.yoohoo.guru` → `apps/main/pages/_apps/writing`
 
 ### Vercel Deployment
 
@@ -147,11 +170,12 @@ The repository uses a **Gateway Architecture** for deployment - a single Vercel 
 
 1. Connect your repository to Vercel
 2. Create a single project with:
-   - Root Directory: (leave empty)
+   - Root Directory: `apps/main` (or leave empty)
    - Build Command: `cd apps/main && npm run build`
    - Output Directory: `apps/main/.next`
 3. Configure environment variables (see `.env.shared.example`)
-4. Add all custom domains (www, angel, coach, etc.) to the project
+4. Add all 29 custom domains to the single project
+5. Set up wildcard DNS: `*.yoohoo.guru` → Vercel
 
 For detailed deployment instructions, see **[GATEWAY_ARCHITECTURE.md](./GATEWAY_ARCHITECTURE.md)**.
 

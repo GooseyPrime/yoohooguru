@@ -38,51 +38,56 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
-    - name: Install all dependencies
-      run: |
-        npm ci
-        cd frontend && npm ci
-        cd ../backend && npm install
+      - name: Install root dependencies
+        run: npm install --include=dev
 
-    - name: Lint backend code
-      run: cd backend && npm run lint
+      - name: Install workspace dependencies
+        run: |
+          cd frontend && npm ci
+          cd ../backend && npm install
 
-    - name: Run frontend tests
-      run: cd frontend && npm run test:ci
+      - name: Verify TypeScript installation
+        run: |
+          if ! npm ls typescript > /dev/null 2>&1; then
+            echo "⚠️ TypeScript missing - installing for CI"
+            npm install --save-dev typescript @types/react @types/node
+          fi
+          npx tsc --version
 
-    - name: Run backend tests
-      run: |
-        cd backend
-        npm install -g firebase-tools
-        npm test
-      # IMPORTANT: This step uses 'npm test' as defined in backend/package.json
-      # DO NOT use nonexistent commands like 'backend-check', 'job', or custom shell commands
-      # The correct command is: npm test (which runs Firebase emulators + Jest)
-      # See docs/CI_BACKEND_TESTING.md for complete documentation
-      # Validate with: scripts/validate-ci-workflow.sh
-      env:
-        # IMPORTANT: NODE_ENV must be 'test' when using Firebase emulators
-        # This is enforced in backend/src/config/firebase.js to prevent accidental
-        # writes to production data. See docs/TESTING_WITH_FIREBASE_EMULATORS.md
-        NODE_ENV: test
-        FIREBASE_PROJECT_ID: yoohoo-dev-testing
-        FIREBASE_API_KEY: AIzaSyTest1234567890KeyForCITestingOnly
-       # FIRESTORE_EMULATOR_HOST: localhost:8080
-       # FIREBASE_AUTH_EMULATOR_HOST: localhost:9099
-        SESSION_SECRET: ci-test-session-secret-key-32chars-minimum-for-security-purposes
-        JWT_SECRET: test-jwt-secret-key-for-ci-cd-testing-only-not-for-production
-        STRIPE_SECRET_KEY: sk_test_51AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQr
-        STRIPE_PUBLISHABLE_KEY: pk_test_51AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOp
-        STRIPE_WEBHOOK_SECRET: whsec_1AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWx
-        STRIPE_WEBHOOK_ID: we_1AbCdEfGhIjKlMnOpQrStUv
-        STRIPE_GURU_PASS_PRICE_ID: price_1AbCdEfGhIjKlMnOpQrStUvWxYzAbCd
-        STRIPE_SKILL_VERIFICATION_PRICE_ID: price_1SkillVerificationTestId1234567
-        STRIPE_TRUST_SAFETY_PRICE_ID: price_1TrustSafetyTestId1234567890
+      - name: Lint backend code
+        run: cd backend && npm run lint
 
-    - name: Build frontend
-      run: cd frontend && npm run build
-      env:
-        CI: false
+      - name: Run frontend tests
+        run: cd frontend && npm run test:ci
+
+      - name: Run backend tests
+        run: |
+          cd backend
+          npm install -g firebase-tools
+          npm test
+        env:
+          NODE_ENV: test
+          FIREBASE_PROJECT_ID: yoohoo-dev-testing
+          FIREBASE_API_KEY: AIzaSyTest1234567890KeyForCITestingOnly
+          SESSION_SECRET: ci-test-session-secret-key-32chars-minimum-for-security-purposes
+          JWT_SECRET: test-jwt-secret-key-for-ci-cd-testing-only-not-for-production
+          STRIPE_SECRET_KEY: sk_test_51AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQr
+          STRIPE_PUBLISHABLE_KEY: pk_test_51AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQr
+          STRIPE_WEBHOOK_SECRET: whsec_1AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWx
+          STRIPE_WEBHOOK_ID: we_1AbCdEfGhIjKlMnOpQrStUv
+          STRIPE_GURU_PASS_PRICE_ID: price_1AbCdEfGhIjKlMnOpQrStUvWxYzAbCd
+          STRIPE_SKILL_VERIFICATION_PRICE_ID: price_1SkillVerificationTestId1234567
+          STRIPE_TRUST_SAFETY_PRICE_ID: price_1TrustSafetyTestId1234567890
+
+      - name: Build main app (Netlify parity)
+        run: |
+          npm install --include=dev
+          npx turbo run build --filter=@yoohooguru/main
+        env:
+          NODE_ENV: development
+          NPM_FLAGS: "--include=dev"
+          TURBO_CACHE_DIR: ".turbo"
+          CI: false
 
     - name: Analyze orphan modules
       id: orphan-analysis
