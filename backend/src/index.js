@@ -91,7 +91,7 @@ const insecureSecretPatterns = [
 ];
 
 const sessionSecret = process.env.SESSION_SECRET.toLowerCase();
-const isInsecureSecret = insecureSecretPatterns.some(pattern => 
+const isInsecureSecret = insecureSecretPatterns.some(pattern =>
   sessionSecret.includes(pattern)
 );
 
@@ -175,28 +175,62 @@ app.use((req, res, next) => {
     noSniff: true, // Add X-Content-Type-Options: nosniff
   })(req, res, next);
 });
-app.use(cors({
-  origin: getCorsOrigins(config),
+// Configure CORS with proper origin validation
+const corsOrigins = getCorsOrigins(config);
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Handle undefined origin (can occur for same-origin requests or server-side requests)
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    // If corsOrigins is a function, delegate to it
+    if (typeof corsOrigins === 'function') {
+      return corsOrigins(origin, callback);
+    }
+
+    // If corsOrigins is an array or string, check if origin is allowed
+    if (Array.isArray(corsOrigins)) {
+      if (corsOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error('Not allowed by CORS'));
+      }
+    }
+
+    if (typeof corsOrigins === 'string') {
+      if (corsOrigins === origin) {
+        return callback(null, true);
+      } else {
+        return callback(new Error('Not allowed by CORS'));
+      }
+    }
+
+    // Default: disallow
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true
-}));
+};
+
+app.use(cors(corsOptions));
 
 // Additional security headers for enhanced protection
 app.use((req, res, next) => {
   // Prevent clickjacking attacks
   res.setHeader('X-Frame-Options', 'DENY');
-  
+
   // Enable XSS protection in browsers
   res.setHeader('X-XSS-Protection', '1; mode=block');
-  
+
   // Prevent MIME type sniffing
   res.setHeader('X-Content-Type-Options', 'nosniff');
-  
+
   // Control referrer information
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  
+
   // Permissions policy for enhanced privacy
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-  
+
   next();
 });
 
@@ -228,12 +262,12 @@ if (config.nodeEnv === 'production' || config.nodeEnv === 'staging') {
   // Use Firestore session store in production/staging to prevent memory leaks
   const FirestoreStore = require('firestore-store')(session);
   const database = getFirestore();
-  
+
   sessionConfig.store = new FirestoreStore({
     database: database,
     collection: 'sessions' // Store sessions in a dedicated Firestore collection
   });
-  
+
   logger.info('✅ Session store: Using Firestore for production-ready session management');
 } else {
   // Development/test environment - using MemoryStore with warnings
@@ -242,19 +276,19 @@ if (config.nodeEnv === 'production' || config.nodeEnv === 'staging') {
   logger.warn('⚠️  - It will leak memory under most conditions');
   logger.warn('⚠️  - It does not scale past a single process');
   logger.warn('⚠️  - It is meant for development and testing only');
-  
+
   // Set up cleanup interval for MemoryStore to prevent memory leaks in development
   // This is a basic cleanup mechanism - for production, always use Firestore
   const sessionCleanupInterval = setInterval(() => {
     // In development, log a reminder about memory cleanup
     logger.debug('💾 MemoryStore session cleanup check (development only)');
   }, 60 * 60 * 1000); // Every hour
-  
+
   // Clear interval on shutdown to prevent memory leaks
   process.on('SIGTERM', () => {
     clearInterval(sessionCleanupInterval);
   });
-  
+
   process.on('SIGINT', () => {
     clearInterval(sessionCleanupInterval);
   });
@@ -338,7 +372,7 @@ app.use((err, req, res, next) => {
 // Conditionally serve static files from the frontend build directory
 // Only when SERVE_FRONTEND is true (for local development or monolithic deployment)
 const fs = require('fs');
-const frontendDistPath = config.serveFrontend 
+const frontendDistPath = config.serveFrontend
   ? path.join(__dirname, '../../frontend/dist')
   : null;
 
@@ -355,7 +389,7 @@ if (config.serveFrontend) {
         res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
         // Add security headers
         res.setHeader('X-Content-Type-Options', 'nosniff');
-        
+
         // Special handling for different file types
         if (path.endsWith('.html')) {
           // HTML files should have shorter cache times
@@ -366,7 +400,7 @@ if (config.serveFrontend) {
         }
       }
     };
-    
+
     app.use(express.static(frontendDistPath, staticOptions));
     logger.info(`🎨 Frontend static files will be served from: ${frontendDistPath}`);
   } else {
@@ -394,7 +428,7 @@ app.get('/favicon.ico', (req, res) => {
     0x01, 0x00, 0x01, 0x00, 0x00, 0x02, 0x02, 0x04,
     0x01, 0x00, 0x3b
   ]);
-  
+
   res.setHeader('Content-Type', 'image/gif');
   res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 1 day
   res.send(transparentGif);
@@ -405,19 +439,19 @@ app.get('/health', async (req, res) => {
   try {
     const agentStatus = getCurationAgentStatus();
     const firestore = getFirestore();
-    
+
     // Check Firestore connection
     let firestoreStatus = 'unknown';
     try {
-      await firestore.collection('_health').doc('check').set({ 
-        timestamp: new Date().toISOString() 
+      await firestore.collection('_health').doc('check').set({
+        timestamp: new Date().toISOString()
       }, { merge: true });
       firestoreStatus = 'connected';
     } catch (firestoreError) {
       logger.error('Firestore health check failed:', firestoreError);
       firestoreStatus = 'error';
     }
-    
+
     // Memory usage
     const memoryUsage = process.memoryUsage();
     const memoryUsageMB = {
@@ -426,11 +460,11 @@ app.get('/health', async (req, res) => {
       heapUsed: Math.round(memoryUsage.heapUsed / 1024 / 1024),
       external: Math.round(memoryUsage.external / 1024 / 1024)
     };
-    
+
     // System info
     const uptimeSeconds = process.uptime();
     const uptimeFormatted = `${Math.floor(uptimeSeconds / 3600)}h ${Math.floor((uptimeSeconds % 3600) / 60)}m ${Math.floor(uptimeSeconds % 60)}s`;
-    
+
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.status(200).json({
       status: 'OK',
@@ -625,12 +659,12 @@ if (require.main === module) {
   // FIX: Bind to 0.0.0.0 (all interfaces) for Railway compatibility
   // Railway requires servers to bind to 0.0.0.0, not localhost/127.0.0.1
   const HOST = process.env.HOST || '0.0.0.0';
-  
+
   app.listen(PORT, HOST, () => {
     logger.info(`🎯 ${config.appBrandName} Backend server running on ${HOST}:${PORT}`);
     logger.info(`Environment: ${config.nodeEnv}`);
     logger.info(`Health check: http://${HOST === '0.0.0.0' ? 'localhost' : HOST}:${PORT}/health`);
-    
+
     // Start curation agents after server is running
     try {
       startCurationAgents();
@@ -640,7 +674,7 @@ if (require.main === module) {
         stack: error.stack,
         environment: config.nodeEnv
       });
-      
+
       // In production, log this as a critical issue but don't crash the server
       // unless FAIL_ON_AGENT_ERROR is explicitly set
       if (config.nodeEnv === 'production' && process.env.FAIL_ON_AGENT_ERROR !== 'true') {

@@ -5,42 +5,28 @@
   "main": "index.js",
   "packageManager": "npm@10.2.4",
   "scripts": {
-    "dev": "turbo run dev --parallel",
-    "dev:main": "turbo run dev --filter=@yoohooguru/main",
-    "dev:angel": "turbo run dev --filter=@yoohooguru/angel",
-    "dev:coach": "turbo run dev --filter=@yoohooguru/coach",
-    "dev:heroes": "turbo run dev --filter=@yoohooguru/heroes",
-    "dev:dashboard": "turbo run dev --filter=@yoohooguru/dashboard",
+    "dev": "turbo run dev --filter=@yoohooguru/main --filter=yoohooguru-backend",
+    "dev:main": "cd apps/main && npm run dev",
     "dev:backend": "cd backend && npm run dev",
-    "dev:frontend": "cd frontend && npm run dev",
-    "build": "turbo run build",
-    "build:main": "turbo run build --filter=@yoohooguru/main",
-    "build:angel": "turbo run build --filter=@yoohooguru/angel",
-    "build:coach": "turbo run build --filter=@yoohooguru/coach",
-    "build:heroes": "turbo run build --filter=@yoohooguru/heroes",
-    "build:dashboard": "turbo run build --filter=@yoohooguru/dashboard",
-    "build:frontend": "cd frontend && npm run build",
+    "build": "turbo run build --filter=@yoohooguru/main --filter=yoohooguru-backend",
+    "build:main": "cd apps/main && npm run build",
     "build:backend": "cd backend && npm run build",
-    "build:fast": "cd frontend && npm run build:fast && cd ../backend && npm run build",
     "build:clean": "./scripts/optimize-build.sh",
-    "build:analyze": "cd frontend && npm run build:analyze",
-    "test": "turbo run test",
-    "test:frontend": "cd frontend && npm test",
+    "test": "npm run test:backend",
     "test:backend": "cd backend && npm test",
     "qa:test": "cd qa && npm test",
     "qa:install": "cd qa && npm install",
-    "lint": "turbo run lint",
-    "lint:frontend": "cd frontend && npm run lint",
+    "lint": "npm run lint:main && npm run lint:backend",
+    "lint:main": "cd apps/main && npm run lint",
     "lint:backend": "cd backend && npm run lint",
-    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install && cd ../qa && npm install",
+    "install:all": "npm install && cd apps/main && npm install && cd ../../backend && npm install && cd ../qa && npm install",
     "start": "cd backend && npm start",
     "railway:build": "cd backend && npm run build",
     "railway:start": "cd backend && npm start",
     "railway:validate": "./scripts/validate-railway.sh",
     "firebase:validate": "./scripts/validate-firebase-production.sh",
     "firebase:validate:win": "node scripts/validate-firebase-production.js",
-    "deploy": "npm run build && npm run deploy:frontend && npm run deploy:backend",
-    "deploy:frontend": "cd frontend && npm run deploy",
+    "deploy": "npm run build && npm run deploy:backend",
     "deploy:backend": "cd backend && npm run deploy",
     "copilot:demo": "node scripts/copilot-agent.js --demo",
     "copilot:agent": "node scripts/copilot-agent.js",
@@ -51,6 +37,7 @@
     "cleanup:test-db": "node scripts/cleanup-test-db.js",
     "migrate:content": "node backend/ai-content-migration.js",
     "test:auth": "cd backend && npm test -- tests/test.auth.spec.js"
+    // NOTE: If you use concurrently in any scripts, ensure their syntax matches the requirements for v9 (see https://github.com/open-cli-tools/concurrently/releases/tag/v9.0.0)
   },
   "keywords": [
     "skill-sharing",
@@ -64,25 +51,20 @@
   "author": "GooseyPrime",
   "license": "MIT",
   "devDependencies": {
-    "@types/react": "^18.2.0",
-    "concurrently": "^8.2.2",
+    "@types/react": "^19.0.0",
+    f
     "jest": "^30.2.0",
     "turbo": "^2.5.8",
     "typescript": "^5.0.0"
   },
   "workspaces": [
-    "apps/*",
+    "apps/main",
     "packages/*",
-    "frontend",
     "backend"
   ],
   "engines": {
     "node": ">=20.0.0",
     "npm": ">=9.0.0"
   },
-  "dependencies": {
-    "dig": "^0.0.6",
-    "firebase-admin": "^13.5.0",
-    "netlify": "^23.9.1"
-  }
+  "dependencies": {}
 }
