@@ -54,32 +54,12 @@ This is a modern, full-stack web application built with:
 
 ```
 yoohooguru/
-├── apps/                    # All Next.js applications (25 apps)
-│   ├── main/               # www.yoohoo.guru (homepage)
-│   ├── angel/              # angel.yoohoo.guru (Angel's List)
-│   ├── coach/              # coach.yoohoo.guru (Coach Guru)
-│   ├── heroes/             # heroes.yoohoo.guru (Hero Guru's)
-│   ├── dashboard/          # dashboard.yoohoo.guru (User Dashboard)
-│   ├── cooking/            # cooking.yoohoo.guru
-│   ├── coding/             # coding.yoohoo.guru
-│   ├── art/                # art.yoohoo.guru
-│   ├── business/           # business.yoohoo.guru
-│   ├── crafts/             # crafts.yoohoo.guru
-│   ├── data/               # data.yoohoo.guru
-│   ├── design/             # design.yoohoo.guru
-│   ├── finance/            # finance.yoohoo.guru
-│   ├── fitness/            # fitness.yoohoo.guru
-│   ├── gardening/          # gardening.yoohoo.guru
-│   ├── home/               # home.yoohoo.guru
-│   ├── investing/          # investing.yoohoo.guru
-│   ├── language/           # language.yoohoo.guru
-│   ├── marketing/          # marketing.yoohoo.guru
-│   ├── music/              # music.yoohoo.guru
-│   ├── photography/        # photography.yoohoo.guru
-│   ├── sales/              # sales.yoohoo.guru
-│   ├── tech/               # tech.yoohoo.guru
-│   ├── wellness/           # wellness.yoohoo.guru
-│   └── writing/            # writing.yoohoo.guru
+├── apps/                    # Next.js application with gateway architecture
+│   └── main/               # Single app serving all 29 subdomains
+│       ├── middleware.ts   # Edge Middleware for subdomain routing
+│       ├── pages/
+│       │   └── _apps/      # All 29 subdomain pages (5 core + 24 subjects)
+│       └── ...
 ├── packages/               # Shared packages
 │   ├── shared/            # Shared UI components and utilities
 │   ├── auth/              # Authentication utilities (NextAuth, Firebase)
@@ -105,7 +85,7 @@ yoohooguru/
 ├── .env.shared.example   # Shared environment variables template
 └── README.md             # This file
 
-See MONOREPO_README.md and MIGRATION_GUIDE.md for complete documentation.
+See MONOREPO_README.md and GATEWAY_ARCHITECTURE.md for complete documentation.
 ```
 
 ## 🏃‍♂️ Quick Start
@@ -386,43 +366,40 @@ railway link   # Re-link Railway
 vercel link    # Re-link Vercel
 ```
 
-### 🚀 **Deployment: Turborepo Multi-App Architecture**
+### 🚀 **Deployment: Gateway Architecture**
 
-The yoohoo.guru platform uses a Turborepo monorepo with multiple deployments:
-- **[Vercel](https://vercel.com)** - All 25 Next.js apps (separate projects per subdomain)
+The yoohoo.guru platform uses a gateway architecture with a single Vercel project:
+- **[Vercel](https://vercel.com)** - Single Next.js app (`apps/main`) serving all 29 subdomains
 - **[Railway](https://railway.app)** - Backend API (Node.js/Express)  
-- **[Firebase](https://firebase.google.com)** - Database, authentication, and real-time features
+- **[Firebase](https://firebase.com)** - Database, authentication, and real-time features
 
-**See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for complete multi-app deployment instructions.**
+**See [GATEWAY_ARCHITECTURE.md](./GATEWAY_ARCHITECTURE.md) for complete gateway deployment instructions.**
 
-#### Vercel Multi-App Deployment Overview
+#### Gateway Deployment Overview
 
-Each app in `/apps` should be deployed as a separate Vercel project with its own custom domain:
+The platform uses Edge Middleware to route all subdomains through a single Vercel deployment:
 
-| App | Directory | Domain | Vercel Project |
-|-----|-----------|--------|----------------|
-| Main | `apps/main` | www.yoohoo.guru | yoohooguru-main |
-| Angel | `apps/angel` | angel.yoohoo.guru | yoohooguru-angel |
-| Coach | `apps/coach` | coach.yoohoo.guru | yoohooguru-coach |
-| Heroes | `apps/heroes` | heroes.yoohoo.guru | yoohooguru-heroes |
-| Dashboard | `apps/dashboard` | dashboard.yoohoo.guru | yoohooguru-dashboard |
-| ...20 more | `apps/*` | *.yoohoo.guru | yoohooguru-* |
+| Type | Subdomains | Routing | Vercel Project |
+|------|-----------|---------|----------------|
+| Core | 5 (www, angel, coach, heroes, dashboard) | Edge Middleware | yoohooguru-main |
+| Subjects | 24 (art, business, coding, etc.) | Edge Middleware | yoohooguru-main |
+| **Total** | **29 subdomains** | **Single deployment** | **One project** |
 
-**Quick Deploy Single App:**
+**Quick Deploy:**
 ```bash
 cd yoohooguru
 vercel --prod
 
 # In Vercel Dashboard → Settings:
-# - Root Directory: "apps/main" (or apps/angel, apps/coach, etc.)
-# - Build Command: "cd ../.. && turbo run build --filter=@yoohooguru/main"
+# - Root Directory: "apps/main" (or leave empty)
+# - Build Command: "cd apps/main && npm run build"
 # - Output Directory: "apps/main/.next"
-# - Install Command: "npm install"
+# - Add all 29 custom domains to the single project
 ```
 
 **Deployment Documentation:**
-- **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - Complete step-by-step guide for all 25 apps
-- **[docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)** - DNS, Vercel, and Railway configuration
+- **[GATEWAY_ARCHITECTURE.md](./GATEWAY_ARCHITECTURE.md)** - Complete gateway architecture guide
+- **[docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)** - DNS, Vercel, and Railway configuration (legacy)
 - **[docs/ENVIRONMENT_VARIABLES.md](./docs/ENVIRONMENT_VARIABLES.md)** - All environment variables
 - **[MONOREPO_README.md](./MONOREPO_README.md)** - Monorepo architecture overview
 
@@ -732,44 +709,57 @@ railway logs --tail
 
 ---
 
-## 🌐 Turborepo Multi-Subdomain Architecture
+## 🌐 Gateway Architecture with 29 Subdomains
 
-The YooHoo.guru platform uses **Turborepo to manage 25+ Next.js applications**, each deployed as a separate subdomain on Vercel.
+The YooHoo.guru platform uses a **Gateway Architecture with Edge Middleware** to serve all subdomains from a single Vercel deployment.
 
-### All Subdomains (25 Apps)
+### All Subdomains (29 Total)
 
-**Core Platform Apps (5):**
-1. **www.yoohoo.guru** (`apps/main`) - Homepage and main platform
-2. **angel.yoohoo.guru** (`apps/angel`) - Angel's List service marketplace
-3. **coach.yoohoo.guru** (`apps/coach`) - Coach Guru skill-sharing
-4. **heroes.yoohoo.guru** (`apps/heroes`) - Hero Guru's (formerly Modified Masters)
-5. **dashboard.yoohoo.guru** (`apps/dashboard`) - User dashboard
+**Core Platform Subdomains (5):**
+1. **www.yoohoo.guru** - Homepage and main platform
+2. **angel.yoohoo.guru** - Angel's List service marketplace
+3. **coach.yoohoo.guru** - Coach Guru skill-sharing
+4. **heroes.yoohoo.guru** - Hero Guru's (formerly Modified Masters)
+5. **dashboard.yoohoo.guru** - User dashboard
 
-**Subject Guru Apps (20):**
-6. **art.yoohoo.guru** (`apps/art`) - Art and creative skills
-7. **business.yoohoo.guru** (`apps/business`) - Business and entrepreneurship
-8. **coding.yoohoo.guru** (`apps/coding`) - Programming and development
-9. **cooking.yoohoo.guru** (`apps/cooking`) - Culinary arts and cooking
-10. **crafts.yoohoo.guru** (`apps/crafts`) - Crafts and DIY
-11. **data.yoohoo.guru** (`apps/data`) - Data science and analytics
-12. **design.yoohoo.guru** (`apps/design`) - Design and UX
-13. **finance.yoohoo.guru** (`apps/finance`) - Finance and accounting
-14. **fitness.yoohoo.guru** (`apps/fitness`) - Fitness and health
-15. **gardening.yoohoo.guru** (`apps/gardening`) - Gardening and horticulture
-16. **home.yoohoo.guru** (`apps/home`) - Home improvement
-17. **investing.yoohoo.guru** (`apps/investing`) - Investing and trading
-18. **language.yoohoo.guru** (`apps/language`) - Languages and linguistics
-19. **marketing.yoohoo.guru** (`apps/marketing`) - Marketing and sales
-20. **music.yoohoo.guru** (`apps/music`) - Music and performance
-21. **photography.yoohoo.guru** (`apps/photography`) - Photography and videography
-22. **sales.yoohoo.guru** (`apps/sales`) - Sales techniques
-23. **tech.yoohoo.guru** (`apps/tech`) - Technology and gadgets
-24. **wellness.yoohoo.guru** (`apps/wellness`) - Wellness and mindfulness
-25. **writing.yoohoo.guru** (`apps/writing`) - Writing and editing
+**Subject Guru Subdomains (24):**
+6. **art.yoohoo.guru** - Art and creative skills
+7. **business.yoohoo.guru** - Business and entrepreneurship
+8. **coding.yoohoo.guru** - Programming and development
+9. **cooking.yoohoo.guru** - Culinary arts and cooking
+10. **crafts.yoohoo.guru** - Crafts and DIY
+11. **data.yoohoo.guru** - Data science and analytics
+12. **design.yoohoo.guru** - Design and UX
+13. **finance.yoohoo.guru** - Finance and accounting
+14. **fitness.yoohoo.guru** - Fitness and health
+15. **gardening.yoohoo.guru** - Gardening and horticulture
+16. **history.yoohoo.guru** - History and culture
+17. **home.yoohoo.guru** - Home improvement
+18. **investing.yoohoo.guru** - Investing and trading
+19. **language.yoohoo.guru** - Languages and linguistics
+20. **marketing.yoohoo.guru** - Marketing and sales
+21. **math.yoohoo.guru** - Mathematics and logic
+22. **music.yoohoo.guru** - Music and performance
+23. **photography.yoohoo.guru** - Photography and videography
+24. **sales.yoohoo.guru** - Sales techniques
+25. **science.yoohoo.guru** - Science and research
+26. **sports.yoohoo.guru** - Sports and athletics
+27. **tech.yoohoo.guru** - Technology and gadgets
+28. **wellness.yoohoo.guru** - Wellness and mindfulness
+29. **writing.yoohoo.guru** - Writing and editing
+
+### Gateway Architecture
+
+All subdomains are served from a single Vercel project using Edge Middleware:
+
+```typescript
+// apps/main/middleware.ts handles subdomain routing
+// Example: angel.yoohoo.guru → apps/main/pages/_apps/angel/index.tsx
+```
 
 ### Cross-Subdomain Authentication
 
-All apps share authentication via NextAuth with cross-subdomain cookie configuration:
+All subdomains share authentication via NextAuth with cross-subdomain cookie configuration:
 
 ```typescript
 // packages/auth/src/nextauth.ts
@@ -787,13 +777,13 @@ cookies: {
 
 ### Shared Code Architecture
 
-All apps use shared packages via Turborepo workspaces:
+All subdomains use shared packages via Turborepo workspaces:
 
 - **@yoohooguru/shared** - UI components, utilities, and styles
 - **@yoohooguru/auth** - NextAuth and Firebase authentication
 - **@yoohooguru/db** - Firestore database access layer
 
-**See [MONOREPO_README.md](./MONOREPO_README.md) for complete architecture documentation.**
+**See [GATEWAY_ARCHITECTURE.md](./GATEWAY_ARCHITECTURE.md) for complete architecture documentation.**
    - Verify ownership
 
 3. **Deploy:**
