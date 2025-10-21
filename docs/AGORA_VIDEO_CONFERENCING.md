@@ -2,6 +2,8 @@
 
 This document explains the Agora.io video conferencing integration in the yoohoo.guru platform.
 
+> **📋 Migration Note**: The frontend components have been migrated to `apps/main/components/`. See [AGORA_MIGRATION.md](./AGORA_MIGRATION.md) for details about the migration from the archived frontend structure.
+
 ## Overview
 
 The platform uses [Agora.io](https://www.agora.io/) for secure, scalable video conferencing between users during skill-sharing sessions. The integration includes:
@@ -32,9 +34,9 @@ The backend provides two endpoints:
 - Role-based access control (publisher vs subscriber)
 - Secure credential storage via environment variables
 
-### Frontend (React)
+### Frontend (Next.js/TypeScript)
 
-**Location**: `frontend/src/components/`
+**Location**: `apps/main/components/`
 
 Three components work together:
 
@@ -92,13 +94,6 @@ NEXT_PUBLIC_AGORA_APP_ID=your_app_id_here
 NEXT_PUBLIC_AGORA_REGION=us
 ```
 
-For the Webpack frontend (frontend/), use `REACT_APP_*` prefix instead:
-
-```env
-REACT_APP_AGORA_APP_ID=your_app_id_here
-REACT_APP_AGORA_REGION=us
-```
-
 ### 4. Deploy
 
 Restart your backend and frontend services after updating environment variables.
@@ -107,8 +102,8 @@ Restart your backend and frontend services after updating environment variables.
 
 ### In Your Code
 
-```jsx
-import VideoChat from '../components/VideoChat';
+```tsx
+import VideoChat from '@/components/VideoChat';
 
 function SessionPage({ session, currentUser }) {
   return (
@@ -119,11 +114,13 @@ function SessionPage({ session, currentUser }) {
         // Handle call end
         console.log('Call ended');
       }}
-      apiUrl="/api/v1"
+      apiUrl={process.env.NEXT_PUBLIC_API_URL || '/api/v1'}
     />
   );
 }
 ```
+
+For a complete example, see `apps/main/pages/_apps/coach/session/[id].tsx`.
 
 The component automatically handles:
 - Token fetching

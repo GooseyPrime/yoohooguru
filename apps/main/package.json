@@ -11,6 +11,7 @@
   "dependencies": {
     "@yoohooguru/auth": "*",
     "@yoohooguru/shared": "*",
+    "agora-rtc-sdk-ng": "^4.21.0",
     "next": "^14.2.0",
     "next-auth": "^4.24.0",
     "react": "^18.2.0",
