@@ -216,6 +216,37 @@ Sessions are stored in the `sessions` collection in Firestore in production envi
 | `OPENROUTER_API_KEY` | ❌ | OpenRouter API key for AI features |
 | `OPENROUTER_API_URL` | ❌ | OpenRouter API URL (default: https://openrouter.ai/api/v1) |
 
+#### Agora Video Conferencing
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `AGORA_APP_ID` | ❌ | Agora App ID for video conferencing (get from https://console.agora.io) |
+| `AGORA_APP_CERTIFICATE` | ❌ | Agora Primary Certificate for token generation |
+| `AGORA_REGION` | ❌ | Agora region (default: us) |
+| `AGORA_REST_KEY` | ❌ | Agora RESTful API key (for Chat, recording, etc.) |
+| `AGORA_REST_SECRET` | ❌ | Agora RESTful API secret |
+| `AGORA_CHAT_APP_KEY` | ❌ | Agora Chat App Key for in-session text chat |
+| `AGORA_CHAT_ORG_NAME` | ❌ | Agora Chat Organization Name |
+| `AGORA_CHAT_APP_NAME` | ❌ | Agora Chat Application Name |
+| `NEXT_PUBLIC_AGORA_APP_ID` | ❌ | Public Agora App ID (exposed to browser for client SDK) |
+| `NEXT_PUBLIC_AGORA_REGION` | ❌ | Public Agora region (exposed to browser) |
+
+**Note:** The Agora integration enables secure peer-to-peer video conferencing for remote sessions:
+- Backend generates short-lived tokens (1 hour expiry) for each session
+- Tokens are scoped to specific channel names (session IDs) and user IDs
+- Supports publisher and subscriber roles for access control
+- Optional: In-session text chat via Agora Chat service
+- Optional: Session recording and real-time transcription/captions
+
+**Setup Instructions:**
+1. Go to [Agora Console](https://console.agora.io)
+2. Create a new project or select an existing one
+3. Enable "App ID + Token" authentication (not "App ID only")
+4. Get your App ID and Primary Certificate from the project settings
+5. Add the credentials to your backend `.env` file
+6. Add the public App ID to `.env.shared` for Next.js apps (NEXT_PUBLIC_AGORA_APP_ID)
+7. (Optional) Enable Agora Chat for in-session text messaging
+
 #### Google Maps API
 
 | Variable | Required | Description |

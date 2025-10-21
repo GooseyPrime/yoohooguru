@@ -23,6 +23,7 @@
     "test:bcrypt": "jest src/utils/__tests__/bcrypt.test.js"
   },
   "dependencies": {
+    "agora-token": "^2.0.5",
     "axios": "^1.12.2",
     "bcryptjs": "^3.0.0",
     "compression": "^1.7.4",
