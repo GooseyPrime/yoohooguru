@@ -33,15 +33,15 @@ let firebaseApp;
  */
 const validateTestEnvironmentSetup = () => {
   const env = process.env.NODE_ENV;
-  
+
   // Only run validation in CI or when emulator hosts are set
   const isCI = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
   const hasEmulatorHosts = process.env.FIRESTORE_EMULATOR_HOST || process.env.FIREBASE_AUTH_EMULATOR_HOST;
-  
+
   if (!isCI && !hasEmulatorHosts) {
     return; // Skip validation in local development without emulators
   }
-  
+
   // If emulators are configured, NODE_ENV must be 'test' or 'development'
   if (hasEmulatorHosts && env !== 'test' && env !== 'development') {
     logger.error('❌ ENVIRONMENT CONFIGURATION ERROR:');
@@ -59,13 +59,13 @@ const validateTestEnvironmentSetup = () => {
     if (process.env.FIREBASE_AUTH_EMULATOR_HOST) {
       logger.error(`   - FIREBASE_AUTH_EMULATOR_HOST=${process.env.FIREBASE_AUTH_EMULATOR_HOST}`);
     }
-    
+
     throw new Error(
       `Environment configuration error: Emulator hosts configured with NODE_ENV=${env}. ` +
       `Emulators are only allowed in test and development environments.`
     );
   }
-  
+
   // Log successful validation for CI debugging
   if (isCI && env === 'test') {
     logger.info('✅ Test environment configuration validated for CI');
@@ -85,7 +85,7 @@ const validateTestEnvironmentSetup = () => {
  */
 const validateProductionFirebaseConfig = (config) => {
   const env = process.env.NODE_ENV;
-  
+
   // Skip validation in test and development environments
   if (env === 'test' || env === 'development') {
     return;
@@ -132,7 +132,7 @@ const validateProductionFirebaseConfig = (config) => {
   }
 
   const prohibitedPatterns = ['demo', 'test', 'mock', 'localhost', 'emulator', 'example', 'your_', 'changeme', 'invalid'];
-  const hasProhibitedPattern = prohibitedPatterns.some(pattern => 
+  const hasProhibitedPattern = prohibitedPatterns.some(pattern =>
     projectId.toLowerCase().includes(pattern)
   );
 
@@ -155,7 +155,7 @@ const validateProductionFirebaseConfig = (config) => {
   // Validate required secrets for production/staging
   const requiredSecrets = ['JWT_SECRET', 'FIREBASE_API_KEY'];
   const missingSecrets = requiredSecrets.filter(secret => !process.env[secret]);
-  
+
   if (missingSecrets.length > 0) {
     throw new Error(
       `Missing required environment variables for ${env} environment: ${missingSecrets.join(', ')}. ` +
@@ -195,77 +195,72 @@ const initializeFirebase = () => {
         'Mocks are only allowed in test environments. Check your NODE_ENV configuration.'
       );
     }
-    
+
     // Check if Firebase is already initialized
     if (admin.apps.length > 0) {
       firebaseApp = admin.app();
       logger.info('Firebase Admin SDK already initialized, reusing existing instance');
       return firebaseApp;
     }
-    
+
     // Initialize Firebase Admin SDK
-    if (!admin.apps.length) {
-      
-      // TEST ENVIRONMENT: Use Firebase Emulator
-      if (env === 'test') {
-        const firebaseConfig = {
-          projectId: process.env.FIREBASE_PROJECT_ID || 'demo-yoohooguru-test'
-        };
-
-        // Set emulator environment variables if not already set
-        if (!process.env.FIRESTORE_EMULATOR_HOST) {
-          process.env.FIRESTORE_EMULATOR_HOST = 'localhost:8080';
-        }
-        if (!process.env.FIREBASE_AUTH_EMULATOR_HOST) {
-          process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099';
-        }
-
-        firebaseApp = admin.initializeApp(firebaseConfig);
-        logger.info('🧪 Firebase initialized for testing with EMULATOR');
-        logger.info(`📍 Firestore Emulator: ${process.env.FIRESTORE_EMULATOR_HOST}`);
-        logger.info(`📍 Auth Emulator: ${process.env.FIREBASE_AUTH_EMULATOR_HOST}`);
-        
-        return firebaseApp;
-      }
-
-      // For non-test environments, validate that emulators aren't misconfigured
-      validateTestEnvironmentSetup();
-
-      // PRODUCTION/STAGING/DEVELOPMENT: Use real Firebase
-      const serviceAccount = {
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
-      };
-
+    // TEST ENVIRONMENT: Use Firebase Emulator
+    if (env === 'test') {
       const firebaseConfig = {
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        ...(serviceAccount.clientEmail && serviceAccount.privateKey && 
-            serviceAccount.clientEmail.trim() !== '' && serviceAccount.privateKey.trim() !== '' && {
-          credential: admin.credential.cert(serviceAccount)
-        })
+        projectId: process.env.FIREBASE_PROJECT_ID || 'demo-yoohooguru-test'
       };
 
-      // Validate configuration for production environments
-      if (env === 'production' || env === 'staging') {
-        validateProductionFirebaseConfig(firebaseConfig);
+      // Set emulator environment variables if not already set
+      if (!process.env.FIRESTORE_EMULATOR_HOST) {
+        process.env.FIRESTORE_EMULATOR_HOST = 'localhost:8080';
+      }
+      if (!process.env.FIREBASE_AUTH_EMULATOR_HOST) {
+        process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099';
       }
 
       firebaseApp = admin.initializeApp(firebaseConfig);
-      logger.info('Firebase Admin SDK initialized successfully');
-      logger.info(`Environment: ${env}`);
-      
-      if (env === 'production' || env === 'staging') {
-        logger.info('🚀 Running with live Firebase configuration (production-ready)');
-        logger.info(`🔥 Using Firebase project: ${process.env.FIREBASE_PROJECT_ID}`);
-        logger.info('✅ Firestore-only configuration active');
-      } else {
-        logger.info('🛠️  Running with development Firebase configuration');
-      }
-    } else {
-      firebaseApp = admin.app();
+      logger.info('🧪 Firebase initialized for testing with EMULATOR');
+      logger.info(`📍 Firestore Emulator: ${process.env.FIRESTORE_EMULATOR_HOST}`);
+      logger.info(`📍 Auth Emulator: ${process.env.FIREBASE_AUTH_EMULATOR_HOST}`);
+
+      return firebaseApp;
     }
-    
+
+    // For non-test environments, validate that emulators aren't misconfigured
+    validateTestEnvironmentSetup();
+
+    // PRODUCTION/STAGING/DEVELOPMENT: Use real Firebase
+    const serviceAccount = {
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
+    };
+
+    const firebaseConfig = {
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      ...(serviceAccount.clientEmail && serviceAccount.privateKey &&
+        serviceAccount.clientEmail.trim() !== '' && serviceAccount.privateKey.trim() !== '' && {
+        credential: admin.credential.cert(serviceAccount)
+      })
+    };
+
+    // Validate configuration for production environments
+    if (env === 'production' || env === 'staging') {
+      validateProductionFirebaseConfig(firebaseConfig);
+    }
+
+    firebaseApp = admin.initializeApp(firebaseConfig);
+    logger.info('Firebase Admin SDK initialized successfully');
+    logger.info(`Environment: ${env}`);
+
+    if (env === 'production' || env === 'staging') {
+      logger.info('🚀 Running with live Firebase configuration (production-ready)');
+      logger.info(`🔥 Using Firebase project: ${process.env.FIREBASE_PROJECT_ID}`);
+      logger.info('✅ Firestore-only configuration active');
+    } else {
+      logger.info('🛠️  Running with development Firebase configuration');
+    }
+
     return firebaseApp;
   } catch (error) {
     logger.error('Failed to initialize Firebase:', error);
@@ -284,9 +279,9 @@ const getDatabase = () => {
   if (!firebaseApp) {
     throw new Error('Firebase not initialized. Call initializeFirebase() first.');
   }
-  
+
   logger.warn('⚠️  DEPRECATION WARNING: getDatabase() is deprecated. Use getFirestore() instead.');
-  
+
   if (!firebaseApp.options.databaseURL) {
     throw new Error(
       'Firebase Realtime Database is not configured for this application. ' +

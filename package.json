@@ -37,6 +37,7 @@
     "cleanup:test-db": "node scripts/cleanup-test-db.js",
     "migrate:content": "node backend/ai-content-migration.js",
     "test:auth": "cd backend && npm test -- tests/test.auth.spec.js"
+    // NOTE: If you use concurrently in any scripts, ensure their syntax matches the requirements for v9 (see https://github.com/open-cli-tools/concurrently/releases/tag/v9.0.0)
   },
   "keywords": [
     "skill-sharing",
@@ -51,7 +52,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/react": "^19.0.0",
-    "concurrently": "^9.0.0",
+    f
     "jest": "^30.2.0",
     "turbo": "^2.5.8",
     "typescript": "^5.0.0"
