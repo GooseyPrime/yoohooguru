@@ -26,7 +26,7 @@ jobs:
       orphan-reports-available: ${{ steps.orphan-analysis.outcome == 'success' || steps.orphan-analysis.outcome == 'failure' }}
     strategy:
       matrix:
-        node-version: [20.19.5]
+        node-version: [20]
 
     steps:
     - name: Checkout repository
