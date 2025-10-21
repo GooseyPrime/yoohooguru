@@ -19,7 +19,15 @@ export const getAuthOptions = (overrides: Partial<NextAuthOptions> = {}): NextAu
           path: '/',
           secure: process.env.NODE_ENV === 'production',
           // CRITICAL: Cross-subdomain cookie domain
-          domain: process.env.AUTH_COOKIE_DOMAIN || (process.env.NODE_ENV === 'production' ? '.yoohoo.guru' : undefined),
+          domain: (() => {
+            if (process.env.NODE_ENV === 'production') {
+              if (!process.env.AUTH_COOKIE_DOMAIN) {
+                throw new Error('AUTH_COOKIE_DOMAIN must be set in production for secure cookie handling.');
+              }
+              return process.env.AUTH_COOKIE_DOMAIN;
+            }
+            return undefined;
+          })(),
         }
       },
     },

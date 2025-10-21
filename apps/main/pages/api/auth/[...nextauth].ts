@@ -3,23 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import { getAuthOptions } from "@yoohooguru/auth";
 import { JWT } from "next-auth/jwt";
 
-// Extend the built-in session types
-declare module "next-auth" {
-  interface Session {
-    user: {
-      id: string;
-      name?: string | null;
-      email?: string | null;
-      image?: string | null;
-    }
-  }
-}
-
-declare module "next-auth/jwt" {
-  interface JWT {
-    id?: string;
-  }
-}
+// TypeScript module augmentations for next-auth and next-auth/jwt have been moved to types/next-auth.d.ts for better organization.
 
 // Get base NextAuth options with cross-subdomain cookie configuration
 const authOptions = getAuthOptions({

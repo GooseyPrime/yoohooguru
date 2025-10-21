@@ -19,7 +19,8 @@
     "lint": "eslint src/ --ext .js",
     "lint:fix": "eslint src/ --ext .js --fix",
     "format": "prettier --write src/**/*.js",
-    "deploy": "railway up"
+    "deploy": "railway up",
+    "test:bcrypt": "jest src/utils/__tests__/bcrypt.test.js"
   },
   "dependencies": {
     "axios": "^1.12.2",
@@ -47,12 +48,10 @@
     "swagger-ui-express": "^5.0.1",
     "uuid": "^13.0.0",
     "winston": "^3.18.2"
-  },
   "devDependencies": {
-    "@babel/core": "^7.28.4",
-    "@babel/preset-env": "^7.28.3",
-    "@firebase/rules-unit-testing": "^3.0.0",
-    "babel-jest": "^30.2.0",
+    "@firebase/rules-unit-testing": "^5.0.0",
+    "babel-jest": "^29.7.0",
+    "@babel/core": "^7.24.4",
     "chalk": "^5.6.2",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
@@ -64,6 +63,7 @@
     "nodemon": "^3.0.2",
     "prettier": "^3.1.1",
     "supertest": "^6.3.4"
+  },
   },
   "keywords": [
     "skill-sharing",

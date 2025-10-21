@@ -21,8 +21,17 @@
   },
   "dependencies": {
     "@next-auth/firebase-adapter": "^2.0.1",
+<<<<<<< HEAD:.archive/frontend-legacy/package.json
+<<<<<<< HEAD:frontend/package.json
+    "@stripe/react-stripe-js": "^2.4.0",
+=======
+    "@stripe/react-stripe-js": "^2.11.0",
+>>>>>>> d234d6d2688a569024bc4bb4e914c0fb8b7851dd:frontend/package.json
+    "@stripe/stripe-js": "^8.0.0",
+=======
     "@stripe/react-stripe-js": "^5.0.0",
     "@stripe/stripe-js": "^2.4.0",
+>>>>>>> origin/main:.archive/frontend-legacy/package.json
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
     "axios": "^1.6.2",
@@ -32,7 +41,7 @@
     "firebase-admin": "^12.7.0",
     "framer-motion": "^10.16.16",
     "jsonwebtoken": "^9.0.2",
-    "lucide-react": "^0.303.0",
+    "lucide-react": "^0.546.0",
     "next": "^14.2.0",
     "next-auth": "^4.24.0",
     "react": "^19.0.0",
