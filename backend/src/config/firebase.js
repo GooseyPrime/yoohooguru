@@ -196,6 +196,13 @@ const initializeFirebase = () => {
       );
     }
     
+    // Check if Firebase is already initialized
+    if (admin.apps.length > 0) {
+      firebaseApp = admin.app();
+      logger.info('Firebase Admin SDK already initialized, reusing existing instance');
+      return firebaseApp;
+    }
+    
     // Initialize Firebase Admin SDK
     if (!admin.apps.length) {
       
