@@ -59,7 +59,7 @@ export const authOptions: NextAuthOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   
-  // CRITICAL FIX: Cross-subdomain cookie configuration
+  // CRITICAL: Cross-subdomain cookie configuration
   cookies: {
     sessionToken: {
       name: `${process.env.NEXTAUTH_URL?.startsWith('https://') ? "__Secure-" : ""}next-auth.session-token`,
@@ -68,7 +68,7 @@ export const authOptions: NextAuthOptions = {
         sameSite: 'lax',
         path: '/',
         secure: process.env.NODE_ENV === 'production',
-        // Uses the configured environment variable for .yoohoo.guru
+        // CRITICAL: Uses AUTH_COOKIE_DOMAIN environment variable for cross-subdomain authentication
         domain: process.env.AUTH_COOKIE_DOMAIN || (process.env.NODE_ENV === 'production' ? '.yoohoo.guru' : undefined), 
       }
     },
