@@ -1,15 +1,16 @@
-# Migration Guide: Single Frontend to Multi-App Monorepo
+# Migration Guide: Single Frontend to Gateway Architecture
 
-This guide explains how the yoohoo.guru repository structure has been refactored from a single frontend application to a multi-app monorepo using Turborepo.
+This guide explains how the yoohoo.guru repository structure has been refactored from a single frontend application to a gateway architecture using Edge Middleware for unlimited subdomain support.
 
 ## Overview
 
-The platform has been restructured to separate each subdomain into its own Next.js application. This provides:
+The platform has been restructured to serve all subdomains through a single Next.js application with intelligent Edge Middleware routing. This provides:
 
-- **Isolation**: Each subdomain has its own codebase, reducing complexity
-- **Independent Deployment**: Deploy individual apps without affecting others
+- **Unlimited Subdomains**: No project count limits with gateway architecture
+- **Single Deployment**: One build serves all 29 subdomains
 - **Shared Code**: Common components and utilities in `packages/shared`
-- **Scalability**: Easy to add new subdomains or features
+- **Scalability**: Easy to add new subdomains without new deployments
+- **Cross-Subdomain Auth**: Seamless authentication across all subdomains
 
 ## Structure Mapping
 
@@ -20,12 +21,12 @@ OLD:                                  NEW:
 frontend/                             
 ├── src/                              
 │   ├── screens/                      
-│   │   ├── HomePage.js         →    apps/main/pages/index.tsx
-│   │   ├── SkillsPage.js       →    apps/coach/pages/index.tsx
-│   │   ├── AngelsListPage.js   →    apps/angel/pages/index.tsx
-│   │   ├── ModifiedMasters.js  →    apps/heroes/pages/index.tsx
-│   │   ├── DashboardPage.js    →    apps/dashboard/pages/index.tsx
-│   │   └── [others]            →    [respective apps]
+│   │   ├── HomePage.js         →    apps/main/pages/_apps/main/index.tsx
+│   │   ├── SkillsPage.js       →    apps/main/pages/_apps/coach/index.tsx
+│   │   ├── AngelsListPage.js   →    apps/main/pages/_apps/angel/index.tsx
+│   │   ├── ModifiedMasters.js  →    apps/main/pages/_apps/heroes/index.tsx
+│   │   ├── DashboardPage.js    →    apps/main/pages/_apps/dashboard/index.tsx
+│   │   └── [others]            →    apps/main/pages/_apps/[subdomain]/
 │   ├── components/                   
 │   │   ├── Header.js           →    packages/shared/src/components/Header.tsx
 │   │   ├── Footer.js           →    packages/shared/src/components/Footer.tsx
@@ -37,26 +38,35 @@ frontend/
 ├── app/                              
 │   └── api/auth/[...nextauth]  →    packages/auth/src/nextauth.ts
 └── pages/                            
-    ├── index.tsx               →    apps/main/pages/index.tsx
-    ├── skills.tsx              →    apps/coach/pages/index.tsx
-    ├── angels-list.tsx         →    apps/angel/pages/index.tsx
-    ├── modified.tsx            →    apps/heroes/pages/index.tsx
-    └── dashboard.tsx           →    apps/dashboard/pages/index.tsx
+    ├── index.tsx               →    apps/main/pages/_apps/main/index.tsx
+    ├── skills.tsx              →    apps/main/pages/_apps/coach/index.tsx
+    ├── angels-list.tsx         →    apps/main/pages/_apps/angel/index.tsx
+    ├── modified.tsx            →    apps/main/pages/_apps/heroes/index.tsx
+    └── dashboard.tsx           →    apps/main/pages/_apps/dashboard/index.tsx
+
+NEW: Gateway Architecture
+apps/main/
+├── middleware.ts               →    Edge Middleware for subdomain routing
+└── pages/
+    └── _apps/
+        ├── main/              →    www.yoohoo.guru
+        ├── angel/             →    angel.yoohoo.guru
+        ├── coach/             →    coach.yoohoo.guru
+        ├── heroes/            →    heroes.yoohoo.guru
+        ├── dashboard/         →    dashboard.yoohoo.guru
+        └── [24 subjects]/     →    [subject].yoohoo.guru
 ```
 
 ## Application Mapping
 
-| Old Route | New App | Subdomain |
-|-----------|---------|-----------|
-| `/` | `apps/main` | www.yoohoo.guru |
-| `/skills` | `apps/coach` | coach.yoohoo.guru |
-| `/angels-list` | `apps/angel` | angel.yoohoo.guru |
-| `/modified` or `/heroes` | `apps/heroes` | heroes.yoohoo.guru |
-| `/dashboard` | `apps/dashboard` | dashboard.yoohoo.guru |
-| `/cooking/*` | `apps/cooking` | cooking.yoohoo.guru |
-| `/coding/*` | `apps/coding` | coding.yoohoo.guru |
-| `/art/*` | `apps/art` | art.yoohoo.guru |
-| ... | ... | ... |
+| Old Route | New Page | Subdomain | Routing |
+|-----------|----------|-----------|---------|
+| `/` | `apps/main/pages/_apps/main` | www.yoohoo.guru | Edge Middleware |
+| `/skills` | `apps/main/pages/_apps/coach` | coach.yoohoo.guru | Edge Middleware |
+| `/angels-list` | `apps/main/pages/_apps/angel` | angel.yoohoo.guru | Edge Middleware |
+| `/modified` or `/heroes` | `apps/main/pages/_apps/heroes` | heroes.yoohoo.guru | Edge Middleware |
+| `/dashboard` | `apps/main/pages/_apps/dashboard` | dashboard.yoohoo.guru | Edge Middleware |
+| N/A | `apps/main/pages/_apps/[subject]` | [subject].yoohoo.guru | Edge Middleware |
 
 ## Component Migration
 
@@ -73,10 +83,10 @@ function HomePage() {
 }
 ```
 
-### After (New Monorepo)
+### After (Gateway Architecture)
 
 ```typescript
-// apps/main/pages/index.tsx
+// apps/main/pages/_apps/main/index.tsx
 import { Header, Button } from '@yoohooguru/shared';
 import { useAuth } from '@yoohooguru/auth';
 
@@ -84,6 +94,8 @@ export default function HomePage() {
   // Component code
 }
 ```
+
+All subdomains are routed through Edge Middleware in `apps/main/middleware.ts`.
 
 ## Shared Package Usage
 
@@ -206,18 +218,17 @@ npm run build:frontend
 # Deploy single app to Vercel
 ```
 
-### New Deployment
+### New Deployment (Gateway Architecture)
 
 ```bash
-# Build all apps
-npm run build
-
-# Or build specific apps
+# Build main app (serves all subdomains)
 npm run build:main
-npm run build:angel
+
+# Deploy once to Vercel
+vercel --prod
 ```
 
-Each app is deployed as a separate Vercel project with its own custom domain.
+The gateway architecture requires only a single Vercel project. All 29 subdomains are added as custom domains to this one project, and Edge Middleware handles the routing.
 
 ## Breaking Changes
 
@@ -249,38 +260,34 @@ window.location.href = 'https://coach.yoohoo.guru'
 
 API endpoints remain the same, but ensure you're using the correct API URL for your environment.
 
-### 4. Legacy Routes Removed
+### 4. Subdomain Routing
 
-The following routes no longer exist in the main app:
-- `/skills` (now at coach.yoohoo.guru)
-- `/angels-list` (now at angel.yoohoo.guru)
-- `/modified` (now at heroes.yoohoo.guru)
-- `/dashboard` (now at dashboard.yoohoo.guru)
+With the gateway architecture, all subdomains are automatically routed through Edge Middleware. No separate deployments required - just add the domain to your Vercel project.
 
 ## Migrating Your Code
 
-### Step 1: Identify Which App
+### Step 1: Identify Page Location
 
-Determine which app your code belongs to:
-- Homepage/landing content → `apps/main`
-- Skills/coaching features → `apps/coach`
-- Angel's List features → `apps/angel`
-- Hero Guru's features → `apps/heroes`
-- Dashboard features → `apps/dashboard`
-- Subject-specific content → respective `apps/*` folder
+Determine which subdomain your code belongs to and place it under `apps/main/pages/_apps/[subdomain]/`:
+- Homepage/landing content → `apps/main/pages/_apps/main`
+- Skills/coaching features → `apps/main/pages/_apps/coach`
+- Angel's List features → `apps/main/pages/_apps/angel`
+- Hero Guru's features → `apps/main/pages/_apps/heroes`
+- Dashboard features → `apps/main/pages/_apps/dashboard`
+- Subject-specific content → `apps/main/pages/_apps/[subject]`
 
 ### Step 2: Move Files
 
-Move your files to the appropriate app's directory structure:
+Move your files to the appropriate subdomain directory:
 
 ```bash
 # Old location
 frontend/src/screens/YourComponent.js
 
 # New location
-apps/<app-name>/pages/your-route.tsx
+apps/main/pages/_apps/[subdomain]/your-route.tsx
 # or
-apps/<app-name>/components/YourComponent.tsx
+apps/main/components/YourComponent.tsx
 ```
 
 ### Step 3: Update Imports
@@ -314,12 +321,22 @@ window.location.href = 'https://coach.yoohoo.guru'
 Test your changes:
 
 ```bash
-# Development
-npm run dev:<app-name>
+# Development (test locally with different subdomains)
+npm run dev:main
 
-# Build
-npm run build:<app-name>
+# Build (single build serves all subdomains)
+npm run build:main
 ```
+
+### Step 6: Deploy
+
+With gateway architecture, deploy once to serve all subdomains:
+
+```bash
+vercel --prod
+```
+
+Add the subdomain as a custom domain in Vercel dashboard - middleware will handle routing automatically.
 
 ## Common Issues
 
@@ -329,11 +346,14 @@ npm run build:<app-name>
 
 ### Issue: Environment variables not loading
 
-**Solution**: Create `.env.local` in your app directory and add required variables.
+**Solution**: Create `.env.local` in `apps/main` directory and add required variables. With gateway architecture, you only need one set of environment variables.
 
-### Issue: Auth not working across subdomains
+### Issue: Subdomain routing not working
 
-**Solution**: Ensure `AUTH_COOKIE_DOMAIN=.yoohoo.guru` is set in production environment.
+**Solution**: Ensure the subdomain is:
+1. Added to Vercel project domains
+2. Mapped in `apps/main/middleware.ts` SUBDOMAIN_MAP
+3. Has a corresponding page at `apps/main/pages/_apps/[subdomain]/index.tsx`
 
 ### Issue: Module not found
 
@@ -341,18 +361,19 @@ npm run build:<app-name>
 
 ## Backwards Compatibility
 
-The old `frontend/` directory is being kept temporarily for backwards compatibility. It will be removed once all functionality is migrated to the new app structure.
+The gateway architecture serves all content from a single deployment at `apps/main`. The Edge Middleware automatically routes requests based on subdomain, so no manual routing configuration is needed.
 
 ## Questions?
 
 For questions or issues with migration, please:
 1. Check this guide
-2. Review MONOREPO_README.md
-3. Open an issue on GitHub
+2. Review GATEWAY_ARCHITECTURE.md
+3. Review MONOREPO_README.md
+4. Open an issue on GitHub
 
 ## Timeline
 
-- **Phase 1** (Current): Monorepo structure created, core apps deployed
-- **Phase 2**: Migrate all functionality from old frontend to new apps
-- **Phase 3**: Remove old frontend directory
-- **Phase 4**: Full production deployment of all apps
+- **Phase 1** (Completed): Gateway architecture implemented with Edge Middleware
+- **Phase 2** (Completed): All 29 subdomains configured and routed
+- **Phase 3** (Completed): Documentation updated to reflect gateway architecture
+- **Phase 4** (Current): Production deployment of gateway to Vercel
