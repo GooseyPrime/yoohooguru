@@ -304,7 +304,7 @@ The gateway architecture uses NextAuth with a shared cookie domain (`.yoohoo.gur
    ```bash
    # Build command
    cd frontend && npm install && npm run build
-   
+
    # Publish directory
    frontend/dist
    ```
@@ -322,6 +322,59 @@ The gateway architecture uses NextAuth with a shared cookie domain (`.yoohoo.gur
    Create `frontend/public/_redirects`:
    ```
    /*    /index.html   200
+   ```
+
+#### Netlify Plugin Troubleshooting
+
+**Issue**: Build fails with plugin errors (e.g., `netlify-plugin-minify-html` not found)
+
+**Root Cause**:
+- The error may come from Netlify UI configuration (not netlify.toml)
+- Previously configured plugins that were removed from code but remain in dashboard
+- Cached plugin configurations
+
+**Solution**:
+
+1. **Remove UI-Configured Plugins** (CRITICAL):
+   - Go to Netlify Dashboard → Site settings → Build & deploy → Build plugins
+   - Remove any plugins not explicitly listed in `netlify.toml`
+   - Especially remove: `netlify-plugin-minify-html` (if present)
+
+2. **Essential Plugins** (Keep These):
+   ```toml
+   [[plugins]]
+     package = "netlify-plugin-nx-skip-build"  # Required for monorepo
+
+   [[plugins]]
+     package = "@netlify/plugin-nextjs"  # Required for Next.js
+   ```
+
+3. **Built-in Optimization** (Recommended):
+   Instead of external minify plugins, use Next.js built-in optimization in `apps/main/next.config.js`:
+   ```javascript
+   {
+     swcMinify: true,           // Fast JS/TS minification
+     compress: true,            // Gzip compression
+     compiler: {
+       removeConsole: {         // Remove console logs in production
+         exclude: ['error', 'warn']
+       }
+     }
+   }
+   ```
+
+   This approach is more reliable and maintained than external minify plugins.
+
+4. **Clear Build Cache**:
+   - Go to Netlify Dashboard → Deploys → Trigger deploy → Clear cache and deploy
+
+5. **Verify Configuration**:
+   ```bash
+   # Ensure netlify.toml only has essential plugins
+   cat netlify.toml | grep -A 1 "[[plugins]]"
+
+   # Check package.json devDependencies match netlify.toml
+   cat package.json | grep -E "(netlify-plugin|@netlify)"
    ```
 
 ### Vercel Deployment
