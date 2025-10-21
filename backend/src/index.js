@@ -175,10 +175,24 @@ app.use((req, res, next) => {
     noSniff: true, // Add X-Content-Type-Options: nosniff
   })(req, res, next);
 });
-app.use(cors({
-  origin: getCorsOrigins(config),
+// Configure CORS with proper origin validation
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Get the CORS validation function from config
+    const corsValidator = getCorsOrigins(config);
+    
+    // Handle undefined origin (can occur for same-origin requests or server-side requests)
+    if (!origin) {
+      return callback(null, true);
+    }
+    
+    // Delegate to the configured CORS validator
+    return corsValidator(origin, callback);
+  },
   credentials: true
-}));
+};
+
+app.use(cors(corsOptions));
 
 // Additional security headers for enhanced protection
 app.use((req, res, next) => {
