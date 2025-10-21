@@ -76,10 +76,13 @@ Thumbs.db
 # Backup and temporary files
 *.backup
 *.bak
+*.bak.*
+*.corrupted
 *.tmp
 *.temp
 *~
 *.orig
+*.out
 deploy-fix.*
 *errors*
 
