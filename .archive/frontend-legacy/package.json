@@ -21,8 +21,12 @@
   },
   "dependencies": {
     "@next-auth/firebase-adapter": "^2.0.1",
+<<<<<<< HEAD:.archive/frontend-legacy/package.json
 <<<<<<< HEAD:frontend/package.json
     "@stripe/react-stripe-js": "^2.4.0",
+=======
+    "@stripe/react-stripe-js": "^2.11.0",
+>>>>>>> d234d6d2688a569024bc4bb4e914c0fb8b7851dd:frontend/package.json
     "@stripe/stripe-js": "^8.0.0",
 =======
     "@stripe/react-stripe-js": "^5.0.0",
