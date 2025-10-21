@@ -29,8 +29,6 @@
 # Use the official Netlify Next.js runtime
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-  [plugins.inputs]
-    version = "14.2.0"
 
 # Recommended Deployment Architecture
 # ------------------------------------
