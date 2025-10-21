@@ -15,7 +15,6 @@
 
   # Publish directory for Next.js - handled automatically by @netlify/plugin-nextjs
   # The plugin knows to use .next directory when base is set to the app root
-  publish = ".next"
 
 [build.environment]
   # Force Netlify to include devDependencies (TypeScript, ESLint, etc.)
