@@ -377,6 +377,70 @@ The gateway architecture uses NextAuth with a shared cookie domain (`.yoohoo.gur
    cat package.json | grep -E "(netlify-plugin|@netlify)"
    ```
 
+#### Netlify Secret Scanning Issues
+
+**Issue**: Build fails with "secrets detected" or similar security warnings
+
+**Root Cause**:
+- Netlify's automatic secret scanner detects API keys, tokens, or secrets in the codebase
+- May include false positives for legitimate public keys (Firebase API keys, Stripe publishable keys)
+- Environment files with real secrets committed to git
+
+**Solution**:
+
+1. **Environment Variable Best Practices**:
+   - **NEVER** commit files with real secrets to git
+   - Use `.env.example` files with placeholder values in the repository
+   - Set real values as environment variables in Vercel/Netlify dashboard
+   - Keep `.env.shared` in `.gitignore` (already configured)
+
+2. **Public vs. Private Keys**:
+   - ✅ **Public keys** (safe in client code):
+     - `NEXT_PUBLIC_FIREBASE_API_KEY` - Protected by Firebase security rules
+     - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` - Stripe publishable keys (start with `pk_`)
+     - These are meant to be public but may trigger scanners
+   - ❌ **Private keys** (NEVER commit):
+     - `NEXTAUTH_SECRET` - Must be in environment variables only
+     - `STRIPE_SECRET_KEY` - Backend-only secrets
+     - `FIREBASE_PRIVATE_KEY` - Service account credentials
+
+3. **Secret Scanner Configuration**:
+   - `.gitguardian.yaml` - Configures GitGuardian secret scanner
+   - `.secretsignore` - Excludes files/patterns from scanning
+   - Both files are already configured in the repository
+
+4. **Fix Committed Secrets**:
+   ```bash
+   # Remove .env.shared from git tracking (keeps local file)
+   git rm --cached .env.shared
+
+   # Verify .gitignore includes .env.shared
+   grep ".env.shared" .gitignore
+
+   # Set real values in Vercel/Netlify dashboard instead
+   ```
+
+5. **Environment Variable Setup**:
+   - Go to Vercel Dashboard → Project Settings → Environment Variables
+   - Add the following variables for all environments:
+     ```
+     NEXT_PUBLIC_FIREBASE_API_KEY=<your-real-key>
+     NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=<your-real-domain>
+     NEXT_PUBLIC_FIREBASE_PROJECT_ID=<your-real-project>
+     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=<your-real-key>
+     NEXTAUTH_SECRET=<generate-with-openssl-rand-base64-32>
+     ```
+
+6. **Verify Clean Build**:
+   ```bash
+   # Ensure no secrets in tracked files
+   git grep -i "AIza" --cached
+   git grep -i "pk_live" --cached
+   git grep -i "sk_" --cached
+
+   # Should only show example files
+   ```
+
 ### Vercel Deployment
 
 1. **Install Vercel CLI**

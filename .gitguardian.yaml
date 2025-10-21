@@ -1,0 +1,46 @@
+# GitGuardian Secret Scanning Configuration
+# This file configures secret scanning behavior for CI/CD and Netlify builds
+# https://docs.gitguardian.com/internal-repositories-monitoring/integrations/git_hooks/pre_commit
+
+version: 2
+
+# Paths to exclude from secret scanning
+paths-ignore:
+  - "**/.env.example"
+  - "**/.env.*.example"
+  - "**/node_modules/**"
+  - "**/.next/**"
+  - "**/dist/**"
+  - "**/build/**"
+  - "**/.turbo/**"
+  - "**/docs/**/*.md"
+  - "**/.archive/**"
+
+# Specific patterns to exclude (these are legitimate public keys)
+matches-ignore:
+  # Firebase API Keys (public client keys prefixed with NEXT_PUBLIC_)
+  - name: Firebase API Key (Public)
+    match: NEXT_PUBLIC_FIREBASE_API_KEY
+
+  # Stripe Publishable Keys (public keys that start with pk_)
+  - name: Stripe Publishable Key
+    match: pk_(test|live)_[a-zA-Z0-9]+
+
+  # Test/Mock API Keys
+  - name: Test API Keys
+    match: (sk_test_|pk_test_|AIzaSyDummy|test_.*_key|mock_.*_key)
+
+  # Example/Placeholder Keys
+  - name: Placeholder Keys
+    match: (your_.*_key_here|your_.*_secret_here|change-me-in-prod)
+
+# Files that are allowed to contain example/test secrets
+exclude:
+  paths:
+    - .env.test
+    - .env.shared.example
+    - .env.example
+    - backend/.env.test
+    - apps/*/\.env.local.example
+    - docs/SECRETS_DEPLOYMENT_GUIDE.md
+    - backend/tests/**/*.js
