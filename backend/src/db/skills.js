@@ -1,5 +1,6 @@
 const { getFirestore } = require('../config/firebase');
 const admin = require('firebase-admin');
+const { uuidv4 } = require('../utils/uuid');
 
 const getCollection = () => {
   const firestore = getFirestore();
@@ -117,7 +118,7 @@ async function addResource(id, link) {
   const ref = col.doc(id);
   
   const resourceData = {
-    id: require('uuid').v4(),
+    id: uuidv4(),
     addedAt: Date.now(),
     ...link
   };
