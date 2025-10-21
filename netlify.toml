@@ -5,15 +5,16 @@
 # to prevent Netlify from auto-detecting and attempting to install them.
 
 [build]
-  # Explicitly set base to the repository root so Netlify resolves paths correctly.
-  base = "/"
+  # Set base to the main app directory for the Next.js plugin to work correctly
+  base = "apps/main"
 
   # Build command for Turborepo monorepo - builds the main app by default.
   # Using npm install (not npm ci) ensures proper workspace dependency resolution.
-  command = "npm install && npx turbo run build --filter=@yoohooguru/main"
+  # Note: Must install from root first to setup workspace, then build from app directory
+  command = "cd ../.. && npm install && npx turbo run build --filter=@yoohooguru/main"
 
-  # Publish directory for the Next.js main app.
-  publish = "apps/main/.next"
+  # Publish directory for Next.js - handled automatically by @netlify/plugin-nextjs
+  # The plugin knows to use .next directory when base is set to the app root
 
 [build.environment]
   # Force Netlify to include devDependencies (TypeScript, ESLint, etc.)
@@ -21,16 +22,18 @@
   NPM_FLAGS = "--include=dev"
 
   # Ensure consistent Node version (Netlify 20.x LTS)
-  NODE_VERSION = "20.19.5"
+  NODE_VERSION = "20"
 
   # Enable Turborepo build caching
   TURBO_CACHE_DIR = ".turbo"
 
-# Use the official Netlify Next.js runtime
+# Use the Nx skip build plugin to handle monorepo builds properly
+[[plugins]]
+  package = "netlify-plugin-nx-skip-build"
+
+# Use the official Netlify Next.js runtime as secondary plugin
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-  [plugins.inputs]
-    version = "14.2.0"
 
 # Recommended Deployment Architecture
 # ------------------------------------

@@ -1,14 +1,23 @@
-# Production Deployment Guide - Turborepo Monorepo
+# Production Deployment Guide - Gateway Architecture
 
 ## Overview
 
-The yoohoo.guru platform uses a **Turborepo monorepo architecture** with 25+ Next.js applications. Each subdomain is deployed as a separate Vercel project with its own custom domain.
+The yoohoo.guru platform uses a **Gateway Architecture** with Edge Middleware routing. A single Vercel project serves all 29 subdomains (5 core + 24 subjects) through intelligent middleware-based routing.
 
 ## Deployment Architecture
 
-- **Frontend Apps (25)**: Vercel - Each Next.js app deployed separately
+- **Frontend (29 subdomains)**: Vercel - Single Next.js app with Edge Middleware
 - **Backend API**: Railway - Single Node.js/Express API
 - **Database & Auth**: Firebase - Firestore and Authentication
+
+## Gateway Architecture Benefits
+
+✅ **Single Vercel Project** - One deployment for all subdomains
+✅ **Unlimited Subdomains** - No project count limits
+✅ **Edge Middleware Routing** - Fast, intelligent subdomain routing
+✅ **Simplified Configuration** - One set of environment variables
+✅ **Easier Maintenance** - Update once, deploy everywhere
+✅ **Cost Effective** - One project vs. multiple separate projects
 
 ## DNS Configuration - CRITICAL ⚠️
 
@@ -16,16 +25,18 @@ The yoohoo.guru platform uses a **Turborepo monorepo architecture** with 25+ Nex
 
 ```
 ✅ CORRECT CONFIGURATION:
-www.yoohoo.guru     → Vercel (apps/main)
-angel.yoohoo.guru   → Vercel (apps/angel)
-coach.yoohoo.guru   → Vercel (apps/coach)
-heroes.yoohoo.guru  → Vercel (apps/heroes)
-dashboard.yoohoo.guru → Vercel (apps/dashboard)
-[20 more subdomains] → Vercel (apps/*)
-api.yoohoo.guru     → Railway (backend)
+*.yoohoo.guru        → Vercel (wildcard, all subdomains)
+www.yoohoo.guru      → Vercel (apps/main gateway)
+angel.yoohoo.guru    → Vercel (routed via middleware)
+coach.yoohoo.guru    → Vercel (routed via middleware)
+heroes.yoohoo.guru   → Vercel (routed via middleware)
+dashboard.yoohoo.guru → Vercel (routed via middleware)
+[24 subject subdomains] → Vercel (routed via middleware)
+api.yoohoo.guru      → Railway (backend API)
 
 ❌ COMMON MISTAKE:
 Pointing frontend subdomains to Railway instead of Vercel
+Creating separate Vercel projects for each subdomain
 ```
 
 ### DNS Verification Commands
@@ -40,52 +51,57 @@ curl -I https://www.yoohoo.guru/        # Should return HTML (Vercel/Next.js)
 curl -I https://api.yoohoo.guru/health  # Should return JSON (Railway/Express)
 ```
 
-## Vercel Multi-App Deployment
+## Vercel Gateway Deployment
 
 ### Overview
 
-Each of the 25 Next.js apps in `/apps` must be deployed as a **separate Vercel project** with its own custom domain.
+A single Vercel project serves all 29 subdomains through Edge Middleware routing in `apps/main/middleware.ts`.
 
-### All Apps to Deploy
+### All Subdomains (29 Total)
 
-| App | Directory | Domain | Vercel Project Name |
-|-----|-----------|--------|---------------------|
-| Main | `apps/main` | www.yoohoo.guru | yoohooguru-main |
-| Angel | `apps/angel` | angel.yoohoo.guru | yoohooguru-angel |
-| Coach | `apps/coach` | coach.yoohoo.guru | yoohooguru-coach |
-| Heroes | `apps/heroes` | heroes.yoohoo.guru | yoohooguru-heroes |
-| Dashboard | `apps/dashboard` | dashboard.yoohoo.guru | yoohooguru-dashboard |
-| Art | `apps/art` | art.yoohoo.guru | yoohooguru-art |
-| Business | `apps/business` | business.yoohoo.guru | yoohooguru-business |
-| Coding | `apps/coding` | coding.yoohoo.guru | yoohooguru-coding |
-| Cooking | `apps/cooking` | cooking.yoohoo.guru | yoohooguru-cooking |
-| Crafts | `apps/crafts` | crafts.yoohoo.guru | yoohooguru-crafts |
-| Data | `apps/data` | data.yoohoo.guru | yoohooguru-data |
-| Design | `apps/design` | design.yoohoo.guru | yoohooguru-design |
-| Finance | `apps/finance` | finance.yoohoo.guru | yoohooguru-finance |
-| Fitness | `apps/fitness` | fitness.yoohoo.guru | yoohooguru-fitness |
-| Gardening | `apps/gardening` | gardening.yoohoo.guru | yoohooguru-gardening |
-| Home | `apps/home` | home.yoohoo.guru | yoohooguru-home |
-| Investing | `apps/investing` | investing.yoohoo.guru | yoohooguru-investing |
-| Language | `apps/language` | language.yoohoo.guru | yoohooguru-language |
-| Marketing | `apps/marketing` | marketing.yoohoo.guru | yoohooguru-marketing |
-| Music | `apps/music` | music.yoohoo.guru | yoohooguru-music |
-| Photography | `apps/photography` | photography.yoohoo.guru | yoohooguru-photography |
-| Sales | `apps/sales` | sales.yoohoo.guru | yoohooguru-sales |
-| Tech | `apps/tech` | tech.yoohoo.guru | yoohooguru-tech |
-| Wellness | `apps/wellness` | wellness.yoohoo.guru | yoohooguru-wellness |
-| Writing | `apps/writing` | writing.yoohoo.guru | yoohooguru-writing |
+**Core Subdomains (5):**
+1. www.yoohoo.guru
+2. angel.yoohoo.guru
+3. coach.yoohoo.guru
+4. heroes.yoohoo.guru
+5. dashboard.yoohoo.guru
 
-### Deploying a Single App
+**Subject Subdomains (24):**
+6. art.yoohoo.guru
+7. business.yoohoo.guru
+8. coding.yoohoo.guru
+9. cooking.yoohoo.guru
+10. crafts.yoohoo.guru
+11. data.yoohoo.guru
+12. design.yoohoo.guru
+13. finance.yoohoo.guru
+14. fitness.yoohoo.guru
+15. gardening.yoohoo.guru
+16. history.yoohoo.guru
+17. home.yoohoo.guru
+18. investing.yoohoo.guru
+19. language.yoohoo.guru
+20. marketing.yoohoo.guru
+21. math.yoohoo.guru
+22. music.yoohoo.guru
+23. photography.yoohoo.guru
+24. sales.yoohoo.guru
+25. science.yoohoo.guru
+26. sports.yoohoo.guru
+27. tech.yoohoo.guru
+28. wellness.yoohoo.guru
+29. writing.yoohoo.guru
 
-**Step 1: Create Vercel Project**
+### Deploying the Gateway
+
+**Step 1: Create Single Vercel Project**
 ```bash
 cd yoohooguru
 vercel
 
 # Follow prompts:
 # - Link to existing project or create new
-# - Set project name (e.g., yoohooguru-main)
+# - Set project name: yoohooguru-main
 ```
 
 **Step 2: Configure in Vercel Dashboard**
@@ -93,9 +109,9 @@ vercel
 Go to Vercel Dashboard → Project Settings → General:
 
 ```
-Root Directory: apps/main  (or apps/angel, apps/coach, etc.)
-Build Command: cd ../.. && turbo run build --filter=@yoohooguru/main
-Output Directory: apps/main/.next
+Root Directory: apps/main
+Build Command: npm run build
+Output Directory: .next
 Install Command: npm install
 Framework Preset: Next.js
 Node.js Version: 20.x
@@ -103,10 +119,10 @@ Node.js Version: 20.x
 
 **Step 3: Set Environment Variables**
 
-In Vercel Dashboard → Project Settings → Environment Variables:
+In Vercel Dashboard → Project Settings → Environment Variables (shared across all subdomains):
 
 ```bash
-# Required for all apps
+# Required for all subdomains
 NEXT_PUBLIC_API_URL=https://api.yoohoo.guru
 NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_key
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
@@ -115,46 +131,63 @@ NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
 
-# NextAuth configuration (adjust URL per app)
-NEXTAUTH_URL=https://www.yoohoo.guru  # or angel.yoohoo.guru, etc.
+# NextAuth configuration (no need for per-subdomain URLs with gateway)
+NEXTAUTH_URL=https://www.yoohoo.guru
 NEXTAUTH_SECRET=your_secure_secret_key
 
 # Cross-subdomain authentication
 AUTH_COOKIE_DOMAIN=.yoohoo.guru
 ```
 
-**Step 4: Add Custom Domain**
+**Step 4: Add All Custom Domains**
 
-In Vercel Dashboard → Project Settings → Domains:
-- Add domain: `www.yoohoo.guru` (for main app)
-- Or: `angel.yoohoo.guru`, `coach.yoohoo.guru`, etc.
+In Vercel Dashboard → Project Settings → Domains, add all 29 subdomains:
+- www.yoohoo.guru
+- angel.yoohoo.guru
+- coach.yoohoo.guru
+- heroes.yoohoo.guru
+- dashboard.yoohoo.guru
+- art.yoohoo.guru
+- business.yoohoo.guru
+- coding.yoohoo.guru
+- cooking.yoohoo.guru
+- crafts.yoohoo.guru
+- data.yoohoo.guru
+- design.yoohoo.guru
+- finance.yoohoo.guru
+- fitness.yoohoo.guru
+- gardening.yoohoo.guru
+- history.yoohoo.guru
+- home.yoohoo.guru
+- investing.yoohoo.guru
+- language.yoohoo.guru
+- marketing.yoohoo.guru
+- math.yoohoo.guru
+- music.yoohoo.guru
+- photography.yoohoo.guru
+- sales.yoohoo.guru
+- science.yoohoo.guru
+- sports.yoohoo.guru
+- tech.yoohoo.guru
+- wellness.yoohoo.guru
+- writing.yoohoo.guru
 
 **Step 5: Deploy**
 ```bash
 vercel --prod
 ```
 
-### Bulk Deployment Script
+### How Gateway Routing Works
 
-For deploying all 25 apps, create a deployment script:
-
-```bash
-#!/bin/bash
-# deploy-all-apps.sh
-
-APPS=("main" "angel" "coach" "heroes" "dashboard" "art" "business" "coding" "cooking" "crafts" "data" "design" "finance" "fitness" "gardening" "home" "investing" "language" "marketing" "music" "photography" "sales" "tech" "wellness" "writing")
-
-for app in "${APPS[@]}"; do
-  echo "Deploying $app..."
-  cd apps/$app
-  vercel --prod --confirm
-  cd ../..
-done
-```
+1. User visits `angel.yoohoo.guru`
+2. Vercel routes request to single deployment
+3. Edge Middleware in `apps/main/middleware.ts` detects subdomain
+4. Middleware rewrites URL to `/_apps/angel/index` (internal rewrite)
+5. User sees `angel.yoohoo.guru` but page is served from `apps/main/pages/_apps/angel/index.tsx`
 
 ## Railway Backend Deployment
 
-The backend API serves all 25 frontend apps and is deployed as a single Railway service.
+The backend API serves all 29 frontend subdomains and is deployed as a single Railway service.
 
 ### Backend Configuration
 
@@ -184,8 +217,8 @@ NODE_ENV=production
 PORT=8000
 SERVE_FRONTEND=false
 
-# CORS - Allow all frontend subdomains
-CORS_ORIGIN_PRODUCTION=https://www.yoohoo.guru,https://angel.yoohoo.guru,https://coach.yoohoo.guru,https://heroes.yoohoo.guru,https://dashboard.yoohoo.guru,https://art.yoohoo.guru,https://business.yoohoo.guru,https://coding.yoohoo.guru,https://cooking.yoohoo.guru,https://crafts.yoohoo.guru,https://data.yoohoo.guru,https://design.yoohoo.guru,https://finance.yoohoo.guru,https://fitness.yoohoo.guru,https://gardening.yoohoo.guru,https://home.yoohoo.guru,https://investing.yoohoo.guru,https://language.yoohoo.guru,https://marketing.yoohoo.guru,https://music.yoohoo.guru,https://photography.yoohoo.guru,https://sales.yoohoo.guru,https://tech.yoohoo.guru,https://wellness.yoohoo.guru,https://writing.yoohoo.guru
+# CORS - Allow all frontend subdomains (29 total)
+CORS_ORIGIN_PRODUCTION=https://www.yoohoo.guru,https://angel.yoohoo.guru,https://coach.yoohoo.guru,https://heroes.yoohoo.guru,https://dashboard.yoohoo.guru,https://art.yoohoo.guru,https://business.yoohoo.guru,https://coding.yoohoo.guru,https://cooking.yoohoo.guru,https://crafts.yoohoo.guru,https://data.yoohoo.guru,https://design.yoohoo.guru,https://finance.yoohoo.guru,https://fitness.yoohoo.guru,https://gardening.yoohoo.guru,https://history.yoohoo.guru,https://home.yoohoo.guru,https://investing.yoohoo.guru,https://language.yoohoo.guru,https://marketing.yoohoo.guru,https://math.yoohoo.guru,https://music.yoohoo.guru,https://photography.yoohoo.guru,https://sales.yoohoo.guru,https://science.yoohoo.guru,https://sports.yoohoo.guru,https://tech.yoohoo.guru,https://wellness.yoohoo.guru,https://writing.yoohoo.guru
 
 # Firebase Configuration
 FIREBASE_PROJECT_ID=your_project_id
@@ -225,7 +258,7 @@ curl https://api.yoohoo.guru/health
 
 ### Authorized Domains
 
-Add all subdomains to Firebase Console → Authentication → Settings → Authorized domains:
+Add all 29 subdomains to Firebase Console → Authentication → Settings → Authorized domains:
 
 ```
 www.yoohoo.guru
@@ -243,13 +276,17 @@ design.yoohoo.guru
 finance.yoohoo.guru
 fitness.yoohoo.guru
 gardening.yoohoo.guru
+history.yoohoo.guru
 home.yoohoo.guru
 investing.yoohoo.guru
 language.yoohoo.guru
 marketing.yoohoo.guru
+math.yoohoo.guru
 music.yoohoo.guru
 photography.yoohoo.guru
 sales.yoohoo.guru
+science.yoohoo.guru
+sports.yoohoo.guru
 tech.yoohoo.guru
 wellness.yoohoo.guru
 writing.yoohoo.guru
@@ -257,7 +294,7 @@ writing.yoohoo.guru
 
 ### Cross-Subdomain Authentication
 
-The platform uses NextAuth with a shared cookie domain (`.yoohoo.guru`) to enable single sign-on across all subdomains. Users authenticated on one subdomain will remain authenticated when navigating to any other subdomain.
+The gateway architecture uses NextAuth with a shared cookie domain (`.yoohoo.guru`) to enable single sign-on across all 29 subdomains. Users authenticated on one subdomain will remain authenticated when navigating to any other subdomain.
 
 ## Frontend Deployment
 
@@ -267,7 +304,7 @@ The platform uses NextAuth with a shared cookie domain (`.yoohoo.guru`) to enabl
    ```bash
    # Build command
    cd frontend && npm install && npm run build
-   
+
    # Publish directory
    frontend/dist
    ```
@@ -285,6 +322,59 @@ The platform uses NextAuth with a shared cookie domain (`.yoohoo.guru`) to enabl
    Create `frontend/public/_redirects`:
    ```
    /*    /index.html   200
+   ```
+
+#### Netlify Plugin Troubleshooting
+
+**Issue**: Build fails with plugin errors (e.g., `netlify-plugin-minify-html` not found)
+
+**Root Cause**:
+- The error may come from Netlify UI configuration (not netlify.toml)
+- Previously configured plugins that were removed from code but remain in dashboard
+- Cached plugin configurations
+
+**Solution**:
+
+1. **Remove UI-Configured Plugins** (CRITICAL):
+   - Go to Netlify Dashboard → Site settings → Build & deploy → Build plugins
+   - Remove any plugins not explicitly listed in `netlify.toml`
+   - Especially remove: `netlify-plugin-minify-html` (if present)
+
+2. **Essential Plugins** (Keep These):
+   ```toml
+   [[plugins]]
+     package = "netlify-plugin-nx-skip-build"  # Required for monorepo
+
+   [[plugins]]
+     package = "@netlify/plugin-nextjs"  # Required for Next.js
+   ```
+
+3. **Built-in Optimization** (Recommended):
+   Instead of external minify plugins, use Next.js built-in optimization in `apps/main/next.config.js`:
+   ```javascript
+   {
+     swcMinify: true,           // Fast JS/TS minification
+     compress: true,            // Gzip compression
+     compiler: {
+       removeConsole: {         // Remove console logs in production
+         exclude: ['error', 'warn']
+       }
+     }
+   }
+   ```
+
+   This approach is more reliable and maintained than external minify plugins.
+
+4. **Clear Build Cache**:
+   - Go to Netlify Dashboard → Deploys → Trigger deploy → Clear cache and deploy
+
+5. **Verify Configuration**:
+   ```bash
+   # Ensure netlify.toml only has essential plugins
+   cat netlify.toml | grep -A 1 "[[plugins]]"
+
+   # Check package.json devDependencies match netlify.toml
+   cat package.json | grep -E "(netlify-plugin|@netlify)"
    ```
 
 ### Vercel Deployment

@@ -2,7 +2,19 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@yoohooguru/shared'],
-  
+
+  // Built-in optimization for production builds
+  // This replaces the need for external minify plugins
+  swcMinify: true,
+  compress: true,
+
+  // Production optimizations
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' ? {
+      exclude: ['error', 'warn'],
+    } : false,
+  },
+
   // Configure for gateway architecture
   async rewrites() {
     return {
@@ -20,7 +32,7 @@ const nextConfig = {
       ],
     }
   },
-  
+
   // Support for environment variables per subdomain
   env: {
     NEXT_PUBLIC_SUBDOMAIN: process.env.NEXT_PUBLIC_SUBDOMAIN || 'www',
