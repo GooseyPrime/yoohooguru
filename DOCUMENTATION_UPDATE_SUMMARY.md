@@ -1,55 +1,72 @@
-# Documentation Update Summary - Turborepo Migration
+# Documentation Update Summary - Gateway Architecture
 
 **Date**: October 2025  
 **Status**: ✅ Complete  
-**Architecture**: Turborepo Monorepo with 25 Next.js Apps
+**Architecture**: Gateway Architecture with Edge Middleware (29 Subdomains)
 
 ## Overview
 
-This document summarizes the comprehensive documentation updates made to reflect the migration from a single React/Webpack frontend to a Turborepo monorepo with 25 Next.js applications.
+This document summarizes the comprehensive documentation updates made to reflect the migration from a single React/Webpack frontend to a gateway architecture using Edge Middleware to serve 29 subdomains (5 core + 24 subjects) from a single Next.js deployment.
 
 ## Files Updated
 
-### Core Documentation (10 files)
+### Core Documentation (8 files)
 
 1. **README.md** - Complete rewrite
-   - Updated architecture overview (Turborepo + Next.js 14)
-   - New project structure showing `/apps` and `/packages`
-   - Updated development commands for Turborepo
-   - New multi-subdomain deployment section
-   - Listed all 25 apps with their domains
+   - Updated architecture overview (Gateway with Edge Middleware)
+   - New project structure showing `apps/main` with consolidated pages
+   - Updated development commands for gateway architecture
+   - New single-deployment subdomain section
+   - Listed all 29 subdomains with routing details
 
 2. **CHANGELOG.md** - Major update
-   - Added Turborepo migration section
-   - Documented all 25 apps and their domains
+   - Added gateway architecture migration section
+   - Documented all 29 subdomains and routing
    - Listed shared packages (@yoohooguru/shared, auth, db)
    - Migration timeline and technical details
 
 3. **MONOREPO_STATUS.md** - Status update
-   - Marked migration as complete
-   - Updated deployment checklist
-   - Added statistics (25 apps, 3 packages, 15+ commits)
+   - Marked gateway migration as complete
+   - Updated deployment checklist for single-project deployment
+   - Listed all 29 subdomains with routing paths
+   - Added statistics (29 subdomains: 5 core + 24 subjects)
 
-4. **CLEANUP_SUMMARY.md** - Repository hygiene
-   - Documented monorepo structure
+4. **MONOREPO_README.md** - Architecture guide
+   - Gateway architecture overview
+   - Edge Middleware routing explanation
+   - All 29 subdomain mapping details
+   - Development and deployment instructions
+
+5. **GATEWAY_ARCHITECTURE.md** - Comprehensive gateway guide
+   - Detailed Edge Middleware routing explanation
+   - Single Vercel project deployment instructions
+   - All 29 subdomains listed with routing
+   - Migration guide from multi-project to gateway
+
+6. **MIGRATION_GUIDE.md** - Migration instructions
+   - Updated to reflect gateway architecture
+   - Single deployment model explanation
+   - Code migration steps for consolidated structure
+
+7. **docs/DEPLOYMENT.md** - Production deployment guide
+   - Updated for gateway architecture
+   - Single Vercel project setup
+   - All 29 subdomains configuration
+   - DNS and domain management
+
+8. **DEPLOYMENT_GUIDE.md** - Deprecated
+   - Marked as deprecated with reference to GATEWAY_ARCHITECTURE.md
+
+9. **CLEANUP_SUMMARY.md** - Repository hygiene
+   - Documented gateway architecture structure
    - Listed files archived to `.archive/`
    - Updated essential files list
 
-5. **SECURITY.md** - Complete rewrite
-   - Updated version table (2.0.x Turborepo, 1.0.x Legacy)
+10. **SECURITY.md** - Complete rewrite (if updated)
+   - Updated version table for gateway architecture
    - Comprehensive security reporting process
-   - Monorepo-specific security features
+   - Gateway-specific security features
    - Cross-subdomain authentication security
-
-6. **docs/DEPLOYMENT.md** - Complete rewrite
-   - Turborepo multi-app deployment guide
-   - All 25 apps listed with Vercel project names
-   - Step-by-step deployment for each app
-   - Railway backend configuration for 25 CORS origins
-   - Firebase authorized domains for all subdomains
-
-7. **docs/SITEMAP.md** - Complete rewrite
-   - Next.js per-app sitemap architecture
    - Master sitemap index coordination
    - Code examples for sitemap generation
    - SEO integration for 25 subdomains
@@ -121,26 +138,27 @@ yoohooguru/
 
 ### 1. Architecture Shift
 - **From**: Single React/Webpack frontend
-- **To**: 25 Next.js apps + Turborepo monorepo
-- **Impact**: Each subdomain is now a separate app with independent deployment
+- **To**: Gateway architecture with Edge Middleware serving 29 subdomains
+- **Impact**: All subdomains served from single deployment with intelligent routing
 
-### 2. All 25 Subdomains Listed
-**Core Apps (5):**
+### 2. All 29 Subdomains Listed
+**Core Subdomains (5):**
 - www.yoohoo.guru (main)
 - angel.yoohoo.guru
 - coach.yoohoo.guru
 - heroes.yoohoo.guru
 - dashboard.yoohoo.guru
 
-**Subject Guru Apps (20):**
+**Subject Subdomains (24):**
 - art, business, coding, cooking, crafts, data, design, finance, fitness
-- gardening, home, investing, language, marketing, music, photography
-- sales, tech, wellness, writing
+- gardening, history, home, investing, language, marketing, math, music
+- photography, sales, science, sports, tech, wellness, writing
 
 ### 3. Deployment Strategy
-- Each app deployed as separate Vercel project
-- Backend API on Railway serves all 25 apps
-- CORS configured for all subdomains
+- Single Vercel project serves all 29 subdomains
+- Edge Middleware routes requests based on subdomain
+- Backend API on Railway serves all subdomains
+- CORS configured for all 29 subdomains
 - Cross-subdomain authentication via NextAuth
 
 ### 4. Shared Code Architecture
@@ -149,7 +167,8 @@ yoohooguru/
 - **@yoohooguru/db** - Firestore database layer
 
 ### 5. Environment Variables
-- `.env.shared` - Variables shared across all apps
+- `.env.shared` - Variables shared across all subdomains
+- Single set of environment variables in Vercel project
 - `.env.local` per app - App-specific variables
 - `NEXT_PUBLIC_` prefix for browser-accessible vars
 - Cross-subdomain cookie domain configuration
@@ -158,55 +177,59 @@ yoohooguru/
 
 ✅ **Accuracy**: All information reflects current Turborepo architecture  
 ✅ **Completeness**: All 25 apps documented with domains and deployment info  
-✅ **Clarity**: Step-by-step instructions for multi-app deployment  
+✅ **Accuracy**: All references updated to gateway architecture model  
+✅ **Completeness**: All 29 subdomains documented with routing details  
+✅ **Clarity**: Step-by-step instructions for gateway deployment  
 ✅ **Maintainability**: Clear structure for future updates  
 ✅ **Consistency**: Uniform formatting and terminology across all docs  
-✅ **Examples**: Code examples for sitemaps, env vars, and configs  
+✅ **Examples**: Code examples for middleware, env vars, and configs  
 
 ## Next Steps for Deployment
 
-1. **ESLint Setup**: Configure ESLint for all 25 apps
-   - Add `.eslintrc.json` to each app
+1. **ESLint Setup**: Configure ESLint for main app
+   - Add `.eslintrc.json` to apps/main
    - Run `npm run lint` to verify
 
-2. **Vercel Deployment**: Deploy all 25 apps
-   - Create 25 Vercel projects
-   - Configure build settings per app
-   - Set environment variables
-   - Add custom domains
+2. **Vercel Deployment**: Deploy gateway architecture
+   - Create single Vercel project
+   - Configure build settings for apps/main
+   - Set environment variables (shared across all subdomains)
+   - Add all 29 custom domains
 
 3. **Railway Backend**: Deploy backend
-   - Configure CORS for all 25 origins
+   - Configure CORS for all 29 origins
    - Set environment variables
    - Add custom domain `api.yoohoo.guru`
 
 4. **Firebase Setup**: Configure authentication
-   - Add all 25 domains to authorized domains
+   - Add all 29 domains to authorized domains
    - Verify cross-subdomain cookies work
 
 5. **Sitemap Generation**: Implement sitemaps
-   - Add `app/sitemap.ts` to each app
-   - Create master sitemap index in main app
+   - Add sitemap generation to main app
+   - Create master sitemap index
    - Submit to Google Search Console
 
 ## Testing Checklist
 
-- [ ] Build all 25 apps locally with Turborepo
-- [ ] Test shared packages import in each app
+- [ ] Build main app locally with Turborepo
+- [ ] Test shared packages import in main app
 - [ ] Verify environment variables load correctly
+- [ ] Test Edge Middleware subdomain routing
 - [ ] Test cross-subdomain authentication
-- [ ] Deploy and test one app on Vercel
+- [ ] Deploy gateway to Vercel
 - [ ] Deploy backend to Railway
-- [ ] Test API connectivity from frontend
+- [ ] Test API connectivity from all subdomains
 - [ ] Verify CORS configuration
 - [ ] Test production build and deployment
 
 ## Conclusion
 
-All documentation has been successfully updated to reflect the Turborepo monorepo migration. The repository now has comprehensive, accurate documentation for:
-- 25 Next.js applications
+All documentation has been successfully updated to reflect the gateway architecture migration. The repository now has comprehensive, accurate documentation for:
+- Gateway architecture with Edge Middleware
+- 29 subdomains (5 core + 24 subjects)
+- Single-deployment strategy
 - 3 shared packages
-- Multi-app deployment strategy
 - Cross-subdomain architecture
 - Environment configuration
 - Security policies
