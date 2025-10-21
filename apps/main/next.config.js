@@ -3,13 +3,16 @@ const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@yoohooguru/shared'],
 
-  // Enable compression and optimization
+  // Built-in optimization for production builds
+  // This replaces the need for external minify plugins
+  swcMinify: true,
   compress: true,
-  poweredByHeader: false,
 
-  // HTML minification and optimization
+  // Production optimizations
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+    removeConsole: process.env.NODE_ENV === 'production' ? {
+      exclude: ['error', 'warn'],
+    } : false,
   },
 
   // Configure for gateway architecture
