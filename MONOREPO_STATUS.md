@@ -4,9 +4,9 @@
 
 **Status**: 🟢 **MIGRATION COMPLETE**  
 **Completion Date**: October 2025  
-**Architecture**: Turborepo Monorepo with 25 Next.js Apps
+**Architecture**: Gateway Architecture with Edge Middleware
 
-The yoohoo.guru platform has been successfully migrated from a single React/Webpack frontend to a Turborepo monorepo with 25+ Next.js applications. All apps are configured, documented, and ready for deployment to Vercel.
+The yoohoo.guru platform uses a single Vercel project with Edge Middleware routing to support unlimited subdomains. All 29 subdomains (5 core + 24 subjects) are consolidated under `apps/main` and routed via middleware in `apps/main/middleware.ts`.
 
 ## ✅ Completed
 
@@ -16,45 +16,49 @@ The yoohoo.guru platform has been successfully migrated from a single React/Webp
 - ✅ Updated root `package.json` with monorepo scripts and workspace configuration
 - ✅ Created root `tsconfig.json` for all apps to extend
 
-### 2. Apps Structure Created
-Created 25 Next.js applications under `/apps`:
+### 2. Gateway Architecture Implementation
+All subdomains consolidated under single Next.js app with Edge Middleware routing:
 
-**Core Apps:**
-- ✅ `apps/main` - www.yoohoo.guru (homepage) - **MIGRATED**
-- ✅ `apps/angel` - angel.yoohoo.guru (Angel's List) - **MIGRATED**
-- ✅ `apps/coach` - coach.yoohoo.guru (Coach Guru / SkillShare) - **MIGRATED**
-- ✅ `apps/heroes` - heroes.yoohoo.guru (Hero Guru's, formerly Modified Masters) - **MIGRATED**
-- ✅ `apps/dashboard` - dashboard.yoohoo.guru (User Dashboard) - **MIGRATED**
+**Core Subdomains (5):**
+- ✅ www.yoohoo.guru → `apps/main/pages/_apps/main` - **MIGRATED**
+- ✅ angel.yoohoo.guru → `apps/main/pages/_apps/angel` - **MIGRATED**
+- ✅ coach.yoohoo.guru → `apps/main/pages/_apps/coach` - **MIGRATED**
+- ✅ heroes.yoohoo.guru → `apps/main/pages/_apps/heroes` - **MIGRATED**
+- ✅ dashboard.yoohoo.guru → `apps/main/pages/_apps/dashboard` - **MIGRATED**
 
-**Subject Guru Apps (20):**
-- ✅ `apps/cooking` - cooking.yoohoo.guru
-- ✅ `apps/coding` - coding.yoohoo.guru
-- ✅ `apps/art` - art.yoohoo.guru
-- ✅ `apps/business` - business.yoohoo.guru
-- ✅ `apps/crafts` - crafts.yoohoo.guru
-- ✅ `apps/data` - data.yoohoo.guru
-- ✅ `apps/design` - design.yoohoo.guru
-- ✅ `apps/finance` - finance.yoohoo.guru
-- ✅ `apps/fitness` - fitness.yoohoo.guru
-- ✅ `apps/gardening` - gardening.yoohoo.guru
-- ✅ `apps/home` - home.yoohoo.guru
-- ✅ `apps/investing` - investing.yoohoo.guru
-- ✅ `apps/language` - language.yoohoo.guru
-- ✅ `apps/marketing` - marketing.yoohoo.guru
-- ✅ `apps/music` - music.yoohoo.guru
-- ✅ `apps/photography` - photography.yoohoo.guru
-- ✅ `apps/sales` - sales.yoohoo.guru
-- ✅ `apps/tech` - tech.yoohoo.guru
-- ✅ `apps/wellness` - wellness.yoohoo.guru
-- ✅ `apps/writing` - writing.yoohoo.guru
+**Subject Subdomains (24):**
+- ✅ art.yoohoo.guru → `apps/main/pages/_apps/art`
+- ✅ business.yoohoo.guru → `apps/main/pages/_apps/business`
+- ✅ coding.yoohoo.guru → `apps/main/pages/_apps/coding`
+- ✅ cooking.yoohoo.guru → `apps/main/pages/_apps/cooking`
+- ✅ crafts.yoohoo.guru → `apps/main/pages/_apps/crafts`
+- ✅ data.yoohoo.guru → `apps/main/pages/_apps/data`
+- ✅ design.yoohoo.guru → `apps/main/pages/_apps/design`
+- ✅ finance.yoohoo.guru → `apps/main/pages/_apps/finance`
+- ✅ fitness.yoohoo.guru → `apps/main/pages/_apps/fitness`
+- ✅ gardening.yoohoo.guru → `apps/main/pages/_apps/gardening`
+- ✅ history.yoohoo.guru → `apps/main/pages/_apps/history`
+- ✅ home.yoohoo.guru → `apps/main/pages/_apps/home`
+- ✅ investing.yoohoo.guru → `apps/main/pages/_apps/investing`
+- ✅ language.yoohoo.guru → `apps/main/pages/_apps/language`
+- ✅ marketing.yoohoo.guru → `apps/main/pages/_apps/marketing`
+- ✅ math.yoohoo.guru → `apps/main/pages/_apps/math`
+- ✅ music.yoohoo.guru → `apps/main/pages/_apps/music`
+- ✅ photography.yoohoo.guru → `apps/main/pages/_apps/photography`
+- ✅ sales.yoohoo.guru → `apps/main/pages/_apps/sales`
+- ✅ science.yoohoo.guru → `apps/main/pages/_apps/science`
+- ✅ sports.yoohoo.guru → `apps/main/pages/_apps/sports`
+- ✅ tech.yoohoo.guru → `apps/main/pages/_apps/tech`
+- ✅ wellness.yoohoo.guru → `apps/main/pages/_apps/wellness`
+- ✅ writing.yoohoo.guru → `apps/main/pages/_apps/writing`
 
-Each app includes:
-- ✅ Complete Next.js setup with `pages/`, `public/`, `styles/` directories
-- ✅ `package.json` with proper dependencies
-- ✅ `next.config.js` with transpilePackages for shared code
-- ✅ `tsconfig.json` extending root configuration
-- ✅ Basic page structure with imports from `@yoohooguru/shared`
-- ✅ `.gitignore` for Next.js artifacts
+**Gateway Features:**
+- ✅ Edge Middleware routing in `apps/main/middleware.ts`
+- ✅ Subdomain detection and URL rewriting
+- ✅ All pages consolidated under `apps/main/pages/_apps/`
+- ✅ Single build serves all subdomains
+- ✅ Wildcard DNS support (`*.yoohoo.guru`)
+- ✅ Unlimited subdomain scalability
 
 ### 3. Shared Packages Created
 Created 3 packages under `/packages`:
@@ -114,43 +118,56 @@ Created 3 packages under `/packages`:
 
 ## 🎯 Production Deployment Status
 
-The monorepo is **ready for deployment** to Vercel and Railway. All core functionality has been migrated and the structure is complete.
+The monorepo uses a **Gateway Architecture** with a single Vercel project and Edge Middleware routing. All 29 subdomains are served from one deployment.
+
+### Deployment Architecture
+- ✅ Single Vercel project (`apps/main`)
+- ✅ Edge Middleware routing (`apps/main/middleware.ts`)
+- ✅ All subdomain pages under `apps/main/pages/_apps/`
+- ✅ Wildcard DNS (`*.yoohoo.guru`) points to one deployment
+- ✅ Unlimited subdomain support without project limits
 
 ### Deployment Checklist
-- ✅ All 25 apps created and configured
+- ✅ Gateway architecture implemented with Edge Middleware
+- ✅ All 29 subdomains configured (5 core + 24 subjects)
 - ✅ Shared packages in place (@yoohooguru/shared, @yoohooguru/auth, @yoohooguru/db)
 - ✅ Legacy routes redirect to subdomains
-- ✅ Documentation complete (README, MONOREPO_README, MIGRATION_GUIDE, DEPLOYMENT_GUIDE)
+- ✅ Documentation complete (README, MONOREPO_README, GATEWAY_ARCHITECTURE)
 - ✅ Build system configured with Turborepo
 - ✅ Cross-subdomain authentication implemented
 - ✅ Environment variable templates created
 - ✅ CI/CD workflows updated
-- ⏳ Deploy each app to Vercel (awaiting DNS/Vercel configuration)
-- ⏳ Test production builds for all apps
-- ⏳ Configure environment variables in Vercel for each app
-- ⏳ Configure custom domains for all 25 subdomains
+- ⏳ Deploy to Vercel (single project for all subdomains)
+- ⏳ Test production build
+- ⏳ Configure environment variables in Vercel
+- ⏳ Add all 29 custom domains to Vercel project
 - ⏳ Test cross-subdomain authentication in production
 
-### Deployment Process
-Each of the 25 apps needs to be deployed as a separate Vercel project:
-1. Create Vercel project for each app
-2. Configure root directory (e.g., `apps/main`, `apps/angel`)
-3. Set build command: `cd ../.. && turbo run build --filter=@yoohooguru/[app-name]`
-4. Set output directory: `apps/[app-name]/.next`
-5. Configure environment variables
-6. Add custom domain (e.g., www.yoohoo.guru, angel.yoohoo.guru)
+### Deployment Process (Gateway Architecture)
+Single Vercel project deployment:
+1. Create one Vercel project for `apps/main`
+2. Configure:
+   - Root directory: `apps/main` (or leave empty)
+   - Build command: `cd apps/main && npm run build`
+   - Output directory: `apps/main/.next`
+3. Set environment variables (shared across all subdomains)
+4. Add all 29 custom domains to the single project:
+   - www.yoohoo.guru, angel.yoohoo.guru, coach.yoohoo.guru, etc.
+5. Deploy once - all subdomains work automatically via middleware
 
-**See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for complete deployment instructions.**
+**See [GATEWAY_ARCHITECTURE.md](./GATEWAY_ARCHITECTURE.md) for complete deployment instructions.**
 
 ## 📊 Migration Statistics
 
-- **Total Apps Created:** 25
+- **Total Subdomains:** 29 (5 core + 24 subjects)
 - **Total Packages Created:** 3
-- **Core Apps Migrated:** 5/5 (100%)
-- **Subject Guru Apps:** 20/20 (100%)
+- **Architecture:** Gateway with Edge Middleware
+- **Deployment Model:** Single Vercel project
+- **Core Subdomains:** 5 (www, angel, coach, heroes, dashboard)
+- **Subject Subdomains:** 24 (art, business, coding, cooking, crafts, data, design, finance, fitness, gardening, history, home, investing, language, marketing, math, music, photography, sales, science, sports, tech, wellness, writing)
 - **Files Created:** ~250+
 - **Lines of Configuration:** ~2000+
-- **Documentation Files:** 6 (MONOREPO_README, MIGRATION_GUIDE, DEPLOYMENT_GUIDE, MONOREPO_STATUS, etc.)
+- **Documentation Files:** 6 (MONOREPO_README, GATEWAY_ARCHITECTURE, MONOREPO_STATUS, etc.)
 - **Documentation:** 20,000+ words
 - **Migration Commits:** 15+
 - **Build System:** Turborepo 2.5.8
@@ -164,43 +181,42 @@ Each of the 25 apps needs to be deployed as a separate Vercel project:
 # Run all apps
 npm run dev
 
-# Run specific app
+# Run specific app (locally simulates main app)
 npm run dev:main
-npm run dev:angel
-npm run dev:coach
-npm run dev:heroes
-npm run dev:dashboard
 ```
 
 ### Building
 ```bash
-# Build all
+# Build main app (serves all subdomains)
 npm run build
 
-# Build specific
+# Or build specifically
 npm run build:main
-npm run build:angel
 ```
 
 ### Deployment
-See `DEPLOYMENT_GUIDE.md` for complete Vercel deployment instructions.
+See `GATEWAY_ARCHITECTURE.md` for complete Vercel deployment instructions using the gateway architecture (single project, Edge Middleware routing).
 
 ## ✨ What's Been Achieved
 
-1. **Complete Monorepo Structure**: All 25 apps set up with Turborepo
-2. **Shared Code Packages**: Reusable components, auth, and database utilities
-3. **Functional Core Apps**: Homepage and all 4 core subdomains have working pages
-4. **Legacy Route Cleanup**: Old routes now redirect to new subdomains
-5. **Comprehensive Documentation**: Multiple guides covering architecture, migration, and deployment
-6. **Ready for Production**: Structure is complete and ready for Vercel deployment
+1. **Gateway Architecture**: Single Vercel project with Edge Middleware routing
+2. **29 Subdomains**: All consolidated under `apps/main/pages/_apps/`
+3. **Shared Code Packages**: Reusable components, auth, and database utilities
+4. **Functional Core Apps**: Homepage and all 4 core subdomains have working pages
+5. **24 Subject Subdomains**: Complete subject-specific landing pages
+6. **Legacy Route Cleanup**: Old routes now redirect to new subdomains
+7. **Comprehensive Documentation**: Multiple guides covering architecture, migration, and deployment
+8. **Ready for Production**: Gateway architecture complete and ready for single Vercel deployment
 
 ## 🎉 Success Criteria Met
 
 ✅ Turborepo installed and configured
-✅ All 25 Next.js apps created under /apps
+✅ Gateway architecture implemented with Edge Middleware
+✅ All 29 subdomain pages created under apps/main/pages/_apps/
 ✅ Shared packages created under /packages  
 ✅ Homepage migrated to apps/main
 ✅ Core app pages migrated (angel, coach, heroes, dashboard)
+✅ 24 subject subdomain pages created
 ✅ Legacy routes removed and redirect to subdomains
 ✅ Documentation complete
 ✅ Build system configured with Turborepo
@@ -208,18 +224,20 @@ See `DEPLOYMENT_GUIDE.md` for complete Vercel deployment instructions.
 ## 🔄 Next Steps (User Action Required)
 
 1. **Install Dependencies**: Run `npm install` at root to link all workspaces
-2. **Configure Vercel**: Set up 5 Vercel projects for core apps (see DEPLOYMENT_GUIDE.md)
-3. **Set Environment Variables**: Configure env vars for each app in Vercel
-4. **Configure DNS**: Point subdomains to Vercel (angel, coach, heroes, dashboard)
-5. **Deploy**: Deploy each app to its subdomain
-6. **Test**: Verify all apps work and authentication flows across subdomains
-7. **Subject Apps**: Optionally deploy subject apps when ready
+2. **Configure Vercel**: Set up single Vercel project for `apps/main` (see GATEWAY_ARCHITECTURE.md)
+3. **Set Environment Variables**: Configure env vars once in Vercel (shared across all subdomains)
+4. **Configure DNS**: Set up wildcard DNS (`*.yoohoo.guru`) pointing to Vercel
+5. **Add Domains**: Add all 29 custom domains to the single Vercel project
+6. **Deploy**: Deploy once - all subdomains work automatically via middleware
+7. **Test**: Verify all subdomains work and authentication flows across subdomains
 
 ## 📝 Notes
 
-- The old `frontend/` directory still exists and is functional for backwards compatibility
-- Subject apps (cooking, coding, etc.) have basic structure but can be enhanced with specific content later
-- All apps use the same shared components and styling from `@yoohooguru/shared`
+- The gateway architecture uses Edge Middleware to route all subdomains through a single deployment
+- All 29 subdomain pages are under `apps/main/pages/_apps/` directory
+- Middleware in `apps/main/middleware.ts` handles subdomain detection and URL rewriting
+- All subdomains use the same shared components and styling from `@yoohooguru/shared`
 - Authentication is configured for cross-subdomain support (`.yoohoo.guru` cookie domain)
-- Backend API remains unchanged - all apps consume the same API endpoints
+- Backend API remains unchanged - all pages consume the same API endpoints
+- No Vercel project limits - can add unlimited subdomains to the single project
 
