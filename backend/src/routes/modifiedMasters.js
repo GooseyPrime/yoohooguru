@@ -4,7 +4,7 @@
  */
 
 const express = require('express');
-const { v4: uuidv4 } = require('uuid');
+const { uuidv4 } = require('../utils/uuid');
 const { requireAuth, optionalAuth } = require('../middleware/auth');
 const { getConfig } = require('../config/appConfig');
 const { getFirestore } = require('../config/firebase');

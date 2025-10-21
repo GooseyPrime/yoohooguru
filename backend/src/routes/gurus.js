@@ -4,7 +4,7 @@ const { getFirestore } = require('../config/firebase');
 const admin = require('firebase-admin');
 const { getSubdomainConfig, isValidSubdomain } = require('../config/subdomains');
 const { logger } = require('../utils/logger');
-const { v4: uuidv4 } = require('uuid');
+const { uuidv4 } = require('../utils/uuid');
 const { cacheMiddleware } = require('../middleware/cache');
 
 const router = express.Router();

@@ -4,7 +4,7 @@
  */
 
 const express = require('express');
-const { v4: uuidv4 } = require('uuid');
+const { uuidv4 } = require('../utils/uuid');
 const { requireAuth } = require('../middleware/auth');
 const SessionsDB = require('../db/sessions');
 const { generateICS, generateAllCalendarLinks } = require('../utils/calendar');
