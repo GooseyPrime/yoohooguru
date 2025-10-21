@@ -2,7 +2,16 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@yoohooguru/shared'],
-  
+
+  // Enable compression and optimization
+  compress: true,
+  poweredByHeader: false,
+
+  // HTML minification and optimization
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+
   // Configure for gateway architecture
   async rewrites() {
     return {
@@ -20,7 +29,7 @@ const nextConfig = {
       ],
     }
   },
-  
+
   // Support for environment variables per subdomain
   env: {
     NEXT_PUBLIC_SUBDOMAIN: process.env.NEXT_PUBLIC_SUBDOMAIN || 'www',
