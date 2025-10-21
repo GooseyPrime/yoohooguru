@@ -28,12 +28,12 @@ const guruPagesLimiter = rateLimit({
  */
 function validateSubdomainParam(req, res, next) {
   const { subdomain } = req.params;
-  
+
   // Allow OPTIONS requests to pass through for CORS preflight, even with invalid subdomains
   if (req.method === 'OPTIONS') {
     return next();
   }
-  
+
   if (!subdomain) {
     return res.status(400).json({
       error: 'Missing subdomain parameter',
@@ -48,7 +48,7 @@ function validateSubdomainParam(req, res, next) {
       ip: req.ip,
       userAgent: req.get('User-Agent')
     });
-    
+
     return res.status(404).json({
       error: 'Invalid guru subdomain',
       message: `Guru subdomain "${subdomain}" not found`,
@@ -81,12 +81,12 @@ router.use('/:subdomain/about', validateSubdomainParam);
 // For the news route, we need a different approach since it's /news/:subdomain
 router.use('/news/:subdomain', (req, res, next) => {
   const { subdomain } = req.params;
-  
+
   // Allow OPTIONS requests to pass through for CORS preflight, even with invalid subdomains
   if (req.method === 'OPTIONS') {
     return next();
   }
-  
+
   if (!subdomain) {
     return res.status(400).json({
       error: 'Missing subdomain parameter',
@@ -101,7 +101,7 @@ router.use('/news/:subdomain', (req, res, next) => {
       ip: req.ip,
       userAgent: req.get('User-Agent')
     });
-    
+
     return res.status(404).json({
       error: 'Invalid guru subdomain',
       message: `Guru subdomain "${subdomain}" not found`,
@@ -131,7 +131,7 @@ router.get('/:subdomain/home', guruPagesLimiter, cacheMiddleware(300), async (re
     const { subdomain } = req.params;
     const guru = req.guru;
     const db = getFirestore();
-    
+
     // Validate subdomain matches middleware
     if (guru.subdomain !== subdomain) {
       return res.status(400).json({
@@ -139,13 +139,13 @@ router.get('/:subdomain/home', guruPagesLimiter, cacheMiddleware(300), async (re
         message: 'Request subdomain does not match detected subdomain'
       });
     }
-    
+
     // Get featured posts for the guru
     const postsSnapshot = await db.collection('gurus').doc(subdomain).collection('posts')
       .where('featured', '==', true)
       .limit(6)
       .get();
-    
+
     const featuredPosts = [];
     postsSnapshot.forEach(doc => {
       featuredPosts.push({
@@ -153,14 +153,14 @@ router.get('/:subdomain/home', guruPagesLimiter, cacheMiddleware(300), async (re
         ...doc.data()
       });
     });
-    
+
     // If we don't have enough featured posts, get recent ones
     if (featuredPosts.length < 6) {
       const recentPostsSnapshot = await db.collection('gurus').doc(subdomain).collection('posts')
         .orderBy('publishedAt', 'desc')
         .limit(6 - featuredPosts.length)
         .get();
-      
+
       recentPostsSnapshot.forEach(doc => {
         const post = { id: doc.id, ...doc.data() };
         if (!featuredPosts.find(p => p.id === post.id)) {
@@ -173,7 +173,7 @@ router.get('/:subdomain/home', guruPagesLimiter, cacheMiddleware(300), async (re
     if (featuredPosts.length === 0) {
       const path = require('path');
       const fs = require('fs');
-      
+
       try {
         const mockDataPath = path.join(__dirname, '../../mock-data', `${subdomain}.json`);
         if (fs.existsSync(mockDataPath)) {
@@ -205,7 +205,7 @@ router.get('/:subdomain/home', guruPagesLimiter, cacheMiddleware(300), async (re
         logger.warn(`Could not load seeded blog content for ${subdomain}:`, fileError.message);
       }
     }
-    
+
     // Get guru stats
     const statsSnapshot = await db.collection('gurus').doc(subdomain).collection('stats').get();
     let stats = {
@@ -214,7 +214,7 @@ router.get('/:subdomain/home', guruPagesLimiter, cacheMiddleware(300), async (re
       totalLeads: 0,
       monthlyVisitors: 0
     };
-    
+
     if (!statsSnapshot.empty) {
       // Get the first stats document or aggregate if multiple
       statsSnapshot.forEach(doc => {
@@ -227,7 +227,7 @@ router.get('/:subdomain/home', guruPagesLimiter, cacheMiddleware(300), async (re
     if (stats.totalPosts === 0 && stats.totalViews === 0) {
       const path = require('path');
       const fs = require('fs');
-      
+
       try {
         const mockDataPath = path.join(__dirname, '../../mock-data', `${subdomain}.json`);
         if (fs.existsSync(mockDataPath)) {
@@ -241,7 +241,7 @@ router.get('/:subdomain/home', guruPagesLimiter, cacheMiddleware(300), async (re
         logger.warn(`Could not load seeded stats for ${subdomain}:`, fileError.message);
       }
     }
-    
+
     // Format large numbers (show as "K+" when >= 1000)
     const formatStat = (value) => {
       if (!value || value === 0) return null;
@@ -250,14 +250,14 @@ router.get('/:subdomain/home', guruPagesLimiter, cacheMiddleware(300), async (re
       }
       return value.toString();
     };
-    
+
     // Only include stats that are greater than zero
     const formattedStats = {};
     if (stats.totalPosts > 0) formattedStats.totalPosts = formatStat(stats.totalPosts);
     if (stats.totalViews > 0) formattedStats.totalViews = formatStat(stats.totalViews);
     if (stats.monthlyVisitors > 0) formattedStats.monthlyVisitors = formatStat(stats.monthlyVisitors);
     if (stats.totalLeads > 0) formattedStats.totalLeads = formatStat(stats.totalLeads);
-    
+
     res.json({
       guru: guru.config,
       featuredPosts,
@@ -266,7 +266,7 @@ router.get('/:subdomain/home', guruPagesLimiter, cacheMiddleware(300), async (re
       subdomain,
       success: true
     });
-    
+
   } catch (error) {
     logger.error('Error fetching guru home data:', error);
     res.status(500).json({
@@ -283,78 +283,78 @@ router.get('/:subdomain/home', guruPagesLimiter, cacheMiddleware(300), async (re
 router.get('/:subdomain/posts', cacheMiddleware(180), async (req, res) => {
   try {
     const { subdomain } = req.params;
-    const { 
-      page = 1, 
-      limit = 12, 
-      tag, 
-      search, 
+    const {
+      page = 1,
+      limit = 12,
+      tag,
+      search,
       category,
-      featured 
+      featured
     } = req.query;
-    
+
     const guru = req.guru;
     const db = getFirestore();
-    
+
     if (guru.subdomain !== subdomain) {
       return res.status(400).json({
         error: 'Subdomain mismatch'
       });
     }
-    
+
     // Get all posts for the subdomain
     const postsSnapshot = await db.collection('gurus').doc(subdomain).collection('posts')
       .orderBy('publishedAt', 'desc')
       .get();
-    
+
     let postsArray = [];
     postsSnapshot.forEach(doc => {
       const post = {
         id: doc.id,
         ...doc.data()
       };
-      
+
       // Only include published posts
       if (post.status === 'published') {
         postsArray.push(post);
       }
     });
-    
+
     // Sort by publishedAt descending (newest first)
     postsArray.sort((a, b) => (b.publishedAt || 0) - (a.publishedAt || 0));
-    
+
     // Apply filters
     if (featured === 'true') {
       postsArray = postsArray.filter(post => post.featured === true);
     }
-    
+
     if (tag && tag !== 'all') {
-      postsArray = postsArray.filter(post => 
+      postsArray = postsArray.filter(post =>
         post.tags && post.tags.includes(tag)
       );
     }
-    
+
     if (category && category !== 'all') {
-      postsArray = postsArray.filter(post => 
+      postsArray = postsArray.filter(post =>
         post.category === category
       );
     }
-    
+
     if (search) {
       const searchLower = search.toLowerCase();
-      postsArray = postsArray.filter(post => 
+      postsArray = postsArray.filter(post =>
         (post.title && post.title.toLowerCase().includes(searchLower)) ||
         (post.excerpt && post.excerpt.toLowerCase().includes(searchLower)) ||
         (post.content && post.content.toLowerCase().includes(searchLower))
       );
     }
-    
+
     // Pagination
     const pageNumber = parseInt(page);
     const limitNumber = parseInt(limit);
     const startIndex = (pageNumber - 1) * limitNumber;
     const endIndex = startIndex + limitNumber;
     const paginatedPosts = postsArray.slice(startIndex, endIndex);
-    
+
     // Get available tags and categories for filtering
     const allTags = new Set();
     const allCategories = new Set();
@@ -366,7 +366,7 @@ router.get('/:subdomain/posts', cacheMiddleware(180), async (req, res) => {
         allCategories.add(post.category);
       }
     });
-    
+
     res.json({
       posts: paginatedPosts,
       pagination: {
@@ -383,7 +383,7 @@ router.get('/:subdomain/posts', cacheMiddleware(180), async (req, res) => {
       },
       success: true
     });
-    
+
   } catch (error) {
     logger.error('Error fetching guru posts:', error);
     res.status(500).json({
@@ -402,18 +402,18 @@ router.get('/:subdomain/posts/:slug', async (req, res) => {
     const { subdomain, slug } = req.params;
     const guru = req.guru;
     const db = getFirestore();
-    
+
     if (guru.subdomain !== subdomain) {
       return res.status(400).json({
         error: 'Subdomain mismatch'
       });
     }
-    
+
     // Find post by slug
     const postsSnapshot = await db.collection('gurus').doc(subdomain).collection('posts')
       .where('slug', '==', slug)
       .get();
-    
+
     let post = null;
     postsSnapshot.forEach(doc => {
       post = {
@@ -421,27 +421,27 @@ router.get('/:subdomain/posts/:slug', async (req, res) => {
         ...doc.data()
       };
     });
-    
+
     if (!post) {
       return res.status(404).json({
         error: 'Post not found',
         message: `Post with slug "${slug}" not found`
       });
     }
-    
+
     if (post.status !== 'published') {
       return res.status(404).json({
         error: 'Post not available',
         message: 'This post is not published'
       });
     }
-    
+
     // Increment view count using batch update
     const batch = db.batch();
     const postRef = db.collection('gurus').doc(subdomain).collection('posts').doc(post.id);
     const currentViews = post.views || 0;
     batch.update(postRef, { views: currentViews + 1 });
-    
+
     // Track analytics
     const analyticsRef = db.collection('analytics').doc('post-views');
     const analyticsData = {
@@ -453,9 +453,9 @@ router.get('/:subdomain/posts/:slug', async (req, res) => {
       userAgent: req.get('User-Agent')
     };
     batch.set(analyticsRef.collection('views').doc(), analyticsData);
-    
+
     await batch.commit();
-    
+
     // Get related posts (same tags, excluding current post)
     const relatedPosts = [];
     if (post.tags && post.tags.length > 0) {
@@ -464,22 +464,22 @@ router.get('/:subdomain/posts/:slug', async (req, res) => {
         .orderBy('publishedAt', 'desc')
         .limit(20)
         .get();
-      
+
       allPostsSnapshot.forEach(doc => {
         const relatedPost = {
           id: doc.id,
           ...doc.data()
         };
-        
-        if (relatedPost.id !== post.id && 
-            relatedPost.status === 'published' &&
-            relatedPost.tags &&
-            relatedPost.tags.some(tag => post.tags.includes(tag))) {
+
+        if (relatedPost.id !== post.id &&
+          relatedPost.status === 'published' &&
+          relatedPost.tags &&
+          relatedPost.tags.some(tag => post.tags.includes(tag))) {
           relatedPosts.push(relatedPost);
         }
       });
     }
-    
+
     res.json({
       post: {
         ...post,
@@ -489,7 +489,7 @@ router.get('/:subdomain/posts/:slug', async (req, res) => {
       guru: guru.config,
       success: true
     });
-    
+
   } catch (error) {
     logger.error('Error fetching guru post:', error);
     res.status(500).json({
@@ -509,13 +509,13 @@ router.post('/:subdomain/leads', async (req, res) => {
     const { name, email, service, message, phone } = req.body;
     const guru = req.guru;
     const db = getFirestore();
-    
+
     if (guru.subdomain !== subdomain) {
       return res.status(400).json({
         error: 'Subdomain mismatch'
       });
     }
-    
+
     // Validate required fields
     if (!name || !email || !service) {
       return res.status(400).json({
@@ -523,7 +523,7 @@ router.post('/:subdomain/leads', async (req, res) => {
         message: 'Name, email, and service are required'
       });
     }
-    
+
     // Validate email format
     // Limit email length to prevent ReDoS attacks (max 254 chars per RFC 5321)
     if (email.length > 254) {
@@ -532,7 +532,7 @@ router.post('/:subdomain/leads', async (req, res) => {
         message: 'Email address is too long'
       });
     }
-    
+
     // Use a safe email validation pattern that avoids catastrophic backtracking
     // Pattern explanation:
     // - Local part: 1-64 chars of alphanumeric, dots, hyphens, underscores
@@ -546,7 +546,7 @@ router.post('/:subdomain/leads', async (req, res) => {
         error: 'Invalid email format'
       });
     }
-    
+
     const leadId = uuidv4();
     const leadData = {
       id: leadId,
@@ -563,24 +563,24 @@ router.post('/:subdomain/leads', async (req, res) => {
       ip: req.ip,
       userAgent: req.get('User-Agent')
     };
-    
+
     // Save lead to Firebase using batch operations
     const batch = db.batch();
-    
+
     // Save to guru-specific leads collection
     const guruLeadRef = db.collection('gurus').doc(subdomain).collection('leads').doc(leadId);
     batch.set(guruLeadRef, leadData);
-    
+
     // Also save to global leads for admin dashboard
     const globalLeadRef = db.collection('leads').doc(leadId);
     batch.set(globalLeadRef, leadData);
-    
+
     // Update guru stats
     const statsRef = db.collection('gurus').doc(subdomain).collection('stats').doc('metrics');
     batch.set(statsRef, { totalLeads: admin.firestore.FieldValue.increment(1) }, { merge: true });
-    
+
     await batch.commit();
-    
+
     // Log lead for analytics
     logger.info(`New lead submitted for ${guru.config.character}`, {
       subdomain,
@@ -588,14 +588,14 @@ router.post('/:subdomain/leads', async (req, res) => {
       service,
       email: email.replace(/(.{3}).*@/, '$1***@') // Masked email for privacy
     });
-    
+
     res.json({
       success: true,
       message: 'Lead submitted successfully',
       leadId,
       guru: guru.config.character
     });
-    
+
   } catch (error) {
     logger.error('Error submitting lead:', error);
     res.status(500).json({
@@ -614,16 +614,16 @@ router.get('/:subdomain/services', async (req, res) => {
     const { subdomain } = req.params;
     const guru = req.guru;
     const db = getFirestore();
-    
+
     if (guru.subdomain !== subdomain) {
       return res.status(400).json({
         error: 'Subdomain mismatch'
       });
     }
-    
+
     // Get services from Firebase
     const servicesSnapshot = await db.collection('gurus').doc(subdomain).collection('services').get();
-    
+
     const services = [];
     servicesSnapshot.forEach(doc => {
       services.push({
@@ -631,16 +631,16 @@ router.get('/:subdomain/services', async (req, res) => {
         ...doc.data()
       });
     });
-    
+
     // Sort by display order or price
     services.sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
-    
+
     res.json({
       services,
       guru: guru.config,
       success: true
     });
-    
+
   } catch (error) {
     logger.error('Error fetching guru services:', error);
     res.status(500).json({
@@ -659,16 +659,16 @@ router.get('/:subdomain/about', async (req, res) => {
     const { subdomain } = req.params;
     const guru = req.guru;
     const db = getFirestore();
-    
+
     if (guru.subdomain !== subdomain) {
       return res.status(400).json({
         error: 'Subdomain mismatch'
       });
     }
-    
+
     // Get about page content
     const aboutSnapshot = await db.collection('gurus').doc(subdomain).collection('pages').doc('about').get();
-    
+
     let aboutContent;
     if (aboutSnapshot.exists) {
       aboutContent = aboutSnapshot.data();
@@ -686,13 +686,13 @@ router.get('/:subdomain/about', async (req, res) => {
         }))
       };
     }
-    
+
     res.json({
       about: aboutContent,
       guru: guru.config,
       success: true
     });
-    
+
   } catch (error) {
     logger.error('Error fetching guru about content:', error);
     res.status(500).json({
@@ -712,19 +712,19 @@ router.get('/news/:subdomain', guruPagesLimiter, cacheMiddleware(300), async (re
     const { subdomain } = req.params;
     const guru = req.guru;
     const db = getFirestore();
-    
+
     if (guru.subdomain !== subdomain) {
       return res.status(400).json({
         error: 'Subdomain mismatch'
       });
     }
-    
+
     // Get curated news articles for the subdomain (up to 10 most recent)
     const newsSnapshot = await db.collection('gurus').doc(subdomain).collection('news')
       .orderBy('publishedAt', 'desc')
       .limit(10)
       .get();
-    
+
     const newsArticles = [];
     newsSnapshot.forEach(doc => {
       const article = doc.data();
@@ -738,12 +738,12 @@ router.get('/news/:subdomain', guruPagesLimiter, cacheMiddleware(300), async (re
         timeSlot: article.timeSlot || null
       });
     });
-    
+
     // If no articles found, try to load from seeded content files
     if (newsArticles.length === 0) {
       const path = require('path');
       const fs = require('fs');
-      
+
       try {
         const mockDataPath = path.join(__dirname, '../../mock-data', `${subdomain}.json`);
         if (fs.existsSync(mockDataPath)) {
@@ -767,7 +767,7 @@ router.get('/news/:subdomain', guruPagesLimiter, cacheMiddleware(300), async (re
         logger.warn(`Could not load seeded content for ${subdomain}:`, fileError.message);
       }
     }
-    
+
     // If still no articles, fall back to generated placeholder content (development only)
     if (newsArticles.length === 0 && process.env.NODE_ENV !== 'production') {
       const skills = guru.config.primarySkills.join(', ');
@@ -781,7 +781,7 @@ router.get('/news/:subdomain', guruPagesLimiter, cacheMiddleware(300), async (re
           source: 'Industry News'
         },
         {
-          id: 'placeholder-2', 
+          id: 'placeholder-2',
           title: `Expert Tips for ${guru.config.primarySkills[0].replace('-', ' ')} Success`,
           summary: `Professional insights and proven strategies to excel in ${guru.config.primarySkills[0].replace('-', ' ')}.`,
           url: '#',
@@ -798,13 +798,13 @@ router.get('/news/:subdomain', guruPagesLimiter, cacheMiddleware(300), async (re
         }
       );
     }
-    
+
     res.json({
       success: true,
       subdomain,
       articles: newsArticles.slice(0, 10) // Return up to 10 articles
     });
-    
+
   } catch (error) {
     logger.error('Error fetching news articles:', error);
     res.status(500).json({
