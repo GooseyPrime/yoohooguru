@@ -73,16 +73,11 @@
   "workspaces": [
     "apps/*",
     "packages/*",
-    "frontend",
     "backend"
   ],
   "engines": {
     "node": ">=20.0.0",
     "npm": ">=9.0.0"
   },
-  "dependencies": {
-    "dig": "^0.0.6",
-    "firebase-admin": "^13.5.0",
-    "netlify": "^23.9.1"
-  }
+  "dependencies": {}
 }
