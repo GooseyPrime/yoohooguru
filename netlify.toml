@@ -13,8 +13,9 @@
   # Note: Must install from root first to setup workspace, then build from app directory
   command = "cd ../.. && npm install && npx turbo run build --filter=@yoohooguru/main"
 
-  # Publish directory for Next.js - handled automatically by @netlify/plugin-nextjs
-  # The plugin knows to use .next directory when base is set to the app root
+  # Publish directory for Next.js - explicitly set to .next (Next.js build output)
+  # This overrides any UI settings and works with @netlify/plugin-nextjs
+  publish = ".next"
 
 [build.environment]
   # Force Netlify to include devDependencies (TypeScript, ESLint, etc.)
