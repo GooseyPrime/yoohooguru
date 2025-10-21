@@ -49,6 +49,10 @@
   ],
   "author": "GooseyPrime",
   "license": "MIT",
+  "dependencies": {
+    "next": "^14.1.4",
+    "winston": "^3.18.2"
+  },
   "devDependencies": {
     "@types/react": "^19.0.0",
     "jest": "^30.2.0",
@@ -63,6 +67,5 @@
   "engines": {
     "node": ">=20.0.0",
     "npm": ">=9.0.0"
-  },
-  "dependencies": {}
+  }
 }
