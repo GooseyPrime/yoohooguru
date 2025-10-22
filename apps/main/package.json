@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@vercel/analytics": "^1.5.0",
+    "@vercel/speed-insights": "^1.2.0",
     "@yoohooguru/auth": "*",
     "@yoohooguru/shared": "*",
     "agora-rtc-sdk-ng": "^4.21.0",

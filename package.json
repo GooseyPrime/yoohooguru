@@ -26,7 +26,8 @@
     "railway:validate": "./scripts/validate-railway.sh",
     "firebase:validate": "./scripts/validate-firebase-production.sh",
     "firebase:validate:win": "node scripts/validate-firebase-production.js",
-    "deploy": "npm run build && npm run deploy:backend",
+    "deploy": "npm run build && npm run deploy:backend && npm run deploy:frontend",
+    "deploy:frontend": "vercel --prod",
     "deploy:backend": "cd backend && npm run deploy",
     "copilot:demo": "node scripts/copilot-agent.js --demo",
     "copilot:agent": "node scripts/copilot-agent.js",
@@ -50,11 +51,11 @@
   "author": "GooseyPrime",
   "license": "MIT",
   "dependencies": {
+    "@vercel/speed-insights": "^1.2.0",
     "next": "^14.1.4",
     "winston": "^3.18.2"
   },
   "devDependencies": {
-    "@netlify/plugin-nextjs": "^5.0.0",
     "@types/react": "^19.0.0",
     "jest": "^30.2.0",
     "turbo": "^2.5.8",

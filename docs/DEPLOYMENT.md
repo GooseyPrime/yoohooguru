@@ -298,24 +298,38 @@ The gateway architecture uses NextAuth with a shared cookie domain (`.yoohoo.gur
 
 ## Frontend Deployment
 
-### Netlify Deployment
+### Vercel Deployment (Recommended)
 
 1. **Build Settings**
    ```bash
-   # Build command
-   cd frontend && npm install && npm run build
-
-   # Publish directory
-   frontend/dist
+   # Root Directory: (empty/blank) 
+   # Build Command: cd apps/main && npm run build
+   # Output Directory: apps/main/.next
+   # Install Command: npm ci && cd apps/main && npm ci
+   # Framework Preset: Next.js
+   # Node.js Version: 20.x
    ```
 
 2. **Environment Variables**
-   Add in Netlify dashboard under Site Settings → Environment Variables:
+   Add in Vercel dashboard under Settings → Environment Variables:
    ```
-   REACT_APP_API_URL=https://your-backend-url.com/api
-   REACT_APP_FIREBASE_API_KEY=your_key
-   REACT_APP_FIREBASE_AUTH_DOMAIN=your_domain
-   # ... other REACT_APP_ variables
+   NEXTAUTH_SECRET=your_secret
+   NEXTAUTH_URL=https://your-domain.com
+   FIREBASE_API_KEY=your_key
+   FIREBASE_AUTH_DOMAIN=your_domain
+   FIREBASE_PROJECT_ID=your_project
+   # ... other environment variables
+   ```
+
+3. **Custom Domains**
+   Configure all subdomains in Vercel:
+   ```
+   www.yoohoo.guru (primary)
+   yoohoo.guru
+   heroes.yoohoo.guru
+   coach.yoohoo.guru
+   angel.yoohoo.guru
+   # ... all 24 category subdomains
    ```
 
 3. **Redirects Configuration**

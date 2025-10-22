@@ -223,7 +223,6 @@ cd yoohooguru
 # Initialize/link all services from root directory
 railway login && railway link                    # Link Railway project
 vercel link                                      # Link Vercel project  
-netlify link                                     # Link Netlify project (optional)
 firebase init                                    # Initialize Firebase project (optional)
 ```
 
@@ -235,8 +234,7 @@ firebase init                                    # Initialize Firebase project (
 |----------|-------------|------------------------|---------------|------------------|
 | **Railway** (Full-Stack) | Web Service | `/` (root) | `npm run build` | - |
 | **Railway** (Backend-Only) | Web Service | `/backend` | `npm install && npm start` | - |
-| **Vercel** (Frontend) | Static Site | `/frontend` | `npm run build` | `dist` |
-| **Netlify** (Frontend) | Static Site | `/frontend` | `npm run build` | `dist` |
+| **Vercel** (Frontend) | Next.js App | `/` (root) | `cd apps/main && npm run build` | `apps/main/.next` |
 | **Firebase** (Frontend) | Hosting | - | `npm run build` | `frontend/dist` |
 
 #### **🚀 Step 3: Deployment Commands**
@@ -255,11 +253,8 @@ railway up
 # Railway Backend-Only (root directory configured as "/backend") 
 railway up
 
-# Vercel Frontend (root directory configured as "/frontend")
+# Vercel Frontend (root directory configured as "/")
 vercel --prod
-
-# Netlify Frontend (root directory configured as "/frontend")
-netlify deploy --prod
 
 # Firebase Frontend (build configured to output to "frontend/dist")
 firebase deploy --only hosting
@@ -667,8 +662,7 @@ railway logs --tail
 |----------|------------------------|-----------------------------|---------|
 | **Railway** (Full-Stack) | `/` | `railway up` | Frontend + Backend |
 | **Railway** (Backend-Only) | `/backend` | `railway up` | Backend API only |
-| **Vercel** (Frontend) | `/frontend` | `vercel --prod` | Frontend only |
-| **Netlify** (Frontend) | `/frontend` | `netlify deploy --prod` | Frontend only |
+| **Vercel** (Frontend) | `/` | `vercel --prod` | Frontend only |
 | **Firebase** (Frontend) | - | `firebase deploy --only hosting` | Frontend only |
 | **Docker** (Full-Stack) | - | `docker-compose up -d` | Frontend + Backend |
 
