@@ -9,9 +9,9 @@
     "autoJobCancelation": true
   },
   
-  "buildCommand": "npm install && npx turbo run build --filter=@yoohooguru/main",
+  "buildCommand": "cd apps/main && npm run build",
   "outputDirectory": "apps/main/.next",
-  "installCommand": "npm install",
+  "installCommand": "npm ci && cd apps/main && npm ci",
   "framework": "nextjs",
   
   "redirects": [
