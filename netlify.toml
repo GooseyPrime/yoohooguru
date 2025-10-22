@@ -28,11 +28,7 @@
   # Enable Turborepo build caching
   TURBO_CACHE_DIR = ".turbo"
 
-# Use the Nx skip build plugin to handle monorepo builds properly
-[[plugins]]
-  package = "netlify-plugin-nx-skip-build"
-
-# Use the official Netlify Next.js runtime as secondary plugin
+# Use the official Netlify Next.js runtime for Next.js app deployment
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
