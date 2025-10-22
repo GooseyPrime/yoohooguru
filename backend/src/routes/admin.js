@@ -1,7 +1,13 @@
 const express = require('express');
 const { logger } = require('../utils/logger');
-const { triggerManualCuration } = require('../agents/curationAgents');
+const { triggerManualCuration, getCurationAgentStatus } = require('../agents/curationAgents');
 const { getCacheStats, clearCache } = require('../middleware/cache');
+const {
+  getBackupAgentStatus,
+  triggerManualBackup,
+  listBackups,
+  restoreFromBackup
+} = require('../agents/backupAgent');
 
 const router = express.Router();
 
@@ -416,6 +422,151 @@ router.post('/cache/clear', (req, res) => {
   res.json({
     success: true,
     message: pattern ? `Cache cleared for pattern: ${pattern}` : 'All cache cleared',
+    timestamp: new Date().toISOString()
+  });
+});
+
+/**
+ * Get backup agent status (admin only)
+ */
+router.get('/backup/status', (req, res) => {
+  const adminCookie = req.cookies?.yoohoo_admin;
+  if (adminCookie !== '1') {
+    return res.status(401).json({
+      success: false,
+      error: { message: 'Admin authentication required' }
+    });
+  }
+
+  const status = getBackupAgentStatus();
+  res.json({
+    success: true,
+    status,
+    timestamp: new Date().toISOString()
+  });
+});
+
+/**
+ * List available backups (admin only)
+ */
+router.get('/backup/list', async (req, res) => {
+  const adminCookie = req.cookies?.yoohoo_admin;
+  if (adminCookie !== '1') {
+    return res.status(401).json({
+      success: false,
+      error: { message: 'Admin authentication required' }
+    });
+  }
+
+  try {
+    const backups = await listBackups();
+    res.json({
+      success: true,
+      backups,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Failed to list backups:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: 'Failed to list backups' }
+    });
+  }
+});
+
+/**
+ * Create manual backup (admin only)
+ */
+router.post('/backup/create', async (req, res) => {
+  const adminCookie = req.cookies?.yoohoo_admin;
+  if (adminCookie !== '1') {
+    return res.status(401).json({
+      success: false,
+      error: { message: 'Admin authentication required' }
+    });
+  }
+
+  try {
+    logger.info('Manual backup triggered by admin', { ip: req.ip });
+    const result = await triggerManualBackup();
+
+    res.json({
+      success: true,
+      message: 'Backup created successfully',
+      result,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Manual backup failed:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: 'Backup creation failed', details: error.message }
+    });
+  }
+});
+
+/**
+ * Restore from backup (admin only)
+ */
+router.post('/backup/restore', async (req, res) => {
+  const adminCookie = req.cookies?.yoohoo_admin;
+  if (adminCookie !== '1') {
+    return res.status(401).json({
+      success: false,
+      error: { message: 'Admin authentication required' }
+    });
+  }
+
+  try {
+    const { backupId } = req.body;
+
+    if (!backupId) {
+      return res.status(400).json({
+        success: false,
+        error: { message: 'backupId is required' }
+      });
+    }
+
+    logger.info('Restore from backup triggered by admin', { ip: req.ip, backupId });
+    const result = await restoreFromBackup(backupId);
+
+    res.json({
+      success: true,
+      message: 'Content restored successfully',
+      result,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Restore failed:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: 'Restore failed', details: error.message }
+    });
+  }
+});
+
+/**
+ * Get all agent statuses (admin only)
+ */
+router.get('/agents-status', (req, res) => {
+  const adminCookie = req.cookies?.yoohoo_admin;
+  if (adminCookie !== '1') {
+    return res.status(401).json({
+      success: false,
+      error: { message: 'Admin authentication required' }
+    });
+  }
+
+  const curationStatus = getCurationAgentStatus();
+  const backupStatus = getBackupAgentStatus();
+
+  res.json({
+    success: true,
+    agents: {
+      curation: curationStatus,
+      backup: backupStatus
+    },
+    environment: process.env.NODE_ENV || 'development',
     timestamp: new Date().toISOString()
   });
 });
