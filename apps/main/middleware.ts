@@ -59,11 +59,21 @@ export function middleware(request: NextRequest) {
   // If subdomain not found in map, default to main
   const targetApp = appDir || "main";
   
-  // Rewrite the URL to the appropriate app directory
-  // The rewrite is internal - the user still sees the original URL
-  url.pathname = `/_apps/${targetApp}${url.pathname}`;
+  // For www subdomain, don't rewrite if it's already the root path
+  // This prevents the redirect loop
+  if (targetSubdomain === "www" && url.pathname === "/") {
+    return NextResponse.next();
+  }
   
-  return NextResponse.rewrite(url);
+  // Only rewrite if the path doesn't already start with /_apps
+  if (!url.pathname.startsWith("/_apps")) {
+    // Rewrite the URL to the appropriate app directory
+    // The rewrite is internal - the user still sees the original URL
+    url.pathname = `/_apps/${targetApp}${url.pathname}`;
+    return NextResponse.rewrite(url);
+  }
+  
+  return NextResponse.next();
 }
 
 export const config = {

@@ -63,7 +63,7 @@ export default function HeroGurus() {
   return (
     <Container>
       <Head>
-        <title>Hero Guru's - Accessible Learning for All | YooHoo.Guru</title>
+        <title>Hero Gurus - Accessible Learning for All | YooHoo.Guru</title>
         <meta name="description" content="Accessibility-first skill sharing for disability communities. Empower and be empowered through adaptive teaching." />
       </Head>
 
@@ -71,7 +71,7 @@ export default function HeroGurus() {
 
       <Main>
         <Hero>
-          <h1>❤️ Hero Guru&apos;s</h1>
+          <h1>❤️ Hero Gurus</h1>
           <p>Accessibility-first skill sharing for disability communities. Learn and teach with understanding, patience, and adaptive approaches.</p>
         </Hero>
 

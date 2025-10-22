@@ -95,7 +95,7 @@ const Header: React.FC = () => {
             <NavLink href="https://www.yoohoo.guru">Home</NavLink>
             <NavLink href="https://angel.yoohoo.guru">Angel's List</NavLink>
             <NavLink href="https://coach.yoohoo.guru">Coach Guru</NavLink>
-            <NavLink href="https://heroes.yoohoo.guru">Hero Guru's</NavLink>
+            <NavLink href="https://heroes.yoohoo.guru">Hero Gurus</NavLink>
             <Button href="https://dashboard.yoohoo.guru">Dashboard</Button>
           </Nav>
 
@@ -109,7 +109,7 @@ const Header: React.FC = () => {
         <NavLink href="https://www.yoohoo.guru">Home</NavLink>
         <NavLink href="https://angel.yoohoo.guru">Angel's List</NavLink>
         <NavLink href="https://coach.yoohoo.guru">Coach Guru</NavLink>
-        <NavLink href="https://heroes.yoohoo.guru">Hero Guru's</NavLink>
+        <NavLink href="https://heroes.yoohoo.guru">Hero Gurus</NavLink>
         <NavLink href="https://dashboard.yoohoo.guru">Dashboard</NavLink>
       </MobileNav>
     </>
