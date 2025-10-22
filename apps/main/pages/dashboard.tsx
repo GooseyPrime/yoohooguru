@@ -54,7 +54,7 @@ const DashboardCard = styled.div`
   padding: 2rem;
   text-align: center;
   transition: transform 0.2s;
-
+  
   &:hover {
     transform: translateY(-2px);
     border-color: rgba(102, 126, 234, 0.3);
@@ -87,7 +87,7 @@ const CardButton = styled.button`
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
-
+  
   &:hover {
     background: #5a6fd8;
   }
@@ -108,7 +108,7 @@ const LoadingSpinner = styled.div`
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-
+  
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
@@ -148,11 +148,22 @@ const UserEmail = styled.p`
   font-size: 0.9rem;
 `
 
+const UserRoleBadge = styled.span`
+  background: #667eea;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-left: 1rem;
+`
+
 interface User {
   id: string;
   name?: string | null;
   email?: string | null;
   image?: string | null;
+  role?: string;
 }
 
 interface Session {
@@ -195,8 +206,177 @@ export default function Dashboard() {
   }
 
   if (!session) {
-    return null; // Will redirect to login
+    return null // Will redirect to login
   }
+
+  // Different dashboard cards based on user role
+  const getDashboardCards = () => {
+    const userRole = session.user?.role || 'gunu';
+    
+    switch (userRole) {
+      case 'guru':
+        return [
+          {
+            icon: '📚',
+            title: 'My Teaching',
+            description: 'Manage your teaching profile, sessions, and student interactions.',
+            action: 'View Profile',
+            path: '/guru/profile'
+          },
+          {
+            icon: '📅',
+            title: 'Upcoming Sessions',
+            description: 'View and manage your scheduled teaching sessions.',
+            action: 'View Sessions',
+            path: '/guru/sessions'
+          },
+          {
+            icon: '💰',
+            title: 'Earnings',
+            description: 'Track your income from teaching sessions and platform commissions.',
+            action: 'View Earnings',
+            path: '/guru/earnings'
+          },
+          {
+            icon: '⭐',
+            title: 'My Ratings',
+            description: 'See feedback from students and your overall rating.',
+            action: 'View Ratings',
+            path: '/guru/ratings'
+          }
+        ];
+      
+      case 'hero-guru':
+        return [
+          {
+            icon: '❤️',
+            title: 'Hero Teaching',
+            description: 'Manage your accessible teaching profile and sessions for learners with disabilities.',
+            action: 'View Profile',
+            path: '/heroes/profile'
+          },
+          {
+            icon: '📅',
+            title: 'Upcoming Sessions',
+            description: 'View and manage your scheduled adaptive learning sessions.',
+            action: 'View Sessions',
+            path: '/heroes/sessions'
+          },
+          {
+            icon: '🏆',
+            title: 'Community Impact',
+            description: 'Track your contributions to the Hero Gurus community.',
+            action: 'View Impact',
+            path: '/heroes/impact'
+          },
+          {
+            icon: '⭐',
+            title: 'My Ratings',
+            description: 'See feedback from students and your overall rating.',
+            action: 'View Ratings',
+            path: '/heroes/ratings'
+          }
+        ];
+      
+      case 'angel':
+        return [
+          {
+            icon: '🛠️',
+            title: 'My Services',
+            description: 'Manage your service listings and local service offerings.',
+            action: 'View Listings',
+            path: '/angel/listings'
+          },
+          {
+            icon: '📅',
+            title: 'Service Requests',
+            description: 'View and respond to service requests from community members.',
+            action: 'View Requests',
+            path: '/angel/requests'
+          },
+          {
+            icon: '💰',
+            title: 'Earnings',
+            description: 'Track your income from service completions and platform commissions.',
+            action: 'View Earnings',
+            path: '/angel/earnings'
+          },
+          {
+            icon: '⭐',
+            title: 'My Ratings',
+            description: 'See feedback from clients and your overall service rating.',
+            action: 'View Ratings',
+            path: '/angel/ratings'
+          }
+        ];
+      
+      case 'admin':
+        return [
+          {
+            icon: '📊',
+            title: 'Platform Analytics',
+            description: 'View platform performance metrics, user statistics, and revenue data.',
+            action: 'View Analytics',
+            path: '/admin/analytics'
+          },
+          {
+            icon: '👥',
+            title: 'User Management',
+            description: 'Manage users, resolve disputes, and handle platform moderation.',
+            action: 'Manage Users',
+            path: '/admin/users'
+          },
+          {
+            icon: '⚙️',
+            title: 'Platform Settings',
+            description: 'Configure platform parameters, policies, and system settings.',
+            action: 'Configure',
+            path: '/admin/settings'
+          },
+          {
+            icon: '📋',
+            title: 'Content Moderation',
+            description: 'Review and moderate user-generated content and reports.',
+            action: 'Moderate',
+            path: '/admin/content'
+          }
+        ];
+      
+      default: // gunu (default learner role)
+        return [
+          {
+            icon: '🎯',
+            title: 'Find Skills',
+            description: 'Browse and search for Gurus to learn from across all skill categories.',
+            action: 'Explore Skills',
+            path: '/skills'
+          },
+          {
+            icon: '📅',
+            title: 'My Learning',
+            description: 'Manage your booked sessions, learning progress, and upcoming classes.',
+            action: 'View Schedule',
+            path: '/learning/schedule'
+          },
+          {
+            icon: '⭐',
+            title: 'My Ratings',
+            description: 'See your ratings for Gurus you\'ve learned from and your learning progress.',
+            action: 'View Progress',
+            path: '/learning/progress'
+          },
+          {
+            icon: '🔍',
+            title: 'AI Learning Match',
+            description: 'Use our AI-powered learning style assessment to find the perfect Gurus.',
+            action: 'Get Matched',
+            path: '/learning/ai-match'
+          }
+        ];
+    }
+  };
+
+  const dashboardCards = getDashboardCards();
 
   return (
     <Container>
@@ -214,7 +394,10 @@ export default function Dashboard() {
               <Avatar src={session.user.image} alt={session.user.name || 'User'} />
             )}
             <UserDetails>
-              <UserName>{session.user.name || 'Welcome!'}</UserName>
+              <UserName>
+                {session.user.name || 'Welcome!'}
+                <UserRoleBadge>{session.user.role || 'Learner'}</UserRoleBadge>
+              </UserName>
               <UserEmail>{session.user.email}</UserEmail>
             </UserDetails>
           </UserInfo>
@@ -228,71 +411,18 @@ export default function Dashboard() {
         </WelcomeSection>
 
         <DashboardGrid>
-          <DashboardCard>
-            <CardIcon>🎯</CardIcon>
-            <CardTitle>Skill Marketplace</CardTitle>
-            <CardDescription>
-              Browse and offer skills in our community marketplace. Find experts to learn from or share your expertise with others.
-            </CardDescription>
-            <CardButton onClick={() => handleNavigate('/skills')}>
-              Explore Skills
-            </CardButton>
-          </DashboardCard>
-
-          <DashboardCard>
-            <CardIcon>👨‍🏫</CardIcon>
-            <CardTitle>Become a Guru</CardTitle>
-            <CardDescription>
-              Share your knowledge and help others learn. Create courses, offer coaching sessions, and build your teaching profile.
-            </CardDescription>
-            <CardButton onClick={() => handleNavigate('/guru')}>
-              Start Teaching
-            </CardButton>
-          </DashboardCard>
-
-          <DashboardCard>
-            <CardIcon>👼</CardIcon>
-            <CardTitle>Angel's List</CardTitle>
-            <CardDescription>
-              Offer or find services in our community marketplace. Connect with professionals for various service needs.
-            </CardDescription>
-            <CardButton onClick={() => handleNavigate('/angels')}>
-              Browse Services
-            </CardButton>
-          </DashboardCard>
-
-          <DashboardCard>
-            <CardIcon>🏆</CardIcon>
-            <CardTitle>Heroes Hub</CardTitle>
-            <CardDescription>
-              Discover inspiring stories and connect with community heroes who are making a positive impact.
-            </CardDescription>
-            <CardButton onClick={() => handleNavigate('/heroes')}>
-              Meet Heroes
-            </CardButton>
-          </DashboardCard>
-
-          <DashboardCard>
-            <CardIcon>📚</CardIcon>
-            <CardTitle>Learning Path</CardTitle>
-            <CardDescription>
-              Track your learning progress, manage your courses, and set goals for your personal development journey.
-            </CardDescription>
-            <CardButton onClick={() => handleNavigate('/learning')}>
-              View Progress
-            </CardButton>
-          </DashboardCard>
-
-          <DashboardCard>
-            <CardIcon>🤝</CardIcon>
-            <CardTitle>Community</CardTitle>
-            <CardDescription>
-              Connect with like-minded learners and teachers. Join discussions and build meaningful relationships.
-            </CardDescription>
-            <CardButton onClick={() => handleNavigate('/community')}>
-              Join Community
-            </CardButton>
-          </DashboardCard>
+          {dashboardCards.map((card, index) => (
+            <DashboardCard key={index}>
+              <CardIcon>{card.icon}</CardIcon>
+              <CardTitle>{card.title}</CardTitle>
+              <CardDescription>
+                {card.description}
+              </CardDescription>
+              <CardButton onClick={() => handleNavigate(card.path)}>
+                {card.action}
+              </CardButton>
+            </DashboardCard>
+          ))}
         </DashboardGrid>
       </Main>
 

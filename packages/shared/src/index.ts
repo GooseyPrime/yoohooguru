@@ -7,3 +7,6 @@ export { default as SEOMetadata } from './components/SEOMetadata';
 export { default as HeroArt } from './components/HeroArt';
 export { default as LoadingScreen } from './components/LoadingScreen';
 export { default as LoadingSpinner } from './components/LoadingSpinner';
+
+// Shared types
+export * from './types/user';
