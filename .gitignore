@@ -87,6 +87,10 @@ Thumbs.db
 deploy-fix.*
 *errors*
 
+# Content backup files (keep README)
+backend/backups/*.json
+!backend/backups/README.md
+
 # Duplicate content files
 merged-*
 *-duplicate.*

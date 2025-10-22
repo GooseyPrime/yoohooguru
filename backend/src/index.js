@@ -27,6 +27,7 @@ const errorHandler = require('./middleware/errorHandler');
 const { subdomainHandler } = require('./middleware/subdomainHandler');
 const { requestIdMiddleware } = require('./middleware/requestId');
 const { startCurationAgents, getCurationAgentStatus } = require('./agents/curationAgents');
+const { startBackupAgent } = require('./agents/backupAgent');
 const swaggerUi = require('swagger-ui-express');
 const { swaggerSpec } = require('./config/swagger');
 
@@ -679,6 +680,21 @@ if (require.main === module) {
       // unless FAIL_ON_AGENT_ERROR is explicitly set
       if (config.nodeEnv === 'production' && process.env.FAIL_ON_AGENT_ERROR !== 'true') {
         logger.warn('⚠️ Server continuing despite curation agent failures (production mode)');
+      }
+    }
+
+    // Start backup agent
+    try {
+      startBackupAgent();
+    } catch (error) {
+      logger.error('Failed to start backup agent:', {
+        message: error.message,
+        stack: error.stack,
+        environment: config.nodeEnv
+      });
+
+      if (config.nodeEnv === 'production' && process.env.FAIL_ON_AGENT_ERROR !== 'true') {
+        logger.warn('⚠️ Server continuing despite backup agent failures (production mode)');
       }
     }
   });
