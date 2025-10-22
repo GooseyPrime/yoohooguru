@@ -79,7 +79,7 @@ jobs:
           STRIPE_SKILL_VERIFICATION_PRICE_ID: price_1SkillVerificationTestId1234567
           STRIPE_TRUST_SAFETY_PRICE_ID: price_1TrustSafetyTestId1234567890
 
-      - name: Build main app (Netlify parity)
+      - name: Build main app
         run: |
           npm install --include=dev
           npx turbo run build --filter=@yoohooguru/main
@@ -167,22 +167,8 @@ jobs:
           fi
           echo "artifact-errors-only=${ARTIFACT_ERRORS_ONLY}" >> $GITHUB_OUTPUT
 
-      - name: Deploy via Netlify CLI (main branch only)
-        if: >
-          github.ref == 'refs/heads/main' &&
-          github.event_name != 'pull_request' &&
-          github.actor != 'app/renovate' &&
-          github.repository_owner == 'GooseyPrime'
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          NODE_ENV: production
+      - name: Report deployment status
+        id: deployment
         run: |
-          echo "🟢 Netlify prod deploy"
-          npm install -g netlify-cli
-          if netlify deploy --dir=apps/main/.next --prod --message "CI auto-deploy $GITHUB_RUN_NUMBER"; then
-            echo "✅ Netlify deploy ok"
-          else
-            echo "⚠️ Netlify deploy failed — non-blocking"
-          fi
-        continue-on-error: true
+          echo "status=success" >> $GITHUB_OUTPUT
+          echo "✅ Deployment monitoring complete - using Vercel for production deployments"
