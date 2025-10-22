@@ -34,6 +34,7 @@
 >>>>>>> origin/main:.archive/frontend-legacy/package.json
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
+    "agora-rtc-sdk-ng": "^4.24.0",
     "axios": "^1.6.2",
     "date-fns": "^4.0.0",
     "dotenv": "^16.6.1",

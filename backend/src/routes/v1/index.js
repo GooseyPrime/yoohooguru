@@ -31,6 +31,7 @@ const modifiedMastersRoutes = require('../modifiedMasters');
 const resourcesRoutes = require('../resources');
 const locationsRoutes = require('../locations');
 const imagesRoutes = require('../images');
+const agoraRoutes = require('../agora');
 
 // Mount all v1 routes
 router.use('/auth', authRoutes);
@@ -56,5 +57,6 @@ router.use('/modified-masters', modifiedMastersRoutes);
 router.use('/resources', resourcesRoutes);
 router.use('/locations', locationsRoutes);
 router.use('/images', imagesRoutes);
+router.use('/agora', agoraRoutes);
 
 module.exports = router;

@@ -1,5 +1,6 @@
 const { getFirestore } = require('../config/firebase');
 const admin = require('firebase-admin');
+const { uuidv4 } = require('../utils/uuid');
 
 const getCollection = () => {
   const firestore = getFirestore();
@@ -18,13 +19,13 @@ async function create(doc) {
   const col = getCollection();
   const ref = col.doc();
   const now = Date.now();
-  const skillData = { 
-    ...doc, 
-    createdAt: now, 
+  const skillData = {
+    ...doc,
+    createdAt: now,
     updatedAt: now,
     status: doc.status || 'pending' // Default to pending for moderation
   };
-  
+
   await ref.set(skillData);
   return { id: ref.id, ...skillData };
 }
@@ -42,21 +43,21 @@ async function create(doc) {
 async function find({ q, tag, style, isModifiedMasters, status } = {}) {
   const col = getCollection();
   let query = col;
-  
+
   // Apply Firestore native filters
   if (typeof isModifiedMasters === 'boolean') {
     query = query.where('isModifiedMasters', '==', isModifiedMasters);
   }
-  
+
   if (status) {
     query = query.where('status', '==', status);
   }
-  
+
   // For array-contains filters (preferred for tags and styles)
   if (tag) {
     query = query.where('accessibilityTags', 'array-contains', tag);
   }
-  
+
   if (style) {
     query = query.where('coachingStyles', 'array-contains', style);
   }
@@ -73,7 +74,7 @@ async function find({ q, tag, style, isModifiedMasters, status } = {}) {
       (skill.summary || '').toLowerCase().includes(queryLower)
     );
   }
-  
+
   return items;
 }
 
@@ -100,7 +101,7 @@ async function update(id, patch) {
     ...patch,
     updatedAt: Date.now()
   };
-  
+
   await col.doc(id).set(updateData, { merge: true });
   const doc = await col.doc(id).get();
   return { id: doc.id, ...doc.data() };
@@ -115,18 +116,18 @@ async function update(id, patch) {
 async function addResource(id, link) {
   const col = getCollection();
   const ref = col.doc(id);
-  
+
   const resourceData = {
-    id: require('uuid').v4(),
+    id: uuidv4(),
     addedAt: Date.now(),
     ...link
   };
-  
+
   await ref.set({
     resources: admin.firestore.FieldValue.arrayUnion(resourceData),
     updatedAt: Date.now()
   }, { merge: true });
-  
+
   const doc = await ref.get();
   return { id: doc.id, ...doc.data() };
 }
@@ -143,7 +144,7 @@ async function getByCreator(userId) {
     .orderBy('createdAt', 'desc')
     .limit(50)
     .get();
-  
+
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 

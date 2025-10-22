@@ -4,7 +4,7 @@
  */
 
 const express = require('express');
-const { v4: uuidv4 } = require('uuid');
+const { uuidv4 } = require('../utils/uuid');
 const { requireAuth } = require('../middleware/auth');
 const SessionsDB = require('../db/sessions');
 const { generateICS, generateAllCalendarLinks } = require('../utils/calendar');
@@ -65,9 +65,9 @@ router.post('/', requireAuth, async (req, res) => {
     logger.error('Create session error:', error);
     res.status(500).json({
       success: false,
-      error: { 
-        message: error.message.includes('Invalid session data') 
-          ? error.message 
+      error: {
+        message: error.message.includes('Invalid session data')
+          ? error.message
           : 'Failed to create session'
       }
     });
@@ -117,7 +117,7 @@ router.get('/:id', requireAuth, async (req, res) => {
     const userId = req.user?.uid || req.user?.id;
 
     const session = await SessionsDB.get(sessionId);
-    
+
     if (!session) {
       return res.status(404).json({
         success: false,
@@ -163,8 +163,8 @@ router.patch('/:id/status', requireAuth, async (req, res) => {
     if (!status || !validStatuses.includes(status)) {
       return res.status(400).json({
         success: false,
-        error: { 
-          message: `Invalid status. Valid statuses: ${validStatuses.join(', ')}` 
+        error: {
+          message: `Invalid status. Valid statuses: ${validStatuses.join(', ')}`
         }
       });
     }
@@ -216,7 +216,7 @@ router.get('/:id/calendar', requireAuth, async (req, res) => {
     const format = req.query.format || 'ics';
 
     const session = await SessionsDB.get(sessionId);
-    
+
     if (!session) {
       return res.status(404).json({
         success: false,
