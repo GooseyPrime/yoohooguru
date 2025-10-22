@@ -37,8 +37,22 @@ export default function BlogPost() {
 
   const subdomain = 'writing';
 
+  // Only allow slugs that match a safe pattern: letters, numbers, hyphens, underscores
+  function isValidSlug(slug: any): slug is string {
+    return (
+      typeof slug === "string" &&
+      /^[a-zA-Z0-9\-_]+$/.test(slug) &&
+      slug.length <= 100 // Optional length check
+    );
+  }
+
   useEffect(() => {
     if (!slug) return;
+    if (!isValidSlug(slug)) {
+      setError("Invalid post slug.");
+      setLoading(false);
+      return;
+    }
 
     const fetchPost = async () => {
       try {
