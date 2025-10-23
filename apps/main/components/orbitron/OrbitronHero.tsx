@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 const OrbitronHero: React.FC = () => {
@@ -6,21 +7,21 @@ const OrbitronHero: React.FC = () => {
     {
       title: "SkillShare by Coach Guru",
       description: "Learn from experts. Become a Guru. Exchange knowledge through personalized coaching.",
-      link: "https://coach.yoohoo.guru",
+      link: "/coach",
       icon: "M12 14l9-5-9-5-9 5 9 5z M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z",
       gradient: "from-emerald-500 to-teal-600"
     },
     {
       title: "Hero Gurus",
       description: "Join the Heroes. Empower and be empowered through adaptive teaching and inclusive learning.",
-      link: "https://heroes.yoohoo.guru", 
+      link: "/heroes", 
       icon: "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z",
       gradient: "from-purple-500 to-pink-600"
     },
     {
       title: "Angel's List",
       description: "List a Gig. Help or get help through Angel's List. Find local services and offer your help.",
-      link: "https://angel.yoohoo.guru",
+      link: "/angel",
       icon: "M13 10V3L4 14h7v7l9-11h-7z",
       gradient: "from-blue-500 to-indigo-600"
     }
@@ -65,7 +66,12 @@ const OrbitronHero: React.FC = () => {
         ></motion.div>
       </div>
       
-      {/* Hero Content */}
+              {/* Temporary TEST ELEMENT to verify changes are working */}
+        <div style={{ position: 'fixed', top: '10px', left: '10px', background: 'red', color: 'white', padding: '10px', zIndex: 9999 }}>
+          ICON SIZE TEST - w-2 h-2
+        </div>
+
+        {/* Hero Text */}
       <div className="relative z-10 pt-20 pb-16">
         <div className="text-center px-6 max-w-4xl mx-auto">
           <motion.div
@@ -136,29 +142,32 @@ const OrbitronHero: React.FC = () => {
             transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
           >
             {services.map((service, index) => (
-              <motion.a
+              <Link
                 key={index}
                 href={service.link}
                 className="group relative block"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.9 + index * 0.1 }}
-                whileHover={{ 
-                  scale: 1.05,
-                  transition: { duration: 0.2 }
-                }}
               >
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.9 + index * 0.1 }}
+                  whileHover={{ 
+                    scale: 1.05,
+                    transition: { duration: 0.2 }
+                  }}
+                >
                 <div className="relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all duration-500 group-hover:bg-white/10">
                   {/* Gradient header */}
                   <div className={`h-16 bg-gradient-to-br ${service.gradient} relative`}>
                     <div className="absolute inset-0 bg-black/30"></div>
                     <div className="absolute inset-0 flex items-center justify-center">
                       <motion.div
-                        className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center"
+                        className="w-2 h-2 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center"
                         whileHover={{ scale: 1.1, rotate: 5 }}
                         transition={{ type: "spring", stiffness: 400, damping: 10 }}
                       >
-                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        {/* Icon same size as red test box */}
+                        <svg className="w-1 h-1 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={service.icon} />
                         </svg>
                       </motion.div>
@@ -173,7 +182,7 @@ const OrbitronHero: React.FC = () => {
                     </p>
                     <div className="flex items-center text-emerald-400 font-medium text-sm">
                       <span>Explore</span>
-                      <svg className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="ml-1 w-1 h-1 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </div>
@@ -182,7 +191,8 @@ const OrbitronHero: React.FC = () => {
                   {/* Hover gradient overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                 </div>
-              </motion.a>
+              </motion.div>
+              </Link>
             ))}
           </motion.div>
         </div>

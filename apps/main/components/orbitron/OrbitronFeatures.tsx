@@ -52,9 +52,9 @@ const OrbitronFeatures: React.FC = () => {
               transition={{ duration: 0.6, delay: index * 0.1 }}
             >
               <div className="relative p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:bg-white/10 hover:border-emerald-500/50 transition-all duration-300 group-hover:transform group-hover:scale-105">
-                {/* Icon */}
-                <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-xl flex items-center justify-center mb-6">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {/* Icon - same size as red test box */}
+                <div className="w-2 h-2 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-xl flex items-center justify-center mb-6">
+                  <svg className="w-1 h-1 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={feature.iconPath} />
                   </svg>
                 </div>
