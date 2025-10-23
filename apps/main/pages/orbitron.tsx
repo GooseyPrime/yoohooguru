@@ -1,18 +1,12 @@
 import React from 'react';
-import OrbitronHero from '@/components/orbitron/OrbitronHero';
-import OrbitronFeatures from '@/components/orbitron/OrbitronFeatures';
-import OrbitronShowcase from '@/components/orbitron/OrbitronShowcase';
-import OrbitronCTA from '@/components/orbitron/OrbitronCTA';
-import OrbitronFooter from '@/components/orbitron/OrbitronFooter';
 
 export default function OrbitronPage() {
   return (
-    <main className="font-orbitron bg-gradient-to-br from-primarydark to-secondarydark text-white min-h-screen">
-      <OrbitronHero />
-      <OrbitronFeatures />
-      <OrbitronShowcase />
-      <OrbitronCTA />
-      <OrbitronFooter />
+    <main className="font-orbitron bg-gradient-to-br from-purple-900 to-blue-900 text-white min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-6xl font-bold mb-4">ORBITRON</h1>
+        <p className="text-xl">Test page working!</p>
+      </div>
     </main>
   );
 }
