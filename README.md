@@ -289,17 +289,6 @@ vercel link
 # - Install Command: "npm install"
 ```
 
-**Netlify Setup:**
-```powershell
-cd yoohooguru
-netlify link
-
-# In Netlify Dashboard → Site Settings → Build & Deploy:
-# - Base Directory: "frontend"
-# - Build Command: "npm run build" 
-# - Publish Directory: "frontend/dist"
-```
-
 #### **Environment Variables by Platform**
 
 **Railway (Full-Stack or Backend-Only):**
