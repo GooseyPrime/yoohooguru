@@ -289,17 +289,6 @@ vercel link
 # - Install Command: "npm install"
 ```
 
-**Netlify Setup:**
-```powershell
-cd yoohooguru
-netlify link
-
-# In Netlify Dashboard → Site Settings → Build & Deploy:
-# - Base Directory: "frontend"
-# - Build Command: "npm run build" 
-# - Publish Directory: "frontend/dist"
-```
-
 #### **Environment Variables by Platform**
 
 **Railway (Full-Stack or Backend-Only):**
@@ -311,7 +300,7 @@ JWT_SECRET=your_secret_key
 PORT=8000
 ```
 
-**Vercel/Netlify (Frontend-Only):**
+**Vercel (Frontend-Only):**
 ```env
 REACT_APP_API_URL=https://your-backend.railway.app/api
 REACT_APP_FIREBASE_API_KEY=your_key
@@ -652,7 +641,7 @@ railway logs --tail
 ### 📋 **Alternative Deployment Options**
 
 - **[Railway Full-Stack](./docs/RAILWAY_DEPLOYMENT.md)** - Deploy from `yoohooguru/` (root directory)
-- **[Netlify + Railway](./docs/DEPLOYMENT.md)** - Frontend from `yoohooguru/frontend/`, Backend from `yoohooguru/backend/`
+- **[Vercel + Railway](./docs/DEPLOYMENT.md)** - Frontend from `yoohooguru/frontend/`, Backend from `yoohooguru/backend/`
 - **[Docker](./docker-compose.yml)** - Deploy from `yoohooguru/` (root directory)
 - **[Custom Infrastructure](./docs/DEPLOYMENT.md)** - Deploy from appropriate directory based on your setup
 

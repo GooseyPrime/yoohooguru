@@ -51,6 +51,6 @@ Once the server is running, visit:
 
 See `/docs/DEPLOYMENT.md` for the complete deployment guide.
 
-## Note on Netlify
+## Deployment Note
 
-This Python server should NOT be deployed to Netlify. By moving these files to a subdirectory, Netlify will no longer auto-detect Python and attempt to install these dependencies during frontend builds.
+This Python server is designed for local development and testing. It should be deployed separately from the frontend application.
