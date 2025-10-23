@@ -25,7 +25,8 @@
     "react-dom": "^18.2.0",
     "react-markdown": "^10.1.0",
     "stripe": "^14.0.0",
-    "styled-components": "^6.1.6"
+    "styled-components": "^6.1.6",
+    "escape-html": "^1.0.3"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
