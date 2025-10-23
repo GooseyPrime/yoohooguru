@@ -18,8 +18,6 @@ const guruPagesLimiter = rateLimit({
   legacyHeaders: false,
   // Remove custom keyGenerator to use the default IPv6-compatible one
 });
-  }
-});
 
 /**
  * Middleware to validate subdomain parameter in URL path
