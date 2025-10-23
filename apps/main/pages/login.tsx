@@ -3,129 +3,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Header, Footer } from '@yoohooguru/shared'
 import Head from 'next/head'
-import styled from 'styled-components'
-
-const Container = styled.div`
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-`
-
-const Main = styled.main`
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-`
-
-const LoginCard = styled.div`
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
-  padding: 3rem;
-  max-width: 400px;
-  width: 100%;
-  text-align: center;
-`
-
-const Title = styled.h1`
-  color: #ffffff;
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-`
-
-const Subtitle = styled.p`
-  color: #b0b0b0;
-  margin-bottom: 2rem;
-  line-height: 1.6;
-`
-
-const LoginButton = styled.button`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  padding: 1rem 1.5rem;
-  background: #ffffff;
-  color: #333333;
-  border: none;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  margin-bottom: 1rem;
-
-  &:hover {
-    background: #f5f5f5;
-    transform: translateY(-1px);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-  }
-`
-
-const GoogleIcon = styled.span`
-  font-size: 1.25rem;
-`
-
-const LoadingSpinner = styled.div`
-  width: 20px;
-  height: 20px;
-  border: 2px solid #cccccc;
-  border-top: 2px solid #333333;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-`
-
-const Divider = styled.div`
-  margin: 1.5rem 0;
-  text-align: center;
-  color: #b0b0b0;
-  position: relative;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  span {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 0 1rem;
-    position: relative;
-  }
-`
-
-const Footer2 = styled.div`
-  text-align: center;
-  margin-top: 2rem;
-  color: #b0b0b0;
-  font-size: 0.875rem;
-  
-  a {
-    color: #667eea;
-    text-decoration: none;
-    
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-`
+import { OrbitronContainer, OrbitronCard, OrbitronButton } from '../components/orbitron'
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false)
@@ -159,23 +37,23 @@ export default function Login() {
 
   if (isCheckingSession) {
     return (
-      <Container>
+      <OrbitronContainer gradient="primary">
         <Head>
           <title>Checking Session... | YooHoo.Guru</title>
         </Head>
         <Header />
-        <Main>
-          <LoginCard>
-            <LoadingSpinner />
-          </LoginCard>
-        </Main>
+        <main className="flex-1 flex items-center justify-center p-8">
+          <OrbitronCard className="max-w-md w-full text-center p-8">
+            <div className="w-5 h-5 border-2 border-gray-300 border-t-white rounded-full animate-spin mx-auto"></div>
+          </OrbitronCard>
+        </main>
         <Footer />
-      </Container>
+      </OrbitronContainer>
     )
   }
 
   return (
-    <Container>
+    <OrbitronContainer gradient="primary">
       <Head>
         <title>Sign In | YooHoo.Guru</title>
         <meta name="description" content="Sign in to your YooHoo.Guru account to access the skill-sharing community." />
@@ -183,37 +61,44 @@ export default function Login() {
 
       <Header />
 
-      <Main>
-        <LoginCard>
-          <Title>Welcome Back</Title>
-          <Subtitle>Sign in to continue your learning journey and connect with the community.</Subtitle>
+      <main className="flex-1 flex items-center justify-center p-8">
+        <OrbitronCard className="max-w-md w-full text-center p-8">
+          <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
+          <p className="text-gray-400 mb-8 leading-relaxed">
+            Sign in to continue your learning journey and connect with the community.
+          </p>
 
-          <LoginButton onClick={handleGoogleSignIn} disabled={isLoading}>
+          <button
+            onClick={handleGoogleSignIn}
+            disabled={isLoading}
+            className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-white text-gray-800 border-none rounded-lg font-semibold text-base cursor-pointer transition-all duration-200 mb-4 hover:bg-gray-100 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
+          >
             {isLoading ? (
-              <LoadingSpinner />
+              <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-800 rounded-full animate-spin"></div>
             ) : (
               <>
-                <GoogleIcon>🔍</GoogleIcon>
+                <span className="text-xl">🔍</span>
                 Continue with Google
               </>
             )}
-          </LoginButton>
+          </button>
 
-          <Divider>
-            <span>More options coming soon</span>
-          </Divider>
+          <div className="my-6 text-center text-gray-400 relative">
+            <div className="absolute top-1/2 left-0 right-0 h-px bg-white/10"></div>
+            <span className="bg-gray-900/50 px-4 relative">More options coming soon</span>
+          </div>
 
-          <Footer2>
+          <div className="text-center mt-8 text-gray-400 text-sm">
             New to YooHoo.Guru?{' '}
-            <a href="/signup">Create an account</a>
+            <a href="/signup" className="text-blue-400 hover:underline">Create an account</a>
             <br />
             <br />
-            <a href="/privacy">Privacy Policy</a> • <a href="/terms">Terms of Service</a>
-          </Footer2>
-        </LoginCard>
-      </Main>
+            <a href="/privacy" className="text-blue-400 hover:underline">Privacy Policy</a> • <a href="/terms" className="text-blue-400 hover:underline">Terms of Service</a>
+          </div>
+        </OrbitronCard>
+      </main>
 
       <Footer />
-    </Container>
+    </OrbitronContainer>
   )
 }
