@@ -9,24 +9,34 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.16.0",
+    "@stripe/react-stripe-js": "^2.0.0",
+    "@stripe/stripe-js": "^3.0.0",
+    "@tailwindcss/postcss": "^4.1.15",
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
     "@yoohooguru/auth": "*",
     "@yoohooguru/shared": "*",
     "agora-rtc-sdk-ng": "^4.21.0",
+    "framer-motion": "^12.23.24",
     "next": "^14.2.0",
     "next-auth": "^4.24.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^10.1.0",
-    "styled-components": "^6.1.6"
+    "stripe": "^14.0.0",
+    "styled-components": "^6.1.6",
+    "escape-html": "^1.0.3"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "autoprefixer": "^10.4.21",
     "eslint": "^8.0.0",
     "eslint-config-next": "^14.2.0",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^4.1.15",
     "typescript": "^5.0.0"
   }
 }

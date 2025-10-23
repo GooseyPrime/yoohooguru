@@ -16,16 +16,14 @@ const webhookLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   skipSuccessfulRequests: false,
-  keyGenerator: (req) => {
-    return req.ip || req.connection.remoteAddress || 'unknown';
-  }
+  // Remove custom keyGenerator to use the default IPv6-compatible one
 });
 
 // Health check endpoint for webhook debugging
 router.get('/health', (req, res) => {
   const webhookSecret = !!process.env.STRIPE_WEBHOOK_SECRET;
   const stripeKey = !!process.env.STRIPE_SECRET_KEY;
-  
+
   res.json({
     status: 'OK',
     timestamp: new Date().toISOString(),
@@ -47,18 +45,18 @@ router.post('/', webhookLimiter, async (req, res) => {
   try {
     // In test environment, handle missing Stripe configuration gracefully
     const isTestEnv = process.env.NODE_ENV === 'test';
-    
+
     if (!stripe && !isTestEnv) {
       logger.error('Stripe not configured - missing STRIPE_SECRET_KEY');
-      return res.status(503).json({ 
-        error: 'Stripe not configured. Please set STRIPE_SECRET_KEY environment variable.' 
+      return res.status(503).json({
+        error: 'Stripe not configured. Please set STRIPE_SECRET_KEY environment variable.'
       });
     }
 
     if (!endpointSecret && !isTestEnv) {
       logger.error('Webhook secret not configured - missing STRIPE_WEBHOOK_SECRET');
-      return res.status(503).json({ 
-        error: 'Stripe webhook secret not configured. Please set STRIPE_WEBHOOK_SECRET environment variable.' 
+      return res.status(503).json({
+        error: 'Stripe webhook secret not configured. Please set STRIPE_WEBHOOK_SECRET environment variable.'
       });
     }
 
@@ -94,7 +92,7 @@ router.post('/', webhookLimiter, async (req, res) => {
       // Production environment: always verify signature
       event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
     }
-    
+
     logger.info(`✅ Webhook signature verified - event type: ${event.type}`);
   } catch (err) {
     logger.error('❌ Webhook signature verification failed.', err.message);
@@ -103,7 +101,7 @@ router.post('/', webhookLimiter, async (req, res) => {
 
   try {
     const db = getFirestore();
-    
+
     // If Firebase is not available (returns null in test environment), skip DB operations
     if (!db) {
       logger.info(`⚠️ Firebase not available - webhook processed without DB updates (test mode)`);
@@ -140,7 +138,7 @@ router.post('/', webhookLimiter, async (req, res) => {
         // Here we scan profiles once (ok for MVP scale). For scale, keep an index: accountId -> uid.
         const profilesSnap = await db.collection('profiles').get();
         const batch = db.batch();
-        
+
         let updatedProfiles = 0;
         profilesSnap.forEach((doc) => {
           const p = doc.data() || {};
@@ -150,7 +148,7 @@ router.post('/', webhookLimiter, async (req, res) => {
             updatedProfiles++;
           }
         });
-        
+
         await batch.commit();
         logger.info(`✅ Updated ${updatedProfiles} profiles for account ${acct.id}`);
         break;
