@@ -325,12 +325,7 @@ const limiter = rateLimit({
   message: config.rateLimitMessage,
   standardHeaders: true,
   legacyHeaders: false,
-  // Trust proxy is configured at the app level (app.set('trust proxy', ...))
-  // This ensures consistent behavior across all middleware
-  keyGenerator: (req) => {
-    // Use req.ip which respects the app-level trust proxy setting
-    return req.ip || req.connection.remoteAddress || 'unknown';
-  }
+  // Remove custom keyGenerator to use the default IPv6-compatible one
 });
 app.use('/api/', limiter);
 

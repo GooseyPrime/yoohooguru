@@ -16,12 +16,7 @@ const authLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   skipSuccessfulRequests: false,
-  // Trust proxy is configured at the app level (app.set('trust proxy', ...))
-  // This ensures consistent behavior across all middleware
-  keyGenerator: (req) => {
-    // Use req.ip which respects the app-level trust proxy setting
-    return req.ip || req.connection.remoteAddress || 'unknown';
-  }
+  // Remove custom keyGenerator to use the default IPv6-compatible one
 });
 
 // Rate limiter for authenticated profile endpoints (more permissive since users are authenticated)
@@ -31,10 +26,7 @@ const profileLimiter = rateLimit({
   message: 'Too many profile requests from this IP, please try again later',
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req) => {
-    // Use req.ip which respects the app-level trust proxy setting
-    return req.ip || req.connection.remoteAddress || 'unknown';
-  }
+  // Remove custom keyGenerator to use the default IPv6-compatible one
 });
 
 // Validation middleware
@@ -137,7 +129,7 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
 
   } catch (error) {
     logger.error('Registration error:', error);
-    
+
     let message = 'Registration failed';
     if (error.code === 'auth/email-already-exists') {
       message = 'Email already registered';
@@ -201,11 +193,11 @@ router.get('/profile', profileLimiter, authenticateUser, async (req, res) => {
 router.put('/profile', profileLimiter, authenticateUser, async (req, res) => {
   try {
     const allowedUpdates = [
-      'displayName', 'skillsOffered', 'skillsWanted', 
+      'displayName', 'skillsOffered', 'skillsWanted',
       'location', 'availability', 'purposeStory',
       'accessibility', 'modifiedMasters'
     ];
-    
+
     const updates = {};
     Object.keys(req.body).forEach(key => {
       if (allowedUpdates.includes(key)) {
@@ -239,7 +231,7 @@ router.put('/profile', profileLimiter, authenticateUser, async (req, res) => {
 router.post('/verify', authLimiter, async (req, res) => {
   try {
     const { token } = req.body;
-    
+
     if (!token) {
       return res.status(400).json({
         success: false,
@@ -256,7 +248,7 @@ router.post('/verify', authLimiter, async (req, res) => {
     }
 
     const decodedToken = await auth.verifyIdToken(token);
-    
+
     res.json({
       success: true,
       data: {
@@ -281,7 +273,7 @@ router.post('/verify', authLimiter, async (req, res) => {
 router.put('/profile/visibility', profileLimiter, authenticateUser, async (req, res) => {
   try {
     const { hidden } = req.body;
-    
+
     if (typeof hidden !== 'boolean') {
       return res.status(400).json({
         success: false,
@@ -289,7 +281,7 @@ router.put('/profile/visibility', profileLimiter, authenticateUser, async (req, 
       });
     }
 
-    const updates = { 
+    const updates = {
       isHidden: hidden,
       hiddenAt: hidden ? new Date().toISOString() : null
     };
@@ -319,7 +311,7 @@ router.put('/profile/visibility', profileLimiter, authenticateUser, async (req, 
 router.delete('/account', profileLimiter, authenticateUser, async (req, res) => {
   try {
     const { confirmEmail } = req.body;
-    
+
     // Security: require email confirmation
     if (!confirmEmail || confirmEmail !== req.user.email) {
       return res.status(400).json({
@@ -330,7 +322,7 @@ router.delete('/account', profileLimiter, authenticateUser, async (req, res) => 
 
     const deleteScheduledDate = new Date();
     deleteScheduledDate.setDate(deleteScheduledDate.getDate() + 30); // 30 days from now
-    
+
     const updates = {
       deletionScheduled: true,
       deletionScheduledAt: new Date().toISOString(),
@@ -368,7 +360,7 @@ router.delete('/account', profileLimiter, authenticateUser, async (req, res) => 
 router.put('/account/restore', profileLimiter, authenticateUser, async (req, res) => {
   try {
     const userData = await usersDB.get(req.user.uid);
-    
+
     if (!userData || !userData.deletionScheduled) {
       return res.status(400).json({
         success: false,
@@ -428,7 +420,7 @@ router.post('/merge/request', profileLimiter, authenticateUser, async (req, res)
     // Check if target account exists
     try {
       const targetUser = await getAuth().getUserByEmail(targetEmail);
-      
+
       // Prevent merging with self
       if (targetUser.uid === req.user.uid) {
         return res.status(400).json({
@@ -451,8 +443,8 @@ router.post('/merge/request', profileLimiter, authenticateUser, async (req, res)
 
       // In a real implementation, you'd store this in a dedicated collection
       // For now, we'll add it to the user's profile
-      await usersDB.merge(req.user.uid, { 
-        pendingMergeRequest: mergeRequest 
+      await usersDB.merge(req.user.uid, {
+        pendingMergeRequest: mergeRequest
       });
 
       logger.info(`Account merge requested: ${req.user.uid} -> ${targetEmail}`);
