@@ -16,12 +16,7 @@ const authLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   skipSuccessfulRequests: false,
-  // Trust proxy is configured at the app level (app.set('trust proxy', ...))
-  // This ensures consistent behavior across all middleware
-  keyGenerator: (req) => {
-    // Use req.ip which respects the app-level trust proxy setting
-    return req.ip || req.connection.remoteAddress || 'unknown';
-  }
+  // Remove custom keyGenerator to use the default IPv6-compatible one
 });
 
 // Rate limiter for authenticated profile endpoints (more permissive since users are authenticated)
@@ -31,10 +26,7 @@ const profileLimiter = rateLimit({
   message: 'Too many profile requests from this IP, please try again later',
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req) => {
-    // Use req.ip which respects the app-level trust proxy setting
-    return req.ip || req.connection.remoteAddress || 'unknown';
-  }
+  // Remove custom keyGenerator to use the default IPv6-compatible one
 });
 
 // Validation middleware

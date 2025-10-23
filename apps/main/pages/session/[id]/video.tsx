@@ -2,7 +2,11 @@ import { useRouter } from 'next/router';
 import { Header, Footer } from '@yoohooguru/shared';
 import Head from 'next/head';
 import styled from 'styled-components';
-import AgoraVideo from '../../../components/video/AgoraVideo';
+import dynamic from 'next/dynamic';
+
+const AgoraVideo = dynamic(() => import('../../../components/video/AgoraVideo'), {
+  ssr: false
+});
 
 const Container = styled.div`
   min-height: 100vh;

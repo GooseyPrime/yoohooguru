@@ -226,6 +226,8 @@ export default function ProfileManager() {
     setProfileData(prev => ({
       ...prev,
       pricing: {
+        hourlyRate: prev.pricing?.hourlyRate || 0,
+        currency: prev.pricing?.currency || 'USD',
         ...prev.pricing,
         [name]: name === 'hourlyRate' ? parseFloat(value) || 0 : value
       }
@@ -237,8 +239,10 @@ export default function ProfileManager() {
     setProfileData(prev => ({
       ...prev,
       availability: {
-        ...prev.availability,
+        days: prev.availability?.days || [],
         hours: {
+          start: prev.availability?.hours?.start || '',
+          end: prev.availability?.hours?.end || '',
           ...prev.availability?.hours,
           [name]: value
         }
@@ -256,8 +260,8 @@ export default function ProfileManager() {
       return {
         ...prev,
         availability: {
-          ...prev.availability,
-          days: newDays
+          days: newDays,
+          hours: prev.availability?.hours || { start: '', end: '' }
         }
       };
     });

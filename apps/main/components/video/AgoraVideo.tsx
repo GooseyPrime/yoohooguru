@@ -92,7 +92,16 @@ export default function AgoraVideo({ channel, token, uid, isHost, onLeave }: Ago
   const localVideoRef = useRef<HTMLDivElement>(null);
   const remoteVideoRefs = useRef<{[key: string]: HTMLDivElement | null}>({});
   
+  // Don't render on server side
+  const [isClient, setIsClient] = useState(false);
+  
   useEffect(() => {
+    setIsClient(true);
+  }, []);
+  
+  useEffect(() => {
+    if (!isClient) return;
+    
     // Initialize Agora client
     clientRef.current = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
     
@@ -198,6 +207,10 @@ export default function AgoraVideo({ channel, token, uid, isHost, onLeave }: Ago
       videoTrack.setEnabled(!videoTrack.enabled);
     }
   };
+  
+  if (!isClient) {
+    return <VideoContainer><VideoHeader>Loading video session...</VideoHeader></VideoContainer>;
+  }
   
   return (
     <VideoContainer>

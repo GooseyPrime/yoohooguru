@@ -16,9 +16,8 @@ const webhookLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   skipSuccessfulRequests: false,
-  keyGenerator: (req) => {
-    return req.ip || req.connection.remoteAddress || 'unknown';
-  }
+  // Remove custom keyGenerator to use the default IPv6-compatible one
+});
 });
 
 // Health check endpoint for webhook debugging

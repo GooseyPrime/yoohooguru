@@ -16,9 +16,8 @@ const guruPagesLimiter = rateLimit({
   message: 'Too many requests to guru pages, please try again later',
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req) => {
-    // Use req.ip which respects the app-level trust proxy setting
-    return req.ip || req.connection.remoteAddress || 'unknown';
+  // Remove custom keyGenerator to use the default IPv6-compatible one
+});
   }
 });
 

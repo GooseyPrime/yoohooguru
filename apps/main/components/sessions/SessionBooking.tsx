@@ -2,6 +2,11 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import StripePayment from '../payments/StripePayment';
 
+interface TypeOptionProps {
+  color?: string;
+  selected?: boolean;
+}
+
 const BookingContainer = styled.div`
   max-width: 800px;
   margin: 0 auto;
@@ -126,7 +131,7 @@ const SessionType = styled.div`
   margin-top: 0.5rem;
 `;
 
-const TypeOption = styled.label`
+const TypeOption = styled.label<TypeOptionProps>`
   display: flex;
   align-items: center;
   gap: 0.5rem;
