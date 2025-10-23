@@ -1,4 +1,4 @@
-import { OrbitronContainer, OrbitronHero, OrbitronButton, OrbitronCard, OrbitronSection } from '../../../components/orbitron'
+import { OrbitronContainer, OrbitronHeroSimple, OrbitronButton, OrbitronCard, OrbitronSection } from '../../../components/orbitron'
 import { Header, Footer } from '@yoohooguru/shared'
 import Head from 'next/head'
 
@@ -14,7 +14,7 @@ export default function MainHome() {
       <Header />
 
       <main>
-        <OrbitronHero
+        <OrbitronHeroSimple
           title="A community where you can swap skills, share services, or find trusted local help."
           subtitle="Local connections, meaningful exchanges, and community impact through our trusted skill-sharing platform."
         >
@@ -24,7 +24,7 @@ export default function MainHome() {
           <OrbitronButton href="https://angel.yoohoo.guru" variant="ghost" size="lg">
             Browse Services
           </OrbitronButton>
-        </OrbitronHero>
+        </OrbitronHeroSimple>
 
         <OrbitronSection>
           <div className="max-w-4xl mx-auto mb-16">

@@ -15,15 +15,13 @@ const paymentLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   skipSuccessfulRequests: false,
-  keyGenerator: (req) => {
-    return req.ip || req.connection.remoteAddress || 'unknown';
-  }
+  // Remove custom keyGenerator to use the default IPv6-compatible one
 });
 
 // Get payment configuration
 router.get('/config', (req, res) => {
   const config = getConfig();
-  
+
   res.json({
     success: true,
     data: {
@@ -42,7 +40,7 @@ router.get('/config', (req, res) => {
 router.get('/', (req, res) => {
   res.json({
     success: true,
-    data: { 
+    data: {
       message: 'Payments endpoint - Available',
       endpoints: {
         config: '/api/payments/config',
@@ -80,11 +78,11 @@ router.post('/create-payment-intent', paymentLimiter, validatePaymentIntent, (re
     }
 
     // TODO: Implement Stripe payment intent creation
-    logger.info('Payment intent creation requested', { 
-      amount: req.body.amount, 
-      currency: req.body.currency 
+    logger.info('Payment intent creation requested', {
+      amount: req.body.amount,
+      currency: req.body.currency
     });
-    
+
     res.json({
       success: false,
       message: 'Payment intent creation - Coming soon'

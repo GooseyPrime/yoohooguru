@@ -1,6 +1,6 @@
 import React from 'react';
 import { Header, Footer } from '@yoohooguru/shared';
-import { OrbitronContainer, OrbitronHero } from './orbitron';
+import { OrbitronContainer, OrbitronHeroSimple } from './orbitron';
 
 interface SubdomainLayoutProps {
   title: string;
@@ -20,7 +20,7 @@ export const SubdomainLayout: React.FC<SubdomainLayoutProps> = ({
       <Header />
 
       <main>
-        <OrbitronHero
+        <OrbitronHeroSimple
           title={title}
           subtitle={subtitle}
         />
