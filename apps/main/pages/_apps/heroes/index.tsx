@@ -1,221 +1,108 @@
 import { Header, Footer } from '@yoohooguru/shared';
 import Head from 'next/head';
-import styled from 'styled-components';
 import Link from 'next/link';
-
-const Container = styled.div`
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-`;
-
-const HeroSection = styled.section`
-  background: linear-gradient(135deg, #ff6b6b 0%, #764ba2 100%);
-  color: white;
-  padding: 4rem 2rem;
-  text-align: center;
-`;
-
-const HeroTitle = styled.h1`
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  font-weight: 700;
-`;
-
-const HeroSubtitle = styled.p`
-  font-size: 1.25rem;
-  opacity: 0.95;
-  max-width: 800px;
-  margin: 0 auto 2rem;
-  line-height: 1.6;
-`;
-
-const HeroButtons = styled.div`
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: center;
-  }
-`;
-
-const Button = styled.a`
-  padding: 1rem 2rem;
-  border-radius: 0.5rem;
-  text-decoration: none;
-  font-weight: 600;
-  transition: all 0.2s;
-  cursor: pointer;
-  
-  &.primary {
-    background: white;
-    color: #ff6b6b;
-    
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    }
-  }
-  
-  &.secondary {
-    background: transparent;
-    color: white;
-    border: 2px solid white;
-    
-    &:hover {
-      background: rgba(255, 255, 255, 0.1);
-      transform: translateY(-2px);
-    }
-  }
-`;
-
-const FeaturesSection = styled.section`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 4rem 2rem;
-`;
-
-const SectionTitle = styled.h2`
-  color: #ffffff;
-  font-size: 2.5rem;
-  text-align: center;
-  margin-bottom: 3rem;
-`;
-
-const FeaturesGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-`;
-
-const FeatureCard = styled.div`
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
-  padding: 2rem;
-  text-align: center;
-  transition: transform 0.2s;
-  
-  &:hover {
-    transform: translateY(-4px);
-    border-color: rgba(255, 107, 107, 0.5);
-  }
-`;
-
-const FeatureIcon = styled.div`
-  font-size: 3rem;
-  margin-bottom: 1rem;
-`;
-
-const FeatureTitle = styled.h3`
-  color: #ffffff;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-`;
-
-const FeatureDescription = styled.p`
-  color: #b0b0b0;
-  line-height: 1.6;
-`;
-
-const MissionSection = styled.section`
-  background: rgba(255, 107, 107, 0.1);
-  padding: 4rem 2rem;
-  text-align: center;
-`;
-
-const MissionTitle = styled.h2`
-  color: #ff6b6b;
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
-`;
-
-const MissionDescription = styled.p`
-  color: #b0b0b0;
-  font-size: 1.25rem;
-  line-height: 1.6;
-  max-width: 800px;
-  margin: 0 auto;
-`;
+import { OrbitronContainer, OrbitronCard } from '../../../components/orbitron';
 
 export default function HeroGurusHome() {
   return (
-    <Container>
+    <OrbitronContainer gradient="primary">
       <Head>
         <title>Hero Gurus | Free Accessible Learning | YooHoo.Guru</title>
         <meta name="description" content="Free accessible skill-sharing for people with disabilities. Join our community of adaptive learners and volunteer Gurus." />
       </Head>
-      
+
       <Header />
-      
+
       <main>
-        <HeroSection>
-          <HeroTitle>Hero Gurus Community</HeroTitle>
-          <HeroSubtitle>
-            Free accessible learning for people with disabilities. Our platform connects adaptive learners 
-            with volunteer Gurus who provide specialized, accommodating instruction.
-          </HeroSubtitle>
-          <HeroButtons>
-            <Link href="/skills" passHref>
-              <Button className="primary">
-                Find Accessible Learning →
-              </Button>
-            </Link>
-            <Link href="/heroes/profile" passHref>
-              <Button className="secondary">
-                Become a Hero Guru
-              </Button>
-            </Link>
-          </HeroButtons>
-        </HeroSection>
-        
-        <FeaturesSection>
-          <SectionTitle>Accessible Learning Features</SectionTitle>
-          
-          <FeaturesGrid>
-            <FeatureCard>
-              <FeatureIcon>♿</FeatureIcon>
-              <FeatureTitle>Adaptive Teaching</FeatureTitle>
-              <FeatureDescription>
-                Our Hero Gurus are specially trained to accommodate various disabilities including 
+        {/* Hero Section */}
+        <section className="relative py-20 md:py-32 overflow-hidden">
+          <div className="absolute inset-0">
+            <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-red-500/10 rounded-full blur-3xl animate-pulse-slow" />
+            <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-pink-500/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '2s' }} />
+          </div>
+
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 text-white">
+              Hero Gurus Community
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto">
+              Free accessible learning for people with disabilities. Our platform connects adaptive learners
+              with volunteer Gurus who provide specialized, accommodating instruction.
+            </p>
+            <div className="flex flex-wrap gap-4 justify-center">
+              <Link href="/skills">
+                <button className="px-8 py-4 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-400 hover:to-pink-500 text-white font-bold text-lg rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                  Find Accessible Learning →
+                </button>
+              </Link>
+              <Link href="/heroes/profile">
+                <button className="px-8 py-4 glass-effect hover:glass-effect-strong text-white font-bold text-lg rounded-lg transition-all duration-300 border border-white/30 hover:border-white/50">
+                  Become a Hero Guru
+                </button>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-12">
+            <span className="gradient-text-emerald-blue">Accessible Learning Features</span>
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <OrbitronCard className="p-8 text-center group">
+              <div className="text-6xl mb-6">♿</div>
+              <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-red-400 transition-colors">
+                Adaptive Teaching
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                Our Hero Gurus are specially trained to accommodate various disabilities including
                 visual, auditory, motor, and cognitive impairments.
-              </FeatureDescription>
-            </FeatureCard>
-            
-            <FeatureCard>
-              <FeatureIcon>❤️</FeatureIcon>
-              <FeatureTitle>Completely Free</FeatureTitle>
-              <FeatureDescription>
-                All learning sessions are 100% free with no contracts or obligations. 
+              </p>
+            </OrbitronCard>
+
+            <OrbitronCard className="p-8 text-center group">
+              <div className="text-6xl mb-6">❤️</div>
+              <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-red-400 transition-colors">
+                Completely Free
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                All learning sessions are 100% free with no contracts or obligations.
                 Funded through grants, donations, and community support.
-              </FeatureDescription>
-            </FeatureCard>
-            
-            <FeatureCard>
-              <FeatureIcon>🤝</FeatureIcon>
-              <FeatureTitle>Community Focused</FeatureTitle>
-              <FeatureDescription>
-                Built on volunteerism and community impact. Hero Gurus contribute their time and 
+              </p>
+            </OrbitronCard>
+
+            <OrbitronCard className="p-8 text-center group">
+              <div className="text-6xl mb-6">🤝</div>
+              <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-red-400 transition-colors">
+                Community Focused
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                Built on volunteerism and community impact. Hero Gurus contribute their time and
                 expertise to make learning accessible to all.
-              </FeatureDescription>
-            </FeatureCard>
-          </FeaturesGrid>
-        </FeaturesSection>
-        
-        <MissionSection>
-          <MissionTitle>Our Mission</MissionTitle>
-          <MissionDescription>
-            Hero Gurus is dedicated to breaking down barriers to education and skill development 
-            for people with disabilities. We believe everyone deserves access to learning opportunities, 
-            regardless of their physical or cognitive abilities. Our volunteer Gurus provide 
-            adaptive instruction that accommodates individual needs, making skill-sharing truly inclusive.
-          </MissionDescription>
-        </MissionSection>
+              </p>
+            </OrbitronCard>
+          </div>
+        </section>
+
+        {/* Mission Section */}
+        <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 md:pb-24">
+          <OrbitronCard variant="gradient" className="p-12 text-center">
+            <h2 className="text-4xl font-bold text-red-400 mb-6">
+              Our Mission
+            </h2>
+            <p className="text-gray-300 text-lg leading-relaxed">
+              Hero Gurus is dedicated to breaking down barriers to education and skill development
+              for people with disabilities. We believe everyone deserves access to learning opportunities,
+              regardless of their physical or cognitive abilities. Our volunteer Gurus provide
+              adaptive instruction that accommodates individual needs, making skill-sharing truly inclusive.
+            </p>
+          </OrbitronCard>
+        </section>
       </main>
-      
+
       <Footer />
-    </Container>
+    </OrbitronContainer>
   );
 }

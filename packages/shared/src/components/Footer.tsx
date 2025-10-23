@@ -1,126 +1,113 @@
 import React from 'react';
-import styled from 'styled-components';
 import Logo from './Logo';
-
-const FooterContainer = styled.footer`
-  background: #1a1a2e;
-  color: #b0b0b0;
-  padding: 3rem 0 1.5rem;
-  margin-top: auto;
-  border-top: 1px solid #2a2a3e;
-`;
-
-const FooterContent = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-`;
-
-const FooterGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-`;
-
-const FooterSection = styled.div`
-  h3 {
-    color: #ffffff;
-    font-size: 1.125rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-  }
-
-  p {
-    margin-bottom: 0.5rem;
-    line-height: 1.6;
-    color: #b0b0b0;
-  }
-
-  a {
-    color: #b0b0b0;
-    text-decoration: none;
-    transition: color 0.2s;
-
-    &:hover {
-      color: #667eea;
-    }
-  }
-`;
-
-const FooterLinks = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin: 0;
-
-  li {
-    margin-bottom: 0.5rem;
-  }
-`;
-
-const FooterBottom = styled.div`
-  text-align: center;
-  padding-top: 2rem;
-  border-top: 1px solid #2a2a3e;
-  color: #b0b0b0;
-  font-size: 0.875rem;
-`;
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <FooterContainer>
-      <FooterContent>
-        <FooterGrid>
-          <FooterSection>
+    <footer className="glass-effect-strong border-t border-white/10 mt-auto">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+          {/* Brand Section */}
+          <div>
             <Logo showText={true} size="normal" to="/" />
-            <p>
+            <p className="mt-4 text-gray-400 leading-relaxed">
               A neighborhood-based skill-sharing platform where users exchange skills,
               discover purpose, and create exponential community impact.
             </p>
-          </FooterSection>
+          </div>
 
-          <FooterSection>
-            <h3>Platform</h3>
-            <FooterLinks>
-              <li><a href="/about">About Us</a></li>
-              <li><a href="/how-it-works">How It Works</a></li>
-              <li><a href="/pricing">Pricing</a></li>
-              <li><a href="/blog">Blog</a></li>
-            </FooterLinks>
-          </FooterSection>
+          {/* Platform Links */}
+          <div>
+            <h3 className="text-lg font-semibold text-white mb-4 gradient-text-emerald-blue">
+              Platform
+            </h3>
+            <ul className="space-y-2">
+              <li>
+                <a href="/about" className="text-gray-400 hover:text-emerald-400 transition-colors duration-200">
+                  About Us
+                </a>
+              </li>
+              <li>
+                <a href="/how-it-works" className="text-gray-400 hover:text-emerald-400 transition-colors duration-200">
+                  How It Works
+                </a>
+              </li>
+              <li>
+                <a href="/pricing" className="text-gray-400 hover:text-emerald-400 transition-colors duration-200">
+                  Pricing
+                </a>
+              </li>
+              <li>
+                <a href="/blog" className="text-gray-400 hover:text-emerald-400 transition-colors duration-200">
+                  Blog
+                </a>
+              </li>
+            </ul>
+          </div>
 
-          <FooterSection>
-            <h3>Support</h3>
-            <FooterLinks>
-              <li><a href="/help">Help Center</a></li>
-              <li><a href="/safety">Safety</a></li>
-              <li><a href="/contact">Contact Us</a></li>
-              <li><a href="/faq">FAQ</a></li>
-            </FooterLinks>
-          </FooterSection>
+          {/* Support Links */}
+          <div>
+            <h3 className="text-lg font-semibold text-white mb-4 gradient-text-emerald-blue">
+              Support
+            </h3>
+            <ul className="space-y-2">
+              <li>
+                <a href="/help" className="text-gray-400 hover:text-emerald-400 transition-colors duration-200">
+                  Help Center
+                </a>
+              </li>
+              <li>
+                <a href="/safety" className="text-gray-400 hover:text-emerald-400 transition-colors duration-200">
+                  Safety
+                </a>
+              </li>
+              <li>
+                <a href="/contact" className="text-gray-400 hover:text-emerald-400 transition-colors duration-200">
+                  Contact Us
+                </a>
+              </li>
+              <li>
+                <a href="/faq" className="text-gray-400 hover:text-emerald-400 transition-colors duration-200">
+                  FAQ
+                </a>
+              </li>
+            </ul>
+          </div>
 
-          <FooterSection>
-            <h3>Legal</h3>
-            <FooterLinks>
-              <li><a href="/terms">Terms of Service</a></li>
-              <li><a href="/privacy">Privacy Policy</a></li>
-              <li><a href="/cookies">Cookie Policy</a></li>
-            </FooterLinks>
-          </FooterSection>
-        </FooterGrid>
+          {/* Legal Links */}
+          <div>
+            <h3 className="text-lg font-semibold text-white mb-4 gradient-text-emerald-blue">
+              Legal
+            </h3>
+            <ul className="space-y-2">
+              <li>
+                <a href="/terms" className="text-gray-400 hover:text-emerald-400 transition-colors duration-200">
+                  Terms of Service
+                </a>
+              </li>
+              <li>
+                <a href="/privacy" className="text-gray-400 hover:text-emerald-400 transition-colors duration-200">
+                  Privacy Policy
+                </a>
+              </li>
+              <li>
+                <a href="/cookies" className="text-gray-400 hover:text-emerald-400 transition-colors duration-200">
+                  Cookie Policy
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
 
-        <FooterBottom>
-          <p>&copy; {currentYear} YooHoo.Guru. All rights reserved.</p>
-        </FooterBottom>
-      </FooterContent>
-    </FooterContainer>
+        {/* Bottom Section */}
+        <div className="pt-8 border-t border-white/10 text-center">
+          <p className="text-gray-400 text-sm">
+            &copy; {currentYear} YooHoo.Guru. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
   );
 };
 
