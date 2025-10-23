@@ -38,10 +38,16 @@ const Header: React.FC = () => {
                 Hero Gurus
               </a>
               <a
-                href="https://dashboard.yoohoo.guru"
+                href="/login"
+                className="text-gray-300 hover:text-emerald-400 font-medium transition-colors duration-200"
+              >
+                Login
+              </a>
+              <a
+                href="/signup"
                 className="px-6 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-400 hover:to-blue-400 text-white font-semibold transition-all duration-300 transform hover:scale-105 shadow-glow-emerald"
               >
-                Dashboard
+                Sign Up
               </a>
             </nav>
 
@@ -86,10 +92,16 @@ const Header: React.FC = () => {
               Hero Gurus
             </a>
             <a
-              href="https://dashboard.yoohoo.guru"
+              href="/login"
+              className="text-gray-300 hover:text-emerald-400 font-medium transition-colors duration-200 py-2"
+            >
+              Login
+            </a>
+            <a
+              href="/signup"
               className="px-6 py-3 rounded-lg bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-400 hover:to-blue-400 text-white font-semibold transition-all duration-300 text-center shadow-glow-emerald"
             >
-              Dashboard
+              Sign Up
             </a>
           </nav>
         </div>

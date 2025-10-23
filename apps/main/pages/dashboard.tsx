@@ -3,160 +3,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { Header, Footer } from '@yoohooguru/shared'
 import Head from 'next/head'
-import styled from 'styled-components'
-
-const Container = styled.div`
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-`
-
-const Main = styled.main`
-  flex: 1;
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
-`
-
-const WelcomeSection = styled.section`
-  text-align: center;
-  margin-bottom: 3rem;
-  padding: 2rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-`
-
-const WelcomeTitle = styled.h1`
-  color: #ffffff;
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-`
-
-const WelcomeSubtitle = styled.p`
-  color: #b0b0b0;
-  font-size: 1.2rem;
-  line-height: 1.6;
-`
-
-const DashboardGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  margin-bottom: 3rem;
-`
-
-const DashboardCard = styled.div`
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
-  padding: 2rem;
-  text-align: center;
-  transition: transform 0.2s;
-  
-  &:hover {
-    transform: translateY(-2px);
-    border-color: rgba(102, 126, 234, 0.3);
-  }
-`
-
-const CardIcon = styled.div`
-  font-size: 3rem;
-  margin-bottom: 1rem;
-`
-
-const CardTitle = styled.h3`
-  color: #ffffff;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-`
-
-const CardDescription = styled.p`
-  color: #b0b0b0;
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
-`
-
-const CardButton = styled.button`
-  background: #667eea;
-  color: #ffffff;
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-  
-  &:hover {
-    background: #5a6fd8;
-  }
-`
-
-const LoadingSpinner = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50vh;
-  
-  &::after {
-    content: '';
-    width: 40px;
-    height: 40px;
-    border: 4px solid rgba(255, 255, 255, 0.1);
-    border-top: 4px solid #667eea;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-`
-
-const UserInfo = styled.div`
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-`
-
-const Avatar = styled.img`
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  border: 2px solid rgba(102, 126, 234, 0.3);
-`
-
-const UserDetails = styled.div`
-  flex: 1;
-`
-
-const UserName = styled.h2`
-  color: #ffffff;
-  font-size: 1.5rem;
-  margin-bottom: 0.25rem;
-`
-
-const UserEmail = styled.p`
-  color: #b0b0b0;
-  font-size: 0.9rem;
-`
-
-const UserRoleBadge = styled.span`
-  background: #667eea;
-  color: white;
-  padding: 0.25rem 0.75rem;
-  border-radius: 1rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-left: 1rem;
-`
+import { OrbitronContainer, OrbitronCard, OrbitronButton, OrbitronSection } from '../components/orbitron'
 
 interface User {
   id: string;
@@ -192,16 +39,16 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <Container>
+      <OrbitronContainer gradient="primary">
         <Head>
           <title>Loading Dashboard... | YooHoo.Guru</title>
         </Head>
         <Header />
-        <Main>
-          <LoadingSpinner />
-        </Main>
+        <main className="flex-1 flex items-center justify-center p-8">
+          <div className="w-10 h-10 border-4 border-white/10 border-t-blue-500 rounded-full animate-spin"></div>
+        </main>
         <Footer />
-      </Container>
+      </OrbitronContainer>
     )
   }
 
@@ -379,7 +226,7 @@ export default function Dashboard() {
   const dashboardCards = getDashboardCards();
 
   return (
-    <Container>
+    <OrbitronContainer gradient="primary">
       <Head>
         <title>Dashboard | YooHoo.Guru</title>
         <meta name="description" content="Your YooHoo.Guru dashboard - manage your skills, connections, and learning journey." />
@@ -387,46 +234,59 @@ export default function Dashboard() {
 
       <Header />
 
-      <Main>
+      <main className="flex-1 p-8 max-w-6xl mx-auto w-full">
         {session.user && (
-          <UserInfo>
+          <OrbitronCard className="flex items-center gap-4 p-6 mb-8">
             {session.user.image && (
-              <Avatar src={session.user.image} alt={session.user.name || 'User'} />
+              <img 
+                src={session.user.image} 
+                alt={session.user.name || 'User'} 
+                className="w-15 h-15 rounded-full border-2 border-blue-500/30"
+              />
             )}
-            <UserDetails>
-              <UserName>
+            <div className="flex-1">
+              <h2 className="text-white text-xl mb-1 flex items-center gap-3">
                 {session.user.name || 'Welcome!'}
-                <UserRoleBadge>{session.user.role || 'Learner'}</UserRoleBadge>
-              </UserName>
-              <UserEmail>{session.user.email}</UserEmail>
-            </UserDetails>
-          </UserInfo>
+                <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
+                  {session.user.role || 'Learner'}
+                </span>
+              </h2>
+              <p className="text-gray-400 text-sm">{session.user.email}</p>
+            </div>
+          </OrbitronCard>
         )}
 
-        <WelcomeSection>
-          <WelcomeTitle>Welcome to Your Dashboard</WelcomeTitle>
-          <WelcomeSubtitle>
-            Start your journey of skill sharing and continuous learning. Explore our features below to get started.
-          </WelcomeSubtitle>
-        </WelcomeSection>
+        <OrbitronSection>
+          <OrbitronCard variant="gradient" className="text-center p-8 mb-12">
+            <h1 className="text-4xl font-bold text-white mb-2">Welcome to Your Dashboard</h1>
+            <p className="text-xl text-gray-300 leading-relaxed">
+              Start your journey of skill sharing and continuous learning. Explore our features below to get started.
+            </p>
+          </OrbitronCard>
 
-        <DashboardGrid>
-          {dashboardCards.map((card, index) => (
-            <DashboardCard key={index}>
-              <CardIcon>{card.icon}</CardIcon>
-              <CardTitle>{card.title}</CardTitle>
-              <CardDescription>
-                {card.description}
-              </CardDescription>
-              <CardButton onClick={() => handleNavigate(card.path)}>
-                {card.action}
-              </CardButton>
-            </DashboardCard>
-          ))}
-        </DashboardGrid>
-      </Main>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {dashboardCards.map((card, index) => (
+              <OrbitronCard key={index} className="p-6 text-center group hover:-translate-y-1 transition-transform">
+                <div className="text-5xl mb-4">{card.icon}</div>
+                <h3 className="text-white text-xl font-bold mb-3">{card.title}</h3>
+                <p className="text-gray-400 leading-relaxed mb-6">
+                  {card.description}
+                </p>
+                <OrbitronButton 
+                  href={card.path}
+                  variant="gradient" 
+                  size="md"
+                  className="w-full"
+                >
+                  {card.action}
+                </OrbitronButton>
+              </OrbitronCard>
+            ))}
+          </div>
+        </OrbitronSection>
+      </main>
 
       <Footer />
-    </Container>
+    </OrbitronContainer>
   )
 }
