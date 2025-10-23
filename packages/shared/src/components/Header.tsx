@@ -1,117 +1,99 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import Logo from './Logo';
-
-const HeaderContainer = styled.header`
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: #1a1a2e;
-  border-bottom: 1px solid #2a2a3e;
-  padding: 1rem 0;
-`;
-
-const HeaderContent = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const Nav = styled.nav`
-  display: flex;
-  gap: 2rem;
-  align-items: center;
-
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-
-const NavLink = styled.a`
-  color: #b0b0b0;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
-
-  &:hover {
-    color: #667eea;
-  }
-`;
-
-const Button = styled.a`
-  padding: 0.5rem 1.5rem;
-  border-radius: 0.5rem;
-  text-decoration: none;
-  font-weight: 600;
-  transition: all 0.2s;
-  background: #667eea;
-  color: white;
-
-  &:hover {
-    background: #5568d3;
-    transform: translateY(-1px);
-  }
-`;
-
-const MobileMenuButton = styled.button`
-  display: none;
-  background: none;
-  border: none;
-  color: #b0b0b0;
-  font-size: 1.5rem;
-  cursor: pointer;
-
-  @media (max-width: 768px) {
-    display: block;
-  }
-`;
-
-const MobileNav = styled.div<{ isOpen: boolean }>`
-  display: none;
-  
-  @media (max-width: 768px) {
-    display: ${props => props.isOpen ? 'flex' : 'none'};
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-    background: #1a1a2e;
-    border-top: 1px solid #2a2a3e;
-  }
-`;
 
 const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <>
-      <HeaderContainer>
-        <HeaderContent>
-          <Logo showText={true} size="normal" to="/" />
-          
-          <Nav>
-            <NavLink href="https://www.yoohoo.guru">Home</NavLink>
-            <NavLink href="https://angel.yoohoo.guru">Angel's List</NavLink>
-            <NavLink href="https://coach.yoohoo.guru">Coach Guru</NavLink>
-            <NavLink href="https://heroes.yoohoo.guru">Hero Gurus</NavLink>
-            <Button href="https://dashboard.yoohoo.guru">Dashboard</Button>
-          </Nav>
+      <header className="sticky top-0 z-50 glass-effect-strong border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <Logo showText={true} size="normal" to="/" />
 
-          <MobileMenuButton onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            ☰
-          </MobileMenuButton>
-        </HeaderContent>
-      </HeaderContainer>
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center gap-8">
+              <a
+                href="https://www.yoohoo.guru"
+                className="text-gray-300 hover:text-emerald-400 font-medium transition-colors duration-200"
+              >
+                Home
+              </a>
+              <a
+                href="https://angel.yoohoo.guru"
+                className="text-gray-300 hover:text-emerald-400 font-medium transition-colors duration-200"
+              >
+                Angel&apos;s List
+              </a>
+              <a
+                href="https://coach.yoohoo.guru"
+                className="text-gray-300 hover:text-emerald-400 font-medium transition-colors duration-200"
+              >
+                Coach Guru
+              </a>
+              <a
+                href="https://heroes.yoohoo.guru"
+                className="text-gray-300 hover:text-emerald-400 font-medium transition-colors duration-200"
+              >
+                Hero Gurus
+              </a>
+              <a
+                href="https://dashboard.yoohoo.guru"
+                className="px-6 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-400 hover:to-blue-400 text-white font-semibold transition-all duration-300 transform hover:scale-105 shadow-glow-emerald"
+              >
+                Dashboard
+              </a>
+            </nav>
 
-      <MobileNav isOpen={mobileMenuOpen}>
-        <NavLink href="https://www.yoohoo.guru">Home</NavLink>
-        <NavLink href="https://angel.yoohoo.guru">Angel's List</NavLink>
-        <NavLink href="https://coach.yoohoo.guru">Coach Guru</NavLink>
-        <NavLink href="https://heroes.yoohoo.guru">Hero Gurus</NavLink>
-        <NavLink href="https://dashboard.yoohoo.guru">Dashboard</NavLink>
-      </MobileNav>
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden text-gray-300 hover:text-white text-2xl transition-colors"
+              aria-label="Toggle menu"
+            >
+              ☰
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Navigation */}
+      {mobileMenuOpen && (
+        <div className="md:hidden glass-effect-strong border-b border-white/10 animate-fade-in">
+          <nav className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-4">
+            <a
+              href="https://www.yoohoo.guru"
+              className="text-gray-300 hover:text-emerald-400 font-medium transition-colors duration-200 py-2"
+            >
+              Home
+            </a>
+            <a
+              href="https://angel.yoohoo.guru"
+              className="text-gray-300 hover:text-emerald-400 font-medium transition-colors duration-200 py-2"
+            >
+              Angel&apos;s List
+            </a>
+            <a
+              href="https://coach.yoohoo.guru"
+              className="text-gray-300 hover:text-emerald-400 font-medium transition-colors duration-200 py-2"
+            >
+              Coach Guru
+            </a>
+            <a
+              href="https://heroes.yoohoo.guru"
+              className="text-gray-300 hover:text-emerald-400 font-medium transition-colors duration-200 py-2"
+            >
+              Hero Gurus
+            </a>
+            <a
+              href="https://dashboard.yoohoo.guru"
+              className="px-6 py-3 rounded-lg bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-400 hover:to-blue-400 text-white font-semibold transition-all duration-300 text-center shadow-glow-emerald"
+            >
+              Dashboard
+            </a>
+          </nav>
+        </div>
+      )}
     </>
   );
 };

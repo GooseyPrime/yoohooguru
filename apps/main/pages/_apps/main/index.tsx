@@ -1,174 +1,10 @@
+import { OrbitronContainer, OrbitronHero, OrbitronButton, OrbitronCard, OrbitronSection } from '../../../components/orbitron'
 import { Header, Footer } from '@yoohooguru/shared'
 import Head from 'next/head'
-import styled from 'styled-components'
 
-const Container = styled.div`
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-`
-
-const HeroSection = styled.section`
-  padding: 72px 0 48px;
-  text-align: center;
-  background: radial-gradient(1200px 600px at 50% -10%, rgba(124,140,255,.12), transparent), 
-              linear-gradient(180deg, rgba(255,255,255,.02), transparent);
-  position: relative;
-  overflow: hidden;
-`
-
-const HeroContent = styled.div`
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 1rem;
-  position: relative;
-  z-index: 1;
-
-  h1 {
-    font-size: clamp(2.625rem, 5vw, 3.5rem);
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    line-height: 1.2;
-    letter-spacing: -0.025em;
-    color: #ffffff;
-  }
-
-  p {
-    font-size: clamp(1rem, 2vw, 1.125rem);
-    margin-bottom: 2rem;
-    color: #b0b0b0;
-    line-height: 1.6;
-  }
-`
-
-const HeroButtons = styled.div`
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  margin-top: 2rem;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: center;
-  }
-`
-
-const Button = styled.a`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 1rem 2rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.2s;
-  cursor: pointer;
-
-  &.primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-    }
-  }
-
-  &.outline {
-    border: 2px solid #667eea;
-    color: #667eea;
-    
-    &:hover {
-      background: rgba(102, 126, 234, 0.1);
-    }
-  }
-`
-
-const HeroTagline = styled.div`
-  max-width: 900px;
-  margin: 3rem auto 2rem;
-  padding: 2rem;
-  text-align: center;
-  background: rgba(124, 140, 255, 0.05);
-  border: 1px solid rgba(124, 140, 255, 0.2);
-  border-radius: 1rem;
-  
-  h2 {
-    font-size: clamp(1.5rem, 3vw, 2rem);
-    font-weight: 600;
-    margin-bottom: 1rem;
-    line-height: 1.4;
-    color: #ffffff;
-  }
-  
-  p {
-    font-size: clamp(1rem, 2vw, 1.125rem);
-    color: #b0b0b0;
-    line-height: 1.8;
-  }
-`
-
-const WelcomeTiles = styled.div`
-  max-width: 1100px;
-  margin: 24px auto;
-  padding: 0 16px 48px;
-  display: grid;
-  gap: 20px;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-`
-
-const Tile = styled.div`
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
-  padding: 2rem;
-  transition: transform 0.2s, border-color 0.2s;
-  
-  &:hover {
-    transform: translateY(-4px);
-    border-color: rgba(102, 126, 234, 0.5);
-  }
-
-  .icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 0.5rem;
-    background: rgba(124, 140, 255, 0.1);
-    color: #667eea;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1rem;
-    font-size: 24px;
-  }
-
-  h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-    color: #ffffff;
-  }
-
-  p {
-    color: #b0b0b0;
-    line-height: 1.5;
-    margin-bottom: 1.5rem;
-  }
-
-  a {
-    color: #667eea;
-    text-decoration: none;
-    font-weight: 500;
-    
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-`
-
-export default function Home() {
+export default function MainHome() {
   return (
-    <Container>
+    <OrbitronContainer gradient="primary">
       <Head>
         <title>YooHoo.Guru - Community Skill Sharing Platform</title>
         <meta name="description" content="Exchange skills, discover purpose, and create exponential community impact." />
@@ -178,70 +14,91 @@ export default function Home() {
       <Header />
 
       <main>
-        <HeroSection>
-          <HeroContent>
-            <h1>A community where you can swap skills, share services, or find trusted local help.</h1>
-            <p>
-              Local connections, meaningful exchanges, and community impact through 
-              our trusted skill-sharing platform.
-            </p>
-            <HeroButtons>
-              <Button href="/signup" className="primary">
-                Start Your Journey →
-              </Button>
-              <Button href="https://angel.yoohoo.guru" className="outline">
-                Browse Services
-              </Button>
-            </HeroButtons>
-          </HeroContent>
-        </HeroSection>
+        <OrbitronHero
+          title="A community where you can swap skills, share services, or find trusted local help."
+          subtitle="Local connections, meaningful exchanges, and community impact through our trusted skill-sharing platform."
+        >
+          <OrbitronButton href="/signup" variant="gradient" size="lg">
+            Start Your Journey →
+          </OrbitronButton>
+          <OrbitronButton href="https://angel.yoohoo.guru" variant="ghost" size="lg">
+            Browse Services
+          </OrbitronButton>
+        </OrbitronHero>
 
-        <HeroTagline>
-          <h2>Learn. Earn. Empower.</h2>
-          <p>
-            Join a world where knowledge, kindness, and capability meet. Choose your path: 
-            <strong> Become a Guru. Learn from Gurus. List a Gig.</strong> Help or get help through Angel&apos;s List. 
-            <strong> Join the Heros.</strong> Empower and be empowered through adaptive teaching.
-          </p>
-        </HeroTagline>
+        <OrbitronSection>
+          <div className="max-w-4xl mx-auto mb-16">
+            <OrbitronCard variant="gradient" className="p-8">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center gradient-text-emerald-blue">
+                Learn. Earn. Empower.
+              </h2>
+              <p className="text-lg text-gray-300 text-center leading-relaxed">
+                Join a world where knowledge, kindness, and capability meet. Choose your path:
+                <strong className="text-emerald-400"> Become a Guru. Learn from Gurus. List a Gig.</strong> Help or get help through Angel&apos;s List.
+                <strong className="text-blue-400"> Join the Heroes.</strong> Empower and be empowered through adaptive teaching.
+              </p>
+            </OrbitronCard>
+          </div>
 
-        <WelcomeTiles>
-          <Tile>
-            <div className="icon">
-              🎓
-            </div>
-            <h3>SkillShare with Coach Guru</h3>
-            <p>Learn from Gurus. Become a Guru. Exchange knowledge and skills through personalized coaching.</p>
-            <a href="https://coach.yoohoo.guru">
-              Explore Coach Guru →
-            </a>
-          </Tile>
-          
-          <Tile>
-            <div className="icon">
-              🔧
-            </div>
-            <h3>Angel&apos;s List</h3>
-            <p>List a Gig. Help or get help through Angel&apos;s List. Find local services and offer your help.</p>
-            <a href="https://angel.yoohoo.guru">
-              Explore Angel&apos;s List →
-            </a>
-          </Tile>
-          
-          <Tile>
-            <div className="icon">
-              ❤️
-            </div>
-            <h3>Hero Guru&apos;s</h3>
-            <p>Join the Heros. Empower and be empowered through adaptive teaching and inclusive learning.</p>
-            <a href="https://heroes.yoohoo.guru">
-              Explore Hero Guru&apos;s →
-            </a>
-          </Tile>
-        </WelcomeTiles>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <OrbitronCard className="p-8 group">
+              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-emerald-500/20 to-teal-600/20 border border-emerald-500/30 flex items-center justify-center text-4xl mb-6 group-hover:scale-110 transition-transform">
+                🎓
+              </div>
+              <h3 className="text-2xl font-bold mb-3 text-white group-hover:text-emerald-400 transition-colors">
+                SkillShare with Coach Guru
+              </h3>
+              <p className="text-gray-400 mb-6 leading-relaxed">
+                Learn from Gurus. Become a Guru. Exchange knowledge and skills through personalized coaching.
+              </p>
+              <a
+                href="https://coach.yoohoo.guru"
+                className="inline-flex items-center text-emerald-400 font-semibold hover:text-emerald-300 transition-colors group-hover:translate-x-2 transform duration-300"
+              >
+                Explore Coach Guru →
+              </a>
+            </OrbitronCard>
+
+            <OrbitronCard className="p-8 group">
+              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-600/20 border border-purple-500/30 flex items-center justify-center text-4xl mb-6 group-hover:scale-110 transition-transform">
+                🔧
+              </div>
+              <h3 className="text-2xl font-bold mb-3 text-white group-hover:text-purple-400 transition-colors">
+                Angel&apos;s List
+              </h3>
+              <p className="text-gray-400 mb-6 leading-relaxed">
+                List a Gig. Help or get help through Angel&apos;s List. Find local services and offer your help.
+              </p>
+              <a
+                href="https://angel.yoohoo.guru"
+                className="inline-flex items-center text-purple-400 font-semibold hover:text-purple-300 transition-colors group-hover:translate-x-2 transform duration-300"
+              >
+                Explore Angel&apos;s List →
+              </a>
+            </OrbitronCard>
+
+            <OrbitronCard className="p-8 group">
+              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-blue-500/20 to-indigo-600/20 border border-blue-500/30 flex items-center justify-center text-4xl mb-6 group-hover:scale-110 transition-transform">
+                ❤️
+              </div>
+              <h3 className="text-2xl font-bold mb-3 text-white group-hover:text-blue-400 transition-colors">
+                Hero Gurus
+              </h3>
+              <p className="text-gray-400 mb-6 leading-relaxed">
+                Join the Heroes. Empower and be empowered through adaptive teaching and inclusive learning.
+              </p>
+              <a
+                href="https://heroes.yoohoo.guru"
+                className="inline-flex items-center text-blue-400 font-semibold hover:text-blue-300 transition-colors group-hover:translate-x-2 transform duration-300"
+              >
+                Explore Hero Gurus →
+              </a>
+            </OrbitronCard>
+          </div>
+        </OrbitronSection>
       </main>
 
       <Footer />
-    </Container>
+    </OrbitronContainer>
   )
 }
