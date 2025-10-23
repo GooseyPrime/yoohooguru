@@ -66,10 +66,6 @@ const OrbitronHero: React.FC = () => {
         ></motion.div>
       </div>
       
-              {/* Temporary TEST ELEMENT to verify changes are working */}
-        <div style={{ position: 'fixed', top: '10px', left: '10px', background: 'red', color: 'white', padding: '10px', zIndex: 9999 }}>
-          ICON SIZE TEST - w-2 h-2
-        </div>
 
         {/* Hero Text */}
       <div className="relative z-10 pt-20 pb-16">
