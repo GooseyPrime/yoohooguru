@@ -1,229 +1,103 @@
 import { Header, Footer } from '@yoohooguru/shared';
 import Head from 'next/head';
-import styled from 'styled-components';
 import Link from 'next/link';
-
-const Container = styled.div`
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-`;
-
-const HeroSection = styled.section`
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 4rem 2rem;
-  text-align: center;
-`;
-
-const HeroTitle = styled.h1`
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  font-weight: 700;
-`;
-
-const HeroSubtitle = styled.p`
-  font-size: 1.25rem;
-  opacity: 0.95;
-  max-width: 800px;
-  margin: 0 auto 2rem;
-  line-height: 1.6;
-`;
-
-const HeroButtons = styled.div`
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: center;
-  }
-`;
-
-const Button = styled.a`
-  padding: 1rem 2rem;
-  border-radius: 0.5rem;
-  text-decoration: none;
-  font-weight: 600;
-  transition: all 0.2s;
-  cursor: pointer;
-  
-  &.primary {
-    background: white;
-    color: #667eea;
-    
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    }
-  }
-  
-  &.secondary {
-    background: transparent;
-    color: white;
-    border: 2px solid white;
-    
-    &:hover {
-      background: rgba(255, 255, 255, 0.1);
-      transform: translateY(-2px);
-    }
-  }
-`;
-
-const FeaturesSection = styled.section`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 4rem 2rem;
-`;
-
-const SectionTitle = styled.h2`
-  color: #ffffff;
-  font-size: 2.5rem;
-  text-align: center;
-  margin-bottom: 3rem;
-`;
-
-const FeaturesGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-`;
-
-const FeatureCard = styled.div`
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
-  padding: 2rem;
-  text-align: center;
-  transition: transform 0.2s;
-  
-  &:hover {
-    transform: translateY(-4px);
-    border-color: rgba(102, 126, 234, 0.5);
-  }
-`;
-
-const FeatureIcon = styled.div`
-  font-size: 3rem;
-  margin-bottom: 1rem;
-`;
-
-const FeatureTitle = styled.h3`
-  color: #ffffff;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-`;
-
-const FeatureDescription = styled.p`
-  color: #b0b0b0;
-  line-height: 1.6;
-`;
-
-const CommissionInfo = styled.div`
-  background: rgba(102, 126, 234, 0.1);
-  border: 1px solid rgba(102, 126, 234, 0.3);
-  border-radius: 1rem;
-  padding: 2rem;
-  text-align: center;
-  margin: 3rem 0;
-`;
-
-const CommissionTitle = styled.h3`
-  color: #667eea;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-`;
-
-const CommissionRate = styled.div`
-  font-size: 2rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 1rem;
-`;
-
-const CommissionDescription = styled.p`
-  color: #b0b0b0;
-  line-height: 1.6;
-  max-width: 600px;
-  margin: 0 auto;
-`;
+import { OrbitronContainer, OrbitronCard, OrbitronButton, OrbitronSection } from '../../../components/orbitron';
 
 export default function CoachGuruHome() {
   return (
-    <Container>
+    <OrbitronContainer gradient="primary">
       <Head>
-        <title>Coach Guru | Paid Skill-Sharing Marketplace | YooHoo.Guru</title>
-        <meta name="description" content="Learn from expert Gurus and earn by sharing your skills on our paid skill-sharing marketplace." />
+        <title>Coach Guru | Professional Skill Teaching | YooHoo.Guru</title>
+        <meta name="description" content="Share your expertise and earn income through professional skill coaching. Join our community of expert instructors." />
       </Head>
-      
+
       <Header />
-      
+
       <main>
-        <HeroSection>
-          <HeroTitle>Coach Guru Marketplace</HeroTitle>
-          <HeroSubtitle>
-            Learn from expert Gurus and earn by sharing your skills. Our platform connects passionate 
-            learners with skilled teachers for one-time paid sessions.
-          </HeroSubtitle>
-          <HeroButtons>
-            <Link href="/skills" passHref>
-              <Button className="primary">
-                Find a Guru →
-              </Button>
-            </Link>
-            <Link href="/guru/profile" passHref>
-              <Button className="secondary">
-                Become a Guru
-              </Button>
-            </Link>
-          </HeroButtons>
-        </HeroSection>
-        
-        <FeaturesSection>
-          <SectionTitle>How Coach Guru Works</SectionTitle>
-          
-          <FeaturesGrid>
-            <FeatureCard>
-              <FeatureIcon>🔍</FeatureIcon>
-              <FeatureTitle>Find Your Guru</FeatureTitle>
-              <FeatureDescription>
+        {/* Hero Section */}
+        <section className="relative py-20 md:py-32 overflow-hidden">
+          <div className="absolute inset-0">
+            <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-emerald-500/10 rounded-full blur-3xl animate-pulse-slow" />
+            <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-blue-500/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '2s' }} />
+          </div>
+
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 text-white">
+              Coach Guru Platform
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto">
+              Share your expertise and earn income through professional skill coaching. 
+              Join our community of expert instructors and start teaching what you love.
+            </p>
+            <div className="flex flex-wrap gap-4 justify-center">
+              <OrbitronButton href="/signup" variant="gradient" size="lg">
+                Become a Guru →
+              </OrbitronButton>
+              <OrbitronButton href="/skills" variant="ghost" size="lg">
+                Find a Coach
+              </OrbitronButton>
+            </div>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <OrbitronSection>
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-12">
+            <span className="gradient-text-emerald-blue">How Coach Guru Works</span>
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <OrbitronCard className="p-8 text-center group">
+              <div className="text-6xl mb-6">🔍</div>
+              <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-emerald-400 transition-colors">
+                Find Your Guru
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
                 Browse our extensive marketplace of skilled Gurus across 24 categories. 
                 Filter by skill, price, availability, and ratings to find the perfect match.
-              </FeatureDescription>
-            </FeatureCard>
-            
-            <FeatureCard>
-              <FeatureIcon>📅</FeatureIcon>
-              <FeatureTitle>Book a Session</FeatureTitle>
-              <FeatureDescription>
+              </p>
+            </OrbitronCard>
+
+            <OrbitronCard className="p-8 text-center group">
+              <div className="text-6xl mb-6">📅</div>
+              <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-emerald-400 transition-colors">
+                Book a Session
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
                 Schedule one-time learning sessions with your chosen Guru. 
                 Choose between video conferencing or in-person meetings based on location.
-              </FeatureDescription>
-            </FeatureCard>
-            
-            <FeatureCard>
-              <FeatureIcon>💳</FeatureIcon>
-              <FeatureTitle>Secure Payments</FeatureTitle>
-              <FeatureDescription>
+              </p>
+            </OrbitronCard>
+
+            <OrbitronCard className="p-8 text-center group">
+              <div className="text-6xl mb-6">💳</div>
+              <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-emerald-400 transition-colors">
+                Secure Payments
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
                 All payments are processed securely through Stripe with 48-hour escrow protection. 
                 Funds are released to Gurus after successful session completion.
-              </FeatureDescription>
-            </FeatureCard>
-          </FeaturesGrid>
-          
-          <CommissionInfo>
-            <CommissionTitle>Platform Commission</CommissionTitle>
-            <CommissionRate>15%</CommissionRate>
-            <CommissionDescription>
+              </p>
+            </OrbitronCard>
+          </div>
+
+          {/* Commission Info */}
+          <OrbitronCard variant="gradient" className="text-center p-12 mt-12">
+            <h3 className="text-2xl font-bold text-emerald-400 mb-4">
+              Platform Commission
+            </h3>
+            <div className="text-4xl font-bold text-white mb-4">
+              15%
+            </div>
+            <p className="text-gray-300 leading-relaxed max-w-2xl mx-auto">
               Coach Guru charges a 15% platform commission on all transactions. 
               This fee supports platform maintenance, security, and quality assurance.
-            </CommissionDescription>
-          </CommissionInfo>
-        </FeaturesSection>
+            </p>
+          </OrbitronCard>
+        </OrbitronSection>
       </main>
-      
+
       <Footer />
-    </Container>
+    </OrbitronContainer>
   );
 }

@@ -41,15 +41,26 @@ export function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
   const hostname = request.headers.get("host") || "";
   
+  // Skip middleware for API routes, static files, and auth
+  if (url.pathname.startsWith("/api") || 
+      url.pathname.startsWith("/_next") || 
+      url.pathname.startsWith("/favicon") ||
+      url.pathname.startsWith("/auth")) {
+    return NextResponse.next();
+  }
+  
   // Extract subdomain from hostname
   // Examples: 
   // - angel.yoohoo.guru -> angel
   // - www.yoohoo.guru -> www
   // - yoohoo.guru -> www (default)
-  const subdomain = hostname.split(".")[0];
+  const subdomain = hostname.includes("yoohoo.guru") ? hostname.split(".")[0] : "www";
   
   // Handle root domain (yoohoo.guru) as www
-  const targetSubdomain = hostname === "yoohoo.guru" || hostname === "localhost:3000" 
+  const targetSubdomain = hostname === "yoohoo.guru" || 
+                         hostname === "localhost:3000" || 
+                         hostname === "localhost:3001" ||
+                         subdomain === "www"
     ? "www" 
     : subdomain;
   
@@ -59,14 +70,33 @@ export function middleware(request: NextRequest) {
   // If subdomain not found in map, default to main
   const targetApp = appDir || "main";
   
-  // For www subdomain, don't rewrite if it's already the root path
-  // This prevents the redirect loop
-  if (targetSubdomain === "www" && url.pathname === "/") {
-    return NextResponse.next();
+  // For www subdomain and main app, don't rewrite if it's already the root path or login/signup
+  // This prevents the redirect loop and ensures proper routing
+  if (targetSubdomain === "www" && targetApp === "main") {
+    // Allow direct access to login, signup, dashboard, etc. without rewriting
+    if (url.pathname === "/" || 
+        url.pathname === "/login" || 
+        url.pathname === "/signup" ||
+        url.pathname === "/dashboard" ||
+        url.pathname === "/privacy" ||
+        url.pathname === "/terms") {
+      return NextResponse.next();
+    }
   }
   
   // Only rewrite if the path doesn't already start with /_apps
   if (!url.pathname.startsWith("/_apps")) {
+    // Skip rewriting for certain main app paths to prevent conflicts
+    if (targetApp === "main" && (
+        url.pathname === "/" ||
+        url.pathname.startsWith("/login") ||
+        url.pathname.startsWith("/signup") ||
+        url.pathname.startsWith("/dashboard") ||
+        url.pathname.startsWith("/api")
+    )) {
+      return NextResponse.next();
+    }
+    
     // Rewrite the URL to the appropriate app directory
     // The rewrite is internal - the user still sees the original URL
     url.pathname = `/_apps/${targetApp}${url.pathname}`;

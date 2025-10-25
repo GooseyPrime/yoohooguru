@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSession, signOut } from 'next-auth/react';
 import Logo from './Logo';
 
 const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { data: session, status } = useSession();
 
   return (
     <>
@@ -37,18 +39,48 @@ const Header: React.FC = () => {
               >
                 Hero Gurus
               </a>
-              <a
-                href="/login"
-                className="text-gray-300 hover:text-emerald-400 font-medium transition-colors duration-200"
-              >
-                Login
-              </a>
-              <a
-                href="/signup"
-                className="px-6 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-400 hover:to-blue-400 text-white font-semibold transition-all duration-300 transform hover:scale-105 shadow-glow-emerald"
-              >
-                Sign Up
-              </a>
+              
+              {/* Conditional Navigation based on authentication */}
+              {status === 'loading' ? (
+                <div className="w-6 h-6 border-2 border-gray-300 border-t-emerald-400 rounded-full animate-spin"></div>
+              ) : session ? (
+                <div className="flex items-center gap-4">
+                  <a
+                    href="/dashboard"
+                    className="text-gray-300 hover:text-emerald-400 font-medium transition-colors duration-200"
+                  >
+                    Dashboard
+                  </a>
+                  {session.user?.image && (
+                    <img 
+                      src={session.user.image} 
+                      alt={session.user.name || 'User'} 
+                      className="w-8 h-8 rounded-full border border-emerald-400/30"
+                    />
+                  )}
+                  <button
+                    onClick={() => signOut({ callbackUrl: '/' })}
+                    className="px-4 py-2 rounded-lg bg-red-600/20 hover:bg-red-600/30 text-red-400 hover:text-red-300 font-medium transition-all duration-200 border border-red-600/30"
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-4">
+                  <a
+                    href="/login"
+                    className="text-gray-300 hover:text-emerald-400 font-medium transition-colors duration-200"
+                  >
+                    Login
+                  </a>
+                  <a
+                    href="/signup"
+                    className="px-6 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-400 hover:to-blue-400 text-white font-semibold transition-all duration-300 transform hover:scale-105 shadow-glow-emerald"
+                  >
+                    Sign Up
+                  </a>
+                </div>
+              )}
             </nav>
 
             {/* Mobile Menu Button */}
@@ -91,18 +123,51 @@ const Header: React.FC = () => {
             >
               Hero Gurus
             </a>
-            <a
-              href="/login"
-              className="text-gray-300 hover:text-emerald-400 font-medium transition-colors duration-200 py-2"
-            >
-              Login
-            </a>
-            <a
-              href="/signup"
-              className="px-6 py-3 rounded-lg bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-400 hover:to-blue-400 text-white font-semibold transition-all duration-300 text-center shadow-glow-emerald"
-            >
-              Sign Up
-            </a>
+            
+            {/* Mobile Auth Navigation */}
+            {status === 'loading' ? (
+              <div className="w-6 h-6 border-2 border-gray-300 border-t-emerald-400 rounded-full animate-spin mx-auto"></div>
+            ) : session ? (
+              <div className="flex flex-col gap-4">
+                <a
+                  href="/dashboard"
+                  className="text-gray-300 hover:text-emerald-400 font-medium transition-colors duration-200 py-2"
+                >
+                  Dashboard
+                </a>
+                <div className="flex items-center gap-3 py-2">
+                  {session.user?.image && (
+                    <img 
+                      src={session.user.image} 
+                      alt={session.user.name || 'User'} 
+                      className="w-8 h-8 rounded-full border border-emerald-400/30"
+                    />
+                  )}
+                  <span className="text-gray-300 text-sm">{session.user?.name}</span>
+                </div>
+                <button
+                  onClick={() => signOut({ callbackUrl: '/' })}
+                  className="px-6 py-3 rounded-lg bg-red-600/20 hover:bg-red-600/30 text-red-400 hover:text-red-300 font-medium transition-all duration-200 border border-red-600/30 text-center"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-4">
+                <a
+                  href="/login"
+                  className="text-gray-300 hover:text-emerald-400 font-medium transition-colors duration-200 py-2"
+                >
+                  Login
+                </a>
+                <a
+                  href="/signup"
+                  className="px-6 py-3 rounded-lg bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-400 hover:to-blue-400 text-white font-semibold transition-all duration-300 text-center shadow-glow-emerald"
+                >
+                  Sign Up
+                </a>
+              </div>
+            )}
           </nav>
         </div>
       )}
