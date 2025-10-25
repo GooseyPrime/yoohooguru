@@ -8,12 +8,12 @@
     "autoAlias": false,
     "autoJobCancelation": true
   },
-  
+
   "buildCommand": "cd apps/main && npm run build",
   "outputDirectory": "apps/main/.next",
   "installCommand": "npm ci && cd apps/main && npm ci",
   "framework": "nextjs",
-  
+
   "redirects": [
     {
       "source": "/",
