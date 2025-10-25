@@ -1,0 +1,16 @@
+{
+  "name": "YooHoo Guru",
+  "short_name": "YooHoo",
+  "description": "AI-powered content and skill-sharing platform",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#667eea",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}
