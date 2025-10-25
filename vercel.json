@@ -28,21 +28,45 @@
     },
     {
       "source": "/terms",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.yoohoo.guru"
+        }
+      ],
       "destination": "/legal/terms",
       "permanent": false
     },
     {
       "source": "/privacy",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.yoohoo.guru"
+        }
+      ],
       "destination": "/legal/privacy",
       "permanent": false
     },
     {
       "source": "/safety",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.yoohoo.guru"
+        }
+      ],
       "destination": "/legal/safety",
       "permanent": false
     },
     {
       "source": "/contact",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.yoohoo.guru"
+        }
+      ],
       "destination": "/support/contact",
       "permanent": false
     }
@@ -50,12 +74,30 @@
 
   "rewrites": [
     {
-      "source": "/api/:path*",
+      "source": "/api/backend/:path*",
       "destination": "https://api.yoohoo.guru/api/:path*"
     }
   ],
 
   "headers": [
+    {
+      "source": "/_next/static/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/static/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
     {
       "source": "/:path*",
       "headers": [
