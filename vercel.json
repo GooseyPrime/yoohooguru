@@ -27,11 +27,6 @@
       "permanent": true
     },
     {
-      "source": "/dashboard",
-      "destination": "/_apps/dashboard",
-      "permanent": false
-    },
-    {
       "source": "/terms",
       "destination": "/legal/terms",
       "permanent": false
@@ -54,10 +49,6 @@
   ],
 
   "rewrites": [
-    {
-      "source": "/_apps/:app*",
-      "destination": "/_apps/:app*"
-    },
     {
       "source": "/api/:path*",
       "destination": "https://api.yoohoo.guru/api/:path*"
