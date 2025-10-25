@@ -1,108 +1,94 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// Map subdomains to their respective app directories
-const SUBDOMAIN_MAP: Record<string, string> = {
+/**
+ * SUBDOMAIN ROUTING CONFIGURATION
+ *
+ * This middleware handles routing for all yoohoo.guru subdomains.
+ * All subdomain pages are located in: apps/main/pages/_apps/{subdomain}/
+ *
+ * Architecture: Single-app monorepo
+ * - apps/main/ is the only Next.js app
+ * - Subdomain pages are at pages/_apps/{subdomain}/index.tsx
+ * - Middleware rewrites subdomain requests to /_apps/{subdomain}/ paths
+ */
+const VALID_SUBDOMAINS = new Set([
   // Core services
-  "www": "main",
-  "angel": "angel",
-  "coach": "coach",
-  "heroes": "heroes",
-  "dashboard": "dashboard",
-  
-  // Subject-specific subdomains
-  "art": "art",
-  "business": "business",
-  "coding": "coding",
-  "cooking": "cooking",
-  "crafts": "crafts",
-  "data": "data",
-  "design": "design",
-  "finance": "finance",
-  "fitness": "fitness",
-  "gardening": "gardening",
-  "history": "history",
-  "home": "home",
-  "investing": "investing",
-  "language": "language",
-  "marketing": "marketing",
-  "math": "math",
-  "music": "music",
-  "photography": "photography",
-  "sales": "sales",
-  "science": "science",
-  "sports": "sports",
-  "tech": "tech",
-  "wellness": "wellness",
-  "writing": "writing",
-};
+  "www", "angel", "coach", "heroes", "dashboard",
+
+  // Subject-specific subdomains (24 content hubs)
+  "art", "business", "coding", "cooking", "crafts", "data", "design",
+  "finance", "fitness", "gardening", "history", "home", "investing",
+  "language", "marketing", "math", "music", "photography", "sales",
+  "science", "sports", "tech", "wellness", "writing"
+]);
 
 export function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
   const hostname = request.headers.get("host") || "";
-  
-  // Skip middleware for API routes, static files, and auth
-  if (url.pathname.startsWith("/api") || 
-      url.pathname.startsWith("/_next") || 
+
+  // Skip middleware for special paths
+  if (url.pathname.startsWith("/api") ||
+      url.pathname.startsWith("/_next") ||
       url.pathname.startsWith("/favicon") ||
-      url.pathname.startsWith("/auth")) {
+      url.pathname.startsWith("/static") ||
+      url.pathname.startsWith("/auth") ||
+      url.pathname.includes(".")) { // Skip files with extensions
     return NextResponse.next();
   }
-  
+
   // Extract subdomain from hostname
-  // Examples: 
-  // - angel.yoohoo.guru -> angel
+  // Examples:
+  // - coach.yoohoo.guru -> coach
   // - www.yoohoo.guru -> www
-  // - yoohoo.guru -> www (default)
-  const subdomain = hostname.includes("yoohoo.guru") ? hostname.split(".")[0] : "www";
-  
-  // Handle root domain (yoohoo.guru) as www
-  const targetSubdomain = hostname === "yoohoo.guru" || 
-                         hostname === "localhost:3000" || 
-                         hostname === "localhost:3001" ||
-                         subdomain === "www"
-    ? "www" 
-    : subdomain;
-  
-  // Get the app directory for this subdomain
-  const appDir = SUBDOMAIN_MAP[targetSubdomain];
-  
-  // If subdomain not found in map, default to main
-  const targetApp = appDir || "main";
-  
-  // For www subdomain and main app, don't rewrite if it's already the root path or login/signup
-  // This prevents the redirect loop and ensures proper routing
-  if (targetSubdomain === "www" && targetApp === "main") {
-    // Allow direct access to login, signup, dashboard, etc. without rewriting
-    if (url.pathname === "/" || 
-        url.pathname === "/login" || 
-        url.pathname === "/signup" ||
-        url.pathname === "/dashboard" ||
-        url.pathname === "/privacy" ||
-        url.pathname === "/terms") {
+  // - yoohoo.guru -> www (default to www)
+  // - localhost:3000 -> www (development)
+  let subdomain = "www";
+
+  if (hostname.includes("yoohoo.guru")) {
+    const parts = hostname.split(".");
+    subdomain = parts.length >= 3 ? parts[0] : "www";
+  } else if (hostname.includes("localhost") || hostname.includes("127.0.0.1")) {
+    // Development mode - default to www
+    subdomain = "www";
+  }
+
+  // Validate subdomain exists in our configuration
+  if (!VALID_SUBDOMAINS.has(subdomain)) {
+    // Unknown subdomain - redirect to www
+    console.warn(`Unknown subdomain: ${subdomain}, redirecting to www`);
+    subdomain = "www";
+  }
+
+  // Handle www/main subdomain - serve directly from pages/ directory
+  if (subdomain === "www") {
+    // These pages exist at pages/ root level
+    const wwwPaths = ["/", "/login", "/signup", "/dashboard", "/privacy", "/terms", "/about", "/contact"];
+    if (wwwPaths.includes(url.pathname) || url.pathname.startsWith("/dashboard")) {
       return NextResponse.next();
     }
   }
-  
-  // Only rewrite if the path doesn't already start with /_apps
-  if (!url.pathname.startsWith("/_apps")) {
-    // Skip rewriting for certain main app paths to prevent conflicts
-    if (targetApp === "main" && (
-        url.pathname === "/" ||
-        url.pathname.startsWith("/login") ||
-        url.pathname.startsWith("/signup") ||
-        url.pathname.startsWith("/dashboard") ||
-        url.pathname.startsWith("/api")
-    )) {
-      return NextResponse.next();
-    }
-    
-    // Rewrite the URL to the appropriate app directory
-    // The rewrite is internal - the user still sees the original URL
-    url.pathname = `/_apps/${targetApp}${url.pathname}`;
-    return NextResponse.rewrite(url);
+
+  // Skip if already rewritten to _apps
+  if (url.pathname.startsWith("/_apps")) {
+    return NextResponse.next();
   }
-  
+
+  // For all non-www subdomains, rewrite to _apps directory
+  // This maps coach.yoohoo.guru/ to pages/_apps/coach/index.tsx
+  if (subdomain !== "www") {
+    const rewritePath = `/_apps/${subdomain}${url.pathname}`;
+    url.pathname = rewritePath;
+
+    // Add debug header in development
+    const response = NextResponse.rewrite(url);
+    if (process.env.NODE_ENV === "development") {
+      response.headers.set("x-middleware-rewrite", rewritePath);
+      response.headers.set("x-subdomain", subdomain);
+    }
+    return response;
+  }
+
   return NextResponse.next();
 }
 
