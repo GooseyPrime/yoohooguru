@@ -36,6 +36,7 @@ ci-orphan-reports/
 # QA test results
 qa/test-results/
 qa/playwright-report/
+test-results/
 
 # Logs
 *.log

@@ -156,23 +156,30 @@ Each subdomain operates as an independent content hub with consistent structure:
 ```
 yoohoo.guru           → Vercel (Main Hub Frontend)
 www.yoohoo.guru       → Vercel (Main Hub Frontend)
-*.yoohoo.guru         → Vercel (Subdomain Frontends - Wildcard routing)
+*.yoohoo.guru         → Vercel (Subdomain Frontends - Wildcard routing via middleware)
 api.yoohoo.guru:3001  → Railway (Backend API)
 ```
 
 **Subdomain Handling:**
-- Wildcard DNS/SSL enabled for dynamic subdomain routing
-- Backend middleware parses `req.subdomains[0]` for routing logic
-- Frontend utils apply subdomain-specific theming and configuration
-- Each subdomain has independent configuration in `/backend/src/config/subdomains.js`
+- **Architecture:** Single-app monorepo with Next.js middleware-based routing
+- **App Structure:** apps/main is the sole Next.js application
+- **Subdomain Pages:** All subdomain pages located at apps/main/pages/_apps/{subdomain}/
+- **Routing Mechanism:**
+  - Next.js middleware (apps/main/middleware.ts) intercepts subdomain requests
+  - Middleware rewrites subdomain.yoohoo.guru/ to /_apps/{subdomain}/ internally
+  - User sees subdomain.yoohoo.guru URL, but serves pages/_apps/{subdomain}/index.tsx
+- **Configuration:** Backend subdomain configs in `/backend/src/config/subdomains.js`
+- **Wildcard DNS/SSL:** Enabled via Vercel for dynamic subdomain routing
+- **Supported Subdomains:** 28 total (www, angel, coach, heroes, dashboard + 24 content hubs)
 
 **Technology Stack:**
-- **Frontend:** Next.js (monorepo with 25+ apps), React, TailwindCSS
+- **Frontend:** Next.js 14 (single-app monorepo), React 18, TailwindCSS 4
 - **Backend:** Node.js/Express on Railway
 - **Database:** Firebase (Firestore + Auth + Storage)
 - **Payments:** Stripe + Stripe Connect
 - **CDN:** Cloudflare
 - **Deployment:** Vercel (frontend), Railway (backend)
+- **Design System:** Orbitron theme components (in progress)
 
 ---
 
@@ -2166,6 +2173,58 @@ jobs:
 - [ ] Agent status monitoring dashboard
 - [ ] Uptime monitoring configured
 - [ ] Performance monitoring active
+
+---
+
+## Known Issues & Recent Fixes
+
+### Middleware Routing (FIXED - October 2025)
+
+**Issue:**
+- Initial middleware configuration used a SUBDOMAIN_MAP that suggested multi-app architecture
+- Caused confusion between expected vs actual routing behavior
+- Subdomain pages not appearing in production deployment
+
+**Root Cause:**
+- Middleware was designed for multi-app monorepo (apps/angel/, apps/coach/, etc.)
+- Actual implementation uses single-app architecture (all pages in apps/main/pages/_apps/)
+- vercel.json contained conflicting redirect rules for /_apps/* paths
+
+**Fix Applied:**
+1. **Middleware Refactored** (apps/main/middleware.ts)
+   - Replaced SUBDOMAIN_MAP with VALID_SUBDOMAINS Set
+   - Simplified routing logic for single-app architecture
+   - Added debug headers in development mode
+   - Improved subdomain validation and error handling
+
+2. **vercel.json Cleaned Up**
+   - Removed conflicting /_apps/ rewrite rules
+   - Removed /dashboard redirect that interfered with middleware
+   - Streamlined API proxy configuration
+
+3. **Architecture Documentation Updated**
+   - Site spec now accurately reflects single-app architecture
+   - Clear documentation of middleware rewrite mechanism
+   - Updated technology stack versions
+
+**Deployment Notes:**
+- After these fixes, trigger fresh Vercel deployment to clear cache
+- All subdomain pages should now properly serve via middleware rewrites
+- Monitor x-middleware-rewrite headers in development for debugging
+
+### Styling System Migration (IN PROGRESS)
+
+**Current State:**
+- Converting all pages to Orbitron design system
+- Coach subdomain: ✅ Converted
+- Login/Signup/Dashboard: ✅ Converted
+- 24 content subdomains: 🚧 Pending conversion
+- Legacy styling still present in art, coding, fitness, etc.
+
+**Next Steps:**
+- Apply Orbitron theme to remaining subdomain pages
+- Create reusable subdomain page template
+- Update NewsSection and BlogList components with Orbitron styling
 
 ---
 
