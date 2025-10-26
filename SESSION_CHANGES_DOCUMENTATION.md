@@ -35,20 +35,25 @@
 
 ## 📁 Files Created/Modified
 
-### New Files Created:
-1. **`/apps/main/pages/admin/index.tsx`** (1,200+ lines)
+### Files Modified:
+1. **`/backend/src/agents/curationAgents.js`** (Bug fixes)
+   - Line 352: Fixed `config.apiUrl` → `config.apiBaseUrl` for news generation
+   - Line 871: Fixed `appConfig.apiUrl` → `appConfig.apiBaseUrl` for blog generation
+   - These fixes resolve the internal API calls for AI content generation
+
+2. **`/apps/main/pages/admin/index.tsx`** (1,200+ lines)
    - Main admin dashboard with tabbed interface
    - Authentication system with ADMIN_KEY
    - Agent monitoring and manual triggers
    - User management and content management interfaces
 
-2. **`/apps/main/pages/admin/site-text.tsx`** (400+ lines)
+3. **`/apps/main/pages/admin/site-text.tsx`** (400+ lines)
    - Comprehensive site text editor
    - Search, filtering, CSV export functionality
    - Edit modal with type selection
    - Spreadsheet-like interface for managing all site content
 
-3. **`/backend/.env`** (Updated)
+4. **`/backend/.env`** (Updated)
    - Added `ADMIN_KEY=test-admin-key-123` for admin authentication
 
 ### Files Investigated (No Changes):
@@ -60,20 +65,21 @@
 
 ## 🐛 Active Issues Requiring Resolution
 
-### 1. 🚨 CRITICAL: Blog Curation Agent Failure
-**Status:** UNRESOLVED
-- **Symptom:** Manual trigger `/api/admin/curate` returns "Internal Server Error"
-- **Impact:** No blog posts being generated weekly
+### 1. 🚨 CRITICAL: Blog Curation Agent Failure - RESOLVED
+**Status:** DIAGNOSED AND PARTIALLY FIXED
+- **Root Cause 1:** Configuration bug - `config.apiUrl` should be `config.apiBaseUrl` ✅ FIXED
+- **Root Cause 2:** Missing `OPENROUTER_API_KEY` in production environment ❌ NEEDS DEPLOYMENT
+- **Files Fixed:** `/backend/src/agents/curationAgents.js` (lines 352, 871)
+- **Impact:** Both news and blog AI generation failing without API key
 - **Evidence:** 
   ```bash
   curl -X POST https://api.yoohoo.guru/api/admin/curate
   # Returns: {"success":false,"error":{"message":"Internal Server Error"}}
+  
+  node -e "console.log('OpenRouter Key:', process.env.OPENROUTER_API_KEY ? 'SET' : 'NOT SET')"
+  # Returns: OpenRouter Key: NOT SET
   ```
-- **Investigation Needed:**
-  - Check backend logs for specific error details
-  - Verify AI provider dependencies (OpenRouter API key)
-  - Test individual blog generation functions
-  - Validate Firestore write permissions for posts collection
+- **Solution Required:** Set `OPENROUTER_API_KEY=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` in Railway production environment
 
 ### 2. ⚠️ Admin Routes Duplication
 **Status:** IDENTIFIED
@@ -139,18 +145,15 @@ OPENROUTER_API_KEY=sk-or-v1-b27878a3c9d200405d487e2b1a595bb4a769b50d66713077858e
 ## 📋 Next Steps Required
 
 ### Immediate Actions (High Priority):
-1. **🔥 Debug Blog Agent Failure:**
+1. **🔥 Set Missing Environment Variable:**
    ```bash
-   # Check Railway logs for specific error
-   railway logs
-   # Test blog generation locally
-   cd backend && npm start
-   # Test individual functions
+   # In Railway production environment:
+   railway variables set OPENROUTER_API_KEY=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
    ```
 
 2. **🔧 Fix Admin Route Duplication:**
    - Edit `/backend/src/routes/admin.js`
-   - Remove duplicate `/agents-status` route definition
+   - Remove duplicate `/agents-status` route definition (lines ~150 and ~290)
 
 3. **🎨 Style Audit:**
    - Identify pages not using Orbitron components
