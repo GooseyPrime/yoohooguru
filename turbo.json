@@ -4,8 +4,8 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**", "build/**"],
-      "inputs": ["src/**", "public/**", "package.json", "tsconfig.json", "webpack.config.js"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**", "build/**", "src/**"],
+      "inputs": ["src/**", "public/**", "package.json", "tsconfig.json", "webpack.config.js", "next.config.js"],
       "env": [
         "NODE_ENV",
         "NEXTAUTH_SECRET",
