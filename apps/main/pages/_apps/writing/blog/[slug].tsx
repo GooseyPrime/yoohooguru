@@ -37,18 +37,13 @@ export default function BlogPost() {
 
   const subdomain = 'writing';
 
-  // Example static allowlist of slugs for demonstration purposes.
-  const allowedSlugs = [
-    "example-post",
-    "how-to-code",
-    "introducing-new-feature",
-    // Add other valid slugs as needed
-  ];
-
-  // Only allow slugs that match a safe pattern: letters, numbers, hyphens, underscores
-  function isValidSlug(slug: any): slug is string {
-    return (
-      typeof slug === "string" &&
+// Example static allowlist of slugs for demonstration purposes.
+const allowedSlugs = [
+  "example-post",
+  "how-to-code",
+  "introducing-new-feature",
+  // Add other valid slugs as needed
+];
       /^[a-zA-Z0-9\-_]+$/.test(slug) &&
       slug.length <= 100 &&
       allowedSlugs.includes(slug)
