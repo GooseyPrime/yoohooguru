@@ -41,33 +41,29 @@ Backend: Node.js with Express; RESTful API endpoints.
 
 Data & Auth: Firebase for authentication and basic data; Stripe for payments.
 
-Infrastructure: Vercel for the frontend (Next.js alternative) and Railway for backend deployments.
+Infrastructure: Vercel for Next.js app deployment and Railway for backend API deployments.
 
-Testing: Jest and React Testing Library for unit tests; Playwright for end‑to‑end tests.
+Testing: Jest for unit tests; Playwright for end‑to‑end tests.
 
 Project Structure
 
-Copilot benefits from knowing where code lives in the repository
-github.blog
-. Main directories include
-GitHub
-:
+This is a monorepo with a single Next.js application that serves all subdomains via middleware-based routing. Main directories include:
 
-frontend/ – React front‑end application.
+apps/main/ – Next.js application (serves all 28 subdomains).
 
-src/components/ – reusable UI components.
+pages/_apps/{subdomain}/ – subdomain-specific pages (coach, art, business, etc.).
 
-src/screens/ – page components.
+middleware.ts – Edge middleware for subdomain routing.
 
-src/contexts/ – React contexts (e.g., authentication).
+components/ – reusable UI components.
 
-src/utils/ – front‑end utilities.
+lib/ – utilities and helpers.
 
 public/ – static assets.
 
-webpack.config.js – webpack configuration.
+next.config.js – Next.js configuration.
 
-backend/ – Node.js/Express API.
+backend/ – Node.js/Express API (separate Railway deployment).
 
 src/config/ – configuration management.
 
@@ -75,13 +71,13 @@ src/routes/ – API route handlers.
 
 src/middleware/ – Express middleware.
 
-src/utils/ – utilities and helpers.
-
 src/lib/ – business‑logic libraries.
 
 tests/ – backend tests.
 
-docs/ – documentation such as deployment guides and environment variables.
+spec/ – platform architecture documentation.
+
+docs/ – deployment guides and environment variables.
 
 .env.example – template for environment variables.
 
