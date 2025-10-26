@@ -5,7 +5,7 @@
     "build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**", "build/**"],
-      "inputs": ["src/**", "public/**", "package.json", "tsconfig.json", "webpack.config.js"],
+      "inputs": ["src/**", "public/**", "package.json", "tsconfig.json", "webpack.config.js", "next.config.js"],
       "env": [
         "NODE_ENV",
         "NEXTAUTH_SECRET",
