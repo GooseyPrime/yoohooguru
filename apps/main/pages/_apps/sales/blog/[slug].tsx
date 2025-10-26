@@ -39,6 +39,13 @@ export default function BlogPost() {
 
   useEffect(() => {
     if (!slug) return;
+    // Validate slug: only allow alphanumeric, hyphens, underscores
+    const slugPattern = /^[a-zA-Z0-9_-]+$/;
+    if (typeof slug !== "string" || !slugPattern.test(slug)) {
+      setError("Invalid blog post slug");
+      setLoading(false);
+      return;
+    }
 
     const fetchPost = async () => {
       try {
