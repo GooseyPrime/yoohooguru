@@ -445,8 +445,9 @@ class OrphanModuleDetector {
   }
 
   async generateJsonReport() {
+    let jsonPath;
     if (this.options.outputDir) {
-      const jsonPath = path.join(this.options.outputDir, 'orphan-modules.json');
+      jsonPath = path.join(this.options.outputDir, 'orphan-modules.json');
       fs.writeFileSync(jsonPath, JSON.stringify(this.results, null, 2));
       console.log(`📄 JSON report: ${jsonPath}`);
     }
