@@ -13,7 +13,6 @@
 
 const cron = require('node-cron');
 const { getFirestore } = require('../config/firebase');
-const admin = require('firebase-admin');
 const { logger } = require('../utils/logger');
 const fs = require('fs');
 const path = require('path');
