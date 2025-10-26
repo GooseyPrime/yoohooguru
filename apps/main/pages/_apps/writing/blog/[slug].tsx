@@ -37,19 +37,12 @@ export default function BlogPost() {
 
   const subdomain = 'writing';
 
-  // Only allow slugs that match a safe pattern: letters, numbers, hyphens, underscores
-  function isValidSlug(slug: any): slug is string {
-    return (
-      typeof slug === "string" &&
-      /^[a-zA-Z0-9\-_]+$/.test(slug) &&
-      slug.length <= 100 // Optional length check
-    );
-  }
-
   useEffect(() => {
     if (!slug) return;
-    if (!isValidSlug(slug)) {
-      setError("Invalid post slug.");
+    // Validate slug: only allow alphanumeric, hyphens, underscores
+    const slugPattern = /^[a-zA-Z0-9_-]+$/;
+    if (typeof slug !== "string" || !slugPattern.test(slug)) {
+      setError("Invalid blog post slug");
       setLoading(false);
       return;
     }
