@@ -67,8 +67,7 @@ export default function BlogPost() {
       try {
         setLoading(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.yoohoo.guru';
-        const safeSlug = encodeURIComponent(slug);
-        const response = await fetch(`${apiUrl}/api/${subdomain}/posts/${safeSlug}`);
+        const response = await fetch(`${apiUrl}/api/${subdomain}/posts/${slug}`);
 
         if (!response.ok) {
           throw new Error('Post not found');
