@@ -76,7 +76,7 @@ extract_errors_from_step() {
 get_failed_steps() {
     # This would typically come from GitHub Actions context
     # For now, we'll check for known steps that commonly fail
-    echo "Lint backend code|Run frontend tests|Run backend tests|Build frontend"
+    echo "Lint backend code|Run backend tests|Build main app with Turbo"
 }
 
 # Function to extract recent errors from a log file
@@ -96,7 +96,7 @@ extract_recent_errors() {
     > "$output_file"
     
     local found_errors=false
-    local step_patterns=("Lint backend code" "Run frontend tests" "Run backend tests" "Build frontend")
+    local step_patterns=("Lint backend code" "Run backend tests" "Build main app with Turbo")
     
     for step in "${step_patterns[@]}"; do
         if grep -q "##\[group\]Run.*${step}" "$log_file" 2>/dev/null || grep -q "${step}" "$log_file" 2>/dev/null; then

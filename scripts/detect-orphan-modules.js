@@ -68,7 +68,7 @@ class OrphanModuleDetector {
     
     const packageAreas = [
       { name: 'root', path: this.options.rootDir },
-      { name: 'frontend', path: path.join(this.options.rootDir, 'frontend') },
+      { name: 'apps/main', path: path.join(this.options.rootDir, 'apps', 'main') },
       { name: 'backend', path: path.join(this.options.rootDir, 'backend') }
     ];
 
@@ -232,7 +232,7 @@ class OrphanModuleDetector {
     
     // Find all JavaScript modules and check reachability from entry points
     const areas = [
-      { name: 'frontend', path: path.join(this.options.rootDir, 'frontend'), entryPoints: ['src/index.js', 'src/App.js'] },
+      { name: 'apps/main', path: path.join(this.options.rootDir, 'apps', 'main'), entryPoints: ['pages/_app.tsx', 'pages/index.tsx', 'middleware.ts'] },
       { name: 'backend', path: path.join(this.options.rootDir, 'backend'), entryPoints: ['src/server.js', 'src/index.js', 'src/app.js'] }
     ];
 
@@ -445,8 +445,9 @@ class OrphanModuleDetector {
   }
 
   async generateJsonReport() {
-    const jsonPath = path.join(this.options.outputDir, 'orphan-modules.json');
+    let jsonPath;
     if (this.options.outputDir) {
+      jsonPath = path.join(this.options.outputDir, 'orphan-modules.json');
       fs.writeFileSync(jsonPath, JSON.stringify(this.results, null, 2));
       console.log(`📄 JSON report: ${jsonPath}`);
     }
