@@ -9,6 +9,7 @@ interface OrbitronButtonProps {
   size?: 'sm' | 'md' | 'lg';
   className?: string;
   type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
 }
 
 export const OrbitronButton: React.FC<OrbitronButtonProps> = ({
@@ -19,6 +20,7 @@ export const OrbitronButton: React.FC<OrbitronButtonProps> = ({
   size = 'md',
   className = '',
   type = 'button',
+  disabled = false,
 }) => {
   const baseClasses = 'inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 active:scale-95';
 
@@ -35,7 +37,8 @@ export const OrbitronButton: React.FC<OrbitronButtonProps> = ({
     ghost: 'glass-effect hover:glass-effect-strong text-gray-300 hover:text-white border border-white/20 hover:border-white/30',
   };
 
-  const classes = `${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${className}`;
+  const disabledClasses = disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : '';
+  const classes = `${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${disabledClasses} ${className}`;
 
   if (href) {
     return (
@@ -46,7 +49,7 @@ export const OrbitronButton: React.FC<OrbitronButtonProps> = ({
   }
 
   return (
-    <button type={type} onClick={onClick} className={classes}>
+    <button type={type} onClick={onClick} disabled={disabled} className={classes}>
       {children}
     </button>
   );
