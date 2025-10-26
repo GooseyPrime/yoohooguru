@@ -82,7 +82,6 @@ jobs:
       - name: Build main app with Turbo
         run: npx turbo run build --filter=@yoohooguru/main
         env:
-          NODE_ENV: production
           CI: true
 
       - name: Analyze orphan modules
