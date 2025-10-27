@@ -317,30 +317,16 @@ class NewsCurationAgent {
 
         return curatedArticles.slice(0, limit);
       } else {
-        logger.error('❌ No real news articles found');
-
-        // Only fall back to placeholders in development/test environments
-        if (process.env.NODE_ENV === 'production') {
-          throw new Error('Real news search failed in production - no fallback available');
-        } else {
-          logger.warn('⚠️ Development mode: falling back to placeholder content');
-          return this.generatePlaceholderArticles(category, skills, limit);
-        }
+        logger.error('❌ No real news articles found from any source');
+        throw new Error(`Real news search failed: ${searchResult.error || 'Unknown error'}`);
       }
     } catch (error) {
       logger.error('Error in fetchNewsArticles:', error.message);
-
-      // In production, we should never fall back to placeholders
-      if (process.env.NODE_ENV === 'production') {
-        throw error;
-      } else {
-        logger.warn('⚠️ Development mode: falling back to placeholder content after error:', error.message);
-        return this.generatePlaceholderArticles(category, skills, limit);
-      }
+      throw error; // Always throw error - NO fallback to mock content
     }
   }  /**
    * Search for real news articles from multiple sources
-   * Uses Perplexity AI with web search to find actual recent news
+   * Uses NewsAPI.org and RSS feeds to find actual recent news articles
    * @param {string} category - The subdomain category
    * @param {Array} skills - Primary skills for the subdomain  
    * @param {number} limit - Number of articles to find
@@ -350,104 +336,203 @@ class NewsCurationAgent {
     const { getConfig } = require('../config/appConfig');
     const config = getConfig();
 
-    if (!config.openrouterApiKey) {
-      throw new Error('OpenRouter API key not configured for news search');
-    }
-
     try {
       logger.info(`🔍 Searching real news sources for ${category} articles...`);
 
-      const searchQueries = skills.slice(0, 2).map(skill =>
-        `recent news ${skill.replace('-', ' ')} ${category} United States`
-      );
-
-      const messages = [
-        {
-          role: 'system',
-          content: `You are a news researcher with web search capabilities. Search for REAL, current news articles from credible U.S. sources. You must find actual articles from legitimate news websites and provide real URLs.`
-        },
-        {
-          role: 'user',
-          content: `Search the web for ${limit} recent news articles (within last 48-72 hours) related to these topics: ${searchQueries.join(', ')}
-
-CRITICAL REQUIREMENTS:
-- Find REAL articles from actual news websites  
-- Articles must be from last 72 hours maximum
-- Only U.S. sources (CNN, Reuters, AP, WSJ, TechCrunch, Forbes, etc.)
-- Each article MUST have a real, working URL
-- NO FAKE or GENERATED content
-
-Return JSON array with real articles:
-{
-  "id": "unique-id",
-  "title": "Real article headline",
-  "url": "https://actual-news-site.com/real-article-url", 
-  "source": "Actual Publisher Name",
-  "publishedAt": actual_timestamp_in_milliseconds,
-  "summary": "Brief 1-2 sentence summary of the real article",
-  "relevance": "Why this matters to ${category} learners"
-}
-
-Search the web NOW and find these real articles.`
+      // Try NewsAPI.org first if available
+      if (config.newsApiKey) {
+        const newsApiResult = await this.searchNewsAPI(category, skills, limit);
+        if (newsApiResult.success && newsApiResult.articles.length > 0) {
+          return newsApiResult;
         }
-      ];
-
-      // Use Perplexity model for web search capabilities
-      const response = await axios.post('https://openrouter.ai/api/v1/chat/completions', {
-        model: 'perplexity/llama-3.1-sonar-large-128k-online',
-        messages: messages,
-        max_tokens: 4000,
-        temperature: 0.3
-      }, {
-        headers: {
-          'Authorization': `Bearer ${config.openrouterApiKey}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': 'https://yoohoo.guru',
-          'X-Title': 'YooHoo.guru Real News Search'
-        }
-      });
-
-      const content = response.data.choices[0].message.content;
-      let articles;
-
-      try {
-        // Try to parse JSON response
-        const jsonMatch = content.match(/\[[\s\S]*\]/);
-        if (jsonMatch) {
-          articles = JSON.parse(jsonMatch[0]);
-        } else {
-          throw new Error('No JSON array found in response');
-        }
-      } catch (parseError) {
-        logger.warn('Failed to parse JSON from news search, extracting manually');
-        articles = this.extractNewsFromText(content, category, limit);
       }
 
-      // Validate that articles have real URLs and are recent
-      const validArticles = articles.filter(article => {
-        if (!article.url || !article.url.startsWith('http')) {
-          logger.warn(`Invalid URL for article: ${article.title}`);
-          return false;
-        }
+      // Try RSS feeds as fallback
+      const rssResult = await this.searchRSSFeeds(category, skills, limit);
+      if (rssResult.success && rssResult.articles.length > 0) {
+        return rssResult;
+      }
 
-        const now = Date.now();
-        const maxAge = 72 * 60 * 60 * 1000; // 72 hours
-        if (article.publishedAt && (now - article.publishedAt) > maxAge) {
-          logger.warn(`Article too old: ${article.title}`);
-          return false;
-        }
+      // If no real news sources work, fail in production
+      if (process.env.NODE_ENV === 'production') {
+        throw new Error('All real news sources failed - no articles available');
+      }
 
-        return true;
-      });
-
+      logger.error('All real news sources failed');
       return {
-        success: true,
-        articles: validArticles,
-        source: 'perplexity-web-search'
+        success: false,
+        articles: [],
+        error: 'No real news sources available'
       };
 
     } catch (error) {
       logger.error('Real news search failed:', error.message);
+      return {
+        success: false,
+        articles: [],
+        error: error.message
+      };
+    }
+  }
+
+  /**
+   * Search NewsAPI.org for real news articles
+   */
+  async searchNewsAPI(category, skills, limit = 2) {
+    const axios = require('axios');
+    const { getConfig } = require('../config/appConfig');
+    const config = getConfig();
+
+    if (!config.newsApiKey) {
+      return { success: false, articles: [], error: 'NewsAPI key not configured' };
+    }
+
+    try {
+      // Build search query from skills
+      const skillTerms = skills.slice(0, 3).map(skill => skill.replace('-', ' ')).join(' OR ');
+      const query = `(${skillTerms}) AND ${category}`;
+
+      // Get articles from last 3 days
+      const fromDate = new Date();
+      fromDate.setDate(fromDate.getDate() - 3);
+
+      const response = await axios.get('https://newsapi.org/v2/everything', {
+        params: {
+          q: query,
+          from: fromDate.toISOString().split('T')[0],
+          language: 'en',
+          domains: 'cnn.com,reuters.com,techcrunch.com,forbes.com,wsj.com,bloomberg.com,apnews.com,npr.org,bbc.com',
+          sortBy: 'publishedAt',
+          pageSize: limit * 2 // Get extra in case some are filtered out
+        },
+        headers: {
+          'X-API-Key': config.newsApiKey
+        }
+      });
+
+      const articles = response.data.articles
+        .filter(article => {
+          // Filter out articles without proper URLs or content
+          return article.url &&
+            article.title &&
+            article.description &&
+            !article.title.includes('[Removed]') &&
+            article.url.startsWith('http');
+        })
+        .slice(0, limit)
+        .map(article => ({
+          id: `newsapi-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          title: article.title,
+          summary: article.description,
+          url: article.url,
+          source: article.source.name,
+          publishedAt: new Date(article.publishedAt).getTime(),
+          keywords: skills,
+          relevanceScore: 0.9,
+          imageUrl: article.urlToImage || null
+        }));
+
+      logger.info(`✅ Found ${articles.length} real articles from NewsAPI`);
+
+      return {
+        success: true,
+        articles,
+        source: 'newsapi'
+      };
+
+    } catch (error) {
+      logger.error('NewsAPI search failed:', error.message);
+      return {
+        success: false,
+        articles: [],
+        error: error.message
+      };
+    }
+  }
+
+  /**
+   * Search RSS feeds for real news articles as fallback
+   */
+  async searchRSSFeeds(category, skills, limit = 2) {
+    try {
+      const Parser = require('rss-parser');
+      const parser = new Parser();
+
+      // Popular RSS feeds by category
+      const rssFeedsByCategory = {
+        tech: [
+          'https://techcrunch.com/feed/',
+          'https://www.wired.com/feed/',
+          'https://feeds.arstechnica.com/arstechnica/index'
+        ],
+        business: [
+          'https://feeds.bloomberg.com/markets/news.rss',
+          'https://www.reuters.com/business/rss',
+          'https://www.forbes.com/real-time/feed2/'
+        ],
+        art: [
+          'https://www.artforum.com/news.rss',
+          'https://www.artnews.com/feed/'
+        ],
+        default: [
+          'https://feeds.reuters.com/reuters/topNews',
+          'https://feeds.npr.org/1001/rss.xml'
+        ]
+      };
+
+      const feeds = rssFeedsByCategory[category] || rssFeedsByCategory.default;
+      let allArticles = [];
+
+      // Search each RSS feed
+      for (const feedUrl of feeds.slice(0, 2)) {
+        try {
+          const feed = await parser.parseURL(feedUrl);
+
+          const feedArticles = feed.items
+            .filter(item => {
+              // Only recent articles (last 3 days)
+              const articleDate = new Date(item.pubDate);
+              const threeDaysAgo = new Date();
+              threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+
+              return articleDate > threeDaysAgo &&
+                item.link &&
+                item.title &&
+                item.contentSnippet;
+            })
+            .slice(0, limit)
+            .map(item => ({
+              id: `rss-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+              title: item.title,
+              summary: item.contentSnippet || item.content?.substring(0, 200) + '...',
+              url: item.link,
+              source: feed.title || 'RSS Feed',
+              publishedAt: new Date(item.pubDate).getTime(),
+              keywords: skills,
+              relevanceScore: 0.8
+            }));
+
+          allArticles = allArticles.concat(feedArticles);
+
+        } catch (feedError) {
+          logger.warn(`RSS feed failed: ${feedUrl} - ${feedError.message}`);
+        }
+      }
+
+      // Sort by date and take the most recent
+      allArticles.sort((a, b) => b.publishedAt - a.publishedAt);
+      const articles = allArticles.slice(0, limit);
+
+      logger.info(`✅ Found ${articles.length} real articles from RSS feeds`);
+
+      return {
+        success: articles.length > 0,
+        articles,
+        source: 'rss-feeds'
+      };
+
+    } catch (error) {
+      logger.error('RSS feed search failed:', error.message);
       return {
         success: false,
         articles: [],
@@ -777,55 +862,6 @@ Return as JSON array.`
         publishedAt: Date.now() - (articles.length * 6 * 60 * 60 * 1000), // Stagger by 6 hours
         source: 'AI News Curator',
         url: '#'
-      });
-    }
-
-    return articles.slice(0, limit);
-  }
-
-  /**
-   * Generate placeholder articles for development/testing only
-   * This should NEVER be called in production
-   * @param {number} limit - Number of placeholder articles to generate (default 2)
-   */
-  generatePlaceholderArticles(category, skills, limit = 2) {
-    if (process.env.NODE_ENV === 'production') {
-      logger.error('🚨 CRITICAL: Attempted to generate placeholder articles in production!');
-      throw new Error('Placeholder content is not allowed in production');
-    }
-
-    logger.warn(`⚠️ Generating ${limit} placeholder articles for development/testing`);
-
-    const articles = [];
-    const skillsList = skills.slice(0, Math.min(limit, skills.length)); // Use up to 'limit' skills
-
-    skillsList.forEach((skill, index) => {
-      articles.push({
-        id: `dev-${category}-${skill}-${Date.now()}-${index}`,
-        title: `[DEV] Breaking: New Advances in ${skill.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}`,
-        summary: `[DEVELOPMENT PLACEHOLDER] Industry experts reveal groundbreaking developments in ${skill.replace('-', ' ')} that could transform the ${category} sector. Leading professionals share insights on emerging trends and best practices.`,
-        url: '#', // Placeholder URL
-        source: 'Development Placeholder',
-        publishedAt: Date.now() - (index * 2 * 60 * 60 * 1000), // Stagger by 2 hours
-        keywords: [skill, category, 'trends', 'innovation'],
-        relevanceScore: 0.9 - (index * 0.1),
-        isDevelopmentPlaceholder: true
-      });
-    });
-
-    // If we need more articles than we have skills, generate generic ones
-    while (articles.length < limit) {
-      const index = articles.length;
-      articles.push({
-        id: `dev-${category}-generic-${Date.now()}-${index}`,
-        title: `[DEV] Latest Trends in ${category.charAt(0).toUpperCase() + category.slice(1)}`,
-        summary: `[DEVELOPMENT PLACEHOLDER] Discover the newest developments and innovations in ${category} that are shaping the industry.`,
-        url: '#',
-        source: 'Development Placeholder',
-        publishedAt: Date.now() - (index * 2 * 60 * 60 * 1000),
-        keywords: [category, 'trends'],
-        relevanceScore: 0.7 - (index * 0.1),
-        isDevelopmentPlaceholder: true
       });
     }
 
