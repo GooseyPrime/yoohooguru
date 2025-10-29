@@ -622,6 +622,9 @@ Return the complete articles with improved summaries in this JSON format:
     const urlPattern = /https?:\/\/[^\s]+/g;
     const urls = content.match(urlPattern) || [];
 
+    // Try to extract structured information
+    const lines = content.split('\n').filter(line => line.trim());
+
     for (let i = 0; i < Math.min(limit, urls.length); i++) {
       const url = urls[i];
       let title = `Latest ${category} News Update`;
