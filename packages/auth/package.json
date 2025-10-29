@@ -8,7 +8,7 @@
     "lint": "eslint src/"
   },
   "dependencies": {
-    "next-auth": "^4.24.0",
+    "next-auth": "^4.24.12",
     "firebase": "^10.7.1",
     "firebase-admin": "^12.7.0"
   },
