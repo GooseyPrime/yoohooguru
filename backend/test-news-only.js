@@ -5,20 +5,18 @@
 
 require('dotenv').config();
 const { logger } = require('./src/utils/logger');
-const { NewsCurationAgent } = require('./src/agents/curationAgents');
+const { newsCurationAgent } = require('./src/agents/curationAgents');
 
 async function testNewsFetching() {
   try {
     logger.info('🧪 Testing real news fetching functionality...');
-
-    const newsAgent = new NewsCurationAgent();
 
     // Test tech category
     logger.info('Testing tech category with programming skills...');
     const techSkills = ['javascript', 'react', 'nodejs', 'python'];
 
     try {
-      const techArticles = await newsAgent.fetchNewsArticles('tech', techSkills, 2);
+      const techArticles = await newsCurationAgent.fetchNewsArticles('tech', techSkills, 2);
       logger.info(`✅ Tech articles found: ${techArticles.length}`);
 
       techArticles.forEach((article, index) => {
@@ -40,7 +38,7 @@ async function testNewsFetching() {
     const businessSkills = ['finance', 'marketing', 'management', 'sales'];
 
     try {
-      const businessArticles = await newsAgent.fetchNewsArticles('business', businessSkills, 2);
+      const businessArticles = await newsCurationAgent.fetchNewsArticles('business', businessSkills, 2);
       logger.info(`✅ Business articles found: ${businessArticles.length}`);
 
       businessArticles.forEach((article, index) => {
@@ -61,6 +59,7 @@ async function testNewsFetching() {
 
   } catch (error) {
     logger.error('❌ Test failed:', error.message);
+    logger.error('Full error:', error);
     process.exit(1);
   }
 }
