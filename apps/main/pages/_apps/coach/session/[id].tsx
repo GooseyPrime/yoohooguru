@@ -3,12 +3,13 @@
  * Demonstrates Agora video conferencing integration
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import styled from 'styled-components';
 import { Header, Footer } from '@yoohooguru/shared';
 import VideoChat from '../../../../components/VideoChat';
+import { isValidId } from '../../../../lib/validators';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -157,6 +158,14 @@ export default function SessionPage() {
   const { id } = router.query;
   const [sessionEnded, setSessionEnded] = useState(false);
   const [notes, setNotes] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Validate session ID to prevent SSRF/path traversal
+    if (id && !isValidId(id)) {
+      setError('Invalid session identifier');
+    }
+  }, [id]);
 
   // In a real application, you would fetch session details from your backend
   // For demo purposes, we're using mock data
@@ -194,7 +203,19 @@ export default function SessionPage() {
           <p>Session ID: {sessionId}</p>
         </SessionHeader>
 
-        {!sessionEnded ? (
+        {error ? (
+          <VideoSection>
+            <SessionHeader>
+              <h1>Error</h1>
+              <p>{error}</p>
+            </SessionHeader>
+            <ActionButtons>
+              <Button className="primary" onClick={handleBackToDashboard}>
+                Back to Dashboard
+              </Button>
+            </ActionButtons>
+          </VideoSection>
+        ) : !sessionEnded ? (
           <>
             <VideoSection>
               <VideoChat

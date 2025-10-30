@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Header } from '@yoohooguru/shared';
 import ReactMarkdown from 'react-markdown';
+import { isValidSlug } from '../../../../lib/validators';
 
 interface BlogPost {
   id: string;
@@ -41,8 +42,7 @@ export default function BlogPost() {
     if (!slug) return;
 
     // Validate slug to prevent SSRF/path traversal
-    const isValidSlug = typeof slug === 'string' && /^[A-Za-z0-9\-_]+$/.test(slug);
-    if (!isValidSlug) {
+    if (!isValidSlug(slug)) {
       setError('Invalid blog post identifier');
       setLoading(false);
       return;
