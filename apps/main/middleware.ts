@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // Force middleware to run on Vercel Edge Runtime
-export const runtime = 'edge';
+export const runtime = 'experimental-edge';
 
 /**
  * SUBDOMAIN ROUTING CONFIGURATION
