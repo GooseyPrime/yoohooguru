@@ -9,9 +9,9 @@
     "autoJobCancelation": true
   },
 
-  "buildCommand": "cd apps/main && npm run build",
+  "buildCommand": "cd apps/main && npm install && npm run build",
   "outputDirectory": "apps/main/.next",
-  "installCommand": "npm ci && cd apps/main && npm ci",
+  "installCommand": "npm install",
   "framework": "nextjs",
 
   "redirects": [
