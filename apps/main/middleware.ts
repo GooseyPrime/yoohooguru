@@ -71,9 +71,7 @@ export function middleware(request: NextRequest) {
         // The first part may be "{subdomain}-{project}"
         const subdomainPart = parts[0];
         // Extract everything before '-yoohoo' (multi-word subdomains supported)
-        const subdomainCandidate = subdomainPart.endsWith('-yoohoo')
-          ? subdomainPart.slice(0, -'-yoohoo'.length)
-          : subdomainPart.split('-yoohoo')[0];
+        const subdomainCandidate = subdomainPart.split('-yoohoo')[0];
         subdomain = VALID_SUBDOMAINS.has(subdomainCandidate) ? subdomainCandidate : "www";
       } else {
         subdomain = "www";
