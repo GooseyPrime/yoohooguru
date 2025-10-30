@@ -11,7 +11,7 @@
 
   "buildCommand": "cd apps/main && npm run build",
   "outputDirectory": "apps/main/.next",
-  "installCommand": "npm ci && npm ci --prefix apps/main",
+  "installCommand": "npm ci",
   "framework": "nextjs",
 
   "redirects": [

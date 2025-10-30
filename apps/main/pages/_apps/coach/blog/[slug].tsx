@@ -40,6 +40,14 @@ export default function BlogPost() {
   useEffect(() => {
     if (!slug) return;
 
+    // Validate slug to prevent SSRF/path traversal
+    const isValidSlug = typeof slug === 'string' && /^[A-Za-z0-9\-_]+$/.test(slug);
+    if (!isValidSlug) {
+      setError('Invalid blog post identifier');
+      setLoading(false);
+      return;
+    }
+
     const fetchPost = async () => {
       try {
         setLoading(true);
