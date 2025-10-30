@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+// Force middleware to run on Vercel Edge Runtime
+export const runtime = 'experimental-edge';
+
 /**
  * SUBDOMAIN ROUTING CONFIGURATION
  *
@@ -27,6 +30,9 @@ export function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
   const hostname = request.headers.get("host") || "";
 
+  // Log all middleware invocations (crucial for debugging Vercel)
+  console.log(`[YooHoo Middleware] ${hostname}${url.pathname}`);
+
   // Skip middleware for special paths
   if (url.pathname.startsWith("/api") ||
       url.pathname.startsWith("/_next") ||
@@ -51,12 +57,34 @@ export function middleware(request: NextRequest) {
   } else if (hostname.includes("localhost") || hostname.includes("127.0.0.1")) {
     // Development mode - default to www
     subdomain = "www";
+  } else if (hostname.includes("vercel.app")) {
+    // Distinguish between Vercel preview and production deployments
+    const vercelEnv = process.env.VERCEL_ENV;
+    if (vercelEnv === "preview") {
+      // Vercel preview deployments - default to www (no subdomain support)
+      subdomain = "www";
+    } else {
+      // Production vercel.app domains may have subdomain support (e.g., coach-yoohoo.vercel.app, real-estate-yoohoo.vercel.app)
+      // Extract subdomain from hostname: e.g., coach-yoohoo.vercel.app -> coach, real-estate-yoohoo.vercel.app -> real-estate
+      const parts = hostname.split(".");
+      if (parts.length >= 3) {
+        // The first part may be "{subdomain}-{project}"
+        const subdomainPart = parts[0];
+        // Extract everything before '-yoohoo' (multi-word subdomains supported)
+        const subdomainCandidate = subdomainPart.split('-yoohoo')[0];
+        subdomain = VALID_SUBDOMAINS.has(subdomainCandidate) ? subdomainCandidate : "www";
+      } else {
+        subdomain = "www";
+      }
+    }
   }
+
+  console.log(`[YooHoo Middleware] Subdomain: ${subdomain}`);
 
   // Validate subdomain exists in our configuration
   if (!VALID_SUBDOMAINS.has(subdomain)) {
     // Unknown subdomain - redirect to www
-    console.warn(`Unknown subdomain: ${subdomain}, redirecting to www`);
+    console.warn(`[YooHoo Middleware] Unknown subdomain: ${subdomain}, using www`);
     subdomain = "www";
   }
 
@@ -65,6 +93,7 @@ export function middleware(request: NextRequest) {
     // These pages exist at pages/ root level
     const wwwPaths = ["/", "/login", "/signup", "/dashboard", "/privacy", "/terms", "/about", "/contact"];
     if (wwwPaths.includes(url.pathname) || url.pathname.startsWith("/dashboard")) {
+      console.log(`[YooHoo Middleware] Serving www page: ${url.pathname}`);
       return NextResponse.next();
     }
   }
@@ -80,15 +109,17 @@ export function middleware(request: NextRequest) {
     const rewritePath = `/_apps/${subdomain}${url.pathname}`;
     url.pathname = rewritePath;
 
-    // Add debug header in development
+    console.log(`[YooHoo Middleware] REWRITE: ${hostname}${request.nextUrl.pathname} -> ${rewritePath}`);
+
+    // Add debug headers (visible in browser dev tools)
     const response = NextResponse.rewrite(url);
-    if (process.env.NODE_ENV === "development") {
-      response.headers.set("x-middleware-rewrite", rewritePath);
-      response.headers.set("x-subdomain", subdomain);
-    }
+    response.headers.set("x-middleware-rewrite", rewritePath);
+    response.headers.set("x-subdomain", subdomain);
+    response.headers.set("x-middleware-invoked", "true");
     return response;
   }
 
+  console.log(`[YooHoo Middleware] Pass-through for www`);
   return NextResponse.next();
 }
 
