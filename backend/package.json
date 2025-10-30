@@ -16,8 +16,8 @@
     "jest-test": "NODE_ENV=test ./node_modules/.bin/jest --forceExit --runInBand --detectOpenHandles --verbose",
     "test:watch": "NODE_ENV=test jest --watch",
     "test:coverage": "NODE_ENV=test jest --coverage",
-    "lint": "eslint src/ --ext .js",
-    "lint:fix": "eslint src/ --ext .js --fix",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
     "format": "prettier --write src/**/*.js",
     "deploy": "railway up",
     "test:bcrypt": "jest src/utils/__tests__/bcrypt.test.js"
@@ -54,6 +54,7 @@
   "devDependencies": {
     "@babel/core": "^7.24.4",
     "@babel/preset-env": "^7.28.3",
+    "@eslint/js": "^9.38.0",
     "@firebase/rules-unit-testing": "^5.0.0",
     "babel-jest": "^29.7.0",
     "chalk": "^5.6.2",
