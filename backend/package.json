@@ -44,6 +44,7 @@
     "morgan": "^1.10.0",
     "multer": "^2.0.2",
     "node-cron": "^3.0.3",
+    "rss-parser": "^3.13.0",
     "stripe": "^19.0.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
