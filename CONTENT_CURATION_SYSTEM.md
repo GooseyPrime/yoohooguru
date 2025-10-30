@@ -13,7 +13,7 @@ The YooHoo.guru platform features a comprehensive AI-powered content curation sy
 
 Displays curated news articles on subdomain homepages with:
 - Article title, summary, and source
-- Links to full articles
+- Links to original news articles (external sources)
 - Timestamp showing article freshness
 - Responsive grid layout
 - Loading and error states
@@ -30,7 +30,7 @@ Displays blog post previews on subdomain homepages with:
 - Post title, excerpt, and author
 - Read time and publish date
 - Tags and categories
-- Links to full blog posts
+- Links to full blog posts (internal)
 - Responsive card layout
 
 **Usage**:
@@ -42,7 +42,7 @@ Displays blog post previews on subdomain homepages with:
 **Location**: `apps/main/pages/_apps/{subdomain}/blog/[slug].tsx`
 
 Full blog post pages featuring:
-- Complete markdown-rendered content
+- Complete markdown-rendered content (1200-2000 words)
 - Affiliate link disclaimers
 - Related posts sidebar
 - SEO-optimized metadata
@@ -65,12 +65,14 @@ Blog listing pages with:
 **Schedule**: Twice daily (6 AM & 3 PM EST)
 **Output**: 2 articles per subdomain per slot = 96 articles/day total
 
+**CRITICAL: This agent searches for REAL news articles from external sources**
 **Features**:
-- Fetches recent news articles (<72 hours old)
-- U.S. sources only
-- AI-powered summaries (<50 words)
-- Proper source attribution
+- Searches real news sources using Perplexity AI with web search
+- Finds articles <72 hours old from credible U.S. sources
+- AI creates 1-2 sentence summaries (<50 words)
+- Links to original news source URLs (external)
 - Automatic cleanup (keeps 10 most recent per subdomain)
+- NO fake or generated news content
 
 **Database Storage**: `Firestore: gurus/{subdomain}/news`
 
@@ -81,7 +83,8 @@ Blog listing pages with:
 **Output**: 1 blog post per subdomain per week = 24 posts/week
 
 **Features**:
-- 1200-2000 word SEO-optimized content
+- AI generates complete 1200-2000 word blog posts
+- Creates homepage intro/summary (1-2 sentences)
 - Structured with H2/H3 subheadings
 - 2-4 contextual affiliate links
 - Minimum 2 internal links
@@ -94,20 +97,21 @@ Blog listing pages with:
 **Location**: `backend/src/agents/backupAgent.js`
 
 **Schedule**: Daily at 2 AM EST
-**Output**: Complete content snapshots
+**Output**: Complete content snapshots with historical preservation
 
 **Features**:
-- Backs up all news articles
-- Backs up all blog posts
-- Backs up site statistics
+- Backs up all news articles (with original source URLs)
+- Backs up all blog posts (full content)
+- Backs up site statistics and metadata
 - Dual storage (Firestore + JSON files)
-- 30-day Firestore retention
-- Unlimited file retention
-- Automatic cleanup of old backups
+- Permanent historical retention (NO automatic cleanup)
+- Restoration capability for site re-deployment
+- Disaster recovery support
 
 **Storage Locations**:
-- Firestore: `backups` collection
+- Firestore: `backups` collection (permanent retention)
 - Files: `backend/backups/backup-YYYY-MM-DD-timestamp.json`
+- Historical archive: All content preserved for re-deployment scenarios
 
 ### 3. API Endpoints
 
