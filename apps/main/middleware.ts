@@ -96,9 +96,11 @@ export function middleware(request: NextRequest) {
 
     // Add debug headers (visible in browser dev tools)
     const response = NextResponse.rewrite(url);
-    response.headers.set("x-middleware-rewrite", rewritePath);
-    response.headers.set("x-subdomain", subdomain);
-    response.headers.set("x-middleware-invoked", "true");
+    if (process.env.NODE_ENV === 'development') {
+      response.headers.set("x-middleware-rewrite", rewritePath);
+      response.headers.set("x-subdomain", subdomain);
+      response.headers.set("x-middleware-invoked", "true");
+    }
     return response;
   }
 
