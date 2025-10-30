@@ -58,8 +58,25 @@ export function middleware(request: NextRequest) {
     // Development mode - default to www
     subdomain = "www";
   } else if (hostname.includes("vercel.app")) {
-    // Vercel preview deployments - default to www (no subdomain support)
-    subdomain = "www";
+    // Distinguish between Vercel preview and production deployments
+    const vercelEnv = process.env.VERCEL_ENV;
+    if (vercelEnv === "preview") {
+      // Vercel preview deployments - default to www (no subdomain support)
+      subdomain = "www";
+    } else {
+      // Production vercel.app domains may have subdomain support (e.g., coach-yoohoo.vercel.app)
+      // Extract subdomain from hostname: e.g., coach-yoohoo.vercel.app -> coach
+      const parts = hostname.split(".");
+      if (parts.length >= 3) {
+        // The first part may be "{subdomain}-{project}"
+        const subdomainPart = parts[0];
+        // Try to extract subdomain before the first hyphen
+        const subdomainCandidate = subdomainPart.split("-")[0];
+        subdomain = VALID_SUBDOMAINS.has(subdomainCandidate) ? subdomainCandidate : "www";
+      } else {
+        subdomain = "www";
+      }
+    }
   }
 
   console.log(`[YooHoo Middleware] Subdomain: ${subdomain}`);
