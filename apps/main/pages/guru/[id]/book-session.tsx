@@ -1,8 +1,10 @@
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import { Header, Footer } from '@yoohooguru/shared';
 import Head from 'next/head';
 import styled from 'styled-components';
 import SessionBooking from '../../../components/sessions/SessionBooking';
+import { isValidId } from '../../../lib/validators';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -18,6 +20,14 @@ const Main = styled.main`
 export default function BookSession() {
   const router = useRouter();
   const { id } = router.query;
+  const [error, setError] = useState<string | null>(null);
+  
+  useEffect(() => {
+    // Validate guru ID to prevent SSRF/path traversal
+    if (id && !isValidId(id)) {
+      setError('Invalid guru identifier');
+    }
+  }, [id]);
   
   // Mock guru data - in a real implementation, this would come from your backend
   const guruData = {
@@ -32,6 +42,22 @@ export default function BookSession() {
     // Redirect to dashboard or session confirmation page
     router.push('/dashboard');
   };
+  
+  if (error) {
+    return (
+      <Container>
+        <Head>
+          <title>Error | YooHoo.Guru</title>
+        </Head>
+        <Header />
+        <Main style={{ textAlign: 'center', padding: '3rem' }}>
+          <h1>{error}</h1>
+          <button onClick={() => router.push('/')}>Return Home</button>
+        </Main>
+        <Footer />
+      </Container>
+    );
+  }
   
   return (
     <Container>

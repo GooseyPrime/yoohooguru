@@ -1,8 +1,10 @@
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import { Header, Footer } from '@yoohooguru/shared';
 import Head from 'next/head';
 import styled from 'styled-components';
 import RatingSystem from '../../../components/ratings/RatingSystem';
+import { isValidId } from '../../../lib/validators';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -41,6 +43,14 @@ const GuruSkill = styled.p`
 export default function GuruRatings() {
   const router = useRouter();
   const { id } = router.query;
+  const [error, setError] = useState<string | null>(null);
+  
+  useEffect(() => {
+    // Validate guru ID to prevent SSRF/path traversal
+    if (id && !isValidId(id)) {
+      setError('Invalid guru identifier');
+    }
+  }, [id]);
   
   // Mock guru data
   const guruData = {
@@ -55,6 +65,22 @@ export default function GuruRatings() {
     console.log(`Submitted review for guru ${id}: ${rating} stars, comment: ${comment}`);
     alert('Review submitted successfully!');
   };
+  
+  if (error) {
+    return (
+      <Container>
+        <Head>
+          <title>Error | YooHoo.Guru</title>
+        </Head>
+        <Header />
+        <Main style={{ textAlign: 'center', padding: '3rem' }}>
+          <h1 style={{ color: '#fff' }}>{error}</h1>
+          <button onClick={() => router.push('/')}>Return Home</button>
+        </Main>
+        <Footer />
+      </Container>
+    );
+  }
   
   return (
     <Container>

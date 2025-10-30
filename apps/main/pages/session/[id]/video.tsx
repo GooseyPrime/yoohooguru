@@ -1,8 +1,10 @@
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import { Header, Footer } from '@yoohooguru/shared';
 import Head from 'next/head';
 import styled from 'styled-components';
 import dynamic from 'next/dynamic';
+import { isValidId } from '../../../lib/validators';
 
 const AgoraVideo = dynamic(() => import('../../../components/video/AgoraVideo'), {
   ssr: false
@@ -43,6 +45,14 @@ const SessionDetails = styled.div`
 export default function VideoSession() {
   const router = useRouter();
   const { id } = router.query;
+  const [error, setError] = useState<string | null>(null);
+  
+  useEffect(() => {
+    // Validate session ID to prevent SSRF/path traversal
+    if (id && !isValidId(id)) {
+      setError('Invalid session identifier');
+    }
+  }, [id]);
   
   // Mock session data - in a real implementation, this would come from your backend
   const sessionData = {
@@ -60,6 +70,24 @@ export default function VideoSession() {
   const handleLeave = () => {
     router.push('/dashboard');
   };
+  
+  if (error) {
+    return (
+      <Container>
+        <Head>
+          <title>Error | YooHoo.Guru</title>
+        </Head>
+        <Header />
+        <Main style={{ textAlign: 'center', padding: '3rem' }}>
+          <SessionInfo>
+            <SessionTitle style={{ color: '#fff' }}>{error}</SessionTitle>
+            <button onClick={() => router.push('/')}>Return Home</button>
+          </SessionInfo>
+        </Main>
+        <Footer />
+      </Container>
+    );
+  }
   
   return (
     <Container>
