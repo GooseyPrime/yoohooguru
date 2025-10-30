@@ -58,11 +58,8 @@ export function middleware(request: NextRequest) {
     // Development mode - default to www
     subdomain = "www";
   } else if (hostname.includes("vercel.app")) {
-    // Vercel preview deployments - extract from hostname
-    const parts = hostname.split(".");
-    if (parts[0] && parts[0] !== "www") {
-      subdomain = parts[0];
-    }
+    // Vercel preview deployments - default to www (no subdomain support)
+    subdomain = "www";
   }
 
   console.log(`[YooHoo Middleware] Subdomain: ${subdomain}`);
