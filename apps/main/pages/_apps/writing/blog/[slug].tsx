@@ -38,28 +38,11 @@ export default function BlogPost() {
 
   const subdomain = 'writing';
 
-  // Example static allowlist of slugs for demonstration purposes.
-  const allowedSlugs = [
-    "example-post",
-    "how-to-code",
-    "introducing-new-feature",
-    // Add other valid slugs as needed
-  ];
-
-  // Only allow slugs that match a safe pattern: letters, numbers, hyphens, underscores
-  function isValidSlug(slug: any): slug is string {
-    return (
-      validateSlugPattern(slug) &&
-      slug.length <= 100 &&
-      allowedSlugs.includes(slug)
-    );
-  }
-
   useEffect(() => {
     if (!slug) return;
 
     // Validate slug to prevent SSRF/path traversal
-    if (!isValidSlug(slug)) {
+    if (!validateSlugPattern(slug)) {
       setError('Invalid blog post identifier');
       setLoading(false);
       return;
