@@ -208,10 +208,12 @@ cd yoohooguru
 # Install all dependencies (uses npm workspaces)
 npm install
 
-# Verify installation
-npm run build:main  # Build frontend
-npm run build:backend  # Build backend
+# Verify installation (optional - builds individual apps for development)
+npm run build:main  # Build frontend only
+npm run build:backend  # Build backend only
 ```
+
+> **Note:** For development, you can build individual apps using `npm run build:main` or `npm run build:backend`. However, for production builds and deployment, always use the root-level `npm run build` command which uses Turborepo to coordinate builds across all workspaces.
 
 ### Production Installation
 For production deployments, use `npm ci` for reproducible builds:
@@ -220,9 +222,11 @@ For production deployments, use `npm ci` for reproducible builds:
 # Clean install from package-lock.json (production-ready)
 npm ci
 
-# Build for production
+# Build for production (uses Turborepo to coordinate builds)
 npm run build
 ```
+
+> **Important:** The root `npm run build` command uses Turborepo to orchestrate the build process across all workspace packages. It automatically handles build dependencies and caching for optimal performance. Always use this command for production builds rather than building individual packages.
 
 ### Environment Setup
 ```bash
@@ -296,11 +300,13 @@ User Request → Vercel (Edge Middleware) → Next.js App → API Requests → R
    ```
    Framework Preset: Next.js
    Root Directory: (leave empty)
-   Build Command: cd apps/main && npm run build
+   Build Command: npm run build
    Output Directory: apps/main/.next
    Install Command: npm ci
    Node.js Version: 20.x
    ```
+   
+   > **Note:** The build command `npm run build` uses Turborepo to coordinate builds across all workspace packages. This ensures the frontend and any shared packages are built in the correct order with optimal caching.
 
 2. **Environment Variables** (add these in Vercel dashboard):
    ```bash
@@ -452,7 +458,7 @@ Use this checklist to ensure a complete and secure production deployment:
 
 ### Vercel Frontend Deployment
 - [ ] Vercel project created and linked to GitHub repo
-- [ ] Build command configured: `cd apps/main && npm run build`
+- [ ] Build command configured: `npm run build` (uses Turborepo)
 - [ ] Install command configured: `npm ci`
 - [ ] All 29 custom domains added to Vercel project
 - [ ] DNS records configured (wildcard CNAME for *.yoohoo.guru)
