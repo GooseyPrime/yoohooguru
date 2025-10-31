@@ -377,8 +377,17 @@ git push origin main
    # AI Content Curation
    OPENROUTER_API_KEY=your_openrouter_key
    
-   # CORS - All 29 frontend subdomains
-   CORS_ORIGIN_PRODUCTION=https://www.yoohoo.guru,https://coach.yoohoo.guru,https://angel.yoohoo.guru,https://heroes.yoohoo.guru,https://dashboard.yoohoo.guru,https://art.yoohoo.guru,https://business.yoohoo.guru,https://coding.yoohoo.guru,https://cooking.yoohoo.guru,https://crafts.yoohoo.guru,https://data.yoohoo.guru,https://design.yoohoo.guru,https://finance.yoohoo.guru,https://fitness.yoohoo.guru,https://gardening.yoohoo.guru,https://history.yoohoo.guru,https://home.yoohoo.guru,https://investing.yoohoo.guru,https://language.yoohoo.guru,https://marketing.yoohoo.guru,https://math.yoohoo.guru,https://music.yoohoo.guru,https://photography.yoohoo.guru,https://sales.yoohoo.guru,https://science.yoohoo.guru,https://sports.yoohoo.guru,https://tech.yoohoo.guru,https://wellness.yoohoo.guru,https://writing.yoohoo.guru
+   # CORS - All 29 frontend subdomains (comma-separated, no spaces)
+   CORS_ORIGIN_PRODUCTION=https://www.yoohoo.guru,https://coach.yoohoo.guru,\
+   https://angel.yoohoo.guru,https://heroes.yoohoo.guru,https://dashboard.yoohoo.guru,\
+   https://art.yoohoo.guru,https://business.yoohoo.guru,https://coding.yoohoo.guru,\
+   https://cooking.yoohoo.guru,https://crafts.yoohoo.guru,https://data.yoohoo.guru,\
+   https://design.yoohoo.guru,https://finance.yoohoo.guru,https://fitness.yoohoo.guru,\
+   https://gardening.yoohoo.guru,https://history.yoohoo.guru,https://home.yoohoo.guru,\
+   https://investing.yoohoo.guru,https://language.yoohoo.guru,https://marketing.yoohoo.guru,\
+   https://math.yoohoo.guru,https://music.yoohoo.guru,https://photography.yoohoo.guru,\
+   https://sales.yoohoo.guru,https://science.yoohoo.guru,https://sports.yoohoo.guru,\
+   https://tech.yoohoo.guru,https://wellness.yoohoo.guru,https://writing.yoohoo.guru
    ```
 
 3. **Custom Domain:**
