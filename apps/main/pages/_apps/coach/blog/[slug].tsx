@@ -42,17 +42,20 @@ export default function BlogPost() {
     if (!slug) return;
 
     // Validate slug to prevent SSRF/path traversal
-    if (!isValidSlug(slug)) {
+    // Extra strict check: only allow lowercase letters, numbers, and dashes
+    const slugPattern = /^[a-z0-9\-]+$/;
+    if (!isValidSlug(slug) || typeof slug !== "string" || !slugPattern.test(slug)) {
       setError('Invalid blog post identifier');
       setLoading(false);
       return;
     }
-
+    // Sanitize slug just in case (defense in depth)
+    const safeSlug = String(slug).toLowerCase().replace(/[^a-z0-9\-]/g, '');
     const fetchPost = async () => {
       try {
         setLoading(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.yoohoo.guru';
-        const response = await fetch(`${apiUrl}/api/${subdomain}/posts/${slug}`);
+        const response = await fetch(`${apiUrl}/api/${subdomain}/posts/${safeSlug}`);
 
         if (!response.ok) {
           throw new Error('Post not found');
