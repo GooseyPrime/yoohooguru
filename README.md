@@ -23,14 +23,134 @@ Each subdomain features:
 
 ## Architecture
 
+### System Overview
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         User Browser                             │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    Vercel Edge Network                           │
+│  ┌────────────────────────────────────────────────────────────┐ │
+│  │  Edge Middleware (middleware.ts)                           │ │
+│  │  - Subdomain detection and routing                         │ │
+│  │  - Rewrites subdomain.yoohoo.guru → /_apps/subdomain/     │ │
+│  └────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      Next.js Application                         │
+│                         (apps/main)                              │
+│  ┌────────────────────────────────────────────────────────────┐ │
+│  │  Pages Structure:                                          │ │
+│  │  - pages/index.tsx (www.yoohoo.guru)                      │ │
+│  │  - pages/_apps/coach/ (coach.yoohoo.guru)                 │ │
+│  │  - pages/_apps/angel/ (angel.yoohoo.guru)                 │ │
+│  │  - pages/_apps/[subject]/ (24 content hubs)               │ │
+│  └────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼ (API Requests)
+┌─────────────────────────────────────────────────────────────────┐
+│                    Railway Backend API                           │
+│                       (backend/src)                              │
+│  ┌────────────────────────────────────────────────────────────┐ │
+│  │  Express Routes:                                           │ │
+│  │  - /api/auth - Authentication                              │ │
+│  │  - /api/users - User management                            │ │
+│  │  - /api/skills - Skill marketplace                         │ │
+│  │  - /api/exchanges - Skill exchanges                        │ │
+│  │  - /api/payments - Stripe integration                      │ │
+│  │  - /api/admin/curate - AI content generation              │ │
+│  └────────────────────────────────────────────────────────────┘ │
+│  ┌────────────────────────────────────────────────────────────┐ │
+│  │  AI Curation Agents (cron scheduled):                      │ │
+│  │  - News Agent: 6 AM & 3 PM EST (2 articles/subdomain)     │ │
+│  │  - Blog Agent: Monday 10 AM EST (1 post/subdomain)        │ │
+│  └────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                       Firebase Services                          │
+│  ┌──────────────────────┐  ┌──────────────────────────────────┐ │
+│  │   Authentication     │  │         Firestore DB             │ │
+│  │  - Email/Password    │  │  Collections:                    │ │
+│  │  - Google OAuth      │  │  - users                         │ │
+│  │  - Session tokens    │  │  - skills                        │ │
+│  └──────────────────────┘  │  - exchanges                     │ │
+│                            │  - news (AI-curated)             │ │
+│  ┌──────────────────────┐  │  - blogs (AI-curated)            │ │
+│  │      Storage         │  │  - services (Angel's List)       │ │
+│  │  - User avatars      │  │  - sessions (Coach Guru)         │ │
+│  │  - Document uploads  │  │  - volunteers (Hero Gurus)       │ │
+│  └──────────────────────┘  └──────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                     External Services                            │
+│  ┌──────────────┐  ┌──────────────┐  ┌─────────────────────┐   │
+│  │    Stripe    │  │  OpenRouter  │  │   Google Maps API   │   │
+│  │   Payments   │  │  AI Content  │  │  Location Services  │   │
+│  └──────────────┘  └──────────────┘  └─────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Data Flow Patterns
+
+#### 1. User Authentication Flow
+```
+User → Next.js → NextAuth → Firebase Auth → Session Cookie (domain: .yoohoo.guru)
+```
+- Cross-subdomain authentication via shared cookie domain
+- JWT tokens stored in HTTP-only cookies
+- Firebase custom tokens for API authentication
+
+#### 2. Content Serving Flow (Static)
+```
+Request → Vercel Edge → Middleware → Next.js SSG → CDN Cache
+```
+- Pages are statically generated at build time
+- Edge middleware handles subdomain routing
+- Content served from Vercel's global CDN
+
+#### 3. API Request Flow (Dynamic)
+```
+User → Next.js → Railway API → Firebase Firestore → Response
+```
+- Client-side fetches to `https://api.yoohoo.guru`
+- Express middleware validates JWT tokens
+- Firestore queries with security rules enforcement
+
+#### 4. AI Content Curation Flow
+```
+Cron Schedule → Curation Agent → OpenRouter AI → Firebase Firestore → Next.js Revalidation
+```
+- Automated content generation on schedule
+- News: 2x daily (6 AM, 3 PM EST) - 2 articles per subdomain
+- Blogs: Weekly (Monday 10 AM EST) - 1 post per subdomain
+- Content stored in Firestore with subdomain tagging
+
+#### 5. Payment Processing Flow
+```
+User → Stripe Checkout → Webhook → Railway API → Firebase Update → Email Notification
+```
+- Stripe hosted checkout for payments
+- Webhook events processed by backend
+- Transaction records stored in Firestore
+
 ### Single-App Monorepo with Middleware Routing
 ```
 yoohooguru/
 ├── apps/
-│   └── main/                    # Single Next.js app serving all 28 subdomains
+│   └── main/                    # Single Next.js app serving all 29 subdomains
 │       ├── middleware.ts        # Subdomain routing via Edge Middleware
 │       ├── pages/
-│       │   ├── _apps/          # All 28 subdomain pages
+│       │   ├── _apps/          # All 29 subdomain pages
 │       │   │   ├── coach/
 │       │   │   ├── angel/
 │       │   │   ├── art/
@@ -73,23 +193,35 @@ yoohooguru/
 
 ### Prerequisites
 - Node.js 20+
-- Firebase project
+- npm 10+ (uses workspaces)
+- Firebase project with Firestore and Auth enabled
 - Stripe account (for payments)
+- Railway account (for backend deployment)
+- Vercel account (for frontend deployment)
 
-### Installation
+### Development Installation
 ```bash
 # Clone repository
 git clone https://github.com/GooseyPrime/yoohooguru.git
 cd yoohooguru
 
-# Install root dependencies
+# Install all dependencies (uses npm workspaces)
 npm install
 
-# Install main app dependencies
-cd apps/main && npm install && cd ../..
+# Verify installation
+npm run build:main  # Build frontend
+npm run build:backend  # Build backend
+```
 
-# Install backend dependencies
-cd backend && npm install && cd ..
+### Production Installation
+For production deployments, use `npm ci` for reproducible builds:
+
+```bash
+# Clean install from package-lock.json (production-ready)
+npm ci
+
+# Build for production
+npm run build
 ```
 
 ### Environment Setup
@@ -139,43 +271,265 @@ Since middleware relies on hostname detection, local subdomain testing requires 
 # http://art.localhost:3000 (art subdomain)
 ```
 
-## Deployment
+## Production Deployment
 
-### Vercel (Frontend)
+### Overview
+The platform uses a **gateway architecture** with a single Next.js app serving all 29 subdomains through Edge Middleware. This provides unlimited subdomain support without Vercel's project limits.
+
+### Architecture Components
+```
+User Request → Vercel (Edge Middleware) → Next.js App → API Requests → Railway Backend → Firebase
+                     ↓
+            Subdomain Routing
+        (coach.yoohoo.guru → /_apps/coach/)
+```
+
+### Vercel (Frontend) - Production Deployment
+
+**Prerequisites:**
+- Vercel account connected to your GitHub repository
+- All 29 custom domains configured in DNS
+
+**Configuration in Vercel Dashboard:**
+
+1. **Build Settings:**
+   ```
+   Framework Preset: Next.js
+   Root Directory: (leave empty)
+   Build Command: cd apps/main && npm run build
+   Output Directory: apps/main/.next
+   Install Command: npm ci
+   Node.js Version: 20.x
+   ```
+
+2. **Environment Variables** (add these in Vercel dashboard):
+   ```bash
+   # API Configuration
+   NEXT_PUBLIC_API_URL=https://api.yoohoo.guru
+   
+   # Firebase Configuration (Frontend)
+   NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+   NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+   NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+   
+   # Authentication
+   NEXTAUTH_SECRET=your_secure_secret_key
+   NEXTAUTH_URL=https://www.yoohoo.guru
+   AUTH_COOKIE_DOMAIN=.yoohoo.guru
+   
+   # Stripe
+   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_...
+   ```
+
+3. **Add Custom Domains** (all 29 subdomains):
+   - Core: www, coach, angel, heroes, dashboard
+   - Content: art, business, coding, cooking, crafts, data, design, finance, fitness, gardening, history, home, investing, language, marketing, math, music, photography, sales, science, sports, tech, wellness, writing
+
+**Deploy:**
 ```bash
-cd yoohooguru
+# Using Vercel CLI
 vercel --prod
 
-# In Vercel Dashboard → Settings:
-# - Build Command: cd apps/main && npm run build
-# - Output Directory: apps/main/.next
-# - Install Command: npm ci && cd apps/main && npm ci
+# Or push to main branch (auto-deploys via GitHub integration)
+git push origin main
 ```
 
-**Add all subdomains in Vercel Dashboard → Domains:**
-- www.yoohoo.guru
-- coach.yoohoo.guru
-- angel.yoohoo.guru
-- heroes.yoohoo.guru
-- dashboard.yoohoo.guru
-- [all 24 subject subdomains]
+### Railway (Backend) - Production Deployment
 
-### Railway (Backend)
+**Prerequisites:**
+- Railway account
+- Firebase service account credentials
+- Stripe API keys
+
+**Configuration in Railway Dashboard:**
+
+1. **Service Settings:**
+   ```
+   Root Directory: backend
+   Build Command: (auto-detected from railway.json)
+   Start Command: cd backend && npm start
+   Health Check Path: /health
+   ```
+
+2. **Environment Variables** (add these in Railway dashboard):
+   ```bash
+   # Core Configuration
+   NODE_ENV=production
+   PORT=8000
+   SERVE_FRONTEND=false
+   
+   # Firebase (Backend Service Account)
+   FIREBASE_PROJECT_ID=your_project_id
+   FIREBASE_CLIENT_EMAIL=firebase-adminsdk@your-project.iam.gserviceaccount.com
+   FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+   
+   # Security
+   JWT_SECRET=your_secure_jwt_secret
+   SESSION_SECRET=your_secure_session_secret
+   
+   # Stripe
+   STRIPE_SECRET_KEY=sk_live_...
+   STRIPE_WEBHOOK_SECRET=whsec_...
+   
+   # AI Content Curation
+   OPENROUTER_API_KEY=your_openrouter_key
+   
+   # CORS - All 29 frontend subdomains (comma-separated, no spaces)
+   CORS_ORIGIN_PRODUCTION=https://www.yoohoo.guru,https://coach.yoohoo.guru,\
+   https://angel.yoohoo.guru,https://heroes.yoohoo.guru,https://dashboard.yoohoo.guru,\
+   https://art.yoohoo.guru,https://business.yoohoo.guru,https://coding.yoohoo.guru,\
+   https://cooking.yoohoo.guru,https://crafts.yoohoo.guru,https://data.yoohoo.guru,\
+   https://design.yoohoo.guru,https://finance.yoohoo.guru,https://fitness.yoohoo.guru,\
+   https://gardening.yoohoo.guru,https://history.yoohoo.guru,https://home.yoohoo.guru,\
+   https://investing.yoohoo.guru,https://language.yoohoo.guru,https://marketing.yoohoo.guru,\
+   https://math.yoohoo.guru,https://music.yoohoo.guru,https://photography.yoohoo.guru,\
+   https://sales.yoohoo.guru,https://science.yoohoo.guru,https://sports.yoohoo.guru,\
+   https://tech.yoohoo.guru,https://wellness.yoohoo.guru,https://writing.yoohoo.guru
+   ```
+
+3. **Custom Domain:**
+   - Add `api.yoohoo.guru` in Railway → Settings → Networking
+   - Update DNS CNAME record to point to Railway
+
+**Deploy:**
 ```bash
-cd yoohooguru/backend
+# Using Railway CLI
+cd backend
 railway up
 
-# Or configure in Railway Dashboard:
-# - Root Directory: backend
-# - Build Command: npm install
-# - Start Command: npm start
+# Or push to main branch (auto-deploys via GitHub integration)
+git push origin main
 ```
 
-### Environment Variables
-- **Vercel**: Add all `NEXT_PUBLIC_*` and `NEXTAUTH_*` variables
-- **Railway**: Add `FIREBASE_*`, `STRIPE_*`, `OPENROUTER_API_KEY`, etc.
+### Post-Deployment Verification
 
-See [Environment Variables Guide](./docs/ENVIRONMENT_VARIABLES.md) for complete list.
+**Frontend Health Check:**
+```bash
+# Test main subdomain
+curl -I https://www.yoohoo.guru
+# Should return: 200 OK
+
+# Test subdomain routing
+curl -I https://coach.yoohoo.guru
+curl -I https://art.yoohoo.guru
+# Should return: 200 OK with correct content
+```
+
+**Backend Health Check:**
+```bash
+# Test backend API
+curl https://api.yoohoo.guru/health
+# Should return: {"status":"ok","timestamp":"..."}
+
+# Test CORS configuration
+curl -H "Origin: https://www.yoohoo.guru" \
+     -H "Access-Control-Request-Method: POST" \
+     -X OPTIONS https://api.yoohoo.guru/api/auth/login
+# Should return CORS headers
+```
+
+**Monitoring:**
+- Vercel Dashboard: Check build logs and function logs
+- Railway Dashboard: Monitor application logs and metrics
+- Firebase Console: Monitor authentication and database usage
+
+See [Full Deployment Guide](./docs/DEPLOYMENT.md) for detailed instructions and troubleshooting.
+
+## Production Deployment Checklist
+
+Use this checklist to ensure a complete and secure production deployment:
+
+### Pre-Deployment
+- [ ] All code changes committed and pushed to `main` branch
+- [ ] All tests passing: `npm test`
+- [ ] No security vulnerabilities: `npm audit`
+- [ ] Environment variables documented in `.env.example`
+- [ ] Firebase security rules updated and tested
+- [ ] Stripe webhooks configured for production domain
+
+### Vercel Frontend Deployment
+- [ ] Vercel project created and linked to GitHub repo
+- [ ] Build command configured: `cd apps/main && npm run build`
+- [ ] Install command configured: `npm ci`
+- [ ] All 29 custom domains added to Vercel project
+- [ ] DNS records configured (wildcard CNAME for *.yoohoo.guru)
+- [ ] Environment variables set in Vercel dashboard
+- [ ] `NEXTAUTH_SECRET` is cryptographically secure (32+ chars)
+- [ ] `AUTH_COOKIE_DOMAIN=.yoohoo.guru` for cross-subdomain auth
+- [ ] Deployment successful and verified
+- [ ] All subdomains accessible and loading correctly
+
+### Railway Backend Deployment
+- [ ] Railway project created and linked to GitHub repo
+- [ ] Environment variables set in Railway dashboard
+- [ ] `JWT_SECRET` and `SESSION_SECRET` are cryptographically secure
+- [ ] Firebase service account credentials configured
+- [ ] Stripe live keys configured (not test keys)
+- [ ] OpenRouter API key configured (for AI content)
+- [ ] CORS origins include all 29 frontend subdomains
+- [ ] Custom domain `api.yoohoo.guru` configured
+- [ ] DNS CNAME record pointing to Railway
+- [ ] Health check endpoint responding: `/health`
+- [ ] Deployment successful and verified
+
+### Firebase Configuration
+- [ ] All 29 subdomains added to Firebase authorized domains
+- [ ] Firestore security rules deployed and tested
+- [ ] Firestore indexes created for optimal queries
+- [ ] Firebase Authentication enabled (Email/Password + Google OAuth)
+- [ ] Storage bucket security rules configured
+- [ ] Production service account created for backend
+
+### Post-Deployment Verification
+- [ ] Frontend health check: `curl -I https://www.yoohoo.guru` → 200 OK
+- [ ] Backend health check: `curl https://api.yoohoo.guru/health` → `{"status":"ok"}`
+- [ ] Test subdomain routing: `curl -I https://coach.yoohoo.guru` → 200 OK
+- [ ] Test authentication flow (signup, login, logout)
+- [ ] Test cross-subdomain authentication (login on www, navigate to coach)
+- [ ] Test API integration (create user, fetch data)
+- [ ] Test Stripe payment flow (checkout, webhook)
+- [ ] Verify AI content curation agents are running
+- [ ] Check cron schedules: News (6 AM, 3 PM EST), Blog (Monday 10 AM EST)
+- [ ] Monitor error logs in Vercel and Railway dashboards
+- [ ] Set up monitoring alerts (uptime, error rate)
+
+### Security Verification
+- [ ] HTTPS enabled on all domains (enforce SSL)
+- [ ] Security headers present (Helmet.js, CSP, HSTS)
+- [ ] Secrets not exposed in client-side code
+- [ ] Rate limiting active on backend
+- [ ] Firebase security rules prevent unauthorized access
+- [ ] Stripe webhook signatures verified
+- [ ] CORS restricted to known subdomains only
+- [ ] No hardcoded credentials in codebase
+- [ ] Dependencies scanned for vulnerabilities: `npm audit`
+
+### Monitoring Setup
+- [ ] Vercel analytics enabled
+- [ ] Railway metrics dashboard configured
+- [ ] Firebase usage monitoring enabled
+- [ ] Stripe webhook events logging
+- [ ] Error tracking configured (Sentry or similar)
+- [ ] Uptime monitoring configured (UptimeRobot or similar)
+- [ ] Log aggregation configured (if applicable)
+
+### Documentation
+- [ ] README.md updated with deployment info
+- [ ] Environment variables documented
+- [ ] API documentation accessible
+- [ ] Deployment runbook created
+- [ ] Rollback procedure documented
+
+### Rollback Plan
+If deployment fails or issues arise:
+1. Immediately revert to previous deployment in Vercel/Railway
+2. Check error logs for root cause
+3. Verify environment variables are correct
+4. Test fix in staging environment before redeploying
+5. Document incident and resolution
 
 ## Recent Fixes (October 2025)
 
