@@ -7,15 +7,24 @@ import { OrbitronContainer, OrbitronCard, OrbitronButton } from '../components/o
 
 // Only allow redirects to internal paths.
 function getSafeRedirect(url: unknown): string {
-  if (
-    typeof url === 'string' &&
-    url.startsWith('/') &&
-    !url.startsWith('//') &&
-    !url.startsWith('/\\') &&
-    !url.includes(':') // Prevent protocol injection (e.g., /https://evil.com, /javascript:alert(1))
-  ) {
-    // Prevent redirect to protocol-relative, backslashes, and protocol injection
-    return url;
+  if (typeof url === 'string') {
+    // Decode URL to catch encoded backslashes and other encoded characters
+    let decodedUrl;
+    try {
+      decodedUrl = decodeURIComponent(url);
+    } catch {
+      return '/dashboard';
+    }
+    // Only allow internal paths: starts with single '/', not '//', no backslash, no encoded backslash
+    if (
+      decodedUrl.startsWith('/') &&
+      !decodedUrl.startsWith('//') &&
+      !decodedUrl.includes('\\') &&
+      !decodedUrl.toLowerCase().includes('%5c') &&
+      /^[\/a-zA-Z0-9\-_\.]*$/.test(decodedUrl)
+    ) {
+      return decodedUrl;
+    }
   }
   return '/dashboard';
 }
