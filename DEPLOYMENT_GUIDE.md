@@ -11,6 +11,16 @@ The new gateway architecture:
 - Supports unlimited subdomains via Edge Middleware
 - Simplifies environment variable management
 - Reduces deployment complexity
+- **Uses Turborepo for build orchestration** (see turbo.json)
+
+**Note on Turborepo:**
+This repository uses Turborepo to coordinate builds across all workspace packages. The build command `npm run build` automatically:
+- Builds shared packages before apps
+- Caches build outputs for faster rebuilds
+- Runs parallel builds when possible
+- Manages build dependencies
+
+For more information on Turborepo configuration, see the `turbo.json` file at the repository root.
 
 ---
 
@@ -237,9 +247,17 @@ After deployment:
 If builds fail:
 
 1. Check that all dependencies are installed at root
-2. Verify `turbo.json` configuration
-3. Ensure `package.json` workspaces are correct
+2. Verify `turbo.json` configuration is correct
+3. Ensure `package.json` workspaces are configured properly
 4. Check build logs in Vercel dashboard
+5. Test build locally: `npm run build` (uses Turborepo)
+6. If Turborepo cache issues occur, force rebuild: `npx turbo run build --force`
+
+**Understanding Turborepo:**
+- This repository uses Turborepo to manage builds across multiple packages
+- The `turbo.json` file defines build tasks and dependencies
+- Turborepo caches build outputs to speed up subsequent builds
+- For more details, see [Turborepo Documentation](https://turbo.build/repo/docs)
 
 ### Authentication Issues
 

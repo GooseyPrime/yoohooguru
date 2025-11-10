@@ -213,7 +213,7 @@ npm run build:main  # Build frontend only
 npm run build:backend  # Build backend only
 ```
 
-> **Note:** For development, you can build individual apps using `npm run build:main` or `npm run build:backend`. However, for production builds and deployment, always use the root-level `npm run build` command which uses Turborepo to coordinate builds across all workspaces.
+> **Note:** For development, you can build individual apps using `npm run build:main` or `npm run build:backend`. However, for production builds and deployment, always use the root-level `npm run build` command which uses **Turborepo** to coordinate builds across all workspaces.
 
 ### Production Installation
 For production deployments, use `npm ci` for reproducible builds:
@@ -226,7 +226,13 @@ npm ci
 npm run build
 ```
 
-> **Important:** The root `npm run build` command uses Turborepo to orchestrate the build process across all workspace packages. It automatically handles build dependencies and caching for optimal performance. Always use this command for production builds rather than building individual packages.
+> **Important:** The root `npm run build` command uses **Turborepo** to orchestrate the build process across all workspace packages. Turborepo:
+> - Handles build dependencies automatically
+> - Caches build outputs for faster rebuilds
+> - Runs builds in parallel when possible
+> - Ensures packages are built in the correct order
+> 
+> Always use this command for production builds rather than building individual packages.
 
 ### Environment Setup
 ```bash
@@ -306,7 +312,16 @@ User Request → Vercel (Edge Middleware) → Next.js App → API Requests → R
    Node.js Version: 20.x
    ```
    
-   > **Note:** The build command `npm run build` uses Turborepo to coordinate builds across all workspace packages. This ensures the frontend and any shared packages are built in the correct order with optimal caching.
+   > **Note:** The build command `npm run build` uses **Turborepo** to coordinate builds across all workspace packages. This ensures the frontend and any shared packages are built in the correct order with optimal caching.
+   >
+   > **What is Turborepo?**
+   > Turborepo is a high-performance build system for JavaScript/TypeScript monorepos. It:
+   > - Coordinates builds across multiple packages in the workspace
+   > - Caches build outputs to speed up subsequent builds
+   > - Runs tasks in parallel when dependencies allow
+   > - Manages build dependencies automatically
+   >
+   > The `turbo.json` file at the repository root defines all build tasks, their dependencies, and cache settings.
 
 2. **Environment Variables** (add these in Vercel dashboard):
    ```bash
@@ -458,7 +473,7 @@ Use this checklist to ensure a complete and secure production deployment:
 
 ### Vercel Frontend Deployment
 - [ ] Vercel project created and linked to GitHub repo
-- [ ] Build command configured: `npm run build` (uses Turborepo)
+- [ ] Build command configured: `npm run build` (uses Turborepo for build orchestration)
 - [ ] Install command configured: `npm ci`
 - [ ] All 29 custom domains added to Vercel project
 - [ ] DNS records configured (wildcard CNAME for *.yoohoo.guru)
@@ -467,6 +482,7 @@ Use this checklist to ensure a complete and secure production deployment:
 - [ ] `AUTH_COOKIE_DOMAIN=.yoohoo.guru` for cross-subdomain auth
 - [ ] Deployment successful and verified
 - [ ] All subdomains accessible and loading correctly
+- [ ] Turborepo build cache working correctly (check build logs)
 
 ### Railway Backend Deployment
 - [ ] Railway project created and linked to GitHub repo

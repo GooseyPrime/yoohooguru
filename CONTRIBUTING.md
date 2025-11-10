@@ -90,6 +90,7 @@ style(ui): improve button component styling
    ```bash
    npm test
    npm run lint
+   npm run build  # Uses Turborepo to coordinate builds
    ```
 
 4. **Submit Pull Request**
@@ -133,6 +134,12 @@ npm run test:watch
 
 ```
 yoohooguru/
+├── apps/
+│   └── main/                # Next.js app (all subdomains)
+│       ├── middleware.ts    # Edge Middleware routing
+│       ├── pages/
+│       │   └── _apps/       # Subdomain pages
+│       └── components/
 ├── backend/                 # Node.js API
 │   ├── src/
 │   │   ├── controllers/     # Request handlers
@@ -141,15 +148,14 @@ yoohooguru/
 │   │   ├── services/        # Business logic
 │   │   └── utils/           # Helper functions
 │   └── tests/               # Backend tests
-├── frontend/                # React Native Web
-│   ├── src/
-│   │   ├── components/      # Reusable components
-│   │   ├── screens/         # Page components
-│   │   ├── contexts/        # React contexts
-│   │   └── hooks/           # Custom hooks
-│   └── tests/               # Frontend tests
+├── packages/
+│   ├── shared/              # Shared UI components
+│   └── auth/                # Auth utilities
+├── turbo.json               # Turborepo configuration
 └── docs/                    # Documentation
 ```
+
+**Note:** This monorepo uses **Turborepo** for build orchestration. The `turbo.json` file defines how builds are coordinated across packages.
 
 ## 🎯 Areas for Contribution
 
@@ -241,6 +247,14 @@ git grep -l "FIREBASE_EMULATOR_HOST\|USE_MOCKS.*true" -- '*.js' '*.jsx' '*.ts' '
 - Consider bundle size impact
 - Prefer well-maintained packages
 - Update package.json and documentation
+- Run `npm install` at the root to update workspaces
+- Test that Turborepo still builds correctly: `npm run build`
+
+### Build System
+- **Turborepo**: Coordinates builds across workspace packages
+- Caches build outputs for faster rebuilds
+- Manages build dependencies automatically
+- Configuration: `turbo.json`
 
 ### Backend Dependencies
 - Express.js for API framework
@@ -249,10 +263,10 @@ git grep -l "FIREBASE_EMULATOR_HOST\|USE_MOCKS.*true" -- '*.js' '*.jsx' '*.ts' '
 - Jest for testing
 
 ### Frontend Dependencies
-- React and React Native Web
+- Next.js for React framework
+- React 18 for UI
 - Styled Components for styling
-- React Router for navigation
-- React Hook Form for forms
+- Firebase SDK for client-side auth
 
 ## 🚀 Deployment
 
@@ -266,8 +280,15 @@ git grep -l "FIREBASE_EMULATOR_HOST\|USE_MOCKS.*true" -- '*.js' '*.jsx' '*.ts' '
 
 - Only maintainers can deploy to production
 - All tests must pass
+- Build must succeed: `npm run build` (uses Turborepo)
 - Requires code review approval
 - Follow semantic versioning
+
+**Deployment Process:**
+1. Vercel automatically deploys from `main` branch
+2. Build command: `npm run build` (orchestrated by Turborepo)
+3. Turborepo ensures all workspace packages are built correctly
+4. Output: `apps/main/.next` directory
 
 ## 📱 Mobile Development
 

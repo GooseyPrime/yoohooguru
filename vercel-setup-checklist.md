@@ -26,11 +26,34 @@ npx vercel link
 
 ### Build & Development Settings
 - [ ] Framework Preset: **Next.js**
-- [ ] Root Directory: **apps/main**
-- [ ] Build Command: **npm run build**
-- [ ] Output Directory: **.next**
-- [ ] Install Command: **npm install**
+- [ ] Root Directory: **Leave empty** (deploy from root for Turborepo)
+- [ ] Build Command: **npm run build** (uses Turborepo)
+- [ ] Output Directory: **apps/main/.next**
+- [ ] Install Command: **npm ci**
 - [ ] Node.js Version: **20.x**
+
+**Important: About Turborepo**
+
+The build command `npm run build` uses **Turborepo** to orchestrate builds across all workspace packages. This provides:
+
+- **Dependency Management**: Automatically builds shared packages before the main app
+- **Caching**: Build outputs are cached to speed up subsequent builds
+- **Parallel Execution**: Runs independent builds in parallel for faster build times
+- **Optimization**: Only rebuilds packages that have changed
+
+The `turbo.json` file at the repository root defines:
+```json
+{
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**", "build/**"]
+    }
+  }
+}
+```
+
+This configuration ensures all dependencies are built in the correct order before deploying.
 
 ### Git Integration
 **Navigate to:** Settings → Git
@@ -311,9 +334,12 @@ This will verify:
 
 ### Issue: Build fails
 **Solution:**
-- Check build logs in Vercel dashboard
-- Verify all dependencies in package.json
-- Run `npm run build` locally in `apps/main` to test
+- Check build logs in Vercel dashboard for specific errors
+- Verify all dependencies in package.json and package-lock.json
+- Test locally: `npm run build` (this uses Turborepo)
+- If Turborepo cache is causing issues, force rebuild: `npx turbo run build --force`
+- Ensure turbo.json configuration is correct
+- Check that all workspace packages have valid package.json files
 
 ### Issue: Authentication doesn't work across subdomains
 **Solution:**
