@@ -48,11 +48,19 @@ export default function BlogPost() {
       return;
     }
 
+    // Defense in depth: Also check that slug matches a strictly safe pattern (alphanumeric, dash, underscore)
+    const safeSlug = Array.isArray(slug) ? slug[0] : slug;
+    if (!/^[a-zA-Z0-9\-_]+$/.test(safeSlug)) {
+      setError('Invalid blog post identifier');
+      setLoading(false);
+      return;
+    }
+
     const fetchPost = async () => {
       try {
         setLoading(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.yoohoo.guru';
-        const response = await fetch(`${apiUrl}/api/${subdomain}/posts/${slug}`);
+        const response = await fetch(`${apiUrl}/api/${subdomain}/posts/${safeSlug}`);
 
         if (!response.ok) {
           throw new Error('Post not found');
