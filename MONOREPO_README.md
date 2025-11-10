@@ -66,6 +66,14 @@ yoohooguru/
 npm install
 ```
 
+**Note:** This monorepo uses **Turborepo** for build orchestration. Turborepo is a high-performance build system that:
+- Coordinates builds across multiple packages
+- Caches build outputs for faster rebuilds
+- Runs tasks in parallel when possible
+- Manages build dependencies automatically
+
+The `turbo.json` file at the root defines all build tasks and their relationships.
+
 ### Development
 
 Run the main app in development mode (all subdomains route through this):
@@ -95,12 +103,20 @@ Build the main app (serves all subdomains):
 npm run build
 ```
 
-Build specific components:
+This command uses **Turborepo** to orchestrate the build:
+- Runs `turbo run build --filter=@yoohooguru/main --filter=yoohooguru-backend`
+- Automatically builds dependencies in the correct order
+- Caches outputs for faster subsequent builds
+- Handles parallel execution when possible
+
+Build specific components individually (for development):
 
 ```bash
 npm run build:main
 npm run build:backend
 ```
+
+**For production deployments, always use `npm run build`** to leverage Turborepo's build orchestration and caching.
 
 ### Testing
 
@@ -170,12 +186,20 @@ All 29 subdomains are routed through Edge Middleware:
 
 1. Connect your repository to Vercel
 2. Create a single project with:
-   - Root Directory: `apps/main` (or leave empty)
-   - Build Command: `cd apps/main && npm run build`
+   - Root Directory: Leave empty (deploy from root)
+   - Build Command: `npm run build` (uses Turborepo)
+   - Install Command: `npm ci`
    - Output Directory: `apps/main/.next`
 3. Configure environment variables (see `.env.shared.example`)
 4. Add all 29 custom domains to the single project
 5. Set up wildcard DNS: `*.yoohoo.guru` → Vercel
+
+**Why Turborepo?**
+The build command `npm run build` uses Turborepo to:
+- Coordinate builds across all workspace packages
+- Build shared packages before the main app
+- Cache build outputs for faster deployments
+- Run builds in parallel when possible
 
 For detailed deployment instructions, see **[GATEWAY_ARCHITECTURE.md](./GATEWAY_ARCHITECTURE.md)**.
 

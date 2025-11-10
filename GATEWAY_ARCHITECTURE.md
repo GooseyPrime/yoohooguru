@@ -117,10 +117,16 @@ apps/main/pages/
 1. **Create one Vercel project** for the entire repository
 2. **Configure project settings**:
    - **Root Directory**: Leave empty (deploy from root)
-   - **Build Command**: `cd apps/main && npm run build`
+   - **Build Command**: `npm run build` (uses Turborepo to orchestrate builds)
    - **Output Directory**: `apps/main/.next`
    - **Framework**: Next.js
-   - **Install Command**: `npm ci && cd apps/main && npm ci`
+   - **Install Command**: `npm ci`
+
+**Note:** The build command uses **Turborepo** to coordinate builds across all workspace packages. Turborepo handles build dependencies, caching, and parallel execution for optimal build performance. The root `package.json` defines:
+```json
+"build": "turbo run build --filter=@yoohooguru/main --filter=yoohooguru-backend"
+```
+This ensures all dependencies (shared packages, etc.) are built in the correct order before the main app.
 
 3. **Set custom domains** in Vercel project settings (add all 29 subdomains):
    - www.yoohoo.guru
@@ -281,10 +287,17 @@ If you previously had separate Vercel projects:
 
 ### Build Failures
 
-1. Ensure all dependencies are installed: `npm ci && cd apps/main && npm ci`
-2. Check for TypeScript errors: `cd apps/main && npm run build`
-3. Verify shared package is building: `cd packages/shared && npm run build`
+1. Ensure all dependencies are installed: `npm ci`
+2. Check for TypeScript errors: Run Turborepo build locally: `npm run build`
+3. Review build cache: Turborepo caches builds - if issues persist, try `npx turbo run build --force`
 4. Review Vercel build logs
+5. Verify `turbo.json` configuration is correct
+
+**Understanding Turborepo Builds:**
+- Turborepo coordinates builds across all workspace packages
+- It automatically handles build dependencies between packages
+- Builds are cached for faster subsequent builds
+- The `turbo.json` file defines build tasks and their dependencies
 
 ### Authentication Issues
 
