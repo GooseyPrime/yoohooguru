@@ -5,7 +5,7 @@ import { Header, Footer } from '@yoohooguru/shared'
 import Head from 'next/head'
 import { OrbitronContainer, OrbitronCard } from '../components/orbitron'
 
-// Helper to check if the redirect url is a safe relative path (no protocol, no host, just internal path)
+// Helper to check if the redirect URL is a safe relative path (no protocol, no host, just internal path)
 function isSafeRedirect(url: unknown): url is string {
   if (typeof url !== "string") return false;
   // Only allow relative path starting with "/" and not containing "//" or starting with "/api"
