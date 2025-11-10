@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 
 declare global {
   interface Window {
-    gtag: (...args: any[]) => void
+    gtag: (command: string, action: string, params?: Record<string, unknown>) => void
   }
 }
 

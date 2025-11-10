@@ -234,7 +234,7 @@ export default function StripePayment({
   description = 'Skill Session Payment', 
   onPaymentSuccess 
 }: StripePaymentProps) {
-  const [clientSecret, setClientSecret] = useState('');
+  // const [clientSecret, setClientSecret] = useState('');
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   
   // Mock payment data - in a real implementation, this would come from your backend

@@ -179,7 +179,7 @@ interface ProfileData {
 }
 
 export default function ProfileManager() {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const [profileData, setProfileData] = useState<ProfileData>({
     name: '',
     email: '',
@@ -208,7 +208,7 @@ export default function ProfileManager() {
         ...prev,
         name: session.user?.name || '',
         email: session.user?.email || '',
-        role: (session.user as any).role || 'gunu'
+        role: (session.user as { role?: string }).role || 'guru'
       }));
     }
   }, [session]);
@@ -298,7 +298,7 @@ export default function ProfileManager() {
         type: 'success',
         text: 'Profile updated successfully!'
       });
-    } catch (error) {
+    } catch (_error) {
       setMessage({
         type: 'error',
         text: 'Failed to update profile. Please try again.'

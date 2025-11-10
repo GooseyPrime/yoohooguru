@@ -83,11 +83,11 @@ interface AgoraVideoProps {
   onLeave: () => void;
 }
 
-export default function AgoraVideo({ channel, token, uid, isHost, onLeave }: AgoraVideoProps) {
+export default function AgoraVideo({ channel, token, uid, isHost: _isHost, onLeave }: AgoraVideoProps) {
   const [joined, setJoined] = useState(false);
   const [videoTrack, setVideoTrack] = useState<ICameraVideoTrack | null>(null);
   const [audioTrack, setAudioTrack] = useState<IMicrophoneAudioTrack | null>(null);
-  const [remoteUsers, setRemoteUsers] = useState<any[]>([]);
+  const [remoteUsers, setRemoteUsers] = useState<IAgoraRTCRemoteUser[]>([]);
   const clientRef = useRef<IAgoraRTCClient | null>(null);
   const localVideoRef = useRef<HTMLDivElement>(null);
   const remoteVideoRefs = useRef<{[key: string]: HTMLDivElement | null}>({});
@@ -141,7 +141,7 @@ export default function AgoraVideo({ channel, token, uid, isHost, onLeave }: Ago
       videoTrack?.close();
       audioTrack?.close();
     };
-  }, []);
+  }, [videoTrack, audioTrack]);
   
   const joinChannel = async () => {
     if (!clientRef.current) return;

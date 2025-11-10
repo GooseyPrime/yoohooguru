@@ -47,16 +47,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
     
     event = stripe.webhooks.constructEvent(buf, sig, webhookSecret);
-  } catch (err: any) {
-    console.error('Webhook signature verification failed.', err.message);
-    res.status(400).send(`Webhook Error: ${escapeHtml(err.message)}`);
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    console.error('Webhook signature verification failed.', errorMessage);
+    res.status(400).send(`Webhook Error: ${escapeHtml(errorMessage)}`);
     return;
   }
   
   // Handle the event
   switch (event.type) {
     case 'payment_intent.succeeded': {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent;
+      // const paymentIntent = event.data.object as Stripe.PaymentIntent;
       console.log('PaymentIntent was successful!');
       // Then define and call a method to handle the successful payment intent.
       // handlePaymentIntentSucceeded(paymentIntent);
@@ -64,7 +65,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
     
     case 'payment_intent.payment_failed': {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent;
+      // const paymentIntent = event.data.object as Stripe.PaymentIntent;
       console.log('PaymentIntent failed!');
       // Then define and call a method to handle the failed payment intent.
       // handlePaymentIntentFailed(paymentIntent);
@@ -72,7 +73,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
     
     case 'charge.succeeded': {
-      const charge = event.data.object as Stripe.Charge;
+      // const charge = event.data.object as Stripe.Charge;
       console.log('Charge succeeded!');
       // Then define and call a method to handle the successful charge.
       // handleChargeSucceeded(charge);
