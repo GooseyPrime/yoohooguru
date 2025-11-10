@@ -144,3 +144,10 @@ export default function VideoSession() {
     </Container>
   );
 }
+
+// Force server-side rendering to avoid SSR issues with dynamic UID generation
+export async function getServerSideProps() {
+  return {
+    props: {},
+  };
+}
