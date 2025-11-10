@@ -5,13 +5,14 @@ import { Header, Footer } from '@yoohooguru/shared'
 import Head from 'next/head'
 import { OrbitronContainer, OrbitronCard } from '../components/orbitron'
 
-// Helper to check if the redirect URL is a safe relative path (no protocol, no host, just internal path)
-function isSafeRedirect(url: unknown): url is string {
-  if (typeof url !== "string") return false;
-  // Only allow relative path starting with "/" and not containing "//" or starting with "/api"
-  // For security, API routes (starting with "/api") should never be redirect targets.
-  // This prevents exposing backend endpoints or confusing API/UI navigation.
-  return url.startsWith("/") && !url.startsWith("//") && !url.startsWith("/\\") && !url.startsWith("/api") && !url.includes("://");
+// Allowlist of safe redirect destinations
+const ALLOWED_REDIRECTS = ['/dashboard', '/profile', '/welcome'];
+// Helper to check if the callbackUrl is an allowed redirect destination
+function getAllowedRedirect(url: unknown): string {
+  if (typeof url === "string" && ALLOWED_REDIRECTS.includes(url)) {
+    return url;
+  }
+  return '/dashboard';
 }
 
 export default function Signup() {
@@ -24,8 +25,8 @@ export default function Signup() {
     getSession().then((session) => {
       if (session) {
         // User is already logged in, redirect to callback URL or dashboard
-        const safeRedirect = isSafeRedirect(callbackUrl) ? callbackUrl : '/dashboard'
-        router.push(safeRedirect)
+        const allowedRedirect = getAllowedRedirect(callbackUrl);
+        router.push(allowedRedirect);
       } else {
         setIsCheckingSession(false)
       }
@@ -36,7 +37,7 @@ export default function Signup() {
     setIsLoading(true)
     try {
       await signIn('google', {
-        callbackUrl: isSafeRedirect(callbackUrl) ? callbackUrl : '/dashboard'
+        callbackUrl: getAllowedRedirect(callbackUrl)
       })
     } catch (error) {
       console.error('Sign up error:', error)
