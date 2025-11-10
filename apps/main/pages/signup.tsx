@@ -9,6 +9,8 @@ import { OrbitronContainer, OrbitronCard } from '../components/orbitron'
 function isSafeRedirect(url: unknown): url is string {
   if (typeof url !== "string") return false;
   // Only allow relative path starting with "/" and not containing "//" or starting with "/api"
+  // For security, API routes (starting with "/api") should never be redirect targets.
+  // This prevents exposing backend endpoints or confusing API/UI navigation.
   return url.startsWith("/") && !url.startsWith("//") && !url.startsWith("/\\") && !url.startsWith("/api") && !url.includes("://");
 }
 
