@@ -5,6 +5,15 @@ import { Header, Footer } from '@yoohooguru/shared'
 import Head from 'next/head'
 import { OrbitronContainer, OrbitronCard, OrbitronButton } from '../components/orbitron'
 
+// Only allow redirects to internal paths.
+function getSafeRedirect(url: unknown): string {
+  if (typeof url === 'string' && url.startsWith('/') && !url.startsWith('//') && !url.startsWith('/\\')) {
+    // Prevent redirect to protocol-relative and backslashes
+    return url;
+  }
+  return '/dashboard';
+}
+
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false)
   const [isCheckingSession, setIsCheckingSession] = useState(true)
@@ -15,7 +24,7 @@ export default function Login() {
     getSession().then((session) => {
       if (session) {
         // User is already logged in, redirect to callback URL or dashboard
-        const redirect = (callbackUrl as string) || '/dashboard'
+        const redirect = getSafeRedirect(callbackUrl)
         router.push(redirect)
       } else {
         setIsCheckingSession(false)
@@ -27,7 +36,7 @@ export default function Login() {
     setIsLoading(true)
     try {
       await signIn('google', {
-        callbackUrl: (callbackUrl as string) || '/dashboard'
+        callbackUrl: getSafeRedirect(callbackUrl)
       })
     } catch (error) {
       console.error('Sign in error:', error)
