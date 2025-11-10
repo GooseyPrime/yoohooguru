@@ -12,8 +12,7 @@ import AgoraRTC, {
   IAgoraRTCClient,
   IMicrophoneAudioTrack,
   ICameraVideoTrack,
-  IAgoraRTCRemoteUser,
-  UID
+  IAgoraRTCRemoteUser
 } from 'agora-rtc-sdk-ng';
 
 const VideoChatContainer = styled.div`

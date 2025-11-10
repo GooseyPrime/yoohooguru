@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
+import { useState, useEffect, useCallback } from 'react'
 import Head from 'next/head'
 import { Header, Footer } from '@yoohooguru/shared'
 import { OrbitronContainer, OrbitronCard, OrbitronButton } from '../../components/orbitron'
@@ -19,11 +18,20 @@ interface CurationAgents {
 
 interface AdminData {
   agents: {
-    curation: CurationAgents
-    backup?: any
-  }
-  users?: any
-  content?: any
+    curation: CurationAgents;
+    backup?: {
+      enabled: boolean;
+      lastBackup?: string;
+    };
+  };
+  users?: {
+    total: number;
+    active: number;
+  };
+  content?: {
+    articles: number;
+    posts: number;
+  };
 }
 
 export default function AdminDashboard() {
@@ -33,13 +41,26 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [adminKey, setAdminKey] = useState('')
-  const router = useRouter()
 
-  useEffect(() => {
-    checkAuthStatus()
+  const loadAdminData = useCallback(async () => {
+    try {
+      setLoading(true)
+      const [agentsResponse] = await Promise.all([
+        fetch('/api/admin/agents-status', { credentials: 'include' })
+      ])
+
+      if (agentsResponse.ok) {
+        const agentsData = await agentsResponse.json()
+        setAdminData({ agents: agentsData.agents })
+      }
+    } catch (_err) {
+      setError('Failed to load admin data')
+    } finally {
+      setLoading(false)
+    }
   }, [])
 
-  const checkAuthStatus = () => {
+  const checkAuthStatus = useCallback(() => {
     const authCookie = document.cookie
       .split('; ')
       .find(row => row.startsWith('yoohoo_admin='))
@@ -50,7 +71,11 @@ export default function AdminDashboard() {
     } else {
       setLoading(false)
     }
-  }
+  }, [loadAdminData])
+
+  useEffect(() => {
+    checkAuthStatus()
+  }, [checkAuthStatus])
 
   const handleLogin = async () => {
     try {
@@ -70,26 +95,8 @@ export default function AdminDashboard() {
         const errorData = await response.json()
         setError(errorData.error?.message || 'Invalid admin key')
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to authenticate')
-    }
-  }
-
-  const loadAdminData = async () => {
-    try {
-      setLoading(true)
-      const [agentsResponse] = await Promise.all([
-        fetch('/api/admin/agents-status', { credentials: 'include' })
-      ])
-
-      if (agentsResponse.ok) {
-        const agentsData = await agentsResponse.json()
-        setAdminData({ agents: agentsData.agents })
-      }
-    } catch (err) {
-      setError('Failed to load admin data')
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -107,7 +114,7 @@ export default function AdminDashboard() {
         const errorData = await response.json()
         alert(`Failed to trigger curation: ${errorData.error?.message || 'Unknown error'}`)
       }
-    } catch (err) {
+    } catch (_err) {
       alert('Failed to trigger curation')
     }
   }

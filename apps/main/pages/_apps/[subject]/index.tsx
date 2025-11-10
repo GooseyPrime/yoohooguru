@@ -11,10 +11,14 @@ interface ContentHubProps {
 }
 
 const ContentHub: React.FC<ContentHubProps> = ({ subject }) => {
-  const router = useRouter();
-
   // Subject-specific configuration
-  const subjectConfig: Record<string, any> = {
+  const subjectConfig: Record<string, {
+    title: string;
+    description: string;
+    icon: string;
+    color: string;
+    stats: { experts: number; courses: number; articles: number };
+  }> = {
     music: {
       title: "Music Guru",
       description: "Master instruments, theory, and production with expert guidance",

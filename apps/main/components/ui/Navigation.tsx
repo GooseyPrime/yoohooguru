@@ -7,7 +7,6 @@ interface NavigationProps {
 
 export const Navigation: React.FC<NavigationProps> = ({ currentDomain = 'main' }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const router = useRouter();
 
   const navItems = [
     { name: 'Home', href: 'https://www.yoohoo.guru', domain: 'main' },

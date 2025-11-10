@@ -33,10 +33,6 @@ export default function Dashboard() {
     })
   }, [router])
 
-  const handleNavigate = (path: string) => {
-    router.push(path)
-  }
-
   if (isLoading) {
     return (
       <OrbitronContainer gradient="primary">

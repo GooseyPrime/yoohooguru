@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Header, Footer } from '@yoohooguru/shared'
 import Head from 'next/head'
-import { OrbitronContainer, OrbitronCard, OrbitronButton } from '../components/orbitron'
+import { OrbitronContainer, OrbitronCard } from '../components/orbitron'
 
 // Only allow redirects to internal paths.
 function getSafeRedirect(url: unknown): string {
