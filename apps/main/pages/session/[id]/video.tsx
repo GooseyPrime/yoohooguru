@@ -46,11 +46,18 @@ export default function VideoSession() {
   const router = useRouter();
   const { id } = router.query;
   const [error, setError] = useState<string | null>(null);
+  const [uid, setUid] = useState<number | null>(null);
   
   useEffect(() => {
     // Validate session ID to prevent SSRF/path traversal
     if (id && !isValidId(id)) {
       setError('Invalid session identifier');
+    }
+    
+    // Generate secure random UID on client-side only
+    if (typeof window !== 'undefined') {
+      const randomUid = window.crypto.getRandomValues(new Uint32Array(1))[0] % 1000000;
+      setUid(randomUid);
     }
   }, [id]);
   
@@ -64,7 +71,7 @@ export default function VideoSession() {
     duration: 60, // minutes
     channel: `session_${id}`,
     token: 'mock_token',
-    uid: Math.floor(Math.random() * 1000000)
+    uid: uid ?? 0 // Use 0 as temporary value until UID is generated
   };
   
   const handleLeave = () => {
@@ -82,6 +89,24 @@ export default function VideoSession() {
           <SessionInfo>
             <SessionTitle style={{ color: '#fff' }}>{error}</SessionTitle>
             <button onClick={() => router.push('/')}>Return Home</button>
+          </SessionInfo>
+        </Main>
+        <Footer />
+      </Container>
+    );
+  }
+  
+  // Wait for UID to be generated before rendering video component
+  if (uid === null) {
+    return (
+      <Container>
+        <Head>
+          <title>Loading Session | YooHoo.Guru</title>
+        </Head>
+        <Header />
+        <Main style={{ textAlign: 'center', padding: '3rem' }}>
+          <SessionInfo>
+            <SessionTitle style={{ color: '#fff' }}>Loading session...</SessionTitle>
           </SessionInfo>
         </Main>
         <Footer />

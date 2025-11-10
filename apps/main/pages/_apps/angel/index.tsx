@@ -7,7 +7,7 @@ export default function AngelListHome() {
   return (
     <OrbitronContainer gradient="secondary">
       <Head>
-        <title>Angel's List | Local Service Marketplace | YooHoo.Guru</title>
+        <title>Angel&apos;s List | Local Service Marketplace | YooHoo.Guru</title>
         <meta name="description" content="Find and provide local services in your community. Connect with neighbors for everything from handyman work to tutoring." />
       </Head>
 
@@ -23,7 +23,7 @@ export default function AngelListHome() {
 
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-5xl md:text-6xl font-bold mb-6 text-white">
-              Angel's List Marketplace
+              Angel&apos;s List Marketplace
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto">
               Find and provide local services in your community. Connect with neighbors for everything
