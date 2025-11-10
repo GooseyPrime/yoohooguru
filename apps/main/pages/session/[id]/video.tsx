@@ -66,7 +66,7 @@ export default function VideoSession() {
     token: 'mock_token',
     uid: typeof window !== "undefined"
       ? window.crypto.getRandomValues(new Uint32Array(1))[0] % 1000000
-      : 0 // fallback for SSR, though in practice this code is client-only
+      : (() => { throw new Error('VideoSession: SSR is not supported for UID generation'); })()
   };
   
   const handleLeave = () => {
