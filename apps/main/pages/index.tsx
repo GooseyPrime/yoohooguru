@@ -1,260 +1,361 @@
-import { Header, Footer } from '@yoohooguru/shared'
-import Head from 'next/head'
-import { OrbitronContainer, OrbitronButton } from '../components/orbitron'
+import React from 'react';
+import Head from 'next/head';
+import Navigation from '../components/ui/Navigation';
+import HeroSection from '../components/sections/HeroSection';
+import { ServiceCard, ExpertCard } from '../components/ui/Card';
+import { TestimonialCarousel } from '../components/ui/TestimonialCard';
+import Button from '../components/ui/Button';
 
 export default function Home() {
+  // Service data
+  const services = [
+    {
+      icon: (
+        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+      ),
+      title: "Coach Guru",
+      description: "Learn from expert Gurus or become one yourself. Exchange knowledge through personalized 1-on-1 coaching sessions.",
+      features: [
+        "Professional skill coaching",
+        "Flexible scheduling",
+        "Secure payments via Stripe",
+        "15% platform commission"
+      ],
+      href: "https://coach.yoohoo.guru",
+      stats: [
+        { label: "Experts", value: "2,500+" },
+        { label: "Sessions", value: "10K+" },
+        { label: "Rating", value: "4.9★" }
+      ]
+    },
+    {
+      icon: (
+        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      ),
+      title: "Angel's List",
+      description: "Find trusted local services or offer your expertise. Connect with your community for everyday tasks and specialized help.",
+      features: [
+        "Local service marketplace",
+        "Verified providers",
+        "Flexible pricing options",
+        "10-15% commission rates"
+      ],
+      href: "https://angel.yoohoo.guru",
+      stats: [
+        { label: "Services", value: "1,200+" },
+        { label: "Providers", value: "800+" },
+        { label: "Completed", value: "5K+" }
+      ]
+    },
+    {
+      icon: (
+        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+      ),
+      title: "Hero Gurus",
+      description: "Free accessible learning for people with disabilities. Volunteer as a Hero or learn through adaptive teaching methods.",
+      features: [
+        "100% Free learning platform",
+        "Adaptive teaching methods",
+        "Inclusive community",
+        "Volunteer-based teaching"
+      ],
+      href: "https://heroes.yoohoo.guru",
+      stats: [
+        { label: "Learners", value: "1,500+" },
+        { label: "Heroes", value: "200+" },
+        { label: "Courses", value: "100+" }
+      ]
+    }
+  ];
+
+  // Expert data
+  const featuredExperts = [
+    {
+      name: "Sarah Chen",
+      title: "Web Development Expert",
+      description: "Full-stack developer with 8+ years experience in React, Node.js, and cloud architecture. Passionate about teaching code.",
+      rating: 4.9,
+      reviews: 127,
+      hourlyRate: 75,
+      skills: ["React", "Node.js", "AWS", "TypeScript"],
+      href: "https://coach.yoohoo.guru/sarah-chen",
+    },
+    {
+      name: "Marcus Rodriguez",
+      title: "Digital Marketing Strategist",
+      description: "Help businesses grow through data-driven marketing. Specialized in SEO, content strategy, and social media.",
+      rating: 4.8,
+      reviews: 93,
+      hourlyRate: 60,
+      skills: ["SEO", "Content Marketing", "Analytics", "Social Media"],
+      href: "https://coach.yoohoo.guru/marcus-rodriguez",
+    },
+    {
+      name: "Emily Watson",
+      title: "Graphic Design Mentor",
+      description: "Creative director turned educator. Teaching design thinking, brand identity, and digital illustration.",
+      rating: 5.0,
+      reviews: 201,
+      hourlyRate: 55,
+      skills: ["UI/UX", "Brand Design", "Illustration", "Figma"],
+      href: "https://coach.yoohoo.guru/emily-watson",
+    }
+  ];
+
+  // Testimonial data
+  const testimonials = [
+    {
+      name: "Alex Thompson",
+      role: "Software Developer",
+      company: "Tech Corp",
+      content: "Coach Guru transformed my career. I learned advanced React concepts from Sarah and landed my dream job within 3 months. The platform is professional and the quality of instructors is outstanding.",
+      rating: 5,
+      date: "2 weeks ago",
+      featured: true,
+    },
+    {
+      name: "Maria Garcia",
+      role: "Small Business Owner",
+      company: "Local Cafe",
+      content: "Found an amazing graphic designer through Angel's List who completely redesigned our branding. The process was smooth, communication was excellent, and the results exceeded our expectations.",
+      rating: 5,
+      date: "1 month ago",
+    },
+    {
+      name: "David Kim",
+      role: "Student",
+      company: "University",
+      content: "Hero Gurus made learning accessible for me. The adaptive teaching methods and patient volunteers helped me master coding concepts I struggled with for years. This platform is changing lives!",
+      rating: 5,
+      date: "2 months ago",
+      featured: true,
+    },
+    {
+      name: "Jennifer Lee",
+      role: "Marketing Manager",
+      company: "Startup Inc",
+      content: "I've been both a learner and a teacher on Coach Guru. The community is supportive, the platform is intuitive, and I've grown both professionally and personally through this experience.",
+      rating: 5,
+      date: "3 weeks ago",
+    },
+    {
+      name: "Robert Johnson",
+      role: "Freelancer",
+      company: "Self-Employed",
+      content: "Angel's List helped me find consistent clients for my web development services. The secure payment system and review system give both providers and clients peace of mind.",
+      rating: 4,
+      date: "1 month ago",
+    },
+    {
+      name: "Lisa Chen",
+      role: "Parent",
+      company: "Community Volunteer",
+      content: "My son has learning disabilities and Hero Gurus has been incredible. The volunteer tutors are patient, understanding, and use creative methods that actually work. We're so grateful!",
+      rating: 5,
+      date: "2 weeks ago",
+      featured: true,
+    }
+  ];
+
+  // Content hub categories
+  const contentCategories = [
+    { name: "Technology", icon: "💻", count: 245, color: "emerald" },
+    { name: "Business", icon: "📊", count: 189, color: "blue" },
+    { name: "Creative Arts", icon: "🎨", count: 167, color: "purple" },
+    { name: "Health & Fitness", icon: "💪", count: 134, color: "orange" },
+    { name: "Education", icon: "📚", count: 156, color: "emerald" },
+    { name: "Lifestyle", icon: "🏠", count: 198, color: "blue" },
+  ];
+
   return (
-    <OrbitronContainer gradient="primary">
+    <>
       <Head>
         <title>YooHoo.Guru - Community Skill Sharing Platform</title>
-        <meta name="description" content="Exchange skills, discover purpose, and create exponential community impact." />
+        <meta name="description" content="Exchange skills, discover purpose, and create exponential community impact. Connect with local experts, learn from professionals, or teach what you love." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="keywords" content="skill sharing, online learning, local services, coaching, tutoring, community platform" />
+        <meta property="og:title" content="YooHoo.Guru - Community Skill Sharing Platform" />
+        <meta property="og:description" content="Connect with local experts, exchange knowledge, and create meaningful impact through our trusted skill-sharing platform." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.yoohoo.guru" />
+        <meta property="og:image" content="https://www.yoohoo.guru/og-image.jpg" />
       </Head>
 
-      <Header />
+      <div className="min-h-screen bg-orbitron-primary">
+        <Navigation currentDomain="main" />
+        
+        {/* Hero Section */}
+        <HeroSection variant="main" />
 
-      <main>
-        {/* Enhanced Hero Section */}
-        <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-          {/* Animated Background Orbs */}
-          <div className="absolute inset-0">
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl animate-float" />
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
-            <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl animate-pulse-slow" />
-          </div>
-
-          {/* Grid Pattern Overlay */}
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_at_50%_50%,#000_70%,transparent_100%)]" />
-
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
-            {/* Main Heading with Staggered Animation */}
-            <div className="mb-8 animate-fade-in">
-              <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight">
-                <span className="block gradient-text-emerald-blue">
-                  Share Skills.
-                </span>
-                <span className="block text-white mt-2 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-                  Build Community.
-                </span>
-              </h1>
-            </div>
-
-            {/* Subtitle */}
-            <p className="text-xl md:text-2xl lg:text-3xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed animate-slide-up" style={{ animationDelay: '0.2s' }}>
-              Connect with local experts, exchange knowledge, and create meaningful impact through our trusted skill-sharing platform.
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-wrap gap-6 justify-center mb-16 animate-slide-up" style={{ animationDelay: '0.3s' }}>
-              <OrbitronButton href="/signup" variant="gradient" size="lg">
-                Get Started Free →
-              </OrbitronButton>
-              <OrbitronButton href="#explore" variant="ghost" size="lg">
-                Explore Platform
-              </OrbitronButton>
-            </div>
-
-            {/* Stats/Social Proof */}
-            <div className="grid grid-cols-3 gap-8 max-w-3xl mx-auto mt-16 animate-fade-in" style={{ animationDelay: '0.4s' }}>
-              <div className="text-center">
-                <div className="text-4xl md:text-5xl font-bold gradient-text-emerald-blue mb-2">10K+</div>
-                <div className="text-sm md:text-base text-gray-400">Active Members</div>
-              </div>
-              <div className="text-center">
-                <div className="text-4xl md:text-5xl font-bold gradient-text-emerald-blue mb-2">500+</div>
-                <div className="text-sm md:text-base text-gray-400">Skills Shared</div>
-              </div>
-              <div className="text-center">
-                <div className="text-4xl md:text-5xl font-bold gradient-text-emerald-blue mb-2">98%</div>
-                <div className="text-sm md:text-base text-gray-400">Satisfaction</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Scroll Indicator */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-            <div className="w-6 h-10 rounded-full border-2 border-emerald-400/50 flex items-start justify-center p-2">
-              <div className="w-1.5 h-3 bg-emerald-400/80 rounded-full animate-pulse" />
-            </div>
-          </div>
-        </section>
-
-        {/* Three Feature Cards Section */}
-        <section id="explore" className="relative py-24 bg-gradient-to-b from-transparent to-secondarydark/50">
+        {/* Services Section */}
+        <section className="py-20 bg-gradient-to-b from-transparent to-secondarydark/50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Section Header */}
-            <div className="text-center mb-16 animate-fade-in">
-              <h2 className="text-4xl md:text-5xl font-bold mb-4 gradient-text-emerald-blue">
-                Choose Your Path
-              </h2>
-              <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-                Three unique ways to learn, earn, and make an impact in your community
+            <div className="text-center mb-16 animate-fade-in-up">
+              <h2 className="heading-2 mb-4">Choose Your Path</h2>
+              <p className="body-large max-w-3xl mx-auto">
+                Three unique ways to learn, earn, and make an impact in your community. 
+                Whether you're seeking knowledge, offering expertise, or volunteering time, we have a place for you.
               </p>
             </div>
 
-            {/* Three Cards - Always Side by Side */}
-            <div className="grid grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
-              {/* Coach Guru Card */}
-              <a
-                href="https://coach.yoohoo.guru"
-                className="group relative bg-gradient-to-br from-emerald-500/10 via-transparent to-teal-600/10 backdrop-blur-sm border border-emerald-500/20 rounded-xl md:rounded-2xl p-4 md:p-6 lg:p-8 transition-all duration-500 hover:scale-105 hover:border-emerald-400/50 hover:shadow-glow-emerald-lg overflow-hidden"
-              >
-                {/* Glow effect on hover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/0 to-emerald-500/0 group-hover:from-emerald-500/10 group-hover:to-teal-500/5 transition-all duration-500 rounded-2xl" />
-
-                <div className="relative z-10">
-                  {/* Icon */}
-                  <div className="w-12 h-12 md:w-16 lg:w-20 md:h-16 lg:h-20 rounded-lg md:rounded-xl lg:rounded-2xl bg-gradient-to-br from-emerald-500/30 to-teal-600/30 border border-emerald-500/50 md:border-2 flex items-center justify-center text-3xl md:text-4xl lg:text-5xl mb-3 md:mb-4 lg:mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                    🎓
-                  </div>
-
-                  {/* Title */}
-                  <h3 className="text-lg md:text-2xl lg:text-3xl font-bold mb-2 md:mb-3 lg:mb-4 text-white group-hover:text-emerald-400 transition-colors">
-                    Coach Guru
-                  </h3>
-
-                  {/* Description */}
-                  <p className="text-gray-400 group-hover:text-gray-300 mb-3 md:mb-4 lg:mb-6 leading-relaxed text-xs md:text-sm lg:text-base">
-                    Learn from expert Gurus or become one yourself. Exchange knowledge through personalized 1-on-1 coaching sessions.
-                  </p>
-
-                  {/* Features */}
-                  <ul className="space-y-1 md:space-y-2 mb-3 md:mb-4 lg:mb-6 text-xs md:text-sm text-gray-500 group-hover:text-gray-400">
-                    <li className="flex items-center gap-1 md:gap-2">
-                      <span className="text-emerald-400">✓</span>
-                      <span className="hidden md:inline">Professional skill coaching</span>
-                      <span className="md:hidden">Pro coaching</span>
-                    </li>
-                    <li className="flex items-center gap-1 md:gap-2">
-                      <span className="text-emerald-400">✓</span>
-                      <span className="hidden md:inline">Flexible scheduling</span>
-                      <span className="md:hidden">Flexible</span>
-                    </li>
-                    <li className="flex items-center gap-1 md:gap-2">
-                      <span className="text-emerald-400">✓</span>
-                      <span className="hidden md:inline">Secure payments</span>
-                      <span className="md:hidden">Secure</span>
-                    </li>
-                  </ul>
-
-                  {/* CTA */}
-                  <div className="inline-flex items-center gap-1 md:gap-2 text-emerald-400 font-semibold group-hover:gap-4 transition-all text-xs md:text-sm lg:text-base">
-                    <span className="hidden md:inline">Explore Coach Guru</span>
-                    <span className="md:hidden">Explore</span>
-                    <span className="group-hover:translate-x-1 transition-transform">→</span>
-                  </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {services.map((service, index) => (
+                <div key={index} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <ServiceCard {...service} />
                 </div>
-              </a>
-
-              {/* Angel's List Card */}
-              <a
-                href="https://angel.yoohoo.guru"
-                className="group relative bg-gradient-to-br from-purple-500/10 via-transparent to-pink-600/10 backdrop-blur-sm border border-purple-500/20 rounded-xl md:rounded-2xl p-4 md:p-6 lg:p-8 transition-all duration-500 hover:scale-105 hover:border-purple-400/50 hover:shadow-glow-blue-lg overflow-hidden"
-              >
-                {/* Glow effect on hover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/0 to-purple-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/5 transition-all duration-500 rounded-2xl" />
-
-                <div className="relative z-10">
-                  {/* Icon */}
-                  <div className="w-12 h-12 md:w-16 lg:w-20 md:h-16 lg:h-20 rounded-lg md:rounded-xl lg:rounded-2xl bg-gradient-to-br from-purple-500/30 to-pink-600/30 border border-purple-500/50 md:border-2 flex items-center justify-center text-3xl md:text-4xl lg:text-5xl mb-3 md:mb-4 lg:mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                    🔧
-                  </div>
-
-                  {/* Title */}
-                  <h3 className="text-lg md:text-2xl lg:text-3xl font-bold mb-2 md:mb-3 lg:mb-4 text-white group-hover:text-purple-400 transition-colors">
-                    Angel's List
-                  </h3>
-
-                  {/* Description */}
-                  <p className="text-gray-400 group-hover:text-gray-300 mb-3 md:mb-4 lg:mb-6 leading-relaxed text-xs md:text-sm lg:text-base">
-                    Find trusted local services or offer your expertise. Connect with your community for everyday tasks and specialized help.
-                  </p>
-
-                  {/* Features */}
-                  <ul className="space-y-1 md:space-y-2 mb-3 md:mb-4 lg:mb-6 text-xs md:text-sm text-gray-500 group-hover:text-gray-400">
-                    <li className="flex items-center gap-1 md:gap-2">
-                      <span className="text-purple-400">✓</span>
-                      <span className="hidden md:inline">Local service marketplace</span>
-                      <span className="md:hidden">Local services</span>
-                    </li>
-                    <li className="flex items-center gap-1 md:gap-2">
-                      <span className="text-purple-400">✓</span>
-                      <span className="hidden md:inline">Verified providers</span>
-                      <span className="md:hidden">Verified</span>
-                    </li>
-                    <li className="flex items-center gap-1 md:gap-2">
-                      <span className="text-purple-400">✓</span>
-                      <span className="hidden md:inline">Flexible pricing</span>
-                      <span className="md:hidden">Flexible</span>
-                    </li>
-                  </ul>
-
-                  {/* CTA */}
-                  <div className="inline-flex items-center gap-1 md:gap-2 text-purple-400 font-semibold group-hover:gap-4 transition-all text-xs md:text-sm lg:text-base">
-                    <span className="hidden md:inline">Explore Angel's List</span>
-                    <span className="md:hidden">Explore</span>
-                    <span className="group-hover:translate-x-1 transition-transform">→</span>
-                  </div>
-                </div>
-              </a>
-
-              {/* Hero Gurus Card */}
-              <a
-                href="https://heroes.yoohoo.guru"
-                className="group relative bg-gradient-to-br from-blue-500/10 via-transparent to-indigo-600/10 backdrop-blur-sm border border-blue-500/20 rounded-xl md:rounded-2xl p-4 md:p-6 lg:p-8 transition-all duration-500 hover:scale-105 hover:border-blue-400/50 hover:shadow-glow-blue-lg overflow-hidden"
-              >
-                {/* Glow effect on hover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 to-blue-500/0 group-hover:from-blue-500/10 group-hover:to-indigo-500/5 transition-all duration-500 rounded-2xl" />
-
-                <div className="relative z-10">
-                  {/* Icon */}
-                  <div className="w-12 h-12 md:w-16 lg:w-20 md:h-16 lg:h-20 rounded-lg md:rounded-xl lg:rounded-2xl bg-gradient-to-br from-blue-500/30 to-indigo-600/30 border border-blue-500/50 md:border-2 flex items-center justify-center text-3xl md:text-4xl lg:text-5xl mb-3 md:mb-4 lg:mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                    ❤️
-                  </div>
-
-                  {/* Title */}
-                  <h3 className="text-lg md:text-2xl lg:text-3xl font-bold mb-2 md:mb-3 lg:mb-4 text-white group-hover:text-blue-400 transition-colors">
-                    Hero Gurus
-                  </h3>
-
-                  {/* Description */}
-                  <p className="text-gray-400 group-hover:text-gray-300 mb-3 md:mb-4 lg:mb-6 leading-relaxed text-xs md:text-sm lg:text-base">
-                    Free accessible learning for people with disabilities. Volunteer as a Hero or learn through adaptive teaching methods.
-                  </p>
-
-                  {/* Features */}
-                  <ul className="space-y-1 md:space-y-2 mb-3 md:mb-4 lg:mb-6 text-xs md:text-sm text-gray-500 group-hover:text-gray-400">
-                    <li className="flex items-center gap-1 md:gap-2">
-                      <span className="text-blue-400">✓</span>
-                      <span className="hidden md:inline">100% Free learning</span>
-                      <span className="md:hidden">Free</span>
-                    </li>
-                    <li className="flex items-center gap-1 md:gap-2">
-                      <span className="text-blue-400">✓</span>
-                      <span className="hidden md:inline">Adaptive teaching</span>
-                      <span className="md:hidden">Adaptive</span>
-                    </li>
-                    <li className="flex items-center gap-1 md:gap-2">
-                      <span className="text-blue-400">✓</span>
-                      <span className="hidden md:inline">Inclusive community</span>
-                      <span className="md:hidden">Inclusive</span>
-                    </li>
-                  </ul>
-
-                  {/* CTA */}
-                  <div className="inline-flex items-center gap-1 md:gap-2 text-blue-400 font-semibold group-hover:gap-4 transition-all text-xs md:text-sm lg:text-base">
-                    <span className="hidden md:inline">Explore Hero Gurus</span>
-                    <span className="md:hidden">Explore</span>
-                    <span className="group-hover:translate-x-1 transition-transform">→</span>
-                  </div>
-                </div>
-              </a>
+              ))}
             </div>
           </div>
         </section>
-      </main>
 
-      <Footer />
-    </OrbitronContainer>
-  )
+        {/* Featured Experts Section */}
+        <section className="py-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="heading-2 mb-4">Meet Our Expert Gurus</h2>
+              <p className="body-large max-w-3xl mx-auto">
+                Learn from the best. Our verified experts bring years of experience and a passion for teaching.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+              {featuredExperts.map((expert, index) => (
+                <div key={index} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <ExpertCard {...expert} />
+                </div>
+              ))}
+            </div>
+
+            <div className="text-center">
+              <Button variant="gradient" size="lg" href="https://coach.yoohoo.guru/experts">
+                Browse All Experts →
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* Content Hubs Section */}
+        <section className="py-20 bg-gradient-to-b from-transparent to-secondarydark/50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="heading-2 mb-4">Explore Our Content Hubs</h2>
+              <p className="body-large max-w-3xl mx-auto">
+                Discover expert-curated content across 24 specialized topics. 
+                Each hub features AI-curated news, tutorials, and community insights.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-12">
+              {contentCategories.map((category, index) => (
+                <a
+                  key={index}
+                  href={`https://${category.name.toLowerCase().replace(' & ', '').replace(' ', '-')}.yoohoo.guru`}
+                  className="card-hover text-center p-6 group"
+                >
+                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">
+                    {category.icon}
+                  </div>
+                  <h3 className="font-semibold text-white mb-2">{category.name}</h3>
+                  <p className="text-sm text-gray-400">{category.count} articles</p>
+                </a>
+              ))}
+            </div>
+
+            <div className="text-center">
+              <Button variant="ghost" size="lg" href="/hubs">
+                View All 24 Hubs →
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* Testimonials Section */}
+        <section className="py-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="heading-2 mb-4">Success Stories from Our Community</h2>
+              <p className="body-large max-w-3xl mx-auto">
+                Join thousands of satisfied members who are transforming their lives through skill sharing.
+              </p>
+            </div>
+
+            <TestimonialCarousel testimonials={testimonials} />
+          </div>
+        </section>
+
+        {/* Partners Section */}
+        <section className="py-20 bg-gradient-to-b from-transparent to-secondarydark/50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="heading-3 mb-4">Trusted by Leading Organizations</h2>
+              <p className="body-normal">
+                Partner companies and educational institutions that trust our platform
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center">
+              {[
+                "TechCorp", "EduTech", "StartHub", "DesignLab", 
+                "CloudNet", "InnovateCo", "LearnFast", "SkillUp",
+                "FutureEd", "TechAcademy", "CreativeHub", "BusinessPro"
+              ].map((partner, index) => (
+                <div key={index} className="glass-effect p-6 rounded-lg flex items-center justify-center h-20">
+                  <span className="text-gray-500 font-medium text-sm">
+                    {partner} Logo
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="card-featured text-center p-12">
+              <h2 className="heading-2 mb-4">Ready to Join Our Community?</h2>
+              <p className="body-large mb-8 max-w-2xl mx-auto">
+                Start sharing your skills, learning from experts, or volunteering your time. 
+                Your journey to making an impact begins here.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button variant="gradient" size="lg" href="/signup">
+                  Get Started Free →
+                </Button>
+                <Button variant="ghost" size="lg" href="/how-it-works">
+                  Learn How It Works
+                </Button>
+              </div>
+
+              {/* Quick Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mt-16">
+                <div>
+                  <div className="text-3xl font-bold text-emerald-400 mb-2">10,000+</div>
+                  <div className="text-sm text-gray-400">Active Members</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-blue-400 mb-2">500+</div>
+                  <div className="text-sm text-gray-400">Expert Instructors</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-purple-400 mb-2">25,000+</div>
+                  <div className="text-sm text-gray-400">Learning Sessions</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-orange-400 mb-2">98%</div>
+                  <div className="text-sm text-gray-400">Success Rate</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </>
+  );
 }
