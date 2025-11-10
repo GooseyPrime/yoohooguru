@@ -5,6 +5,16 @@ import { Header, Footer } from '@yoohooguru/shared'
 import Head from 'next/head'
 import { OrbitronContainer, OrbitronCard } from '../components/orbitron'
 
+// Allowlist of safe redirect destinations
+const ALLOWED_REDIRECTS = ['/dashboard', '/profile', '/welcome'];
+// Helper to check if the callbackUrl is an allowed redirect destination
+function getAllowedRedirect(url: unknown): string {
+  if (typeof url === "string" && ALLOWED_REDIRECTS.includes(url)) {
+    return url;
+  }
+  return '/dashboard';
+}
+
 export default function Signup() {
   const [isLoading, setIsLoading] = useState(false)
   const [isCheckingSession, setIsCheckingSession] = useState(true)
@@ -15,8 +25,8 @@ export default function Signup() {
     getSession().then((session) => {
       if (session) {
         // User is already logged in, redirect to callback URL or dashboard
-        const redirect = (callbackUrl as string) || '/dashboard'
-        router.push(redirect)
+        const allowedRedirect = getAllowedRedirect(callbackUrl);
+        router.push(allowedRedirect);
       } else {
         setIsCheckingSession(false)
       }
@@ -27,7 +37,7 @@ export default function Signup() {
     setIsLoading(true)
     try {
       await signIn('google', {
-        callbackUrl: (callbackUrl as string) || '/dashboard'
+        callbackUrl: getAllowedRedirect(callbackUrl)
       })
     } catch (error) {
       console.error('Sign up error:', error)
