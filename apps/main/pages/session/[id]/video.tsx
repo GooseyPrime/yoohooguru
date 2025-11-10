@@ -64,7 +64,9 @@ export default function VideoSession() {
     duration: 60, // minutes
     channel: `session_${id}`,
     token: 'mock_token',
-    uid: Math.floor(Math.random() * 1000000)
+    uid: typeof window !== "undefined"
+      ? window.crypto.getRandomValues(new Uint32Array(1))[0] % 1000000
+      : 0 // fallback for SSR, though in practice this code is client-only
   };
   
   const handleLeave = () => {
