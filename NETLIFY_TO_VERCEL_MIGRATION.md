@@ -36,6 +36,8 @@ Successfully removed Netlify configuration and migrated all functionality to Ver
 }
 ```
 
+**Note:** The current configuration has been updated to use `npm run build` from the root directory, which leverages Turborepo for build orchestration across all workspace packages.
+
 #### New Redirects Added
 - Dashboard routing: `/dashboard` → `/_apps/dashboard`
 - Legal pages: `/terms` → `/legal/terms`, `/privacy` → `/legal/privacy`

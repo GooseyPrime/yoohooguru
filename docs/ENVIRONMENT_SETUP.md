@@ -124,7 +124,16 @@ The `netlify.toml` uses `npm ci` to ensure all workspace dependencies are instal
 
 This command:
 1. `npm ci` - Installs all dependencies from package-lock.json (including devDependencies)
-2. `npx turbo run build --filter=@yoohooguru/main` - Builds the specified app using Turborepo
+2. `npx turbo run build --filter=@yoohooguru/main` - Builds the specified app using **Turborepo**
+
+**About Turborepo:**
+Turborepo is the build orchestration tool used in this monorepo. It:
+- Coordinates builds across multiple packages in the workspace
+- Automatically builds dependencies in the correct order
+- Caches build outputs for faster subsequent builds
+- Runs independent tasks in parallel
+
+The `--filter=@yoohooguru/main` flag tells Turborepo to build only the main app and its dependencies.
 
 ### Troubleshooting TypeScript Build Errors
 
@@ -164,6 +173,17 @@ Please install typescript and @types/react by running:
        "packages/*"
      ]
    }
+   ```
+
+5. **Turborepo configuration**: Check that `turbo.json` has correct build configuration:
+   ```bash
+   cat turbo.json
+   # Verify "build" task is defined with correct dependencies
+   ```
+
+6. **Force rebuild**: If Turborepo cache is causing issues:
+   ```bash
+   npx turbo run build --force --filter=@yoohooguru/main
    ```
 
 ## Validation Scripts
@@ -252,5 +272,6 @@ Cannot find module '@yoohooguru/shared'
 - [Firebase Emulators Documentation](https://firebase.google.com/docs/emulator-suite)
 - [Next.js TypeScript Documentation](https://nextjs.org/docs/basic-features/typescript)
 - [Turborepo Documentation](https://turbo.build/repo/docs)
+- [Turborepo Caching Guide](https://turbo.build/repo/docs/core-concepts/caching)
 - [Railway Environment Variables](https://docs.railway.app/develop/variables)
 - [Netlify Build Configuration](https://docs.netlify.com/configure-builds/file-based-configuration/)
