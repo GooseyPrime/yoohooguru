@@ -53,7 +53,7 @@ export default function AdminDashboard() {
         const agentsData = await agentsResponse.json()
         setAdminData({ agents: agentsData.agents })
       }
-    } catch (_err) {
+    } catch {
       setError('Failed to load admin data')
     } finally {
       setLoading(false)
@@ -95,7 +95,7 @@ export default function AdminDashboard() {
         const errorData = await response.json()
         setError(errorData.error?.message || 'Invalid admin key')
       }
-    } catch (_err) {
+    } catch {
       setError('Failed to authenticate')
     }
   }
@@ -114,7 +114,7 @@ export default function AdminDashboard() {
         const errorData = await response.json()
         alert(`Failed to trigger curation: ${errorData.error?.message || 'Unknown error'}`)
       }
-    } catch (_err) {
+    } catch {
       alert('Failed to trigger curation')
     }
   }

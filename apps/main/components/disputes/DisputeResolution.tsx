@@ -194,7 +194,7 @@ export default function DisputeResolution() {
         description: '',
         preferredResolution: ''
       });
-    } catch (_error) {
+    } catch {
       setMessage({
         type: 'error',
         text: 'Failed to submit dispute. Please try again.'

@@ -234,9 +234,10 @@ export default function Dashboard() {
         {session.user && (
           <OrbitronCard className="flex items-center gap-4 p-6 mb-8">
             {session.user.image && (
-              <img 
-                src={session.user.image} 
-                alt={session.user.name || 'User'} 
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={session.user.image}
+                alt={session.user.name || 'User'}
                 className="w-15 h-15 rounded-full border-2 border-blue-500/30"
               />
             )}

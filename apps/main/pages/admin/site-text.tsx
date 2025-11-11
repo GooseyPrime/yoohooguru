@@ -149,7 +149,7 @@ export default function SiteTextManager() {
       setIsEditing(false)
       setEditingText(null)
       alert('Text updated successfully!')
-    } catch (_error) {
+    } catch {
       alert('Failed to update text')
     }
   }
@@ -365,7 +365,7 @@ export default function SiteTextManager() {
                   <label className="block text-gray-400 text-sm mb-2">Type</label>
                   <select
                     value={editingText.type}
-                    onChange={(e) => setEditingText({...editingText, type: e.target.value as 'heading' | 'paragraph' | 'cta' | 'footer'})}
+                    onChange={(e) => setEditingText({...editingText, type: e.target.value as 'heading' | 'paragraph' | 'button' | 'meta' | 'other'})}
                     className="w-full p-2 bg-black/30 border border-gray-600 rounded text-white"
                   >
                     <option value="heading">Heading</option>

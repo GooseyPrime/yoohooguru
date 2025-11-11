@@ -51,7 +51,7 @@ export default function LocationSearch() {
         
         <LocationInfo>
           <p style={{color: '#b0b0b0', lineHeight: '1.6'}}>
-            Search for Gurus and services in your area. We'll match you with local experts 
+            Search for Gurus and services in your area. We&apos;ll match you with local experts
             who can provide in-person sessions or services.
           </p>
         </LocationInfo>
