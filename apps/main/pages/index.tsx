@@ -2,8 +2,10 @@ import React from 'react';
 import Head from 'next/head';
 import Navigation from '../components/ui/Navigation';
 import HeroSection from '../components/sections/HeroSection';
-import { ServiceCard, ExpertCard, ContentHubCard } from '../components/ui/Card';
+import WhyYooHooSection from '../components/sections/WhyYooHooSection';
+import { ServiceCard, ExpertCard } from '../components/ui/Card';
 import { TestimonialCarousel } from '../components/ui/TestimonialCard';
+import { ContentHubCarousel } from '../components/ui/ContentHubCarousel';
 
 export default function Home() {
   // Service data
@@ -200,25 +202,19 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-12">
-              {contentHubs.map((hub, index) => (
-                <div key={index} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.05}s` }}>
-                  <ContentHubCard {...hub} />
-                </div>
-              ))}
-            </div>
-
-            <div className="text-center">
-              <a
-                href="/hubs"
-                className="inline-flex items-center space-x-2 px-8 py-4 glass-button text-white font-semibold rounded-xl hover:bg-white-20 transition-all duration-300"
-              >
-                <span>View All 24 Hubs</span>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </a>
-            </div>
+               <ContentHubCarousel />
+   
+               <div className="text-center mt-8">
+                 <a
+                   href="/hubs"
+                   className="inline-flex items-center space-x-2 px-8 py-4 glass-button text-white font-semibold rounded-xl hover:bg-white-20 transition-all duration-300"
+                 >
+                   <span>View All 24 Hubs</span>
+                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                   </svg>
+                 </a>
+               </div>
           </div>
         </section>
 
@@ -285,7 +281,8 @@ export default function Home() {
             </div>
           </div>
         </section>
-
+           {/* Why YooHoo.Guru Section */}
+           <WhyYooHooSection />
         {/* Trusted By Section */}
         <section className="section-padding">
           <div className="container-custom">
