@@ -96,7 +96,7 @@ const ContentHub: React.FC<ContentHubProps> = ({ subject }) => {
     },
     {
       title: "Common Mistakes to Avoid",
-      excerpt: "Learn from the experiences of others. These pitfalls can slow your progress if you're not aware of them.",
+      excerpt: "Learn from the experiences of others. These pitfalls can slow your progress if you&apos;re not aware of them.",
       author: "Expert Community",
       category: "Learning",
       readTime: "8 min read"
@@ -325,7 +325,7 @@ const ContentHub: React.FC<ContentHubProps> = ({ subject }) => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                { title: "Beginner's Guide", icon: "📖", count: "25+ lessons" },
+                { title: "Beginner&apos;s Guide", icon: "📖", count: "25+ lessons" },
                 { title: "Practice Exercises", icon: "✏️", count: "100+ problems" },
                 { title: "Video Tutorials", icon: "🎥", count: "45+ videos" },
                 { title: "Community Forum", icon: "💬", count: "500+ discussions" },
@@ -373,7 +373,7 @@ const ContentHub: React.FC<ContentHubProps> = ({ subject }) => {
         <section className="py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="card-featured text-center p-12">
-              <h2 className="heading-2 mb-4">Ready to Master {config.title.replace(' Guru', '')}?</h2>
+              <h2 className="heading-2 mb-4">Ready to Master {config.title.replace(&apos; Guru&apos;, '')}?</h2>
               <p className="body-large mb-8 max-w-2xl mx-auto">
                 Join our community of learners and experts. Start your journey today with personalized guidance and curated resources.
               </p>

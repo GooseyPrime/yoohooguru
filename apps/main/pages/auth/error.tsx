@@ -124,7 +124,7 @@ const errorMessages: Record<string, { title: string; description: string }> = {
 
 export default function AuthError() {
   const router = useRouter()
-  const [errorType, setErrorType] = useState<string>('Default')
+  const [errorType, setErrorType] = useState<string>(&apos;Default')
   const { error } = router.query
 
   useEffect(() => {

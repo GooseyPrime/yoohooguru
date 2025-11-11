@@ -63,7 +63,7 @@ export default function AdminDashboard() {
   const checkAuthStatus = useCallback(() => {
     const authCookie = document.cookie
       .split('; ')
-      .find(row => row.startsWith('yoohoo_admin='))
+      .find(row => row.startsWith(&apos;yoohoo_admin=&apos;))
     
     if (authCookie && authCookie.split('=')[1] === '1') {
       setIsAuthenticated(true)
@@ -162,7 +162,7 @@ export default function AdminDashboard() {
               <OrbitronCard className="p-6">
                 <div className="text-2xl text-purple-400 mb-2">🌍</div>
                 <div className="text-white text-lg font-bold">Environment</div>
-                <div className="text-gray-400">{adminData?.agents?.curation?.environment || 'Unknown'}</div>
+                <div className="text-gray-400">{adminData?.agents?.curation?.environment || &apos;Unknown&apos;}</div>
                 <div className="text-gray-400">Production</div>
               </OrbitronCard>
             </div>
@@ -178,14 +178,14 @@ export default function AdminDashboard() {
                   🔄 Trigger Content Curation
                 </OrbitronButton>
                 <OrbitronButton 
-                  onClick={() => setActiveTab('agents')}
+                  onClick={() => setActiveTab(&apos;agents&apos;)}
                   variant="ghost"
                   className="w-full"
                 >
                   🤖 View Agent Status
                 </OrbitronButton>
                 <OrbitronButton 
-                  onClick={() => setActiveTab('content')}
+                  onClick={() => setActiveTab(&apos;content&apos;)}
                   variant="ghost"
                   className="w-full"
                 >
@@ -372,7 +372,7 @@ export default function AdminDashboard() {
                 value={adminKey}
                 onChange={(e) => setAdminKey(e.target.value)}
                 className="w-full p-3 bg-black/30 border border-gray-600 rounded text-white placeholder-gray-400"
-                onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+                onKeyPress={(e) => e.key === &apos;Enter&apos; && handleLogin()}
               />
               
               {error && (
@@ -490,7 +490,7 @@ function ContentManagement() {
           <h4 className="text-white font-bold mb-4">Content Type</h4>
           <div className="space-y-2">
             <button
-              onClick={() => setContentType('news')}
+              onClick={() => setContentType(&apos;news&apos;)}
               className={`w-full text-left p-2 rounded transition-colors ${
                 contentType === 'news'
                   ? 'bg-blue-500/20 text-blue-400'
@@ -500,7 +500,7 @@ function ContentManagement() {
               📰 News Articles
             </button>
             <button
-              onClick={() => setContentType('blog')}
+              onClick={() => setContentType(&apos;blog&apos;)}
               className={`w-full text-left p-2 rounded transition-colors ${
                 contentType === 'blog'
                   ? 'bg-blue-500/20 text-blue-400'

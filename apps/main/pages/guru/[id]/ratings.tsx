@@ -75,7 +75,7 @@ export default function GuruRatings() {
         <Header />
         <Main style={{ textAlign: 'center', padding: '3rem' }}>
           <h1 style={{ color: '#fff' }}>{error}</h1>
-          <button onClick={() => router.push('/')}>Return Home</button>
+          <button onClick={() => router.push(&apos;/')}>Return Home</button>
         </Main>
         <Footer />
       </Container>

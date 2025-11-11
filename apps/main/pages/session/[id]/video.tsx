@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import dynamic from 'next/dynamic';
 import { isValidId } from '../../../lib/validators';
 
-const AgoraVideo = dynamic(() => import('../../../components/video/AgoraVideo'), {
+const AgoraVideo = dynamic(() => import(&apos;../../../components/video/AgoraVideo'), {
   ssr: false
 });
 
@@ -88,7 +88,7 @@ export default function VideoSession() {
         <Main style={{ textAlign: 'center', padding: '3rem' }}>
           <SessionInfo>
             <SessionTitle style={{ color: '#fff' }}>{error}</SessionTitle>
-            <button onClick={() => router.push('/')}>Return Home</button>
+            <button onClick={() => router.push(&apos;/')}>Return Home</button>
           </SessionInfo>
         </Main>
         <Footer />

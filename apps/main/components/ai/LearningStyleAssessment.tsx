@@ -322,7 +322,7 @@ export default function LearningStyleAssessment() {
             </Recommendation>
           ))}
           
-          <RecommendationButton onClick={() => window.location.href = '/skills'}>
+          <RecommendationButton onClick={() => window.location.href = &apos;/skills'}>
             Find Gurus Matching Your Style
           </RecommendationButton>
         </ResultsContainer>

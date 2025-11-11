@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import Navigation from '../components/ui/Navigation';
 
 export default function Contact() {
@@ -70,7 +71,7 @@ export default function Contact() {
     <>
       <Head>
         <title>Contact Us - YooHoo.Guru</title>
-        <meta name="description" content="Get in touch with the YooHoo.Guru team. We're here to help!" />
+        <meta name="description" content="Get in touch with the YooHoo.Guru team. We&apos;re here to help!" />
       </Head>
 
       <Navigation />
@@ -83,7 +84,7 @@ export default function Contact() {
               Get in <span className="gradient-text-emerald-blue">Touch</span>
             </h1>
             <p className="text-xl text-white-80 max-w-3xl mx-auto">
-              Have a question, suggestion, or need help? We'd love to hear from you.
+              Have a question, suggestion, or need help? We&apos;d love to hear from you.
             </p>
           </div>
         </section>
@@ -118,7 +119,7 @@ export default function Contact() {
                   Send Us a Message
                 </h2>
                 <p className="text-white-80">
-                  Fill out the form below and we'll get back to you as soon as possible
+                  Fill out the form below and we&apos;ll get back to you as soon as possible
                 </p>
               </div>
 
@@ -262,7 +263,7 @@ export default function Contact() {
               <p className="text-white-80 mb-8">
                 Check out our Help Center for answers to common questions
               </p>
-              <a
+              <Link
                 href="/help"
                 className="inline-flex items-center space-x-2 px-8 py-4 bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-blue-600 transition-all duration-300"
               >
@@ -270,7 +271,7 @@ export default function Contact() {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
-              </a>
+              </Link>
             </div>
           </div>
         </section>
