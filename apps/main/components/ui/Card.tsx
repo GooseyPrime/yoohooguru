@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { Button } from './Button';
 
 interface CardProps {
@@ -161,7 +162,7 @@ export const ExpertCard: React.FC<ExpertCardProps> = ({
       <div className="flex items-start space-x-4">
         <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-blue-400 flex items-center justify-center text-white font-bold text-xl flex-shrink-0">
           {avatar ? (
-            <img src={avatar} alt={name} className="w-full h-full rounded-full object-cover" />
+            <Image src={avatar} alt={name} width={64} height={64} className="w-full h-full rounded-full object-cover" />
           ) : (
             name.split(' ').map(n => n[0]).join('')
           )}

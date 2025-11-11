@@ -144,12 +144,11 @@ interface RatingSystemProps {
   onSubmitReview: (rating: number, comment: string) => void;
 }
 
-export default function RatingSystem({ 
-  guruId: _guruId, 
-  guruName, 
-  averageRating, 
-  totalReviews, 
-  onSubmitReview 
+export default function RatingSystem({
+  guruName,
+  averageRating,
+  totalReviews,
+  onSubmitReview
 }: RatingSystemProps) {
   const [userRating, setUserRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
