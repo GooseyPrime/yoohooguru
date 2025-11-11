@@ -199,8 +199,8 @@ export default function Home() {
             <div className="text-center mb-16 animate-fade-in-up">
               <h2 className="heading-2 mb-4">Choose Your Path</h2>
               <p className="body-large max-w-3xl mx-auto">
-                Three unique ways to learn, earn, and make an impact in your community. 
-                Whether you're seeking knowledge, offering expertise, or volunteering time, we have a place for you.
+                Three unique ways to learn, earn, and make an impact in your community.
+                Whether you&apos;re seeking knowledge, offering expertise, or volunteering time, we have a place for you.
               </p>
             </div>
 

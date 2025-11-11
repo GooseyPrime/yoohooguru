@@ -104,8 +104,8 @@ export default function Privacy() {
 
           <SectionTitle>1. Introduction</SectionTitle>
           <Paragraph>
-            Welcome to YooHoo.Guru ("we," "our," or "us"). We are committed to protecting your privacy and personal information. 
-            This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our 
+            Welcome to YooHoo.Guru (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;). We are committed to protecting your privacy and personal information.
+            This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our
             skill-sharing platform and community marketplace.
           </Paragraph>
 
@@ -183,7 +183,7 @@ export default function Privacy() {
             <ListItem><strong>Vercel Analytics:</strong> For platform performance monitoring</ListItem>
           </List>
 
-          <SectionTitle>9. Children's Privacy</SectionTitle>
+          <SectionTitle>9. Children&apos;s Privacy</SectionTitle>
           <Paragraph>
             Our platform is not intended for children under 13. We do not knowingly collect personal information from children under 13. 
             If you believe we have collected such information, please contact us immediately.
@@ -197,8 +197,8 @@ export default function Privacy() {
 
           <SectionTitle>11. Changes to This Policy</SectionTitle>
           <Paragraph>
-            We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new 
-            Privacy Policy on this page and updating the "Last updated" date.
+            We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new
+            Privacy Policy on this page and updating the &quot;Last updated&quot; date.
           </Paragraph>
 
           <SectionTitle>12. Contact Us</SectionTitle>
@@ -207,7 +207,7 @@ export default function Privacy() {
             <ContactDetails>Email: privacy@yoohoo.guru</ContactDetails>
             <ContactDetails>Website: www.yoohoo.guru</ContactDetails>
             <ContactDetails>
-              For data protection inquiries, please include "Privacy Request" in your subject line.
+              For data protection inquiries, please include &quot;Privacy Request&quot; in your subject line.
             </ContactDetails>
           </ContactInfo>
         </ContentCard>

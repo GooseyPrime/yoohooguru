@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Header, Footer } from '@yoohooguru/shared'
 import Head from 'next/head'
+import Link from 'next/link'
 import { OrbitronContainer, OrbitronCard } from '../components/orbitron'
 
 // Allowlist of safe redirect destinations
@@ -119,12 +120,12 @@ export default function Signup() {
 
           <div className="text-center mt-8 text-gray-400 text-sm">
             Already have an account?{' '}
-            <a href="/login" className="text-blue-400 hover:underline">Sign in</a>
+            <Link href="/login" className="text-blue-400 hover:underline">Sign in</Link>
             <br />
             <br />
             By signing up, you agree to our{' '}
-            <a href="/terms" className="text-blue-400 hover:underline">Terms of Service</a> and{' '}
-            <a href="/privacy" className="text-blue-400 hover:underline">Privacy Policy</a>
+            <Link href="/terms" className="text-blue-400 hover:underline">Terms of Service</Link> and{' '}
+            <Link href="/privacy" className="text-blue-400 hover:underline">Privacy Policy</Link>
           </div>
         </OrbitronCard>
       </main>

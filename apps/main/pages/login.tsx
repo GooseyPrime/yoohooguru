@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Header, Footer } from '@yoohooguru/shared'
 import Head from 'next/head'
+import Link from 'next/link'
 import { OrbitronContainer, OrbitronCard } from '../components/orbitron'
 
 // Only allow redirects to internal paths.
@@ -114,10 +115,10 @@ export default function Login() {
 
           <div className="text-center mt-8 text-gray-400 text-sm">
             New to YooHoo.Guru?{' '}
-            <a href="/signup" className="text-blue-400 hover:underline">Create an account</a>
+            <Link href="/signup" className="text-blue-400 hover:underline">Create an account</Link>
             <br />
             <br />
-            <a href="/privacy" className="text-blue-400 hover:underline">Privacy Policy</a> • <a href="/terms" className="text-blue-400 hover:underline">Terms of Service</a>
+            <Link href="/privacy" className="text-blue-400 hover:underline">Privacy Policy</Link> • <Link href="/terms" className="text-blue-400 hover:underline">Terms of Service</Link>
           </div>
         </OrbitronCard>
       </main>
