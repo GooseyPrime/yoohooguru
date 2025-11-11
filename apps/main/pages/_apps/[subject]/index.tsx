@@ -1,396 +1,225 @@
-import React from 'react';
-import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react';
 import Navigation from '../../../components/ui/Navigation';
-import HeroSection from '../../../components/sections/HeroSection';
-import { ExpertCard } from '../../../components/ui/Card';
-import Button from '../../../components/ui/Button';
+import NewsSection from '../../../components/NewsSection';
+import BlogList from '../../../components/BlogList';
+import { getSubjectConfig } from '../../../config/subjects';
 
-interface ContentHubProps {
+interface SubjectPageProps {
   subject: string;
 }
 
-const ContentHub: React.FC<ContentHubProps> = ({ subject }) => {
-  // Subject-specific configuration
-  const subjectConfig: Record<string, {
-    title: string;
-    description: string;
-    icon: string;
-    color: string;
-    stats: { experts: number; courses: number; articles: number };
-  }> = {
-    music: {
-      title: "Music Guru",
-      description: "Master instruments, theory, and production with expert guidance",
-      icon: "🎵",
-      color: "purple",
-      stats: { experts: 145, courses: 89, articles: 234 }
-    },
-    coding: {
-      title: "Coding Guru", 
-      description: "Learn programming languages, frameworks, and development best practices",
-      icon: "💻",
-      color: "emerald",
-      stats: { experts: 289, courses: 156, articles: 412 }
-    },
-    cooking: {
-      title: "Cooking Guru",
-      description: "Discover culinary techniques, recipes, and kitchen skills",
-      icon: "👨‍🍳",
-      color: "orange",
-      stats: { experts: 98, courses: 67, articles: 189 }
-    },
-    // Default configuration for other subjects
-    default: {
-      title: `${subject.charAt(0).toUpperCase() + subject.slice(1)} Guru`,
-      description: `Expert knowledge and curated content for ${subject} enthusiasts`,
-      icon: "📚",
-      color: "blue",
-      stats: { experts: 67, courses: 34, articles: 123 }
+const SubjectPage: React.FC<SubjectPageProps> = ({ subject }) => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+  const [subjectData, setSubjectData] = useState<any>(null);
+  const [config, setConfig] = useState<any>(null);
+
+  useEffect(() => {
+    if (router.isReady) {
+      // Get subject configuration
+      const subjectConfig = getSubjectConfig(subject);
+      setConfig(subjectConfig);
+      
+      // Load subject-specific data
+      loadSubjectData();
+    }
+  }, [router.isReady, subject]);
+
+  const loadSubjectData = async () => {
+    try {
+      // Fetch subject-specific news and blogs
+      const [newsData, blogData] = await Promise.all([
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://api.yoohoo.guru'}/api/news?subject=${subject}`).then(res => {
+          if (!res.ok) throw new Error('Failed to fetch news');
+          return res.json();
+        }).catch(() => []),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://api.yoohoo.guru'}/api/blogs?subject=${subject}`).then(res => {
+          if (!res.ok) throw new Error('Failed to fetch blogs');
+          return res.json();
+        }).catch(() => [])
+      ]);
+
+      setSubjectData({
+        news: newsData,
+        blogs: blogData,
+        title: subject.charAt(0).toUpperCase() + subject.slice(1),
+        description: `Discover the best ${subject} resources, tutorials, and expert guidance on YooHoo.Guru`
+      });
+    } catch (error) {
+      console.error('Error loading subject data:', error);
+      setSubjectData({
+        news: [],
+        blogs: [],
+        title: subject.charAt(0).toUpperCase() + subject.slice(1),
+        description: `Discover the best ${subject} resources, tutorials, and expert guidance on YooHoo.Guru`
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const config = subjectConfig[subject] || subjectConfig.default;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+        <Navigation />
+        <div className="flex items-center justify-center h-96">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-purple-400 mx-auto mb-4"></div>
+            <p className="text-purple-300 text-lg">Loading {subject} resources...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-  // Sample news articles
-  const newsArticles = [
-    {
-      title: `Latest Innovations in ${config.title.replace(' Guru', '')}`,
-      excerpt: "Breaking developments and emerging trends are reshaping the landscape. Industry experts weigh in on what this means for practitioners.",
-      author: "Industry Analyst",
-      readTime: "5 min read",
-      date: "2 hours ago",
-      featured: true
-    },
-    {
-      title: "Community Spotlight: Success Stories",
-      excerpt: "Meet the members who are making waves in our community. Learn from their journeys and achievements.",
-      author: "Community Team", 
-      readTime: "3 min read",
-      date: "5 hours ago"
-    },
-    {
-      title: "Tips and Tricks for Beginners",
-      excerpt: "Essential guidance for those just starting their journey. These foundational concepts will accelerate your learning.",
-      author: "Expert Mentor",
-      readTime: "7 min read", 
-      date: "1 day ago"
-    },
-    {
-      title: "Advanced Techniques Deep Dive",
-      excerpt: "Explore sophisticated methods and strategies used by professionals. Take your skills to the next level.",
-      author: "Professional Instructor",
-      readTime: "10 min read",
-      date: "2 days ago"
-    }
-  ];
+  if (!subjectData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+        <Navigation />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-white mb-4">Subject Not Found</h1>
+            <p className="text-purple-300">The subject you're looking for doesn't exist or isn't available.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-  // Sample blog posts
-  const blogPosts = [
-    {
-      title: "Getting Started: A Complete Guide",
-      excerpt: "Everything you need to know to begin your journey. This comprehensive guide covers fundamentals, tools, and first steps.",
-      author: "Teaching Team",
-      category: "Beginner",
-      readTime: "12 min read",
-      featured: true
-    },
-    {
-      title: "Common Mistakes to Avoid",
-      excerpt: "Learn from the experiences of others. These pitfalls can slow your progress if you're not aware of them.",
-      author: "Expert Community",
-      category: "Learning",
-      readTime: "8 min read"
-    },
-    {
-      title: "Building Your Portfolio",
-      excerpt: "Showcase your skills effectively. Learn what makes a portfolio stand out to potential clients or employers.",
-      author: "Career Advisors",
-      category: "Career",
-      readTime: "15 min read"
-    }
-  ];
-
-  // Sample experts for this subject
-  const subjectExperts = [
-    {
-      name: "Alex Morgan",
-      title: `${config.title.replace(' Guru', '')} Expert`,
-      description: `Professional ${subject.toLowerCase()} specialist with 10+ years of experience. Passionate about teaching and mentoring others.`,
-      rating: 4.9,
-      reviews: 156,
-      hourlyRate: 65,
-      skills: [subject, "Teaching", "Mentoring", "Professional Development"],
-      href: `https://coach.yoohoo.guru/alex-morgan-${subject}`,
-    },
-    {
-      name: "Sarah Johnson",
-      title: `Advanced ${config.title.replace(' Guru', '')} Instructor`,
-      description: `Advanced practitioner specializing in cutting-edge techniques. Known for making complex topics accessible and engaging.`,
-      rating: 4.8,
-      reviews: 98,
-      hourlyRate: 55,
-      skills: [subject, "Advanced Techniques", "Problem Solving", "Creative Methods"],
-      href: `https://coach.yoohoo.guru/sarah-johnson-${subject}`,
-    },
-    {
-      name: "Michael Chen",
-      title: `Industry ${config.title.replace(' Guru', '')} Professional`,
-      description: `Real-world experience from working with top companies. Practical insights that bridge theory and application.`,
-      rating: 5.0,
-      reviews: 203,
-      hourlyRate: 75,
-      skills: [subject, "Industry Applications", "Best Practices", "Professional Skills"],
-      href: `https://coach.yoohoo.guru/michael-chen-${subject}`,
-    }
-  ];
-
-  // Related subjects for cross-linking
-  const relatedSubjects = ['Technology', 'Business', 'Creative Arts', 'Education', 'Lifestyle', 'Science'].filter(s => s !== subject);
+  const gradientClass = config?.gradient || 'from-purple-600 via-pink-600 to-red-600';
 
   return (
-    <>
-      <Head>
-        <title>{config.title} - Expert Knowledge & Community | YooHoo.Guru</title>
-        <meta name="description" content={config.description} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta property="og:title" content={config.title} />
-        <meta property="og:description" content={config.description} />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={`https://${subject}.yoohoo.guru`} />
-      </Head>
-
-      <div className="min-h-screen bg-orbitron-primary">
-        <Navigation currentDomain={subject} />
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <Navigation />
+      
+      {/* Enhanced Hero Section */}
+      <div className={`relative bg-gradient-to-br ${gradientClass} text-white overflow-hidden`}>
+        <div className="absolute inset-0 bg-black opacity-40"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+          <div className="text-center">
+            <div className="mb-6">
+              {config?.icon && (
+                <div className="text-6xl mb-4">{config.icon}</div>
+              )}
+            </div>
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-200">
+              {subjectData.title}
+            </h1>
+            <p className="text-xl md:text-2xl text-purple-100 max-w-3xl mx-auto leading-relaxed">
+              {subjectData.description}
+            </p>
+            <div className="mt-8 space-x-4">
+              <button className="bg-white text-purple-600 px-8 py-3 rounded-full font-semibold hover:bg-purple-50 transition-all duration-300 transform hover:scale-105">
+                Find {subjectData.title} Experts
+              </button>
+              <button className="bg-purple-800 bg-opacity-50 backdrop-blur-sm text-white px-8 py-3 rounded-full font-semibold hover:bg-opacity-70 transition-all duration-300 transform hover:scale-105">
+                Start Learning
+              </button>
+            </div>
+          </div>
+        </div>
         
-        {/* Hero Section */}
-        <HeroSection 
-          variant="content"
-          title={config.title}
-          subtitle={config.description}
-        />
-
-        {/* Hub Statistics */}
-        <section className="py-12 bg-gradient-to-b from-transparent to-secondarydark/30">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-              <div className="glass-effect p-6 rounded-lg">
-                <div className="text-3xl font-bold text-emerald-400 mb-2">{config.stats.experts}+</div>
-                <div className="text-sm text-gray-400">Expert Instructors</div>
-              </div>
-              <div className="glass-effect p-6 rounded-lg">
-                <div className="text-3xl font-bold text-blue-400 mb-2">{config.stats.courses}+</div>
-                <div className="text-sm text-gray-400">Available Courses</div>
-              </div>
-              <div className="glass-effect p-6 rounded-lg">
-                <div className="text-3xl font-bold text-purple-400 mb-2">{config.stats.articles}+</div>
-                <div className="text-sm text-gray-400">Articles & Tutorials</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Latest News Section */}
-        <section className="py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between mb-12">
-              <div>
-                <h2 className="heading-2 mb-2">Latest News</h2>
-                <p className="body-normal">Stay updated with the latest developments and trends</p>
-              </div>
-              <Button variant="ghost" href={`/${subject}/news`}>
-                View All News →
-              </Button>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {newsArticles.map((article, index) => (
-                <div key={index} className={`card-hover ${article.featured ? 'card-featured' : 'card-default'}`}>
-                  {article.featured && (
-                    <div className="flex items-center mb-3">
-                      <span className="badge-info">Featured</span>
-                    </div>
-                  )}
-                  
-                  <h3 className="heading-3 mb-3 hover:text-emerald-400 transition-colors">
-                    {article.title}
-                  </h3>
-                  
-                  <p className="body-normal text-gray-400 mb-4 line-clamp-3">
-                    {article.excerpt}
-                  </p>
-                  
-                  <div className="flex items-center justify-between text-sm text-gray-500">
-                    <div className="flex items-center space-x-4">
-                      <span>{article.author}</span>
-                      <span>•</span>
-                      <span>{article.readTime}</span>
-                    </div>
-                    <span>{article.date}</span>
-                  </div>
-                  
-                  <div className="mt-4 pt-4 border-t border-white/10">
-                    <Button variant="ghost" size="sm" href={`/${subject}/news/${index}`}>
-                      Read More →
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Blog Posts Section */}
-        <section className="py-20 bg-gradient-to-b from-transparent to-secondarydark/30">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between mb-12">
-              <div>
-                <h2 className="heading-2 mb-2">Latest Blog Posts</h2>
-                <p className="body-normal">In-depth tutorials and expert insights</p>
-              </div>
-              <Button variant="ghost" href={`/${subject}/blog`}>
-                View All Posts →
-              </Button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {blogPosts.map((post, index) => (
-                <div key={index} className={`card-hover ${post.featured ? 'card-featured' : 'card-default'}`}>
-                  {post.featured && (
-                    <div className="flex items-center mb-3">
-                      <span className="badge-warning">Featured</span>
-                    </div>
-                  )}
-                  
-                  <div className="flex items-center mb-3">
-                    <span className="text-xs px-2 py-1 bg-white/10 text-gray-300 rounded-full">
-                      {post.category}
-                    </span>
-                  </div>
-                  
-                  <h3 className="heading-3 mb-3 hover:text-emerald-400 transition-colors">
-                    {post.title}
-                  </h3>
-                  
-                  <p className="body-normal text-gray-400 mb-4 line-clamp-3">
-                    {post.excerpt}
-                  </p>
-                  
-                  <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
-                    <span>{post.author}</span>
-                    <span>{post.readTime}</span>
-                  </div>
-                  
-                  <Button variant="ghost" size="sm" href={`/${subject}/blog/${index}`}>
-                    Read Article →
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Expert Instructors Section */}
-        <section className="py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="heading-2 mb-2">Expert Instructors</h2>
-              <p className="body-normal max-w-2xl mx-auto">
-                Learn from the best in the field. Our verified instructors bring real-world experience and passion for teaching.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-              {subjectExperts.map((expert, index) => (
-                <div key={index} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
-                  <ExpertCard {...expert} />
-                </div>
-              ))}
-            </div>
-
-            <div className="text-center">
-              <Button variant="gradient" size="lg" href={`https://coach.yoohoo.guru/experts?subject=${subject}`}>
-                Browse All {config.title.replace(' Guru', '')} Experts →
-              </Button>
-            </div>
-          </div>
-        </section>
-
-        {/* Learning Resources Section */}
-        <section className="py-20 bg-gradient-to-b from-transparent to-secondarydark/30">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="heading-2 mb-2">Learning Resources</h2>
-              <p className="body-normal">Tools, templates, and resources to accelerate your learning</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                { title: "Beginner's Guide", icon: "📖", count: "25+ lessons" },
-                { title: "Practice Exercises", icon: "✏️", count: "100+ problems" },
-                { title: "Video Tutorials", icon: "🎥", count: "45+ videos" },
-                { title: "Community Forum", icon: "💬", count: "500+ discussions" },
-                { title: "Downloadable Resources", icon: "📁", count: "30+ files" },
-                { title: "Live Workshops", icon: "🎯", count: "Weekly sessions" },
-                { title: "Certification Path", icon: "🏆", count: "3 levels" },
-                { title: "Project Templates", icon: "🛠️", count: "20+ templates" }
-              ].map((resource, index) => (
-                <div key={index} className="card-hover text-center p-6">
-                  <div className="text-3xl mb-3">{resource.icon}</div>
-                  <h4 className="font-semibold text-white mb-2">{resource.title}</h4>
-                  <p className="text-sm text-emerald-400">{resource.count}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Related Hubs Section */}
-        <section className="py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="heading-3 mb-2">Explore Related Topics</h2>
-              <p className="body-normal">Discover more content hubs in related areas</p>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-              {relatedSubjects.map((related, index) => (
-                <a
-                  key={index}
-                  href={`https://${related.toLowerCase().replace(' ', '-')}.yoohoo.guru`}
-                  className="card-hover text-center p-6 group"
-                >
-                  <div className="w-12 h-12 bg-gradient-to-br from-emerald-500/20 to-blue-500/20 rounded-lg mx-auto mb-3 flex items-center justify-center">
-                    <span className="text-xl">📚</span>
-                  </div>
-                  <h4 className="font-medium text-white text-sm">{related}</h4>
-                </a>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="card-featured text-center p-12">
-              <h2 className="heading-2 mb-4">Ready to Master {config.title.replace(' Guru', '')}?</h2>
-              <p className="body-large mb-8 max-w-2xl mx-auto">
-                Join our community of learners and experts. Start your journey today with personalized guidance and curated resources.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button variant="gradient" size="lg" href="/signup">
-                  Start Learning →
-                </Button>
-                <Button variant="ghost" size="lg" href={`https://coach.yoohoo.guru/experts?subject=${subject}`}>
-                  Find Expert →
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Decorative elements */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg className="w-full h-24" viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="url(#gradient)" fillOpacity="0.1"/>
+            <defs>
+              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop stopColor="#8B5CF6"/>
+                <stop offset="1%" stopColor="#EC4899"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
       </div>
-    </>
+
+      {/* Stats Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {[
+            { label: 'Expert Tutors', value: '150+', icon: '👨‍🏫' },
+            { label: 'Video Courses', value: '500+', icon: '🎥' },
+            { label: 'Active Students', value: '10K+', icon: '👥' },
+            { label: 'Success Rate', value: '95%', icon: '⭐' }
+          ].map((stat, index) => (
+            <div key={index} className="bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-6 text-center hover:bg-opacity-20 transition-all duration-300">
+              <div className="text-3xl mb-2">{stat.icon}</div>
+              <div className="text-2xl font-bold text-white">{stat.value}</div>
+              <div className="text-purple-300">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* News Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <NewsSection 
+          title={`${subjectData.title} News & Updates`}
+          newsItems={subjectData.news || []}
+        />
+      </div>
+
+      {/* Blog Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <BlogList 
+          title={`${subjectData.title} Articles & Tutorials`}
+          blogPosts={subjectData.blogs || []}
+        />
+      </div>
+
+      {/* CTA Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-8 md:p-12 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            Ready to Master {subjectData.title}?
+          </h2>
+          <p className="text-purple-100 text-lg mb-8 max-w-2xl mx-auto">
+            Connect with expert tutors, access premium courses, and join a community of passionate learners.
+          </p>
+          <div className="space-x-4">
+            <button className="bg-white text-purple-600 px-8 py-4 rounded-full font-semibold hover:bg-purple-50 transition-all duration-300 transform hover:scale-105">
+              Get Started Free
+            </button>
+            <button className="bg-purple-800 bg-opacity-50 backdrop-blur-sm text-white px-8 py-4 rounded-full font-semibold hover:bg-opacity-70 transition-all duration-300 transform hover:scale-105">
+              View Pricing
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
-export default ContentHub;
+
+
+export async function getStaticProps({ params }: { params: { subject: string } }) {
+  return {
+    props: {
+      subject: params.subject
+    },
+    revalidate: 60 // Revalidate every minute
+  };
+}
+
+export async function getStaticPaths() {
+  // Define all possible subject paths
+  const subjects = [
+    'art', 'business', 'coding', 'cooking', 'crafts', 'data', 
+    'design', 'finance', 'fitness', 'gardening', 'history', 
+    'home', 'investing', 'language', 'marketing', 'math', 
+    'music', 'photography', 'sales', 'science', 'sports', 
+    'tech', 'wellness', 'writing'
+  ];
+
+  const paths = subjects.map(subject => ({
+    params: { subject }
+  }));
+
+  return {
+    paths,
+    fallback: true
+  };
+}
+
+export default SubjectPage;
