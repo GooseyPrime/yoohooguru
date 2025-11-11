@@ -1,5 +1,22 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
+import { getFirestore } from 'firebase-admin/firestore';
+import { initializeApp, getApps, cert } from 'firebase-admin/app';
+
+// Initialize Firebase Admin if not already initialized
+if (!getApps().length) {
+  try {
+    initializeApp({
+      credential: cert({
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      }),
+    });
+  } catch (error) {
+    console.error('Firebase admin initialization error:', error);
+  }
+}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -30,10 +47,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // In a real implementation, save to database
-    // For now, return success with mock data
+    const db = getFirestore();
+    
     const job = {
-      id: Date.now().toString(),
       title,
       description,
       category,
@@ -44,15 +60,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       location,
       urgency,
       postedBy: session.user?.name || 'Anonymous',
+      postedById: session.user?.email || '',
       postedDate: new Date().toISOString(),
       proposals: 0,
-      status: 'active'
+      status: 'active',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
 
-    // TODO: Save to Firestore
-    // await db.collection('jobs').add(job);
+    // Save to Firestore
+    const docRef = await db.collection('jobs').add(job);
 
-    return res.status(201).json({ success: true, job });
+    return res.status(201).json({ 
+      success: true, 
+      job: {
+        id: docRef.id,
+        ...job
+      }
+    });
   } catch (error) {
     console.error('Error creating job:', error);
     return res.status(500).json({ error: 'Internal server error' });

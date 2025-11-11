@@ -37,12 +37,11 @@ export default function JobsPage() {
         const data = await response.json();
         setJobs(data);
       } else {
-        // Use mock data if API fails
-        setJobs(mockJobs);
+        setJobs([]);
       }
     } catch (error) {
       console.error('Error loading jobs:', error);
-      setJobs(mockJobs);
+      setJobs([]);
     } finally {
       setIsLoading(false);
     }
@@ -220,81 +219,3 @@ export default function JobsPage() {
   );
 }
 
-// Mock data for demonstration
-const mockJobs: Job[] = [
-  {
-    id: '1',
-    title: 'React Developer Needed for E-commerce Platform',
-    description: 'Looking for an experienced React developer to build a modern e-commerce platform with Next.js, TypeScript, and Stripe integration. Must have experience with responsive design and state management.',
-    category: 'coding',
-    budget: '$2,000 - $3,000',
-    duration: '4-6 weeks',
-    skillsRequired: ['React', 'Next.js', 'TypeScript', 'Stripe', 'Tailwind CSS'],
-    experienceLevel: 'intermediate',
-    location: 'remote',
-    urgency: 'high',
-    postedBy: 'TechStartup Inc.',
-    postedDate: '2 days ago',
-    proposals: 12
-  },
-  {
-    id: '2',
-    title: 'UI/UX Designer for Mobile App',
-    description: 'Seeking a talented UI/UX designer to create wireframes and high-fidelity designs for a fitness tracking mobile app. Experience with Figma and mobile design patterns required.',
-    category: 'design',
-    budget: '$1,500 - $2,500',
-    duration: '3-4 weeks',
-    skillsRequired: ['Figma', 'UI Design', 'UX Design', 'Mobile Design', 'Prototyping'],
-    experienceLevel: 'intermediate',
-    location: 'remote',
-    urgency: 'normal',
-    postedBy: 'FitLife Apps',
-    postedDate: '1 week ago',
-    proposals: 8
-  },
-  {
-    id: '3',
-    title: 'Content Writer for Tech Blog',
-    description: 'Need a skilled content writer to create engaging articles about web development, AI, and emerging technologies. Must have technical knowledge and excellent writing skills.',
-    category: 'writing',
-    budget: '$500 - $800',
-    duration: '2-3 weeks',
-    skillsRequired: ['Technical Writing', 'SEO', 'Content Strategy', 'Research'],
-    experienceLevel: 'intermediate',
-    location: 'remote',
-    urgency: 'low',
-    postedBy: 'DevBlog Media',
-    postedDate: '3 days ago',
-    proposals: 15
-  },
-  {
-    id: '4',
-    title: 'Data Analyst for Marketing Campaign',
-    description: 'Looking for a data analyst to analyze marketing campaign performance and provide actionable insights. Experience with Google Analytics, SQL, and data visualization tools required.',
-    category: 'data',
-    budget: '$1,000 - $1,500',
-    duration: '2 weeks',
-    skillsRequired: ['SQL', 'Google Analytics', 'Data Visualization', 'Python', 'Excel'],
-    experienceLevel: 'expert',
-    location: 'remote',
-    urgency: 'urgent',
-    postedBy: 'Marketing Pro Agency',
-    postedDate: '1 day ago',
-    proposals: 6
-  },
-  {
-    id: '5',
-    title: 'Social Media Manager for Brand Launch',
-    description: 'Seeking an experienced social media manager to handle brand launch across Instagram, Twitter, and LinkedIn. Must have proven track record of growing social media presence.',
-    category: 'marketing',
-    budget: '$800 - $1,200',
-    duration: '1 month',
-    skillsRequired: ['Social Media Marketing', 'Content Creation', 'Analytics', 'Brand Strategy'],
-    experienceLevel: 'intermediate',
-    location: 'remote',
-    urgency: 'high',
-    postedBy: 'NewBrand Co.',
-    postedDate: '5 days ago',
-    proposals: 10
-  }
-];
