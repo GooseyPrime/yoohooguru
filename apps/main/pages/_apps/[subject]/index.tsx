@@ -1,20 +1,24 @@
 import React from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import Navigation from '../../components/ui/Navigation';
-import HeroSection from '../../components/sections/HeroSection';
-import { ExpertCard } from '../../components/ui/Card';
-import Button from '../../components/ui/Button';
+import Navigation from '../../../components/ui/Navigation';
+import HeroSection from '../../../components/sections/HeroSection';
+import { ExpertCard } from '../../../components/ui/Card';
+import Button from '../../../components/ui/Button';
 
 interface ContentHubProps {
   subject: string;
 }
 
 const ContentHub: React.FC<ContentHubProps> = ({ subject }) => {
-  const router = useRouter();
-
   // Subject-specific configuration
-  const subjectConfig: Record<string, any> = {
+  const subjectConfig: Record<string, {
+    title: string;
+    description: string;
+    icon: string;
+    color: string;
+    stats: { experts: number; courses: number; articles: number };
+  }> = {
     music: {
       title: "Music Guru",
       description: "Master instruments, theory, and production with expert guidance",

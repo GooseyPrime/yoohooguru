@@ -145,7 +145,7 @@ interface RatingSystemProps {
 }
 
 export default function RatingSystem({ 
-  guruId, 
+  guruId: _guruId, 
   guruName, 
   averageRating, 
   totalReviews, 

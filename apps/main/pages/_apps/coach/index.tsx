@@ -1,10 +1,10 @@
 import React from 'react';
 import Head from 'next/head';
-import Navigation from '../../components/ui/Navigation';
-import HeroSection from '../../components/sections/HeroSection';
-import { ExpertCard, ServiceCard } from '../../components/ui/Card';
-import { TestimonialCarousel } from '../../components/ui/TestimonialCard';
-import Button from '../../components/ui/Button';
+import Navigation from '../../../components/ui/Navigation';
+import HeroSection from '../../../components/sections/HeroSection';
+import { ExpertCard } from '../../../components/ui/Card';
+import { TestimonialCarousel } from '../../../components/ui/TestimonialCard';
+import Button from '../../../components/ui/Button';
 
 export default function CoachGuru() {
   // Featured experts

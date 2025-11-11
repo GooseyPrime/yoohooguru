@@ -74,10 +74,10 @@ interface GoogleMapProps {
   onLocationSelect?: (location: { lat: number; lng: number }) => void;
 }
 
-export default function GoogleMap({ apiKey, location, onLocationSelect }: GoogleMapProps) {
+export default function GoogleMap({ apiKey, onLocationSelect }: Omit<GoogleMapProps, 'location'>) {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [mapError, setMapError] = useState(false);
+  const [mapError] = useState(false);
   
   useEffect(() => {
     // In a real implementation, this would load the Google Maps API

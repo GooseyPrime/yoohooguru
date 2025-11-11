@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { loadStripe, Stripe } from '@stripe/stripe-js';
+import { useState } from 'react';
+import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import styled from 'styled-components';
 
@@ -234,7 +234,7 @@ export default function StripePayment({
   description = 'Skill Session Payment', 
   onPaymentSuccess 
 }: StripePaymentProps) {
-  const [clientSecret, setClientSecret] = useState('');
+  // const [clientSecret, setClientSecret] = useState('');
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   
   // Mock payment data - in a real implementation, this would come from your backend

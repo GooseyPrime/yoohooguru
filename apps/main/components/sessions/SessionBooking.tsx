@@ -289,7 +289,7 @@ export default function SessionBooking({
       await new Promise(resolve => setTimeout(resolve, 1000));
       setStep('payment');
       setMessage(null);
-    } catch (error) {
+    } catch (_error) {
       setMessage({
         type: 'error',
         text: 'Failed to book session. Please try again.'
