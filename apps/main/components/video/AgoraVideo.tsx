@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import AgoraRTC, { ICameraVideoTrack, IMicrophoneAudioTrack, IAgoraRTCClient } from 'agora-rtc-sdk-ng';
+import AgoraRTC, { ICameraVideoTrack, IMicrophoneAudioTrack, IAgoraRTCClient, IAgoraRTCRemoteUser } from 'agora-rtc-sdk-ng';
 import styled from 'styled-components';
 
 const VideoContainer = styled.div`
@@ -83,7 +83,7 @@ interface AgoraVideoProps {
   onLeave: () => void;
 }
 
-export default function AgoraVideo({ channel, token, uid, isHost: _isHost, onLeave }: AgoraVideoProps) {
+export default function AgoraVideo({ channel, token, uid, onLeave }: AgoraVideoProps) {
   const [joined, setJoined] = useState(false);
   const [videoTrack, setVideoTrack] = useState<ICameraVideoTrack | null>(null);
   const [audioTrack, setAudioTrack] = useState<IMicrophoneAudioTrack | null>(null);
@@ -101,28 +101,28 @@ export default function AgoraVideo({ channel, token, uid, isHost: _isHost, onLea
   
   useEffect(() => {
     if (!isClient) return;
-    
+
     // Initialize Agora client
     clientRef.current = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
-    
+
     // Handle user published events
     clientRef.current.on('user-published', async (user, mediaType) => {
       await clientRef.current!.subscribe(user, mediaType);
-      
+
       if (mediaType === 'video') {
         const remoteVideoRef = remoteVideoRefs.current[user.uid];
         if (remoteVideoRef) {
           user.videoTrack!.play(remoteVideoRef);
         }
       }
-      
+
       if (mediaType === 'audio') {
         user.audioTrack!.play();
       }
-      
+
       setRemoteUsers(prev => [...prev, user]);
     });
-    
+
     // Handle user unpublished events
     clientRef.current.on('user-unpublished', (user) => {
       const remoteVideoRef = remoteVideoRefs.current[user.uid];
@@ -130,10 +130,10 @@ export default function AgoraVideo({ channel, token, uid, isHost: _isHost, onLea
         user.videoTrack?.stop();
       }
       user.audioTrack?.stop();
-      
+
       setRemoteUsers(prev => prev.filter(u => u.uid !== user.uid));
     });
-    
+
     return () => {
       if (clientRef.current) {
         clientRef.current.leave();
@@ -141,7 +141,7 @@ export default function AgoraVideo({ channel, token, uid, isHost: _isHost, onLea
       videoTrack?.close();
       audioTrack?.close();
     };
-  }, [videoTrack, audioTrack]);
+  }, [isClient, videoTrack, audioTrack]);
   
   const joinChannel = async () => {
     if (!clientRef.current) return;

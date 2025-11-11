@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 interface TestimonialCardProps {
   name: string;
@@ -25,7 +26,7 @@ export const TestimonialCard: React.FC<TestimonialCardProps> = ({
     <div className={`relative ${featured ? 'card-featured' : 'card-default'} h-full`}>
       {/* Quote Icon */}
       <div className="absolute top-4 right-4 text-4xl text-emerald-400/20">
-        "
+        &ldquo;
       </div>
       
       {/* Rating Stars */}
@@ -42,14 +43,14 @@ export const TestimonialCard: React.FC<TestimonialCardProps> = ({
       
       {/* Content */}
       <blockquote className="body-normal text-gray-300 mb-6 italic">
-        "{content}"
+        &ldquo;{content}&rdquo;
       </blockquote>
       
       {/* Author Info */}
       <div className="flex items-center">
         <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-blue-400 flex items-center justify-center text-white font-bold mr-3 flex-shrink-0">
           {avatar ? (
-            <img src={avatar} alt={name} className="w-full h-full rounded-full object-cover" />
+            <Image src={avatar} alt={name} width={48} height={48} className="w-full h-full rounded-full object-cover" />
           ) : (
             name.split(' ').map(n => n[0]).join('')
           )}

@@ -298,7 +298,7 @@ export default function ProfileManager() {
         type: 'success',
         text: 'Profile updated successfully!'
       });
-    } catch (_error) {
+    } catch {
       setMessage({
         type: 'error',
         text: 'Failed to update profile. Please try again.'
