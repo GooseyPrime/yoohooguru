@@ -110,9 +110,43 @@ async function createBackup() {
       }
     }
 
-    // Store backup in Firestore
+    // Store backup in Firestore (split into multiple documents to avoid 1MB limit)
     const backupId = `backup-${dateStr}-${timestamp}`;
-    await db.collection('backups').doc(backupId).set(backupData);
+
+    // Store metadata document
+    const metadataDoc = {
+      timestamp,
+      date: dateStr,
+      metadata: backupData.metadata,
+      subdomainList: allSubdomains
+    };
+    await db.collection('backups').doc(backupId).set(metadataDoc);
+
+    // Store each subdomain's data in a subcollection
+    const batch = db.batch();
+    let batchCount = 0;
+    const maxBatchSize = 500; // Firestore batch limit
+
+    for (const [subdomain, data] of Object.entries(backupData.subdomains)) {
+      const subdomainDocRef = db.collection('backups')
+        .doc(backupId)
+        .collection('subdomains')
+        .doc(subdomain);
+
+      batch.set(subdomainDocRef, data);
+      batchCount++;
+
+      // Commit batch if we reach the limit
+      if (batchCount >= maxBatchSize) {
+        await batch.commit();
+        batchCount = 0;
+      }
+    }
+
+    // Commit remaining operations
+    if (batchCount > 0) {
+      await batch.commit();
+    }
 
     // Store backup as JSON file
     const backupsDir = path.join(__dirname, '../../backups');
@@ -162,16 +196,32 @@ async function cleanupOldBackups(db) {
       return;
     }
 
-    const batch = db.batch();
     let deleteCount = 0;
 
-    oldBackupsSnapshot.forEach(doc => {
-      batch.delete(doc.ref);
-      deleteCount++;
-    });
+    // Delete each old backup and its subcollection
+    for (const doc of oldBackupsSnapshot.docs) {
+      try {
+        // Delete subdomain subcollection documents
+        const subdomainsSnapshot = await doc.ref.collection('subdomains').get();
+        const batch = db.batch();
 
-    await batch.commit();
-    logger.info(`   🗑️  Cleaned up ${deleteCount} old backups from Firestore`);
+        subdomainsSnapshot.forEach(subdomainDoc => {
+          batch.delete(subdomainDoc.ref);
+        });
+
+        // Delete the main backup document
+        batch.delete(doc.ref);
+
+        await batch.commit();
+        deleteCount++;
+      } catch (error) {
+        logger.warn(`   ⚠️  Failed to delete backup ${doc.id}:`, error.message);
+      }
+    }
+
+    if (deleteCount > 0) {
+      logger.info(`   🗑️  Cleaned up ${deleteCount} old backups from Firestore`);
+    }
   } catch (error) {
     logger.warn('   ⚠️  Failed to cleanup old backups:', error.message);
   }
@@ -192,33 +242,45 @@ async function restoreFromBackup(backupId) {
       throw new Error(`Backup ${backupId} not found`);
     }
 
-    const backupData = backupDoc.data();
+    const backupMetadata = backupDoc.data();
+    const subdomainList = backupMetadata.subdomainList || [];
     let restoredArticles = 0;
     let restoredPosts = 0;
 
-    for (const [subdomain, data] of Object.entries(backupData.subdomains)) {
+    // Get subdomain data from subcollection
+    const subdomainsSnapshot = await db.collection('backups')
+      .doc(backupId)
+      .collection('subdomains')
+      .get();
+
+    for (const subdomainDoc of subdomainsSnapshot.docs) {
+      const subdomain = subdomainDoc.id;
+      const data = subdomainDoc.data();
+
       try {
         // Restore news articles
-        for (const article of data.news) {
+        for (const article of data.news || []) {
+          const { id, ...articleData } = article;
           await db.collection('gurus')
             .doc(subdomain)
             .collection('news')
-            .doc(article.id)
-            .set(article);
+            .doc(id)
+            .set(articleData);
           restoredArticles++;
         }
 
         // Restore blog posts
-        for (const post of data.posts) {
+        for (const post of data.posts || []) {
+          const { id, ...postData } = post;
           await db.collection('gurus')
             .doc(subdomain)
             .collection('posts')
-            .doc(post.id)
-            .set(post);
+            .doc(id)
+            .set(postData);
           restoredPosts++;
         }
 
-        logger.info(`  ✅ ${subdomain}: Restored ${data.news.length} articles, ${data.posts.length} posts`);
+        logger.info(`  ✅ ${subdomain}: Restored ${data.news?.length || 0} articles, ${data.posts?.length || 0} posts`);
       } catch (error) {
         logger.error(`  ❌ ${subdomain}: Restore failed`, error);
       }
