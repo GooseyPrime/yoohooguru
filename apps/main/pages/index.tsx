@@ -2,9 +2,8 @@ import React from 'react';
 import Head from 'next/head';
 import Navigation from '../components/ui/Navigation';
 import HeroSection from '../components/sections/HeroSection';
-import { ServiceCard, ExpertCard } from '../components/ui/Card';
+import { ServiceCard, ExpertCard, ContentHubCard } from '../components/ui/Card';
 import { TestimonialCarousel } from '../components/ui/TestimonialCard';
-import Button from '../components/ui/Button';
 
 export default function Home() {
   // Service data
@@ -108,103 +107,44 @@ export default function Home() {
     }
   ];
 
-  // Testimonial data
-  const testimonials = [
-    {
-      name: "Alex Thompson",
-      role: "Software Developer",
-      company: "Tech Corp",
-      content: "Coach Guru transformed my career. I learned advanced React concepts from Sarah and landed my dream job within 3 months. The platform is professional and the quality of instructors is outstanding.",
-      rating: 5,
-      date: "2 weeks ago",
-      featured: true,
-    },
-    {
-      name: "Maria Garcia",
-      role: "Small Business Owner",
-      company: "Local Cafe",
-      content: "Found an amazing graphic designer through Angel's List who completely redesigned our branding. The process was smooth, communication was excellent, and the results exceeded our expectations.",
-      rating: 5,
-      date: "1 month ago",
-    },
-    {
-      name: "David Kim",
-      role: "Student",
-      company: "University",
-      content: "Hero Gurus made learning accessible for me. The adaptive teaching methods and patient volunteers helped me master coding concepts I struggled with for years. This platform is changing lives!",
-      rating: 5,
-      date: "2 months ago",
-      featured: true,
-    },
-    {
-      name: "Jennifer Lee",
-      role: "Marketing Manager",
-      company: "Startup Inc",
-      content: "I've been both a learner and a teacher on Coach Guru. The community is supportive, the platform is intuitive, and I've grown both professionally and personally through this experience.",
-      rating: 5,
-      date: "3 weeks ago",
-    },
-    {
-      name: "Robert Johnson",
-      role: "Freelancer",
-      company: "Self-Employed",
-      content: "Angel's List helped me find consistent clients for my web development services. The secure payment system and review system give both providers and clients peace of mind.",
-      rating: 4,
-      date: "1 month ago",
-    },
-    {
-      name: "Lisa Chen",
-      role: "Parent",
-      company: "Community Volunteer",
-      content: "My son has learning disabilities and Hero Gurus has been incredible. The volunteer tutors are patient, understanding, and use creative methods that actually work. We're so grateful!",
-      rating: 5,
-      date: "2 weeks ago",
-      featured: true,
-    }
-  ];
-
-  // Content hub categories
-  const contentCategories = [
-    { name: "Technology", icon: "💻", count: 245, color: "emerald" },
-    { name: "Business", icon: "📊", count: 189, color: "blue" },
-    { name: "Creative Arts", icon: "🎨", count: 167, color: "purple" },
-    { name: "Health & Fitness", icon: "💪", count: 134, color: "orange" },
-    { name: "Education", icon: "📚", count: 156, color: "emerald" },
-    { name: "Lifestyle", icon: "🏠", count: 198, color: "blue" },
+  // Content hubs
+  const contentHubs = [
+    { icon: "💻", title: "Technology", articleCount: 245, href: "https://tech.yoohoo.guru", gradient: "hover:bg-gradient-to-br hover:from-blue-500/10 hover:to-purple-500/10" },
+    { icon: "📊", title: "Business", articleCount: 189, href: "https://business.yoohoo.guru", gradient: "hover:bg-gradient-to-br hover:from-emerald-500/10 hover:to-blue-500/10" },
+    { icon: "🎨", title: "Art", articleCount: 167, href: "https://art.yoohoo.guru", gradient: "hover:bg-gradient-to-br hover:from-purple-500/10 hover:to-pink-500/10" },
+    { icon: "💪", title: "Fitness", articleCount: 134, href: "https://fitness.yoohoo.guru", gradient: "hover:bg-gradient-to-br hover:from-orange-500/10 hover:to-red-500/10" },
+    { icon: "📚", title: "Education", articleCount: 156, href: "https://language.yoohoo.guru", gradient: "hover:bg-gradient-to-br hover:from-blue-500/10 hover:to-cyan-500/10" },
+    { icon: "🏠", title: "Home", articleCount: 198, href: "https://home.yoohoo.guru", gradient: "hover:bg-gradient-to-br hover:from-green-500/10 hover:to-emerald-500/10" }
   ];
 
   return (
     <>
       <Head>
         <title>YooHoo.Guru - Community Skill Sharing Platform</title>
-        <meta name="description" content="Exchange skills, discover purpose, and create exponential community impact. Connect with local experts, learn from professionals, or teach what you love." />
+        <meta name="description" content="Connect with local experts, exchange knowledge, and create meaningful impact through our trusted skill-sharing platform." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="keywords" content="skill sharing, online learning, local services, coaching, tutoring, community platform" />
-        <meta property="og:title" content="YooHoo.Guru - Community Skill Sharing Platform" />
-        <meta property="og:description" content="Connect with local experts, exchange knowledge, and create meaningful impact through our trusted skill-sharing platform." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.yoohoo.guru" />
-        <meta property="og:image" content="https://www.yoohoo.guru/og-image.jpg" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="min-h-screen bg-orbitron-primary">
-        <Navigation currentDomain="main" />
-        
+      <Navigation />
+
+      <main className="min-h-screen">
         {/* Hero Section */}
-        <HeroSection variant="main" />
+        <HeroSection />
 
         {/* Services Section */}
-        <section className="py-20 bg-gradient-to-b from-transparent to-secondarydark/50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16 animate-fade-in-up">
-              <h2 className="heading-2 mb-4">Choose Your Path</h2>
-              <p className="body-large max-w-3xl mx-auto">
-                Three unique ways to learn, earn, and make an impact in your community.
-                Whether you&apos;re seeking knowledge, offering expertise, or volunteering time, we have a place for you.
+        <section id="explore" className="section-padding bg-gradient-to-b from-transparent to-primarydark/50">
+          <div className="container-custom">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-6">
+                Choose Your Path
+              </h2>
+              <p className="text-xl text-white-80 max-w-3xl mx-auto">
+                Three unique ways to learn, earn, and make an impact in your community. Whether you're seeking knowledge, offering expertise, or volunteering time, we have a place for you.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {services.map((service, index) => (
                 <div key={index} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
                   <ServiceCard {...service} />
@@ -215,16 +155,18 @@ export default function Home() {
         </section>
 
         {/* Featured Experts Section */}
-        <section className="py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="section-padding">
+          <div className="container-custom">
             <div className="text-center mb-16">
-              <h2 className="heading-2 mb-4">Meet Our Expert Gurus</h2>
-              <p className="body-large max-w-3xl mx-auto">
+              <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-6">
+                Meet Our Expert Gurus
+              </h2>
+              <p className="text-xl text-white-80 max-w-3xl mx-auto">
                 Learn from the best. Our verified experts bring years of experience and a passion for teaching.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
               {featuredExperts.map((expert, index) => (
                 <div key={index} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
                   <ExpertCard {...expert} />
@@ -233,129 +175,187 @@ export default function Home() {
             </div>
 
             <div className="text-center">
-              <Button variant="gradient" size="lg" href="https://coach.yoohoo.guru/experts">
-                Browse All Experts →
-              </Button>
+              <a
+                href="https://coach.yoohoo.guru/experts"
+                className="inline-flex items-center space-x-2 px-8 py-4 glass-button text-white font-semibold rounded-xl hover:bg-white-20 transition-all duration-300"
+              >
+                <span>Browse All Experts</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </a>
             </div>
           </div>
         </section>
 
         {/* Content Hubs Section */}
-        <section className="py-20 bg-gradient-to-b from-transparent to-secondarydark/50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="section-padding bg-gradient-to-b from-primarydark/50 to-transparent">
+          <div className="container-custom">
             <div className="text-center mb-16">
-              <h2 className="heading-2 mb-4">Explore Our Content Hubs</h2>
-              <p className="body-large max-w-3xl mx-auto">
-                Discover expert-curated content across 24 specialized topics. 
-                Each hub features AI-curated news, tutorials, and community insights.
+              <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-6">
+                Explore Our Content Hubs
+              </h2>
+              <p className="text-xl text-white-80 max-w-3xl mx-auto">
+                Discover expert-curated content across 24 specialized topics. Each hub features AI-curated news, tutorials, and community insights.
               </p>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-12">
-              {contentCategories.map((category, index) => (
-                <a
-                  key={index}
-                  href={`https://${category.name.toLowerCase().replace(' & ', '').replace(' ', '-')}.yoohoo.guru`}
-                  className="card-hover text-center p-6 group"
-                >
-                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">
-                    {category.icon}
-                  </div>
-                  <h3 className="font-semibold text-white mb-2">{category.name}</h3>
-                  <p className="text-sm text-gray-400">{category.count} articles</p>
-                </a>
+              {contentHubs.map((hub, index) => (
+                <div key={index} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.05}s` }}>
+                  <ContentHubCard {...hub} />
+                </div>
               ))}
             </div>
 
             <div className="text-center">
-              <Button variant="ghost" size="lg" href="/hubs">
-                View All 24 Hubs →
-              </Button>
+              <a
+                href="/hubs"
+                className="inline-flex items-center space-x-2 px-8 py-4 glass-button text-white font-semibold rounded-xl hover:bg-white-20 transition-all duration-300"
+              >
+                <span>View All 24 Hubs</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </a>
             </div>
           </div>
         </section>
 
         {/* Testimonials Section */}
-        <section className="py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="section-padding">
+          <div className="container-custom">
             <div className="text-center mb-16">
-              <h2 className="heading-2 mb-4">Success Stories from Our Community</h2>
-              <p className="body-large max-w-3xl mx-auto">
+              <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-6">
+                Success Stories from Our Community
+              </h2>
+              <p className="text-xl text-white-80 max-w-3xl mx-auto">
                 Join thousands of satisfied members who are transforming their lives through skill sharing.
               </p>
             </div>
 
-            <TestimonialCarousel testimonials={testimonials} />
-          </div>
-        </section>
-
-        {/* Partners Section */}
-        <section className="py-20 bg-gradient-to-b from-transparent to-secondarydark/50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="heading-3 mb-4">Trusted by Leading Organizations</h2>
-              <p className="body-normal">
-                Partner companies and educational institutions that trust our platform
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center">
-              {[
-                "TechCorp", "EduTech", "StartHub", "DesignLab", 
-                "CloudNet", "InnovateCo", "LearnFast", "SkillUp",
-                "FutureEd", "TechAcademy", "CreativeHub", "BusinessPro"
-              ].map((partner, index) => (
-                <div key={index} className="glass-effect p-6 rounded-lg flex items-center justify-center h-20">
-                  <span className="text-gray-500 font-medium text-sm">
-                    {partner} Logo
-                  </span>
-                </div>
-              ))}
-            </div>
+            <TestimonialCarousel />
           </div>
         </section>
 
         {/* CTA Section */}
-        <section className="py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="card-featured text-center p-12">
-              <h2 className="heading-2 mb-4">Ready to Join Our Community?</h2>
-              <p className="body-large mb-8 max-w-2xl mx-auto">
-                Start sharing your skills, learning from experts, or volunteering your time. 
-                Your journey to making an impact begins here.
+        <section className="section-padding bg-gradient-to-b from-transparent to-primarydark/50">
+          <div className="container-custom">
+            <div className="glass-card p-12 md:p-16 text-center rounded-3xl">
+              <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-6">
+                Ready to Join Our Community?
+              </h2>
+              <p className="text-xl text-white-80 max-w-2xl mx-auto mb-12">
+                Start sharing your skills, learning from experts, or volunteering your time. Your journey to making an impact begins here.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button variant="gradient" size="lg" href="/signup">
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+                <a
+                  href="/signup"
+                  className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white text-lg font-semibold rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-300 shadow-lg hover:shadow-glow-emerald-lg hover:-translate-y-1"
+                >
                   Get Started Free →
-                </Button>
-                <Button variant="ghost" size="lg" href="/how-it-works">
+                </a>
+                <a
+                  href="/how-it-works"
+                  className="w-full sm:w-auto px-8 py-4 glass-button text-white text-lg font-semibold rounded-xl hover:bg-white-20 transition-all duration-300"
+                >
                   Learn How It Works
-                </Button>
+                </a>
               </div>
 
-              {/* Quick Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mt-16">
-                <div>
-                  <div className="text-3xl font-bold text-emerald-400 mb-2">10,000+</div>
-                  <div className="text-sm text-gray-400">Active Members</div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+                <div className="text-center">
+                  <div className="text-3xl font-bold gradient-text-emerald mb-2">10,000+</div>
+                  <div className="text-sm text-white-60">Active Members</div>
                 </div>
-                <div>
-                  <div className="text-3xl font-bold text-blue-400 mb-2">500+</div>
-                  <div className="text-sm text-gray-400">Expert Instructors</div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold gradient-text-blue mb-2">500+</div>
+                  <div className="text-sm text-white-60">Expert Instructors</div>
                 </div>
-                <div>
-                  <div className="text-3xl font-bold text-purple-400 mb-2">25,000+</div>
-                  <div className="text-sm text-gray-400">Learning Sessions</div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold gradient-text-purple mb-2">25,000+</div>
+                  <div className="text-sm text-white-60">Learning Sessions</div>
                 </div>
-                <div>
-                  <div className="text-3xl font-bold text-orange-400 mb-2">98%</div>
-                  <div className="text-sm text-gray-400">Success Rate</div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold gradient-text-gold mb-2">98%</div>
+                  <div className="text-sm text-white-60">Success Rate</div>
                 </div>
               </div>
             </div>
           </div>
         </section>
-      </div>
+
+        {/* Trusted By Section */}
+        <section className="section-padding">
+          <div className="container-custom">
+            <div className="text-center mb-12">
+              <h3 className="text-2xl font-display font-bold text-white-60 mb-8">
+                Trusted by Leading Organizations
+              </h3>
+              <p className="text-white-40 text-sm">
+                Partner companies and educational institutions that trust our platform
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t border-white-10 py-12">
+        <div className="container-custom">
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center">
+                  <span className="text-lg font-bold text-white font-display">YG</span>
+                </div>
+                <div className="text-lg font-display font-bold gradient-text-emerald-blue">
+                  YooHoo.Guru
+                </div>
+              </div>
+              <p className="text-sm text-white-60">
+                Building community through skill sharing
+              </p>
+            </div>
+
+            <div>
+              <h4 className="text-white font-semibold mb-4">Platform</h4>
+              <ul className="space-y-2 text-sm text-white-60">
+                <li><a href="/about" className="hover:text-emerald-400 transition-colors">About</a></li>
+                <li><a href="/how-it-works" className="hover:text-emerald-400 transition-colors">How It Works</a></li>
+                <li><a href="/pricing" className="hover:text-emerald-400 transition-colors">Pricing</a></li>
+                <li><a href="/blog" className="hover:text-emerald-400 transition-colors">Blog</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-white font-semibold mb-4">Support</h4>
+              <ul className="space-y-2 text-sm text-white-60">
+                <li><a href="/help" className="hover:text-emerald-400 transition-colors">Help Center</a></li>
+                <li><a href="/safety" className="hover:text-emerald-400 transition-colors">Safety</a></li>
+                <li><a href="/contact" className="hover:text-emerald-400 transition-colors">Contact</a></li>
+                <li><a href="/faq" className="hover:text-emerald-400 transition-colors">FAQ</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-white font-semibold mb-4">Legal</h4>
+              <ul className="space-y-2 text-sm text-white-60">
+                <li><a href="/terms" className="hover:text-emerald-400 transition-colors">Terms</a></li>
+                <li><a href="/privacy" className="hover:text-emerald-400 transition-colors">Privacy</a></li>
+                <li><a href="/cookies" className="hover:text-emerald-400 transition-colors">Cookies</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="divider-gradient mb-8" />
+
+          <div className="text-center text-sm text-white-60">
+            <p>&copy; 2024 YooHoo.Guru. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </>
   );
 }
