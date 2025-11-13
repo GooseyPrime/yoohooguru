@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import type { AIPriceRecommendationResponse } from '@/lib/openai';
 
 const Container = styled.div`
   max-width: 800px;
@@ -146,7 +147,7 @@ const LoadingSpinner = styled.div`
 
 export default function AIPriceRecommendation() {
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<AIPriceRecommendationResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     skill: '',

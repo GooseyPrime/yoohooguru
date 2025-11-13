@@ -1,5 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import Navigation from '../components/ui/Navigation';
 import HeroSection from '../components/sections/HeroSection';
 import WhyYooHooSection from '../components/sections/WhyYooHooSection';
@@ -132,7 +133,7 @@ export default function Home() {
                 Choose Your Path
               </h2>
               <p className="text-xl text-white-80 max-w-3xl mx-auto">
-                Three unique ways to learn, earn, and make an impact in your community. Whether you're seeking knowledge, offering expertise, or volunteering time, we have a place for you.
+                Three unique ways to learn, earn, and make an impact in your community. Whether you&apos;re seeking knowledge, offering expertise, or volunteering time, we have a place for you.
               </p>
             </div>
 
@@ -195,7 +196,7 @@ export default function Home() {
                <ContentHubCarousel />
    
                <div className="text-center mt-8">
-                 <a
+                 <Link
                    href="/hubs"
                    className="inline-flex items-center space-x-2 px-8 py-4 glass-button text-white font-semibold rounded-xl hover:bg-white-20 transition-all duration-300"
                  >
@@ -203,7 +204,7 @@ export default function Home() {
                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                    </svg>
-                 </a>
+                 </Link>
                </div>
           </div>
         </section>
@@ -236,18 +237,18 @@ export default function Home() {
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-                <a
+                <Link
                   href="/signup"
                   className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white text-lg font-semibold rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-300 shadow-lg hover:shadow-glow-emerald-lg hover:-translate-y-1"
                 >
                   Get Started Free →
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/how-it-works"
                   className="w-full sm:w-auto px-8 py-4 glass-button text-white text-lg font-semibold rounded-xl hover:bg-white-20 transition-all duration-300"
                 >
                   Learn How It Works
-                </a>
+                </Link>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
@@ -309,29 +310,29 @@ export default function Home() {
             <div>
               <h4 className="text-white font-semibold mb-4">Platform</h4>
               <ul className="space-y-2 text-sm text-white-60">
-                <li><a href="/about" className="hover:text-emerald-400 transition-colors">About</a></li>
-                <li><a href="/how-it-works" className="hover:text-emerald-400 transition-colors">How It Works</a></li>
-                <li><a href="/pricing" className="hover:text-emerald-400 transition-colors">Pricing</a></li>
-                <li><a href="/blog" className="hover:text-emerald-400 transition-colors">Blog</a></li>
+                <li><Link href="/about" className="hover:text-emerald-400 transition-colors">About</Link></li>
+                <li><Link href="/how-it-works" className="hover:text-emerald-400 transition-colors">How It Works</Link></li>
+                <li><Link href="/pricing" className="hover:text-emerald-400 transition-colors">Pricing</Link></li>
+                <li><Link href="/blog" className="hover:text-emerald-400 transition-colors">Blog</Link></li>
               </ul>
             </div>
 
             <div>
               <h4 className="text-white font-semibold mb-4">Support</h4>
               <ul className="space-y-2 text-sm text-white-60">
-                <li><a href="/help" className="hover:text-emerald-400 transition-colors">Help Center</a></li>
-                <li><a href="/safety" className="hover:text-emerald-400 transition-colors">Safety</a></li>
-                <li><a href="/contact" className="hover:text-emerald-400 transition-colors">Contact</a></li>
-                <li><a href="/faq" className="hover:text-emerald-400 transition-colors">FAQ</a></li>
+                <li><Link href="/help" className="hover:text-emerald-400 transition-colors">Help Center</Link></li>
+                <li><Link href="/safety" className="hover:text-emerald-400 transition-colors">Safety</Link></li>
+                <li><Link href="/contact" className="hover:text-emerald-400 transition-colors">Contact</Link></li>
+                <li><Link href="/faq" className="hover:text-emerald-400 transition-colors">FAQ</Link></li>
               </ul>
             </div>
 
             <div>
               <h4 className="text-white font-semibold mb-4">Legal</h4>
               <ul className="space-y-2 text-sm text-white-60">
-                <li><a href="/terms" className="hover:text-emerald-400 transition-colors">Terms</a></li>
-                <li><a href="/privacy" className="hover:text-emerald-400 transition-colors">Privacy</a></li>
-                <li><a href="/cookies" className="hover:text-emerald-400 transition-colors">Cookies</a></li>
+                <li><Link href="/terms" className="hover:text-emerald-400 transition-colors">Terms</Link></li>
+                <li><Link href="/privacy" className="hover:text-emerald-400 transition-colors">Privacy</Link></li>
+                <li><Link href="/cookies" className="hover:text-emerald-400 transition-colors">Cookies</Link></li>
               </ul>
             </div>
           </div>

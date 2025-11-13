@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import Navigation from '../components/ui/Navigation';
 
 export default function Contact() {
@@ -70,7 +71,7 @@ export default function Contact() {
     <>
       <Head>
         <title>Contact Us - YooHoo.Guru</title>
-        <meta name="description" content="Get in touch with the YooHoo.Guru team. We're here to help!" />
+        <meta name="description" content="Get in touch with the YooHoo.Guru team. We&apos;re here to help!" />
       </Head>
 
       <Navigation />

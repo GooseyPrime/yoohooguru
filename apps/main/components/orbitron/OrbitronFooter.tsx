@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 const OrbitronFooter: React.FC = () => {
@@ -30,10 +31,10 @@ const OrbitronFooter: React.FC = () => {
           >
             <h4 className="text-lg font-orbitron font-bold mb-4 text-white">Platform</h4>
             <ul className="space-y-2">
-              <li><a href="/about" className="text-gray-300 hover:text-emerald-400 transition-colors font-orbitron">About Us</a></li>
-              <li><a href="/how-it-works" className="text-gray-300 hover:text-emerald-400 transition-colors font-orbitron">How It Works</a></li>
-              <li><a href="/pricing" className="text-gray-300 hover:text-emerald-400 transition-colors font-orbitron">Pricing</a></li>
-              <li><a href="/blog" className="text-gray-300 hover:text-emerald-400 transition-colors font-orbitron">Blog</a></li>
+              <li><Link href="/about" className="text-gray-300 hover:text-emerald-400 transition-colors font-orbitron">About Us</Link></li>
+              <li><Link href="/how-it-works" className="text-gray-300 hover:text-emerald-400 transition-colors font-orbitron">How It Works</Link></li>
+              <li><Link href="/pricing" className="text-gray-300 hover:text-emerald-400 transition-colors font-orbitron">Pricing</Link></li>
+              <li><Link href="/blog" className="text-gray-300 hover:text-emerald-400 transition-colors font-orbitron">Blog</Link></li>
             </ul>
           </motion.div>
           
@@ -45,10 +46,10 @@ const OrbitronFooter: React.FC = () => {
           >
             <h4 className="text-lg font-orbitron font-bold mb-4 text-white">Support</h4>
             <ul className="space-y-2">
-              <li><a href="/help" className="text-gray-300 hover:text-emerald-400 transition-colors font-orbitron">Help Center</a></li>
-              <li><a href="/safety" className="text-gray-300 hover:text-emerald-400 transition-colors font-orbitron">Safety</a></li>
-              <li><a href="/contact" className="text-gray-300 hover:text-emerald-400 transition-colors font-orbitron">Contact Us</a></li>
-              <li><a href="/faq" className="text-gray-300 hover:text-emerald-400 transition-colors font-orbitron">FAQ</a></li>
+              <li><Link href="/help" className="text-gray-300 hover:text-emerald-400 transition-colors font-orbitron">Help Center</Link></li>
+              <li><Link href="/safety" className="text-gray-300 hover:text-emerald-400 transition-colors font-orbitron">Safety</Link></li>
+              <li><Link href="/contact" className="text-gray-300 hover:text-emerald-400 transition-colors font-orbitron">Contact Us</Link></li>
+              <li><Link href="/faq" className="text-gray-300 hover:text-emerald-400 transition-colors font-orbitron">FAQ</Link></li>
             </ul>
           </motion.div>
         </div>

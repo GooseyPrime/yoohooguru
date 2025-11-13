@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import type { AIMatchmakingResponse } from '@/lib/openai';
 
 const Container = styled.div`
   max-width: 800px;
@@ -136,7 +137,7 @@ interface AIMatchmakingProps {
 
 export default function AIMatchmaking({ guruId: _guruId, gunuId: _gunuId, guruData, gunuData }: AIMatchmakingProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<AIMatchmakingResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const analyzeMatch = async () => {

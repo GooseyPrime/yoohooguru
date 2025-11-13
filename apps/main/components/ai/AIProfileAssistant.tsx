@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import type { UserProfile, AIProfileAssistanceResponse } from '@/lib/openai';
 
 const Container = styled.div`
   max-width: 900px;
@@ -117,12 +118,12 @@ const LoadingSpinner = styled.div`
 
 interface AIProfileAssistantProps {
   userType: 'guru' | 'gunu' | 'angel' | 'hero';
-  currentProfile: any;
+  currentProfile: UserProfile;
 }
 
 export default function AIProfileAssistant({ userType, currentProfile }: AIProfileAssistantProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<AIProfileAssistanceResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [goals, setGoals] = useState('');
 

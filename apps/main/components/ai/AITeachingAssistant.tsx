@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import type { AITeachingAssistanceResponse } from '@/lib/openai';
 
 const Container = styled.div`
   max-width: 1000px;
@@ -146,7 +147,7 @@ const ExampleCard = styled.div`
 
 export default function AITeachingAssistant() {
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<AITeachingAssistanceResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     topic: '',
@@ -192,7 +193,7 @@ export default function AITeachingAssistant() {
       <Card>
         <Title>🎓 AI Teaching Assistant</Title>
         <Text>
-          Get AI-powered teaching recommendations tailored to your student's level and learning style.
+          Get AI-powered teaching recommendations tailored to your student&apos;s level and learning style.
         </Text>
 
         {!result && (
