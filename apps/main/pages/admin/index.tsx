@@ -185,7 +185,7 @@ export default function AdminDashboard() {
                   🤖 View Agent Status
                 </OrbitronButton>
                 <OrbitronButton 
-                  onClick={() => setActiveTab(&apos;content&apos;)}
+                  onClick={() => setActiveTab('content')}
                   variant="ghost"
                   className="w-full"
                 >
