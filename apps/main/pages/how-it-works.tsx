@@ -113,9 +113,7 @@ export default function HowItWorks() {
                   </div>
                   <div className="flex-1 flex justify-center">
                       <div className="text-8xl">{['👤', '🔍', '📅', '🚀'][index]}</div>
-                      <div className="text-8xl">{[&apos;👤', '🔍', '📅', '🚀'][index]}</div>
                     </div>
-                  </div>
                 </div>
               ))}
             </div>

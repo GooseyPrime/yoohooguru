@@ -234,7 +234,7 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subject }) => {
         <section className="py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="card-featured text-center p-12">
-              <h2 className="heading-2 mb-4">Ready to Master {config.title.replace(&apos; Guru&apos;, '')}?</h2>
+              <h2 className="heading-2 mb-4">Ready to Master {config.title.replace(' Guru', '')}?</h2>
               <p className="body-large mb-8 max-w-2xl mx-auto">
                 Join our community of learners and experts. Start your journey today with personalized guidance and curated resources.
               </p>
