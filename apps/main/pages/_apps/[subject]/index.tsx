@@ -84,6 +84,15 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subject }) => {
     }
   ];
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (router.isReady && subject) {
+      loadSubjectData();
+      const subjectConfig = getSubjectConfig(subject);
+      setConfig(subjectConfig);
+    }
+  }, [router.isReady, subject]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
@@ -163,14 +172,14 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subject }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
-                { title: "Beginner's Guide", icon: "📖", count: "25+ lessons" },
-                { title: "Practice Exercises", icon: "✏️", count: "100+ problems" },
-                { title: "Video Tutorials", icon: "🎥", count: "45+ videos" },
-                { title: "Community Forum", icon: "💬", count: "500+ discussions" },
-                { title: "Downloadable Resources", icon: "📁", count: "30+ files" },
-                { title: "Live Workshops", icon: "🎯", count: "Weekly sessions" },
-                { title: "Certification Path", icon: "🏆", count: "3 levels" },
-                { title: "Project Templates", icon: "🛠️", count: "20+ templates" }
+            { title: "Beginner's Guide", icon: "📖", count: "25+ lessons" },
+            { title: "Practice Exercises", icon: "✏️", count: "100+ problems" },
+            { title: "Video Tutorials", icon: "🎥", count: "45+ videos" },
+            { title: "Community Forum", icon: "💬", count: "500+ discussions" },
+            { title: "Downloadable Resources", icon: "📁", count: "30+ files" },
+            { title: "Live Workshops", icon: "🎯", count: "Weekly sessions" },
+            { title: "Certification Path", icon: "🏆", count: "3 levels" },
+            { title: "Project Templates", icon: "🛠️", count: "20+ templates" }
           ].map((resource, index) => (
             <div key={index} className="card-hover text-center p-6">
               <div className="text-3xl mb-3">{resource.icon}</div>
@@ -216,8 +225,8 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subject }) => {
             </div>
           </div>
         </section>
-      </div>
-    );
+    </div>
+  );
 };
 
 
