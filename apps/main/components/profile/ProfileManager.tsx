@@ -291,7 +291,7 @@ export default function ProfileManager() {
     
     try {
       // In a real implementation, this would be an API call to update the user profile
-      // For now, we'll just simulate the process
+      // For now, we&apos;ll just simulate the process
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       setMessage({

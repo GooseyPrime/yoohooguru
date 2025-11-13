@@ -382,7 +382,7 @@ export default function AngelList() {
             <div className="card-featured text-center p-12">
               <h2 className="heading-2 mb-4">Ready to Connect with Your Community?</h2>
               <p className="body-large mb-8 max-w-2xl mx-auto">
-                Whether you're looking for reliable services or want to offer your expertise,
+                Whether you&apos;re looking for reliable services or want to offer your expertise,
                 Angel's List makes it simple, secure, and rewarding.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">

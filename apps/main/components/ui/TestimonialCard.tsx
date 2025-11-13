@@ -109,7 +109,7 @@ export const TestimonialCarousel: React.FC<TestimonialCarouselProps> = ({ testim
     {
       name: "Emily Watson",
       role: "Software Engineer",
-      content: "I started as a student learning React, and now I'm a guru teaching others! The platform's AI matching system pairs me with students who truly benefit from my teaching style. It's incredibly rewarding.",
+      content: "I started as a student learning React, and now I'm a guru teaching others! The platform's AI matching system pairs me with students who truly benefit from my teaching style. It&apos;s incredibly rewarding.",
       rating: 5,
       date: "2 months ago"
     },

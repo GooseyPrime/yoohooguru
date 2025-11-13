@@ -90,7 +90,7 @@ export default function Pricing() {
     },
     {
       question: "How do refunds work?",
-      answer: "We have a fair refund policy. If you're not satisfied with a session, you can request a refund within 24 hours. Each case is reviewed individually to ensure fairness for both parties."
+      answer: "We have a fair refund policy. If you&apos;re not satisfied with a session, you can request a refund within 24 hours. Each case is reviewed individually to ensure fairness for both parties."
     }
   ];
 
