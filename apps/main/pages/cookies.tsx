@@ -1,5 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import Navigation from '../components/ui/Navigation';
 
 export default function Cookies() {
@@ -233,7 +234,7 @@ export default function Cookies() {
                 <h2 className="text-3xl font-display font-bold text-white mb-4">Updates to This Policy</h2>
                 <div className="text-white-80 space-y-4 leading-relaxed">
                   <p>
-                    We may update this Cookie Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. We will notify you of any material changes by posting the new policy on this page and updating the "Last Updated" date.
+                    We may update this Cookie Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. We will notify you of any material changes by posting the new policy on this page and updating the &quot;Last Updated&quot; date.
                   </p>
                 </div>
               </div>
@@ -262,14 +263,14 @@ export default function Cookies() {
             <div className="glass-card p-8 rounded-2xl max-w-4xl mx-auto">
               <h3 className="text-2xl font-bold text-white mb-6 text-center">Related Policies</h3>
               <div className="grid md:grid-cols-2 gap-4">
-                <a href="/privacy" className="glass-effect p-4 rounded-xl hover:bg-white-10 transition-all duration-300">
+                <Link href="/privacy" className="glass-effect p-4 rounded-xl hover:bg-white-10 transition-all duration-300">
                   <h4 className="text-white font-semibold mb-2">Privacy Policy</h4>
                   <p className="text-sm text-white-60">Learn how we protect your personal information</p>
-                </a>
-                <a href="/terms" className="glass-effect p-4 rounded-xl hover:bg-white-10 transition-all duration-300">
+                </Link>
+                <Link href="/terms" className="glass-effect p-4 rounded-xl hover:bg-white-10 transition-all duration-300">
                   <h4 className="text-white font-semibold mb-2">Terms of Service</h4>
                   <p className="text-sm text-white-60">Read our terms and conditions</p>
-                </a>
+                </Link>
               </div>
             </div>
           </div>

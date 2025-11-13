@@ -184,13 +184,10 @@ export default function AngelList() {
       </Head>
 
       <div className="min-h-screen bg-orbitron-primary">
-        <Navigation currentDomain="angel" />
+        <Navigation />
         
         {/* Hero Section */}
-        <HeroSection 
-          variant="angel"
-          description="Connect with verified local providers, book services with confidence, and support your community."
-        />
+        <HeroSection />
 
         {/* Trust Indicators */}
         <section className="py-12 bg-gradient-to-b from-transparent to-secondarydark/30">
@@ -306,7 +303,6 @@ export default function AngelList() {
                     description={service.description}
                     features={service.services}
                     href={service.href}
-                    variant={index === 0 ? 'featured' : 'default'}
                     stats={[
                       { label: "Providers", value: service.count.split('+')[0] },
                       { label: "Services", value: service.services.length.toString() },

@@ -1,4 +1,5 @@
 import { Html, Head, Main, NextScript } from 'next/document'
+import Script from 'next/script'
 
 export default function Document() {
   const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
@@ -10,12 +11,14 @@ export default function Document() {
         {/* Google Analytics */}
         {gaId && (
           <>
-            <script
+            <Script
               async
               src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
             />
-            <script
+            <Script
               dangerouslySetInnerHTML={{
+                 id="google-analytics"
+                 strategy="afterInteractive"
                 __html: `
                   window.dataLayer = window.dataLayer || [];
                   function gtag(){dataLayer.push(arguments);}
@@ -32,8 +35,10 @@ export default function Document() {
         
         {/* Google Tag Manager */}
         {gtmId && (
-          <script
+          <Script
             dangerouslySetInnerHTML={{
+               id="google-tag-manager"
+               strategy="afterInteractive"
               __html: `
                 (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -47,10 +52,10 @@ export default function Document() {
 
         {/* Jam.dev Screen Recording - Lets users record their screen from your site */}
         <meta name="jam:team" content="7a93cd08-992a-4acf-8f73-72dea0a67c7b" />
-        <script async type="module" src="https://js.jam.dev/recorder.js"></script>
+        <Script async type="module" src="https://js.jam.dev/recorder.js"></Script>
 
         {/* Jam.dev Event Capture - Captures user events and developer logs */}
-        <script async type="module" src="https://js.jam.dev/capture.js"></script>
+        <Script async type="module" src="https://js.jam.dev/capture.js"></Script>
 
         {/* Meta Tags for SEO and Analytics */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
