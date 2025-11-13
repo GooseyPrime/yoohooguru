@@ -197,7 +197,7 @@ function LiabilityWaiverModal({
           <PreWaiverInfo>
             <h3>Before We Begin</h3>
             <p>
-              To ensure everyone&apos;s safety and set clear expectations, we require all participants 
+              To ensure everyone's safety and set clear expectations, we require all participants 
               to acknowledge the risks involved in skill-sharing activities.
             </p>
             

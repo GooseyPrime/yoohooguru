@@ -254,7 +254,7 @@ function HomePage() {
         <h2>Learn. Earn. Empower.</h2>
         <p>
           Join a world where knowledge, kindness, and capability meet. Choose your path: 
-          <strong> Become a Guru. Learn from Gurus. List a Gig.</strong> Help or get help through Angel&apos;s List. 
+          <strong> Become a Guru. Learn from Gurus. List a Gig.</strong> Help or get help through Angel's List. 
           <strong> Join the Heros.</strong> Empower and be empowered through adaptive teaching.
         </p>
       </HeroTagline>
@@ -278,13 +278,13 @@ function HomePage() {
           <div className="icon">
             <Wrench size={24} />
           </div>
-          <h3>Angel&apos;s List</h3>
-          <p>List a Gig. Help or get help through Angel&apos;s List. Find local services and offer your help.</p>
+          <h3>Angel's List</h3>
+          <p>List a Gig. Help or get help through Angel's List. Find local services and offer your help.</p>
           <Button 
             variant="ghost" 
             onClick={() => window.location.href = 'https://angel.yoohoo.guru'}
           >
-            Explore Angel&apos;s List →
+            Explore Angel's List →
           </Button>
         </Tile>
         
@@ -292,13 +292,13 @@ function HomePage() {
           <div className="icon">
             <Heart size={24} />
           </div>
-          <h3>Hero Guru&apos;s</h3>
+          <h3>Hero Guru's</h3>
           <p>Join the Heros. Empower and be empowered through adaptive teaching and inclusive learning.</p>
           <Button 
             variant="ghost" 
             onClick={() => window.location.href = 'https://heroes.yoohoo.guru'}
           >
-            Explore Hero Guru&apos;s →
+            Explore Hero Guru's →
           </Button>
         </Tile>
       </WelcomeTiles>

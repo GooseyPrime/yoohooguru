@@ -109,7 +109,7 @@ export default function Hubs() {
         <section className="section-padding">
           <div className="container-custom">
             <h2 className="text-4xl font-display font-bold text-white text-center mb-12">
-              What You&apos;ll Find in Each Hub
+              What You'll Find in Each Hub
             </h2>
             <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
               <div className="glass-card p-8 rounded-2xl text-center">

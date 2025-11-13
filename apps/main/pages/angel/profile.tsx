@@ -20,7 +20,7 @@ export default function AngelProfile() {
   return (
     <Container>
       <Head>
-        <title>Angel Profile | Angel&apos;s List | YooHoo.Guru</title>
+        <title>Angel Profile | Angel's List | YooHoo.Guru</title>
         <meta name="description" content="Manage your Angel profile on the local service marketplace." />
       </Head>
       

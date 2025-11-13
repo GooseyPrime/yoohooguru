@@ -71,7 +71,7 @@ export default function AngelsList() {
 
       <Main>
         <Hero>
-          <h1>🔧 Angel&apos;s List</h1>
+          <h1>🔧 Angel's List</h1>
           <p>Find help and odd jobs near you. List your services and connect with your community.</p>
         </Hero>
 
