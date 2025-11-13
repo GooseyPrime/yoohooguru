@@ -114,6 +114,6 @@ export default function WritingHome() {
           </div>
         </section>
       </main>
-    </gt;
+    </>;
   );
 }

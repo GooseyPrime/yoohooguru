@@ -114,6 +114,6 @@ export default function CodingHome() {
           </div>
         </section>
       </main>
-    </gt;
+    </>;
   );
 }

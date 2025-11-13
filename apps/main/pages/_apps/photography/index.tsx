@@ -114,6 +114,6 @@ export default function PhotographyHome() {
           </div>
         </section>
       </main>
-    </gt;
+    </>;
   );
 }

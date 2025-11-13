@@ -114,6 +114,6 @@ export default function MathHome() {
           </div>
         </section>
       </main>
-    </gt;
+    </>;
   );
 }

@@ -114,6 +114,6 @@ export default function MarketingHome() {
           </div>
         </section>
       </main>
-    </gt;
+    </>;
   );
 }

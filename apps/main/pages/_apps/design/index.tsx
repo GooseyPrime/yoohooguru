@@ -114,6 +114,6 @@ export default function DesignHome() {
           </div>
         </section>
       </main>
-    </gt;
+    </>;
   );
 }
