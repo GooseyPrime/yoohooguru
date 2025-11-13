@@ -115,7 +115,6 @@ export default function HowItWorks() {
                     <div className="w-64 h-64 rounded-2xl bg-gradient-to-br from-emerald-500/10 to-blue-500/10 glass-effect flex items-center justify-center">
                       <div className="text-8xl">{['👤', '🔍', '📅', '🚀'][index]}</div>
                     </div>
-                  </div>
                 </div>
               ))}
             </div>
