@@ -17,6 +17,8 @@ export default function Document() {
             />
             <Script
               dangerouslySetInnerHTML={{
+                 id="google-analytics"
+                 strategy="afterInteractive"
                 __html: `
                   window.dataLayer = window.dataLayer || [];
                   function gtag(){dataLayer.push(arguments);}
@@ -35,6 +37,8 @@ export default function Document() {
         {gtmId && (
           <Script
             dangerouslySetInnerHTML={{
+               id="google-tag-manager"
+               strategy="afterInteractive"
               __html: `
                 (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
