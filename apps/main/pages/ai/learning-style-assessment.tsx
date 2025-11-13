@@ -94,12 +94,12 @@ export default function LearningStyleAssessment() {
   const [result, setResult] = useState<{
     primaryStyle: string;
     secondaryStyle: string;
-    scores: Record<string, number>;
     stylePercentages?: Record<string, number>;
-    recommendations: string[];
-    teachingApproach: string[];
-    strengths: string[];
-    developmentAreas: string[];
+    characteristics?: string[];
+    studyRecommendations?: string[];
+    teachingApproach?: string;
+    strengthAreas?: string[];
+    developmentAreas?: string[];
   } | null>(null);
 
   const handleAnswer = (questionId: string, value: string) => {

@@ -84,39 +84,6 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subject }) => {
     }
   ];
 
-  const loadSubjectData = async () => {
-    try {
-      // Fetch subject-specific news and blogs
-      const [newsData, blogData] = await Promise.all([
-        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://api.yoohoo.guru'}/api/news?subject=${subject}`).then(res => {
-          if (!res.ok) throw new Error('Failed to fetch news');
-          return res.json();
-        }).catch(() => []),
-        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://api.yoohoo.guru'}/api/blogs?subject=${subject}`).then(res => {
-          if (!res.ok) throw new Error('Failed to fetch blogs');
-          return res.json();
-        }).catch(() => [])
-      ]);
-
-      setSubjectData({
-        news: newsData,
-        blogs: blogData,
-        title: subject.charAt(0).toUpperCase() + subject.slice(1),
-        description: `Discover the best ${subject} resources, tutorials, and expert guidance on YooHoo.Guru`
-      });
-    } catch (error) {
-      console.error('Error loading subject data:', error);
-      setSubjectData({
-        news: [],
-        blogs: [],
-        title: subject.charAt(0).toUpperCase() + subject.slice(1),
-        description: `Discover the best ${subject} resources, tutorials, and expert guidance on YooHoo.Guru`
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
@@ -234,7 +201,7 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subject }) => {
         <section className="py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="card-featured text-center p-12">
-              <h2 className="heading-2 mb-4">Ready to Master {config.title.replace(' Guru', '')}?</h2>
+              <h2 className="heading-2 mb-4">Ready to Master {subject.charAt(0).toUpperCase() + subject.slice(1)}?</h2>
               <p className="body-large mb-8 max-w-2xl mx-auto">
                 Join our community of learners and experts. Start your journey today with personalized guidance and curated resources.
               </p>
