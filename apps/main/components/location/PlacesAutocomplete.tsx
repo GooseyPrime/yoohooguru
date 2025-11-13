@@ -95,16 +95,16 @@ export default function PlacesAutocomplete({
         addressComponents.forEach((component) => {
           const types = component.types;
 
-          if (types.includes('locality')) {
+          if (types && types.includes('locality')) {
             city = component.long_name;
           }
-          if (types.includes('administrative_area_level_1')) {
+          if (types && types.includes('administrative_area_level_1')) {
             state = component.short_name;
           }
-          if (types.includes('country')) {
+          if (types && types.includes('country')) {
             country = component.long_name;
           }
-          if (types.includes('postal_code')) {
+          if (types && types.includes('postal_code')) {
             zipCode = component.long_name;
           }
         });
