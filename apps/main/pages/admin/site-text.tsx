@@ -46,7 +46,7 @@ export default function SiteTextManager() {
         page: 'angel',
         section: 'hero',
         key: 'title',
-        value: "Angel&apos;s List - Local Services & Small Jobs",
+        value: "Angel's List - Local Services & Small Jobs",
         subdomain: 'angel',
         type: 'heading'
       },
@@ -64,7 +64,7 @@ export default function SiteTextManager() {
         page: 'heroes',
         section: 'hero',
         key: 'title',
-        value: "Hero Guru&apos;s - Community Heroes & Local Support",
+        value: "Hero Guru's - Community Heroes & Local Support",
         subdomain: 'heroes',
         type: 'heading'
       },

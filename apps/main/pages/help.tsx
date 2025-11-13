@@ -41,7 +41,7 @@ export default function Help() {
     {
       category: 'account',
       answer: 'Go to Settings > Account > Delete Account. Please note that this action is permanent and cannot be undone. All your data will be removed from our system.'
-      answer: 'Go to Settings > Account > Delete Account. Please note that this action is permanent and cannot be undone. All your data will be removed from our system.&apos;
+      answer: 'Go to Settings > Account > Delete Account. Please note that this action is permanent and cannot be undone. All your data will be removed from our system.'
     },
     {
       category: 'payments',
@@ -228,7 +228,7 @@ export default function Help() {
                 Still Need Help?
               </h2>
               <p className="text-white-80 mb-8">
-                Can&apos;t find what you&apos;re looking for? Our support team is here to help.
+                Can't find what you're looking for? Our support team is here to help.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a

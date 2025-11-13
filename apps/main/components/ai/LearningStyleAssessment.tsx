@@ -301,7 +301,7 @@ export default function LearningStyleAssessment() {
         <ResultsContainer>
           <ResultsTitle>Learning Style Assessment Complete</ResultsTitle>
           <ResultsDescription>
-            Based on your responses, we&apos;ve identified your preferred learning style and
+            Based on your responses, we've identified your preferred learning style and
             recommendations for maximizing your learning potential.
           </ResultsDescription>
           
@@ -337,7 +337,7 @@ export default function LearningStyleAssessment() {
       <AssessmentHeader>AI Learning Style Assessment</AssessmentHeader>
       <AssessmentDescription>
         Answer a few questions to help us understand your preferred learning style.
-        We&apos;ll use this information to match you with the most suitable Gurus.
+        We'll use this information to match you with the most suitable Gurus.
       </AssessmentDescription>
       
       <ProgressBar>

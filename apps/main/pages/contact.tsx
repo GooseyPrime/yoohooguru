@@ -71,7 +71,7 @@ export default function Contact() {
     <>
       <Head>
         <title>Contact Us - YooHoo.Guru</title>
-        <meta name="description" content="Get in touch with the YooHoo.Guru team. We&apos;re here to help!" />
+        <meta name="description" content="Get in touch with the YooHoo.Guru team. We're here to help!" />
       </Head>
 
       <Navigation />
@@ -84,7 +84,7 @@ export default function Contact() {
               Get in <span className="gradient-text-emerald-blue">Touch</span>
             </h1>
             <p className="text-xl text-white-80 max-w-3xl mx-auto">
-              Have a question, suggestion, or need help? We&apos;d love to hear from you.
+              Have a question, suggestion, or need help? We'd love to hear from you.
             </p>
           </div>
         </section>
@@ -119,7 +119,7 @@ export default function Contact() {
                   Send Us a Message
                 </h2>
                 <p className="text-white-80">
-                  Fill out the form below and we&apos;ll get back to you as soon as possible
+                  Fill out the form below and we'll get back to you as soon as possible
                 </p>
               </div>
 
