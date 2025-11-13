@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import dynamic from 'next/dynamic';
 import { isValidId } from '../../../lib/validators';
 
-const AgoraVideo = dynamic(() => import(&apos;../../../components/video/AgoraVideo'), {
+const AgoraVideo = dynamic(() => import('../../../components/video/AgoraVideo'), {
   ssr: false
 });
 
