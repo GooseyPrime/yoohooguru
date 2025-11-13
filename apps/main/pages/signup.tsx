@@ -44,9 +44,9 @@ export default function Signup() {
     },
     {
       value: 'gig-poster',
-      label: 'Gig Poster',
-      description: 'I want to post gigs for Angels',
-      icon: '📋'
+      label: 'Job Poster',
+      description: 'Post a Gig or Small Job in your Area',
+      icon: '📍'
     },
     {
       value: 'hero',
