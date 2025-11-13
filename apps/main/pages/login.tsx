@@ -124,7 +124,7 @@ export default function Login() {
                 <p className="text-white-80">
                   Don&apos;t have an account?{' '}
                   <Link href="/signup" className="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors">
-                    Sign up
+                    Get Started
                   </Link>
                 </p>
               </div>

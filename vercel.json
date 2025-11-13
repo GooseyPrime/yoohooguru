@@ -27,14 +27,36 @@
       "permanent": true
     },
     {
+      "source": "/login",
+      "has": [
+        {
+          "type": "host",
+          "value": "(art|business|coding|cooking|crafts|data|design|finance|fitness|gardening|history|home|investing|language|marketing|math|music|photography|sales|science|sports|tech|wellness|writing|angel|coach|heroes|dashboard).yoohoo.guru"
+        }
+      ],
+      "destination": "https://www.yoohoo.guru/login",
+      "permanent": false
+    },
+    {
+      "source": "/signup",
+      "has": [
+        {
+          "type": "host",
+          "value": "(art|business|coding|cooking|crafts|data|design|finance|fitness|gardening|history|home|investing|language|marketing|math|music|photography|sales|science|sports|tech|wellness|writing|angel|coach|heroes|dashboard).yoohoo.guru"
+        }
+      ],
+      "destination": "https://www.yoohoo.guru/signup",
+      "permanent": false
+    },
+    {
       "source": "/terms",
       "has": [
         {
           "type": "host",
-          "value": "www.yoohoo.guru"
+          "value": "(art|business|coding|cooking|crafts|data|design|finance|fitness|gardening|history|home|investing|language|marketing|math|music|photography|sales|science|sports|tech|wellness|writing|angel|coach|heroes|dashboard).yoohoo.guru"
         }
       ],
-      "destination": "/legal/terms",
+      "destination": "https://www.yoohoo.guru/terms",
       "permanent": false
     },
     {
@@ -42,10 +64,10 @@
       "has": [
         {
           "type": "host",
-          "value": "www.yoohoo.guru"
+          "value": "(art|business|coding|cooking|crafts|data|design|finance|fitness|gardening|history|home|investing|language|marketing|math|music|photography|sales|science|sports|tech|wellness|writing|angel|coach|heroes|dashboard).yoohoo.guru"
         }
       ],
-      "destination": "/legal/privacy",
+      "destination": "https://www.yoohoo.guru/privacy",
       "permanent": false
     },
     {
@@ -53,10 +75,21 @@
       "has": [
         {
           "type": "host",
-          "value": "www.yoohoo.guru"
+          "value": "(art|business|coding|cooking|crafts|data|design|finance|fitness|gardening|history|home|investing|language|marketing|math|music|photography|sales|science|sports|tech|wellness|writing|angel|coach|heroes|dashboard).yoohoo.guru"
         }
       ],
-      "destination": "/legal/safety",
+      "destination": "https://www.yoohoo.guru/safety",
+      "permanent": false
+    },
+    {
+      "source": "/gdpr",
+      "has": [
+        {
+          "type": "host",
+          "value": "(art|business|coding|cooking|crafts|data|design|finance|fitness|gardening|history|home|investing|language|marketing|math|music|photography|sales|science|sports|tech|wellness|writing|angel|coach|heroes|dashboard).yoohoo.guru"
+        }
+      ],
+      "destination": "https://www.yoohoo.guru/privacy",
       "permanent": false
     },
     {
@@ -64,10 +97,76 @@
       "has": [
         {
           "type": "host",
-          "value": "www.yoohoo.guru"
+          "value": "(art|business|coding|cooking|crafts|data|design|finance|fitness|gardening|history|home|investing|language|marketing|math|music|photography|sales|science|sports|tech|wellness|writing|angel|coach|heroes|dashboard).yoohoo.guru"
         }
       ],
-      "destination": "/support/contact",
+      "destination": "https://www.yoohoo.guru/contact",
+      "permanent": false
+    },
+    {
+      "source": "/faq",
+      "has": [
+        {
+          "type": "host",
+          "value": "(art|business|coding|cooking|crafts|data|design|finance|fitness|gardening|history|home|investing|language|marketing|math|music|photography|sales|science|sports|tech|wellness|writing|angel|coach|heroes|dashboard).yoohoo.guru"
+        }
+      ],
+      "destination": "https://www.yoohoo.guru/faq",
+      "permanent": false
+    },
+    {
+      "source": "/help",
+      "has": [
+        {
+          "type": "host",
+          "value": "(art|business|coding|cooking|crafts|data|design|finance|fitness|gardening|history|home|investing|language|marketing|math|music|photography|sales|science|sports|tech|wellness|writing|angel|coach|heroes|dashboard).yoohoo.guru"
+        }
+      ],
+      "destination": "https://www.yoohoo.guru/help",
+      "permanent": false
+    },
+    {
+      "source": "/pricing",
+      "has": [
+        {
+          "type": "host",
+          "value": "(art|business|coding|cooking|crafts|data|design|finance|fitness|gardening|history|home|investing|language|marketing|math|music|photography|sales|science|sports|tech|wellness|writing|angel|coach|heroes|dashboard).yoohoo.guru"
+        }
+      ],
+      "destination": "https://www.yoohoo.guru/pricing",
+      "permanent": false
+    },
+    {
+      "source": "/how-it-works",
+      "has": [
+        {
+          "type": "host",
+          "value": "(art|business|coding|cooking|crafts|data|design|finance|fitness|gardening|history|home|investing|language|marketing|math|music|photography|sales|science|sports|tech|wellness|writing|angel|coach|heroes|dashboard).yoohoo.guru"
+        }
+      ],
+      "destination": "https://www.yoohoo.guru/how-it-works",
+      "permanent": false
+    },
+    {
+      "source": "/hubs",
+      "has": [
+        {
+          "type": "host",
+          "value": "(art|business|coding|cooking|crafts|data|design|finance|fitness|gardening|history|home|investing|language|marketing|math|music|photography|sales|science|sports|tech|wellness|writing|angel|coach|heroes|dashboard).yoohoo.guru"
+        }
+      ],
+      "destination": "https://www.yoohoo.guru/hubs",
+      "permanent": false
+    },
+    {
+      "source": "/about",
+      "has": [
+        {
+          "type": "host",
+          "value": "(art|business|coding|cooking|crafts|data|design|finance|fitness|gardening|history|home|investing|language|marketing|math|music|photography|sales|science|sports|tech|wellness|writing|angel|coach|heroes|dashboard).yoohoo.guru"
+        }
+      ],
+      "destination": "https://www.yoohoo.guru/about",
       "permanent": false
     }
   ],
