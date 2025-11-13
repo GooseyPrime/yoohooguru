@@ -60,7 +60,7 @@ export default function Pricing() {
         "Review system",
         "Business analytics"
       ],
-      cta: "Join Angel&apos;s List",
+      cta: "Join Angel's List",
       href: "/signup?type=angel",
       popular: false,
       gradient: "from-purple-500/20 to-pink-500/20"
@@ -90,7 +90,7 @@ export default function Pricing() {
     },
     {
       question: "How do refunds work?",
-      answer: "We have a fair refund policy. If you&apos;re not satisfied with a session, you can request a refund within 24 hours. Each case is reviewed individually to ensure fairness for both parties."
+      answer: "We have a fair refund policy. If you're not satisfied with a session, you can request a refund within 24 hours. Each case is reviewed individually to ensure fairness for both parties."
     }
   ];
 
@@ -210,7 +210,7 @@ export default function Pricing() {
                 Frequently Asked Questions
               </h2>
               <p className="text-xl text-white-80 max-w-3xl mx-auto">
-                Got questions? We&apos;ve got answers.
+                Got questions? We've got answers.
               </p>
             </div>
 

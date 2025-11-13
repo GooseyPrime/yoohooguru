@@ -315,7 +315,7 @@ function HeroGurus() {
     <>
       <Container>
         <Header>
-          <Title>Hero Guru&apos;s</Title>
+          <Title>Hero Guru's</Title>
           <Subtitle>
             Accessibility-first skill sharing for disability communities. 
             Learn and teach with understanding, patience, and adaptive approaches.
@@ -328,7 +328,7 @@ function HeroGurus() {
               rel="noopener noreferrer"
               aria-label="Support Hero Guru's with a donation"
             >
-              💝 Support Hero Guru&apos;s
+              💝 Support Hero Guru's
             </DonateButton>
           )}
         </Header>
@@ -383,7 +383,7 @@ function HeroGurus() {
 
         {loading && (
           <LoadingMessage>
-            Loading Hero Guru&apos;s skills...
+            Loading Hero Guru's skills...
           </LoadingMessage>
         )}
 

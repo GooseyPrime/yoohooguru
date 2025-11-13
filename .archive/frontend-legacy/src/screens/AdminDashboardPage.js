@@ -572,7 +572,7 @@ function AdminDashboardPage() {
                   </StatCard>
                   <StatCard>
                     <StatValue>{liveStats.todayVisitors}</StatValue>
-                    <StatLabel>Today&apos;s Visitors</StatLabel>
+                    <StatLabel>Today's Visitors</StatLabel>
                   </StatCard>
                 </StatsGrid>
 

@@ -189,7 +189,7 @@ function ForgotPasswordPage() {
           </LogoWrapper>
           <Title>Check Your Email</Title>
           <Subtitle>
-            We&apos;ve sent password reset instructions to <strong>{submittedEmail}</strong>
+            We've sent password reset instructions to <strong>{submittedEmail}</strong>
           </Subtitle>
           
           <SuccessMessage>
@@ -198,7 +198,7 @@ function ForgotPasswordPage() {
           </SuccessMessage>
 
           <HelpText>
-            Didn&apos;t receive the email? Check your spam folder or wait a few minutes. 
+            Didn't receive the email? Check your spam folder or wait a few minutes. 
             You can also try submitting the form again.
           </HelpText>
 
@@ -220,7 +220,7 @@ function ForgotPasswordPage() {
         </LogoWrapper>
         <Title>Reset Your Password</Title>
         <Subtitle>
-          Enter your email address and we&apos;ll send you instructions to reset your password.
+          Enter your email address and we'll send you instructions to reset your password.
         </Subtitle>
 
         <Form onSubmit={handleSubmit(onSubmit)}>

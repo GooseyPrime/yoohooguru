@@ -132,7 +132,7 @@ export default function CoachGuru() {
       name: "Jennifer Lee",
       role: "Marketing Manager",
       company: "Startup Inc",
-      content: "I&apos;ve been both a learner and a teacher on Coach Guru. The community is supportive, the platform is intuitive, and I&apos;ve grown both professionally and personally through this experience.",
+      content: "I've been both a learner and a teacher on Coach Guru. The community is supportive, the platform is intuitive, and I've grown both professionally and personally through this experience.",
       rating: 5,
       date: "3 weeks ago",
       featured: true,
@@ -230,7 +230,7 @@ export default function CoachGuru() {
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
                 <div className="text-left">
-                  <h4 className="font-semibold text-white mb-2">What&apos;s Included</h4>
+                  <h4 className="font-semibold text-white mb-2">What's Included</h4>
                   <ul className="space-y-1 text-gray-400">
                     <li>• Secure payment processing</li>
                     <li>• Platform maintenance</li>

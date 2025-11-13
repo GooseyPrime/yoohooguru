@@ -178,7 +178,7 @@ export default function AdminDashboard() {
                   🔄 Trigger Content Curation
                 </OrbitronButton>
                 <OrbitronButton 
-                  onClick={() => setActiveTab(&apos;agents&apos;)}
+                  onClick={() => setActiveTab('agents')}
                   variant="ghost"
                   className="w-full"
                 >
@@ -490,7 +490,7 @@ function ContentManagement() {
           <h4 className="text-white font-bold mb-4">Content Type</h4>
           <div className="space-y-2">
             <button
-              onClick={() => setContentType(&apos;news&apos;)}
+              onClick={() => setContentType('news')}
               className={`w-full text-left p-2 rounded transition-colors ${
                 contentType === 'news'
                   ? 'bg-blue-500/20 text-blue-400'
@@ -500,7 +500,7 @@ function ContentManagement() {
               📰 News Articles
             </button>
             <button
-              onClick={() => setContentType(&apos;blog&apos;)}
+              onClick={() => setContentType('blog')}
               className={`w-full text-left p-2 rounded transition-colors ${
                 contentType === 'blog'
                   ? 'bg-blue-500/20 text-blue-400'

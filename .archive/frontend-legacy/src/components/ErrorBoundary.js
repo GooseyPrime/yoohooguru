@@ -103,12 +103,12 @@ class ErrorBoundary extends React.Component {
           <ErrorMessage>
             {this.state.isFirebaseAuthError ? 
               'We encountered an issue with Google Sign-in. This might be due to browser security settings or network connectivity. Please try refreshing the page or using email/password authentication instead.' :
-              'We encountered an unexpected error. Don&apos;t worry, this has been logged and our team will look into it.'
+              'We encountered an unexpected error. Don't worry, this has been logged and our team will look into it.'
             }
           </ErrorMessage>
           {this.state.isFirebaseAuthError && (
             <ErrorMessage style={{ marginTop: '1rem', fontSize: '0.9rem', opacity: 0.8 }}>
-              💡 Tip: If you&apos;re using an ad blocker or strict privacy settings, try temporarily disabling them and refresh the page.
+              💡 Tip: If you're using an ad blocker or strict privacy settings, try temporarily disabling them and refresh the page.
             </ErrorMessage>
           )}
           <RetryButton onClick={this.handleRetry.bind(this)}>
