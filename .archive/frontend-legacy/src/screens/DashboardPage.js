@@ -541,7 +541,7 @@ function DashboardPage() {
         <ComingSoonFeatures>
           <h3>🚧 Advanced Features Coming Soon!</h3>
           <p>
-            We&apos;re building advanced skill matching, real-time progress tracking, 
+            We're building advanced skill matching, real-time progress tracking, 
             AI-powered recommendations, certification pathways, and community insights. 
             Stay tuned for updates!
           </p>

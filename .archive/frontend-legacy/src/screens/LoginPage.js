@@ -320,7 +320,7 @@ function LoginPage() {
         </Button>
 
         <SignupLink>
-          Don&apos;t have an account?{' '}
+          Don't have an account?{' '}
           <Link to="/signup">Sign up for free</Link>
         </SignupLink>
         

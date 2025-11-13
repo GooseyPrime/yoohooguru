@@ -71,7 +71,7 @@ export default function HeroGurus() {
 
       <Main>
         <Hero>
-          <h1>❤️ Hero Guru&apos;s</h1>
+          <h1>❤️ Hero Guru's</h1>
           <p>Accessibility-first skill sharing for disability communities. Learn and teach with understanding, patience, and adaptive approaches.</p>
         </Hero>
 
