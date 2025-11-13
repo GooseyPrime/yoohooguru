@@ -15,12 +15,29 @@ interface NewsSectionProps {
   limit?: number;
 }
 
+// Allow-list of valid subjects (copy from getStaticPaths in [subject]/index.tsx)
+const VALID_SUBJECTS = [
+  'art', 'business', 'coding', 'cooking', 'crafts', 'data',
+  'design', 'finance', 'fitness', 'gardening', 'history',
+  'home', 'investing', 'language', 'marketing', 'math',
+  'music', 'photography', 'sales', 'science', 'sports',
+  'tech', 'wellness', 'writing'
+];
+
 export const NewsSection: React.FC<NewsSectionProps> = ({ subdomain, limit = 5 }) => {
+
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Validate subdomain before making the request
+    if (!subdomain || !VALID_SUBJECTS.includes(subdomain)) {
+      setError('Invalid subject specified.');
+      setLoading(false);
+      setArticles([]);
+      return;
+    }
     const fetchNews = async () => {
       try {
         setLoading(true);
@@ -41,9 +58,7 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ subdomain, limit = 5 }
       }
     };
 
-    if (subdomain) {
-      fetchNews();
-    }
+    fetchNews();
   }, [subdomain, limit]);
 
   if (loading) {

@@ -180,7 +180,7 @@ function Header() {
             href="https://angel.yoohoo.guru" 
             onClick={() => setIsMenuOpen(false)}
           >
-            Angel&apos;s List
+            Angel's List
           </NavLink>
           <NavLink 
             as="a"
@@ -194,7 +194,7 @@ function Header() {
             href="https://heroes.yoohoo.guru" 
             onClick={() => setIsMenuOpen(false)}
           >
-            Hero Guru&apos;s
+            Hero Guru's
           </NavLink>
           {currentUser && (
             <NavLink 

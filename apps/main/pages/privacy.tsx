@@ -183,7 +183,7 @@ export default function Privacy() {
             <ListItem><strong>Vercel Analytics:</strong> For platform performance monitoring</ListItem>
           </List>
 
-          <SectionTitle>9. Children&apos;s Privacy</SectionTitle>
+          <SectionTitle>9. Children's Privacy</SectionTitle>
           <Paragraph>
             Our platform is not intended for children under 13. We do not knowingly collect personal information from children under 13. 
             If you believe we have collected such information, please contact us immediately.
