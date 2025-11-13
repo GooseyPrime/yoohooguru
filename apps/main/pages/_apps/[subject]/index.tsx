@@ -12,8 +12,50 @@ interface SubjectPageProps {
 const SubjectPage: React.FC<SubjectPageProps> = ({ subject }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const [subjectData, setSubjectData] = useState<any>(null);
-  const [config, setConfig] = useState<any>(null);
+  const [subjectData, setSubjectData] = useState<{
+    news: unknown[];
+    blogs: unknown[];
+    title: string;
+    description: string;
+  } | null>(null);
+  const [config, setConfig] = useState<{
+    icon: string;
+    gradient: string;
+    description: string;
+  } | null>(null);
+
+  const loadSubjectData = async () => {
+    try {
+      // Fetch subject-specific news and blogs
+      const [newsData, blogData] = await Promise.all([
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://api.yoohoo.guru'}/api/news?subject=${subject}`).then(res => {
+          if (!res.ok) throw new Error('Failed to fetch news');
+          return res.json();
+        }).catch(() => []),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://api.yoohoo.guru'}/api/blogs?subject=${subject}`).then(res => {
+          if (!res.ok) throw new Error('Failed to fetch blogs');
+          return res.json();
+        }).catch(() => [])
+      ]);
+
+      setSubjectData({
+        news: newsData,
+        blogs: blogData,
+        title: subject.charAt(0).toUpperCase() + subject.slice(1),
+        description: `Discover the best ${subject} resources, tutorials, and expert guidance on YooHoo.Guru`
+      });
+    } catch (error) {
+      console.error('Error loading subject data:', error);
+      setSubjectData({
+        news: [],
+        blogs: [],
+        title: subject.charAt(0).toUpperCase() + subject.slice(1),
+        description: `Discover the best ${subject} resources, tutorials, and expert guidance on YooHoo.Guru`
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (router.isReady) {
@@ -24,6 +66,7 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subject }) => {
       // Load subject-specific data
       loadSubjectData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady, subject]);
 
   const loadSubjectData = async () => {
@@ -80,7 +123,7 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subject }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
             <h1 className="text-3xl font-bold text-white mb-4">Subject Not Found</h1>
-            <p className="text-purple-300">The subject you're looking for doesn't exist or isn't available.</p>
+            <p className="text-purple-300">The subject you&apos;re looking for doesn&apos;t exist or isn&apos;t available.</p>
           </div>
         </div>
       </div>

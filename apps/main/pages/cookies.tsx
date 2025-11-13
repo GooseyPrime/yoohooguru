@@ -234,7 +234,7 @@ export default function Cookies() {
                 <h2 className="text-3xl font-display font-bold text-white mb-4">Updates to This Policy</h2>
                 <div className="text-white-80 space-y-4 leading-relaxed">
                   <p>
-                    We may update this Cookie Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. We will notify you of any material changes by posting the new policy on this page and updating the "Last Updated" date.
+                    We may update this Cookie Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. We will notify you of any material changes by posting the new policy on this page and updating the &quot;Last Updated&quot; date.
                   </p>
                 </div>
               </div>

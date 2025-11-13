@@ -43,7 +43,7 @@ export default function TechHome() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
               <a
                 href="/signup?type=gunu"
-                className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-lg font-semibold rounded-xl hover:from-cyan-600 hover:to-500 to-600 transition-all duration-300 shadow-lg hover:shadow-glow-cyan-lg hover:-translate-y-1 flex items-center justify-center space-x-2"
+                className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-lg font-semibold rounded-xl hover:from-cyan-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-glow-cyan-lg hover:-translate-y-1 flex items-center justify-center space-x-2"
               >
                 <span>Start Learning Tech</span>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,7 +100,7 @@ export default function TechHome() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <a
                   href="/signup?type=gunu"
-                  className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-lg font-semibold rounded-xl hover:from-cyan-600 hover:to-500 to-600 transition-all duration-300 shadow-lg hover:shadow-glow-cyan-lg hover:-translate-y-1"
+                  className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-lg font-semibold rounded-xl hover:from-cyan-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-glow-cyan-lg hover:-translate-y-1"
                 >
                   Start Learning Tech
                 </Link>

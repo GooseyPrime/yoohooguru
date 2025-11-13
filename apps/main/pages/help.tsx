@@ -228,7 +228,7 @@ export default function Help() {
                 Still Need Help?
               </h2>
               <p className="text-white-80 mb-8">
-                Can't find what you&apos;re looking for? Our support team is here to help.
+                Can&apos;t find what you&apos;re looking for? Our support team is here to help.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a
@@ -236,13 +236,13 @@ export default function Help() {
                   className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-blue-600 transition-all duration-300"
                 >
                   Contact Support
-                </a>
+                </Link>
                 <a
                   href="mailto:support@yoohoo.guru"
                   className="px-8 py-4 glass-button text-white font-semibold rounded-xl hover:bg-white-20 transition-all duration-300"
                 >
                   Email Us
-                </a>
+                </Link>
               </div>
             </div>
           </div>
