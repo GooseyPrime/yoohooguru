@@ -40,7 +40,7 @@ export default function Help() {
     },
     {
       category: 'account',
-      question: 'How do I delete my account?',
+      answer: 'Go to Settings > Account > Delete Account. Please note that this action is permanent and cannot be undone. All your data will be removed from our system.'
       answer: 'Go to Settings > Account > Delete Account. Please note that this action is permanent and cannot be undone. All your data will be removed from our system.&apos;
     },
     {
