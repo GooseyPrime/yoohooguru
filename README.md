@@ -253,6 +253,84 @@ STRIPE_SECRET_KEY=sk_test_...
 OPENROUTER_API_KEY=your_openrouter_key
 ```
 
+See [docs/ENVIRONMENT_VARIABLES.md](./docs/ENVIRONMENT_VARIABLES.md) for complete environment variable documentation.
+
+## Implementation Status
+
+### ✅ Fully Implemented Features
+
+The following features are **complete and functional** in the codebase (may require environment configuration):
+
+**Authentication & User Management**
+- Email/password authentication (backend: `/api/auth/register`, `/api/auth/login`)
+- Google OAuth via NextAuth (requires `GOOGLE_OAUTH_CLIENT_ID` and `GOOGLE_OAUTH_CLIENT_SECRET`)
+- Cross-subdomain session management with shared cookies
+- Protected routes and role-based access control
+- User dashboard with role-specific sections (Guru, Gunu, Hero, Angel)
+
+**Payments & Monetization**
+- Stripe payment processing (requires `STRIPE_SECRET_KEY`)
+- Stripe Connect for provider payouts
+- Instant payout functionality
+- Webhook handlers for payment events
+- Platform fee calculation (15% Coach Guru, 10-15% Angel's List)
+
+**AI Features**
+- Content curation agents (news: 2x daily, blog: weekly)
+- AI-powered skill matching and recommendations
+- OpenRouter integration (requires `OPENROUTER_API_KEY`)
+- Automated SEO-optimized content generation with affiliate links
+
+**Marketplace Features**
+- Coach Guru: Skill-sharing sessions with booking and payment
+- Angel's List: Local services and gig marketplace
+- Hero Gurus: Community volunteering platform
+- Service listings, search, and filters
+
+**Admin Tools**
+- Admin dashboard at `/admin` (requires `ADMIN_KEY`)
+- AI agent status monitoring and manual triggers
+- Content moderation queue
+- User management and analytics
+- Platform-wide metrics and reporting
+
+**Maps & Location**
+- Google Maps integration (requires `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`)
+- Location-based search and filtering
+- Service provider geo-location
+
+### ⚠️ Partially Implemented (Needs Configuration)
+
+**Video Chat**
+- Agora SDK installed (`agora-rtc-sdk-ng`)
+- Video chat components exist
+- **Needs:** `AGORA_APP_ID` and `AGORA_APP_CERTIFICATE` environment variables
+
+**Email Notifications**
+- SMTP configuration supported
+- **Needs:** SMTP environment variables (optional for core functionality)
+
+### 📋 In Development
+
+**Certification Verification**
+- Document upload routes exist
+- Verification workflow implemented
+- **Status:** Backend complete, frontend UI in progress
+
+**Feature Flags**
+- Basic feature flag system exists
+- **Status:** Expanding to gracefully handle missing env vars
+
+### 📚 Documentation
+
+Comprehensive documentation available:
+- ✅ [docs/ENVIRONMENT_VARIABLES.md](./docs/ENVIRONMENT_VARIABLES.md) - Complete env var guide
+- ✅ [docs/ADMIN_GUIDE.md](./docs/ADMIN_GUIDE.md) - Administrator handbook
+- ✅ [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) - System architecture
+- ✅ [MONOREPO_README.md](./MONOREPO_README.md) - Monorepo structure guide
+- ✅ [spec/site-spec.md](./spec/site-spec.md) - Complete platform specification
+- ✅ [IMPLEMENTATION_FINDINGS.md](./IMPLEMENTATION_FINDINGS.md) - Implementation analysis
+
 ### Development
 ```bash
 # Run frontend (from apps/main)
