@@ -162,7 +162,7 @@ export default function AdminDashboard() {
               <OrbitronCard className="p-6">
                 <div className="text-2xl text-purple-400 mb-2">🌍</div>
                 <div className="text-white text-lg font-bold">Environment</div>
-                <div className="text-gray-400">{adminData?.agents?.curation?.environment || &apos;Unknown&apos;}</div>
+                <div className="text-gray-400">{adminData?.agents?.curation?.environment || 'Unknown'}</div>
                 <div className="text-gray-400">Production</div>
               </OrbitronCard>
             </div>
