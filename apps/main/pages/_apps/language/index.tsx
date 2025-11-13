@@ -114,6 +114,6 @@ export default function LanguageHome() {
           </div>
         </section>
       </main>
-    </gt;
+    </>
   );
 }

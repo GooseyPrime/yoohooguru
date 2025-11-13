@@ -114,6 +114,6 @@ export default function MusicHome() {
           </div>
         </section>
       </main>
-    </gt;
+    </>
   );
 }

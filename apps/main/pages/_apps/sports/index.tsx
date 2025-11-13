@@ -114,6 +114,6 @@ export default function SportsHome() {
           </div>
         </section>
       </main>
-    </gt;
+    </>
   );
 }

@@ -114,6 +114,6 @@ export default function CookingHome() {
           </div>
         </section>
       </main>
-    </gt;
+    </>
   );
 }

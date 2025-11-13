@@ -114,6 +114,6 @@ export default function GardeningHome() {
           </div>
         </section>
       </main>
-    </gt;
+    </>
   );
 }

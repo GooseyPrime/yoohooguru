@@ -114,6 +114,6 @@ export default function WellnessHome() {
           </div>
         </section>
       </main>
-    </gt;
+    </>
   );
 }
