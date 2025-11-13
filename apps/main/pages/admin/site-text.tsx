@@ -176,7 +176,7 @@ export default function SiteTextManager() {
         text.page,
         text.section,
         text.key,
-        `"${text.value.replace(/"/g, &apos;""&apos;)}"`, // Escape quotes in CSV
+        `"${text.value.replace(/"/g, '""')}"`, // Escape quotes in CSV
         text.subdomain || '',
         text.type
       ])
