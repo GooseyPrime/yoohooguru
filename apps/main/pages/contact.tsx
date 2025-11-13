@@ -104,7 +104,7 @@ export default function Contact() {
                   <p className="text-white-60 text-sm mb-4">{method.description}</p>
                   <p className="text-emerald-400 font-semibold mb-2">{method.contact}</p>
                   <p className="text-xs text-white-60">{method.responseTime}</p>
-                </Link>
+                </a>
               ))}
             </div>
           </div>
@@ -271,7 +271,7 @@ export default function Contact() {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
-              </Link>
+              </a>
             </div>
           </div>
         </section>

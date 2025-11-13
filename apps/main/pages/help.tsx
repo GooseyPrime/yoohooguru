@@ -236,13 +236,13 @@ export default function Help() {
                   className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-blue-600 transition-all duration-300"
                 >
                   Contact Support
-                </Link>
+                </a>
                 <a
                   href="mailto:support@yoohoo.guru"
                   className="px-8 py-4 glass-button text-white font-semibold rounded-xl hover:bg-white-20 transition-all duration-300"
                 >
                   Email Us
-                </Link>
+                </a>
               </div>
             </div>
           </div>

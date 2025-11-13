@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import type { AIMatchmakingResponse } from '@/lib/openai';
 
 const Container = styled.div`
   max-width: 800px;
