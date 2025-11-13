@@ -114,6 +114,6 @@ export default function TechHome() {
           </div>
         </section>
       </main>
-    </>;
+    </>
   );
 }

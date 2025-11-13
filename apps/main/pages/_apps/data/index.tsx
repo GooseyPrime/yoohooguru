@@ -114,6 +114,6 @@ export default function DataHome() {
           </div>
         </section>
       </main>
-    </>;
+    </>
   );
 }

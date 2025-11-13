@@ -114,6 +114,6 @@ export default function FinanceHome() {
           </div>
         </section>
       </main>
-    </>;
+    </>
   );
 }

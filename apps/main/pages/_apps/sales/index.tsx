@@ -114,6 +114,6 @@ export default function SalesHome() {
           </div>
         </section>
       </main>
-    </>;
+    </>
   );
 }

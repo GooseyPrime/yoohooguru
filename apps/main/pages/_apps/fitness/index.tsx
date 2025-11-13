@@ -114,6 +114,6 @@ export default function FitnessHome() {
           </div>
         </section>
       </main>
-    </>;
+    </>
   );
 }

@@ -156,13 +156,10 @@ export default function CoachGuru() {
       </Head>
 
       <div className="min-h-screen bg-orbitron-primary">
-        <Navigation currentDomain="coach" />
+        <Navigation />
         
         {/* Hero Section */}
-        <HeroSection 
-          variant="coach"
-          description="Set your own rates, choose your schedule, and make a real impact while earning income doing what you love."
-        />
+        <HeroSection />
 
         {/* Trust Indicators */}
         <section className="py-12 bg-gradient-to-b from-transparent to-secondarydark/30">

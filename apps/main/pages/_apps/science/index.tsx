@@ -114,6 +114,6 @@ export default function ScienceHome() {
           </div>
         </section>
       </main>
-    </>;
+    </>
   );
 }

@@ -114,6 +114,6 @@ export default function ArtHome() {
           </div>
         </section>
       </main>
-    </>;
+    </>
   );
 }
