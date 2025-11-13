@@ -97,7 +97,7 @@ export default function BlogPost() {
         <Header />
         <main style={{ padding: '2rem', textAlign: 'center' }}>
           <h1>Post Not Found</h1>
-          <p>{error || &apos;The requested blog post could not be found.&apos;}</p>
+          <p>{error || 'The requested blog post could not be found.'}</p>
           <a href={`/_apps/${subdomain}`}>← Back to Home</a>
         </main>
       </div>
