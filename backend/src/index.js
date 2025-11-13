@@ -55,6 +55,8 @@ const modifiedMastersRoutes = require('./routes/modifiedMasters');
 const resourcesRoutes = require('./routes/resources');
 const locationsRoutes = require('./routes/locations');
 const imagesRoutes = require('./routes/images');
+const postsRoutes = require('./routes/posts');
+const newsRoutes = require('./routes/news');
 
 
 const app = express();
@@ -566,6 +568,8 @@ app.use('/api/demo', require('./routes/demo'));
 app.use('/api/resources', resourcesRoutes);
 app.use('/api', locationsRoutes);
 app.use('/api/images', imagesRoutes);
+app.use('/api', postsRoutes);
+app.use('/api/news', newsRoutes);
 
 // Hero Guru's routes (formerly Modified Masters) - conditionally mounted
 if (config.featureHeroGurus || config.featureModifiedMasters) {

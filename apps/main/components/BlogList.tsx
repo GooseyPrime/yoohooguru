@@ -46,28 +46,58 @@ export const BlogList: React.FC<BlogListProps> = ({
       setPosts([]);
       return;
     }
-    
+
+    let timeoutId: NodeJS.Timeout;
+    let isCancelled = false;
+
     const fetchBlogPosts = async () => {
       try {
         setLoading(true);
+        setError(null);
+
+        // Set timeout to prevent indefinite loading
+        timeoutId = setTimeout(() => {
+          if (!isCancelled && loading) {
+            setError('Request timeout. Content temporarily unavailable.');
+            setLoading(false);
+          }
+        }, 10000); // 10 second timeout
+
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.yoohoo.guru';
         const response = await fetch(`${apiUrl}/api/${subdomain}/posts?limit=${limit}&page=1`);
 
+        if (isCancelled) return;
+
+        clearTimeout(timeoutId);
+
         if (!response.ok) {
-          throw new Error('Failed to fetch blog posts');
+          throw new Error(`Failed to fetch blog posts (${response.status})`);
         }
 
         const data = await response.json();
-        setPosts(data.posts || []);
+        if (!isCancelled) {
+          setPosts(data.posts || []);
+        }
       } catch (err) {
-        console.error('Error fetching blog posts:', err);
-        setError('Unable to load blog posts');
+        if (!isCancelled) {
+          console.error('Error fetching blog posts:', err);
+          setError('Content temporarily unavailable. Please check back soon.');
+        }
       } finally {
-        setLoading(false);
+        if (!isCancelled) {
+          clearTimeout(timeoutId);
+          setLoading(false);
+        }
       }
     };
 
     fetchBlogPosts();
+
+    // Cleanup function
+    return () => {
+      isCancelled = true;
+      clearTimeout(timeoutId);
+    };
   }, [subdomain, limit]);
 
   if (loading) {
