@@ -8,7 +8,7 @@ export default function About() {
     <>
       <Head>
         <title>About Us - YooHoo.Guru</title>
-        <meta name="description" content="Learn about YooHoo.Guru's mission to build community through skill sharing." />
+        <meta name="description" content="Learn about YooHoo.Guru&apos;s mission to build community through skill sharing." />
       </Head>
 
       <Navigation />

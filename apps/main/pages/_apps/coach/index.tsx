@@ -132,7 +132,7 @@ export default function CoachGuru() {
       name: "Jennifer Lee",
       role: "Marketing Manager",
       company: "Startup Inc",
-      content: "I've been both a learner and a teacher on Coach Guru. The community is supportive, the platform is intuitive, and I've grown both professionally and personally through this experience.",
+      content: "I&apos;ve been both a learner and a teacher on Coach Guru. The community is supportive, the platform is intuitive, and I&apos;ve grown both professionally and personally through this experience.",
       rating: 5,
       date: "3 weeks ago",
       featured: true,

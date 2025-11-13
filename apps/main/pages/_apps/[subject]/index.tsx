@@ -57,14 +57,29 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subject }) => {
     }
   };
 
-  useEffect(() => {
-    if (router.isReady) {
-      // Get subject configuration
-      const subjectConfig = getSubjectConfig(subject);
-      setConfig(subjectConfig);
-      
-      // Load subject-specific data
-      loadSubjectData();
+  // Sample blog posts
+  const blogPosts = [
+    {
+      title: "Getting Started: A Complete Guide",
+      excerpt: "Everything you need to know to begin your journey. This comprehensive guide covers fundamentals, tools, and first steps.",
+      author: "Teaching Team",
+      category: "Beginner",
+      readTime: "12 min read",
+      featured: true
+    },
+    {
+      title: "Common Mistakes to Avoid",
+      excerpt: "Learn from the experiences of others. These pitfalls can slow your progress if you&apos;re not aware of them.",
+      author: "Expert Community",
+      category: "Learning",
+      readTime: "8 min read"
+    },
+    {
+      title: "Building Your Portfolio",
+      excerpt: "Showcase your skills effectively. Learn what makes a portfolio stand out to potential clients or employers.",
+      author: "Career Advisors",
+      category: "Career",
+      readTime: "15 min read"
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady, subject]);
@@ -177,19 +192,23 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subject }) => {
         </div>
       </div>
 
-      {/* Stats Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {[
-            { label: 'Expert Tutors', value: '150+', icon: '👨‍🏫' },
-            { label: 'Video Courses', value: '500+', icon: '🎥' },
-            { label: 'Active Students', value: '10K+', icon: '👥' },
-            { label: 'Success Rate', value: '95%', icon: '⭐' }
-          ].map((stat, index) => (
-            <div key={index} className="bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-6 text-center hover:bg-opacity-20 transition-all duration-300">
-              <div className="text-3xl mb-2">{stat.icon}</div>
-              <div className="text-2xl font-bold text-white">{stat.value}</div>
-              <div className="text-purple-300">{stat.label}</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { title: "Beginner&apos;s Guide", icon: "📖", count: "25+ lessons" },
+                { title: "Practice Exercises", icon: "✏️", count: "100+ problems" },
+                { title: "Video Tutorials", icon: "🎥", count: "45+ videos" },
+                { title: "Community Forum", icon: "💬", count: "500+ discussions" },
+                { title: "Downloadable Resources", icon: "📁", count: "30+ files" },
+                { title: "Live Workshops", icon: "🎯", count: "Weekly sessions" },
+                { title: "Certification Path", icon: "🏆", count: "3 levels" },
+                { title: "Project Templates", icon: "🛠️", count: "20+ templates" }
+              ].map((resource, index) => (
+                <div key={index} className="card-hover text-center p-6">
+                  <div className="text-3xl mb-3">{resource.icon}</div>
+                  <h4 className="font-semibold text-white mb-2">{resource.title}</h4>
+                  <p className="text-sm text-emerald-400">{resource.count}</p>
+                </div>
+              ))}
             </div>
           ))}
         </div>
@@ -211,22 +230,23 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subject }) => {
         />
       </div>
 
-      {/* CTA Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-8 md:p-12 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Ready to Master {subjectData.title}?
-          </h2>
-          <p className="text-purple-100 text-lg mb-8 max-w-2xl mx-auto">
-            Connect with expert tutors, access premium courses, and join a community of passionate learners.
-          </p>
-          <div className="space-x-4">
-            <button className="bg-white text-purple-600 px-8 py-4 rounded-full font-semibold hover:bg-purple-50 transition-all duration-300 transform hover:scale-105">
-              Get Started Free
-            </button>
-            <button className="bg-purple-800 bg-opacity-50 backdrop-blur-sm text-white px-8 py-4 rounded-full font-semibold hover:bg-opacity-70 transition-all duration-300 transform hover:scale-105">
-              View Pricing
-            </button>
+        {/* CTA Section */}
+        <section className="py-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="card-featured text-center p-12">
+              <h2 className="heading-2 mb-4">Ready to Master {config.title.replace(&apos; Guru&apos;, '')}?</h2>
+              <p className="body-large mb-8 max-w-2xl mx-auto">
+                Join our community of learners and experts. Start your journey today with personalized guidance and curated resources.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button variant="gradient" size="lg" href="/signup">
+                  Start Learning →
+                </Button>
+                <Button variant="ghost" size="lg" href={`https://coach.yoohoo.guru/experts?subject=${subject}`}>
+                  Find Expert →
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
