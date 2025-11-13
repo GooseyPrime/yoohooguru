@@ -19,16 +19,34 @@ interface BlogListProps {
   showExcerpts?: boolean;
 }
 
+// Allow-list of valid subjects (copy from getStaticPaths in [subject]/index.tsx)
+const VALID_SUBJECTS = [
+  'art', 'business', 'coding', 'cooking', 'crafts', 'data',
+  'design', 'finance', 'fitness', 'gardening', 'history',
+  'home', 'investing', 'language', 'marketing', 'math',
+  'music', 'photography', 'sales', 'science', 'sports',
+  'tech', 'wellness', 'writing'
+];
+
 export const BlogList: React.FC<BlogListProps> = ({
   subdomain,
   limit = 6,
   showExcerpts = true
 }) => {
+
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Validate subdomain before making the request
+    if (!subdomain || !VALID_SUBJECTS.includes(subdomain)) {
+      setError('Invalid subject specified.');
+      setLoading(false);
+      setPosts([]);
+      return;
+    }
+    
     const fetchBlogPosts = async () => {
       try {
         setLoading(true);
@@ -49,9 +67,7 @@ export const BlogList: React.FC<BlogListProps> = ({
       }
     };
 
-    if (subdomain) {
-      fetchBlogPosts();
-    }
+    fetchBlogPosts();
   }, [subdomain, limit]);
 
   if (loading) {
