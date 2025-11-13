@@ -68,7 +68,7 @@ export default function Blog() {
       icon: "📚"
     },
     {
-      title: "Angel's List: Supporting Local Communities",
+      title: "Angel&apos;s List: Supporting Local Communities",
       excerpt: "How our local services marketplace is strengthening neighborhoods.",
       author: "Community Team",
       date: "October 25, 2024",
