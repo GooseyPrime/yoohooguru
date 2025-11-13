@@ -49,7 +49,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Apply search filter if provided (client-side filtering for simplicity)
     if (search && typeof search === 'string') {
       const searchLower = search.toLowerCase();
-      jobs = jobs.filter((job: any) => 
+      jobs = jobs.filter((job: {
+          title?: string;
+          description?: string;
+          skillsRequired?: string[];
+        }) => 
         job.title?.toLowerCase().includes(searchLower) ||
         job.description?.toLowerCase().includes(searchLower) ||
         job.skillsRequired?.some((skill: string) => skill.toLowerCase().includes(searchLower))

@@ -91,7 +91,16 @@ export default function LearningStyleAssessment() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [responses, setResponses] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<{
+    primaryStyle: string;
+    secondaryStyle: string;
+    scores: Record<string, number>;
+    stylePercentages?: Record<string, number>;
+    recommendations: string[];
+    teachingApproach: string[];
+    strengths: string[];
+    developmentAreas: string[];
+  } | null>(null);
 
   const handleAnswer = (questionId: string, value: string) => {
     setResponses({ ...responses, [questionId]: value });
@@ -167,7 +176,7 @@ export default function LearningStyleAssessment() {
             {/* Style Percentages */}
             <div className="mb-8">
               <h3 className="text-xl font-bold text-white mb-4">Learning Style Breakdown</h3>
-              {Object.entries(result.stylePercentages || {}).map(([style, percentage]: [string, any]) => (
+              {Object.entries(result.stylePercentages || {}).map(([style, percentage]: [string, number]) => (
                 <div key={style} className="mb-3">
                   <div className="flex justify-between text-purple-300 mb-1">
                     <span className="capitalize">{style}</span>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import Navigation from '../components/ui/Navigation';
 
 export default function Contact() {
@@ -83,7 +84,7 @@ export default function Contact() {
               Get in <span className="gradient-text-emerald-blue">Touch</span>
             </h1>
             <p className="text-xl text-white-80 max-w-3xl mx-auto">
-              Have a question, suggestion, or need help? We'd love to hear from you.
+              Have a question, suggestion, or need help? We&apos;d love to hear from you.
             </p>
           </div>
         </section>
@@ -103,7 +104,7 @@ export default function Contact() {
                   <p className="text-white-60 text-sm mb-4">{method.description}</p>
                   <p className="text-emerald-400 font-semibold mb-2">{method.contact}</p>
                   <p className="text-xs text-white-60">{method.responseTime}</p>
-                </a>
+                </Link>
               ))}
             </div>
           </div>
@@ -118,7 +119,7 @@ export default function Contact() {
                   Send Us a Message
                 </h2>
                 <p className="text-white-80">
-                  Fill out the form below and we'll get back to you as soon as possible
+                  Fill out the form below and we&apos;ll get back to you as soon as possible
                 </p>
               </div>
 
@@ -270,7 +271,7 @@ export default function Contact() {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
-              </a>
+              </Link>
             </div>
           </div>
         </section>
