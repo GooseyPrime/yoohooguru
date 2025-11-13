@@ -135,7 +135,7 @@ interface AIMatchmakingProps {
   };
 }
 
-export default function AIMatchmaking({ guruData, gunuData }: AIMatchmakingProps) {
+export default function AIMatchmaking({ guruId: _guruId, gunuId: _gunuId, guruData, gunuData }: AIMatchmakingProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<AIMatchmakingResponse | null>(null);
   const [error, setError] = useState<string | null>(null);

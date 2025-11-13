@@ -75,14 +75,6 @@ const ListItem = styled.li`
   border-left: 3px solid #8b5cf6;
 `;
 
-const CandidateCard = styled.div`
-  background: rgba(139, 92, 246, 0.1);
-  border: 1px solid rgba(139, 92, 246, 0.3);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
-`;
-
 const Button = styled.button`
   background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
   color: white;
