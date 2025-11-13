@@ -4,6 +4,7 @@ import Navigation from '../../../components/ui/Navigation';
 import { NewsSection } from '../../../components/NewsSection';
 import { BlogList } from '../../../components/BlogList';
 import { getSubjectConfig } from '../../../config/subjects';
+import Button from '../../../components/ui/Button';
 
 interface SubjectPageProps {
   subject: string;
@@ -81,41 +82,16 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subject }) => {
       category: "Career",
       readTime: "15 min read"
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.isReady, subject]);
+  ];
 
-  const loadSubjectData = async () => {
-    try {
-      // Fetch subject-specific news and blogs
-      const [newsData, blogData] = await Promise.all([
-        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://api.yoohoo.guru'}/api/news?subject=${subject}`).then(res => {
-          if (!res.ok) throw new Error('Failed to fetch news');
-          return res.json();
-        }).catch(() => []),
-        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://api.yoohoo.guru'}/api/blogs?subject=${subject}`).then(res => {
-          if (!res.ok) throw new Error('Failed to fetch blogs');
-          return res.json();
-        }).catch(() => [])
-      ]);
-
-      setSubjectData({
-        news: newsData,
-        blogs: blogData,
-        title: subject.charAt(0).toUpperCase() + subject.slice(1),
-        description: `Discover the best ${subject} resources, tutorials, and expert guidance on YooHoo.Guru`
-      });
-    } catch (error) {
-      console.error('Error loading subject data:', error);
-      setSubjectData({
-        news: [],
-        blogs: [],
-        title: subject.charAt(0).toUpperCase() + subject.slice(1),
-        description: `Discover the best ${subject} resources, tutorials, and expert guidance on YooHoo.Guru`
-      });
-    } finally {
-      setIsLoading(false);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (router.isReady && subject) {
+      loadSubjectData();
+      const subjectConfig = getSubjectConfig(subject);
+      setConfig(subjectConfig);
     }
-  };
+  }, [router.isReady, subject]);
 
   if (isLoading) {
     return (
@@ -192,23 +168,23 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subject }) => {
         </div>
       </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                { title: "Beginner's Guide", icon: "📖", count: "25+ lessons" },
-                { title: "Practice Exercises", icon: "✏️", count: "100+ problems" },
-                { title: "Video Tutorials", icon: "🎥", count: "45+ videos" },
-                { title: "Community Forum", icon: "💬", count: "500+ discussions" },
-                { title: "Downloadable Resources", icon: "📁", count: "30+ files" },
-                { title: "Live Workshops", icon: "🎯", count: "Weekly sessions" },
-                { title: "Certification Path", icon: "🏆", count: "3 levels" },
-                { title: "Project Templates", icon: "🛠️", count: "20+ templates" }
-              ].map((resource, index) => (
-                <div key={index} className="card-hover text-center p-6">
-                  <div className="text-3xl mb-3">{resource.icon}</div>
-                  <h4 className="font-semibold text-white mb-2">{resource.title}</h4>
-                  <p className="text-sm text-emerald-400">{resource.count}</p>
-                </div>
-              ))}
+      {/* Resources Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            { title: "Beginner's Guide", icon: "📖", count: "25+ lessons" },
+            { title: "Practice Exercises", icon: "✏️", count: "100+ problems" },
+            { title: "Video Tutorials", icon: "🎥", count: "45+ videos" },
+            { title: "Community Forum", icon: "💬", count: "500+ discussions" },
+            { title: "Downloadable Resources", icon: "📁", count: "30+ files" },
+            { title: "Live Workshops", icon: "🎯", count: "Weekly sessions" },
+            { title: "Certification Path", icon: "🏆", count: "3 levels" },
+            { title: "Project Templates", icon: "🛠️", count: "20+ templates" }
+          ].map((resource, index) => (
+            <div key={index} className="card-hover text-center p-6">
+              <div className="text-3xl mb-3">{resource.icon}</div>
+              <h4 className="font-semibold text-white mb-2">{resource.title}</h4>
+              <p className="text-sm text-emerald-400">{resource.count}</p>
             </div>
           ))}
         </div>
@@ -248,8 +224,7 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subject }) => {
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </section>
     </div>
   );
 };

@@ -306,7 +306,7 @@ export default function SessionBooking({
     return (
       <BookingContainer>
         <SuccessMessage>
-          Session booked successfully! You'll receive a confirmation email with session details.
+          Session booked successfully! You&apos;ll receive a confirmation email with session details.
         </SuccessMessage>
       </BookingContainer>
     );

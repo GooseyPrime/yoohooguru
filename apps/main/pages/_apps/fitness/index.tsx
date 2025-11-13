@@ -49,13 +49,13 @@ export default function FitnessHome() {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
-              </Link>
+              </a>
               <a
                 href="/signup?type=guru"
                 className="w-full sm:w-auto px-8 py-4 glass-button text-white text-lg font-semibold rounded-xl hover:bg-white-20 transition-all duration-300 flex items-center justify-center space-x-2"
               >
                 <span>Become a Fitness Guru</span>
-              </Link>
+              </a>
             </div>
 
             {/* Stats */}
@@ -103,13 +103,13 @@ export default function FitnessHome() {
                   className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-red-500 to-orange-500 text-white text-lg font-semibold rounded-xl hover:from-red-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-glow-red-lg hover:-translate-y-1"
                 >
                   Start Learning Fitness
-                </Link>
+                </a>
                 <a
                   href="/signup?type=guru"
                   className="w-full sm:w-auto px-8 py-4 glass-button text-white text-lg font-semibold rounded-xl hover:bg-white-20 transition-all duration-300"
                 >
                   Become a Fitness Guru
-                </Link>
+                </a>
               </div>
             </div>
           </div>
