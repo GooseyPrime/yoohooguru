@@ -88,7 +88,7 @@ export default function VideoSession() {
         <Main style={{ textAlign: 'center', padding: '3rem' }}>
           <SessionInfo>
             <SessionTitle style={{ color: '#fff' }}>{error}</SessionTitle>
-            <button onClick={() => router.push(&apos;/')}>Return Home</button>
+            <button onClick={() => router.push('/')}>Return Home</button>
           </SessionInfo>
         </Main>
         <Footer />
