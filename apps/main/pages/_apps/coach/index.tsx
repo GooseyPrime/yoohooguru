@@ -123,7 +123,7 @@ export default function CoachGuru() {
       name: "Alex Thompson",
       role: "Software Developer",
       company: "Tech Corp",
-      content: "Coach Guru transformed my career. I learned advanced React concepts from Sarah and landed my dream job within 3 months. The platform is professional and the quality of instructors is outstanding.",
+      content: "SkillShare transformed my career. I learned advanced React concepts from Sarah and landed my dream job within 3 months. The platform is professional and the quality of instructors is outstanding.",
       rating: 5,
       date: "2 weeks ago",
       featured: true,
@@ -132,7 +132,7 @@ export default function CoachGuru() {
       name: "Jennifer Lee",
       role: "Marketing Manager",
       company: "Startup Inc",
-      content: "I've been both a learner and a teacher on Coach Guru. The community is supportive, the platform is intuitive, and I've grown both professionally and personally through this experience.",
+      content: "I've been both a learner and a teacher on SkillShare. The community is supportive, the platform is intuitive, and I've grown both professionally and personally through this experience.",
       rating: 5,
       date: "3 weeks ago",
       featured: true,
@@ -150,8 +150,8 @@ export default function CoachGuru() {
   return (
     <>
       <Head>
-        <title>Coach Guru | Professional Skill Teaching | YooHoo.Guru</title>
-        <meta name="description" content="Share your expertise and earn income through professional skill coaching. Join our community of expert instructors and start teaching what you love." />
+        <title>SkillShare | Professional Skill Teaching | YooHoo.Guru</title>
+        <meta name="description" content="Share your expertise and earn income through professional skill teaching with SkillShare, led by Coach Guru. Join our community of expert instructors and start teaching what you love." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
@@ -189,9 +189,9 @@ export default function CoachGuru() {
         <section className="py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="heading-2 mb-4">How Coach Guru Works</h2>
+              <h2 className="heading-2 mb-4">How SkillShare Works</h2>
               <p className="body-large max-w-3xl mx-auto">
-                Simple, secure, and effective skill sharing that benefits both learners and expert instructors.
+                Simple, secure, and effective skill sharing led by Coach Guru that benefits both learners and expert instructors.
               </p>
             </div>
 
@@ -224,8 +224,8 @@ export default function CoachGuru() {
               <h3 className="heading-2 mb-4">Platform Commission</h3>
               <div className="text-6xl font-bold gradient-text-emerald-blue mb-4">15%</div>
               <p className="body-normal max-w-2xl mx-auto mb-8">
-                Coach Guru charges a 15% platform commission on all transactions. 
-                This fee supports platform maintenance, security, payment processing, 
+                SkillShare charges a 15% platform commission on all transactions.
+                This fee supports platform maintenance, security, payment processing,
                 marketing, and quality assurance to ensure the best experience for everyone.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">

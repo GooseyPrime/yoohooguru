@@ -8,7 +8,7 @@ YooHooGuru operates as three core services plus 24 thematic content hubs:
 
 ### Core Services
 1. **Hub** (www.yoohoo.guru) - Main landing page and global entry point
-2. **Coach Guru** (coach.yoohoo.guru) - Professional skill-sharing marketplace (15% commission)
+2. **SkillShare** (coach.yoohoo.guru) - Professional skill-sharing marketplace led by Coach Guru (15% commission)
 3. **Angel's List** (angel.yoohoo.guru) - Local services and gig marketplace (10-15% commission)
 4. **Hero Gurus** (heroes.yoohoo.guru) - Community volunteering platform
 
@@ -85,7 +85,7 @@ Each subdomain features:
 │                            │  - news (AI-curated)             │ │
 │  ┌──────────────────────┐  │  - blogs (AI-curated)            │ │
 │  │      Storage         │  │  - services (Angel's List)       │ │
-│  │  - User avatars      │  │  - sessions (Coach Guru)         │ │
+│  │  - User avatars      │  │  - sessions (SkillShare)         │ │
 │  │  - Document uploads  │  │  - volunteers (Hero Gurus)       │ │
 │  └──────────────────────┘  └──────────────────────────────────┘ │
 └─────────────────────────────────────────────────────────────────┘
@@ -580,7 +580,7 @@ If deployment fails or issues arise:
 - **Monetization**: Embedded affiliate links, lead capture forms
 
 ### Marketplace Features
-- **Coach Guru**: Skill matching, session booking, Stripe payments
+- **SkillShare**: Skill matching, session booking, Stripe payments (led by Coach Guru)
 - **Angel's List**: Service listings, project postings, provider ratings
 - **Hero Gurus**: Volunteer opportunities, impact tracking
 
