@@ -54,7 +54,7 @@ export const WhyYooHooSection: React.FC = () => {
         </svg>
       ),
       title: "Money-Back Guarantee",
-      description: "Not satisfied with your session? We'll make it right. Your success and satisfaction are guaranteed."
+      description: "Not satisfied with your session? We&apos;ll make it right. Your success and satisfaction are guaranteed."
     }
   ];
 
@@ -100,7 +100,7 @@ export const WhyYooHooSection: React.FC = () => {
   const stats = [
     { value: "4.9/5", label: "Average Rating", sublabel: "From 10,000+ reviews" },
     { value: "98%", label: "Success Rate", sublabel: "Students achieve their goals" },
-    { value: "24/7", label: "Support", sublabel: "We're here when you need us" },
+    { value: "24/7", label: "Support", sublabel: "We&apos;re here when you need us" },
     { value: "$2M+", label: "Earned by Gurus", sublabel: "And growing every month" }
   ];
 
@@ -113,7 +113,7 @@ export const WhyYooHooSection: React.FC = () => {
             Why Choose <span className="gradient-text-emerald-blue">YooHoo.Guru</span>?
           </h2>
           <p className="text-xl md:text-2xl text-white-80 max-w-4xl mx-auto">
-            We're not just another learning platform. We're a community where real people connect, 
+            We&apos;re not just another learning platform. We&apos;re a community where real people connect, 
             share knowledge, and transform lives—one session at a time.
           </p>
         </div>

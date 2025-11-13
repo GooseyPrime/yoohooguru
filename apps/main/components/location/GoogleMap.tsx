@@ -81,7 +81,7 @@ export default function GoogleMap({ apiKey, onLocationSelect }: Omit<GoogleMapPr
   
   useEffect(() => {
     // In a real implementation, this would load the Google Maps API
-    // For now, we'll just simulate the loading process
+    // For now, we&apos;ll just simulate the loading process
     const timer = setTimeout(() => {
       setMapLoaded(true);
     }, 1000);

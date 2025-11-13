@@ -205,7 +205,7 @@ export default function Safety() {
               </h2>
               <div className="space-y-6 text-white-80 leading-relaxed">
                 <p>
-                  At YooHoo.Guru, we believe that trust is the foundation of meaningful learning and community building. We're committed to maintaining the highest standards of safety and integrity across our platform.
+                  At YooHoo.Guru, we believe that trust is the foundation of meaningful learning and community building. We&apos;re committed to maintaining the highest standards of safety and integrity across our platform.
                 </p>
                 <p>
                   Our dedicated Trust &amp; Safety team works around the clock to:
@@ -249,7 +249,7 @@ export default function Safety() {
                 Need Immediate Help?
               </h2>
               <p className="text-white-80 mb-8">
-                If you're in immediate danger, contact local emergency services first (911 in the US).
+                If you&apos;re in immediate danger, contact local emergency services first (911 in the US).
               </p>
               <div className="space-y-4">
                 <div className="glass-effect p-4 rounded-xl">

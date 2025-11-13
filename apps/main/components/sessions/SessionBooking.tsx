@@ -284,7 +284,7 @@ export default function SessionBooking({
     }
     
     // In a real implementation, this would be an API call to create the session
-    // For now, we'll just simulate the process
+    // For now, we&apos;ll just simulate the process
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
       setStep('payment');
@@ -306,7 +306,7 @@ export default function SessionBooking({
     return (
       <BookingContainer>
         <SuccessMessage>
-          Session booked successfully! You'll receive a confirmation email with session details.
+          Session booked successfully! You&apos;ll receive a confirmation email with session details.
         </SuccessMessage>
       </BookingContainer>
     );

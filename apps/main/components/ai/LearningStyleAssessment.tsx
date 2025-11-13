@@ -337,7 +337,7 @@ export default function LearningStyleAssessment() {
       <AssessmentHeader>AI Learning Style Assessment</AssessmentHeader>
       <AssessmentDescription>
         Answer a few questions to help us understand your preferred learning style.
-        We'll use this information to match you with the most suitable Gurus.
+        We&apos;ll use this information to match you with the most suitable Gurus.
       </AssessmentDescription>
       
       <ProgressBar>

@@ -23,7 +23,7 @@ export default function About() {
                 <span className="block gradient-text-emerald-blue mt-2">Skill Sharing</span>
               </h1>
               <p className="text-xl text-white-80 leading-relaxed">
-                YooHoo.Guru is more than a platform—it's a movement to democratize knowledge, empower communities, and create meaningful connections through the exchange of skills and expertise.
+                YooHoo.Guru is more than a platform—it&apos;s a movement to democratize knowledge, empower communities, and create meaningful connections through the exchange of skills and expertise.
               </p>
             </div>
           </div>
@@ -39,7 +39,7 @@ export default function About() {
                   We believe that everyone has valuable skills to share and knowledge to gain. Our mission is to create a trusted, accessible platform where people can connect, learn, and grow together.
                 </p>
                 <p className="text-lg text-white-80 leading-relaxed">
-                  Whether you're a professional looking to share your expertise, someone seeking to learn new skills, or a volunteer wanting to make a difference, YooHoo.Guru provides the tools and community to make it happen.
+                  Whether you&apos;re a professional looking to share your expertise, someone seeking to learn new skills, or a volunteer wanting to make a difference, YooHoo.Guru provides the tools and community to make it happen.
                 </p>
               </div>
               <div className="glass-card p-8 rounded-2xl">

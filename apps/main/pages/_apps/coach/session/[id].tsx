@@ -168,7 +168,7 @@ export default function SessionPage() {
   }, [id]);
 
   // In a real application, you would fetch session details from your backend
-  // For demo purposes, we're using mock data
+  // For demo purposes, we&apos;re using mock data
   const sessionId = id as string || 'demo-session';
   const currentUserId = 'user-' + Math.floor(Math.random() * 10000);
 
