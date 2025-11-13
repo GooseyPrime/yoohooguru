@@ -136,7 +136,7 @@ export default function Login() {
                 By signing in, you agree to our{' '}
                 <Link href="/terms" className="text-emerald-400 hover:text-emerald-300 transition-colors">
                   Terms of Service
-                </Link>{&apos; '}
+                </Link>{' '}
                 and{' '}
                 <Link href="/privacy" className="text-emerald-400 hover:text-emerald-300 transition-colors">
                   Privacy Policy
