@@ -177,12 +177,109 @@ yoohooguru/
 ```
 
 ### Routing Mechanism
-- **Middleware-based routing**: apps/main/middleware.ts intercepts subdomain requests
+
+The platform uses a sophisticated middleware-based routing system to serve all 29 subdomains from a single Next.js application.
+
+#### How It Works
+- **Middleware-based routing**: `apps/main/middleware.ts` intercepts all subdomain requests
 - **Rewrites**: `coach.yoohoo.guru/` → `/_apps/coach/` (internally)
 - **User sees**: `coach.yoohoo.guru/` (no URL change)
 - **Serves**: `apps/main/pages/_apps/coach/index.tsx`
 
-### Technology Stack
+#### Page Structure
+```
+apps/main/pages/
+├── index.tsx                    # www.yoohoo.guru (main landing)
+├── login.tsx                    # Centralized authentication
+├── signup.tsx                   # Centralized registration
+├── terms.tsx                    # Terms of service
+├── privacy.tsx                  # Privacy policy
+├── safety.tsx                   # Safety guidelines
+├── contact.tsx                  # Contact page
+├── faq.tsx                      # FAQ
+├── help.tsx                     # Help center
+├── pricing.tsx                  # Pricing information
+├── how-it-works.tsx            # How it works
+├── hubs.tsx                     # Community hubs
+├── about.tsx                    # About page
+└── _apps/                       # Subdomain pages
+    ├── coach/                   # coach.yoohoo.guru
+    │   ├── index.tsx           # Landing page
+    │   ├── experts.tsx         # Expert listings
+    │   └── session/            # Session pages
+    ├── angel/                   # angel.yoohoo.guru
+    ├── heroes/                  # heroes.yoohoo.guru
+    │   ├── index.tsx           # Landing page
+    │   ├── profile.tsx         # User profile
+    │   └── skills.tsx          # Skills marketplace
+    ├── art/                     # art.yoohoo.guru
+    ├── business/                # business.yoohoo.guru
+    └── [22 more subdomains]/    # Other content hubs
+```
+
+#### Shared Pages Across Subdomains
+
+All authentication and legal pages are centralized on `www.yoohoo.guru` and accessed via redirects:
+
+**Centralized Pages:**
+- `/login` - Sign in page (NextAuth with Google OAuth)
+- `/signup` - Registration page
+- `/terms` - Terms of service
+- `/privacy` - Privacy policy
+- `/safety` - Safety guidelines
+- `/contact` - Contact page
+- `/faq` - Frequently asked questions
+- `/help` - Help center
+- `/pricing` - Pricing information
+- `/how-it-works` - Platform guide
+- `/hubs` - Community hubs overview
+- `/about` - About the platform
+
+**Subdomain Redirects:**
+When users visit these pages on any subdomain (e.g., `heroes.yoohoo.guru/login`), they are automatically redirected to the main site (e.g., `www.yoohoo.guru/login`). This ensures:
+- **Consistent authentication** across all subdomains
+- **Single source of truth** for legal and support pages
+- **Easier maintenance** - update once, applies everywhere
+- **Better SEO** - canonical URLs on main domain
+
+**Configuration:**
+Redirects are configured in `vercel.json`:
+```json
+{
+  "redirects": [
+    {
+      "source": "/login",
+      "has": [{"type": "host", "value": "(art|business|...).yoohoo.guru"}],
+      "destination": "https://www.yoohoo.guru/login",
+      "permanent": false
+    }
+    // ... similar redirects for all shared pages
+  ]
+}
+```
+
+#### Authentication Flow
+
+**Cross-Subdomain Authentication:**
+1. User signs in at `www.yoohoo.guru/login`
+2. NextAuth creates session with cookie domain `.yoohoo.guru`
+3. Session is valid across all subdomains
+4. User can navigate to any subdomain while staying authenticated
+
+**Authentication Terminology:**
+- **Primary CTA**: "Get Started" (for new users)
+- **Secondary CTA**: "Sign In" (for existing users)
+- **URLs**: `/signup` and `/login` (SEO-friendly)
+- **Page Titles**: "Sign Up" and "Sign In"
+
+**NextAuth Configuration:**
+- Located at: `apps/main/pages/api/auth/[...nextauth].ts`
+- Providers: Google OAuth, Email/Password
+- Session: JWT with HTTP-only cookies
+- Cookie Domain: `.yoohoo.guru` (works across all subdomains)
+- Shared package: `@yoohooguru/auth` for configuration
+
+### Technology Stack### Technology Stack
 - **Frontend**: Next.js 14, React 18, TailwindCSS 4, Orbitron design system
 - **Backend**: Node.js/Express on Railway
 - **Database**: Firebase (Firestore + Auth + Storage)

@@ -1,311 +1,363 @@
-# Deployment Guide for YooHoo.Guru Monorepo
+# Deployment Guide - Updated for Single-App Architecture
 
-## ⚠️ DEPRECATED - See GATEWAY_ARCHITECTURE.md
+## Overview
 
-**This deployment guide is deprecated.** The platform has been refactored to use a single gateway architecture that eliminates the need for separate Vercel projects.
+YooHooGuru uses a **single Next.js application** architecture that serves all 29 subdomains through middleware-based routing. This guide covers deployment to Vercel (frontend) and Railway (backend).
 
-**➡️ For current deployment instructions, see [GATEWAY_ARCHITECTURE.md](./GATEWAY_ARCHITECTURE.md)**
+## Architecture Changes (November 2024)
 
-The new gateway architecture:
-- Uses a single Vercel project for all subdomains
-- Supports unlimited subdomains via Edge Middleware
-- Simplifies environment variable management
-- Reduces deployment complexity
-- **Uses Turborepo for build orchestration** (see turbo.json)
+### Previous Architecture (Deprecated)
+- Multiple separate Next.js apps (one per subdomain)
+- Complex deployment with 29 separate Vercel projects
+- Difficult to maintain and update
 
-**Note on Turborepo:**
-This repository uses Turborepo to coordinate builds across all workspace packages. The build command `npm run build` automatically:
-- Builds shared packages before apps
-- Caches build outputs for faster rebuilds
-- Runs parallel builds when possible
-- Manages build dependencies
+### Current Architecture (Active)
+- **Single Next.js app** at `apps/main/`
+- **Middleware-based routing** for all subdomains
+- **One Vercel deployment** serving all 29 subdomains
+- **Centralized authentication** and shared pages
 
-For more information on Turborepo configuration, see the `turbo.json` file at the repository root.
+## Vercel Deployment (Frontend)
 
----
+### Prerequisites
+- Vercel account connected to GitHub
+- All 29 custom domains configured in Vercel
+- Environment variables configured
 
-## Overview (Legacy)
+### Project Configuration
 
-This guide explains the old multi-project deployment approach, which is no longer used.
+**Single Vercel Project:**
+- **Project Name**: yoohooguru-main (or similar)
+- **Framework**: Next.js
+- **Root Directory**: `apps/main`
+- **Build Command**: `cd ../.. && npm run build`
+- **Output Directory**: `apps/main/.next`
+- **Install Command**: `npm ci`
 
-## Prerequisites
+### Vercel Configuration
 
-- Vercel account
-- Vercel CLI installed: `npm i -g vercel`
-- Access to project environment variables
-
-## Deployment Structure
-
-Each app in `/apps` should be deployed as a separate Vercel project with its own custom domain:
-
-| App | Directory | Domain |
-|-----|-----------|--------|
-| Main | `apps/main` | www.yoohoo.guru |
-| Angel | `apps/angel` | angel.yoohoo.guru |
-| Coach | `apps/coach` | coach.yoohoo.guru |
-| Heroes | `apps/heroes` | heroes.yoohoo.guru |
-| Dashboard | `apps/dashboard` | dashboard.yoohoo.guru |
-| Cooking | `apps/cooking` | cooking.yoohoo.guru |
-| ... | ... | ... |
-
-## Step-by-Step Deployment
-
-### 1. Deploy Main App (www.yoohoo.guru)
-
-```bash
-cd apps/main
-vercel
-```
-
-**Configure:**
-- Project Name: `yoohooguru-main`
-- Root Directory: `apps/main`
-- Framework: Next.js
-- Build Command: `next build`
-- Output Directory: `.next`
-- Custom Domain: `www.yoohoo.guru`
-
-**Environment Variables:**
-```bash
-NEXTAUTH_URL=https://www.yoohoo.guru
-NEXTAUTH_SECRET=<your-secret>
-NEXT_PUBLIC_API_URL=https://api.yoohoo.guru
-NEXT_PUBLIC_FIREBASE_API_KEY=<your-key>
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=<your-domain>
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=<your-project-id>
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=<your-bucket>
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=<your-sender-id>
-NEXT_PUBLIC_FIREBASE_APP_ID=<your-app-id>
-AUTH_COOKIE_DOMAIN=.yoohoo.guru
-```
-
-### 2. Deploy Angel's List App
-
-```bash
-cd apps/angel
-vercel
-```
-
-**Configure:**
-- Project Name: `yoohooguru-angel`
-- Root Directory: `apps/angel`
-- Custom Domain: `angel.yoohoo.guru`
-- Same environment variables as above but with `NEXTAUTH_URL=https://angel.yoohoo.guru`
-
-### 3. Deploy Coach Guru App
-
-```bash
-cd apps/coach
-vercel
-```
-
-**Configure:**
-- Project Name: `yoohooguru-coach`
-- Root Directory: `apps/coach`
-- Custom Domain: `coach.yoohoo.guru`
-- Same environment variables as above but with `NEXTAUTH_URL=https://coach.yoohoo.guru`
-
-### 4. Deploy Hero Guru's App
-
-```bash
-cd apps/heroes
-vercel
-```
-
-**Configure:**
-- Project Name: `yoohooguru-heroes`
-- Root Directory: `apps/heroes`
-- Custom Domain: `heroes.yoohoo.guru`
-- Same environment variables as above but with `NEXTAUTH_URL=https://heroes.yoohoo.guru`
-
-### 5. Deploy Dashboard App
-
-```bash
-cd apps/dashboard
-vercel
-```
-
-**Configure:**
-- Project Name: `yoohooguru-dashboard`
-- Root Directory: `apps/dashboard`
-- Custom Domain: `dashboard.yoohoo.guru`
-- Same environment variables as above but with `NEXTAUTH_URL=https://dashboard.yoohoo.guru`
-
-### 6. Deploy Subject Apps
-
-Repeat for each subject app (cooking, coding, art, business, crafts, data, design, finance, fitness, gardening, home, investing, language, marketing, music, photography, sales, tech, wellness, writing):
-
-```bash
-cd apps/<app-name>
-vercel
-```
-
-## Automated Deployment with GitHub
-
-### Setup GitHub Integration
-
-1. Connect your GitHub repository to Vercel
-2. Create a separate Vercel project for each app
-3. Configure project settings:
-   - **Root Directory**: `apps/<app-name>`
-   - **Build Command**: `cd ../.. && npm run build:<app-name>`
-   - **Output Directory**: `apps/<app-name>/.next`
-
-### Vercel Configuration Files
-
-Create `vercel.json` in each app directory:
+The root `vercel.json` contains all routing and redirect configuration:
 
 ```json
 {
-  "buildCommand": "cd ../.. && turbo run build --filter=@yoohooguru/<app-name>",
-  "installCommand": "cd ../.. && npm install",
+  "buildCommand": "cd apps/main && npm run build",
+  "outputDirectory": "apps/main/.next",
+  "installCommand": "npm ci",
   "framework": "nextjs",
-  "outputDirectory": ".next"
+  
+  "redirects": [
+    {
+      "source": "/",
+      "has": [{"type": "host", "value": "yoohoo.guru"}],
+      "destination": "https://www.yoohoo.guru",
+      "permanent": true
+    },
+    {
+      "source": "/login",
+      "has": [{"type": "host", "value": "(art|business|coding|...).yoohoo.guru"}],
+      "destination": "https://www.yoohoo.guru/login",
+      "permanent": false
+    }
+    // ... additional redirects for all shared pages
+  ],
+  
+  "rewrites": [
+    {
+      "source": "/api/backend/:path*",
+      "destination": "https://api.yoohoo.guru/api/:path*"
+    }
+  ]
 }
 ```
 
-## DNS Configuration
+**Key Features:**
+- **Subdomain redirects**: All auth/legal pages redirect to main site
+- **API rewrites**: Frontend API calls proxied to backend
+- **Security headers**: CSP, HSTS, and other security headers
+- **Cache control**: Optimized caching for static assets
 
-Configure DNS records for each subdomain:
+### Custom Domains
 
-```
-www.yoohoo.guru     CNAME   cname.vercel-dns.com
-angel.yoohoo.guru   CNAME   cname.vercel-dns.com
-coach.yoohoo.guru   CNAME   cname.vercel-dns.com
-heroes.yoohoo.guru  CNAME   cname.vercel-dns.com
-dashboard.yoohoo.guru CNAME cname.vercel-dns.com
-... (repeat for all subject apps)
-```
+Configure all 29 domains in Vercel dashboard:
 
-## Environment Variables Management
+**Core Services:**
+- www.yoohoo.guru (main landing)
+- coach.yoohoo.guru (professional marketplace)
+- angel.yoohoo.guru (local services)
+- heroes.yoohoo.guru (volunteering)
+- dashboard.yoohoo.guru (user dashboard)
 
-### Shared Variables
+**Content Hubs (24 subdomains):**
+- art.yoohoo.guru
+- business.yoohoo.guru
+- coding.yoohoo.guru
+- cooking.yoohoo.guru
+- crafts.yoohoo.guru
+- data.yoohoo.guru
+- design.yoohoo.guru
+- finance.yoohoo.guru
+- fitness.yoohoo.guru
+- gardening.yoohoo.guru
+- history.yoohoo.guru
+- home.yoohoo.guru
+- investing.yoohoo.guru
+- language.yoohoo.guru
+- marketing.yoohoo.guru
+- math.yoohoo.guru
+- music.yoohoo.guru
+- photography.yoohoo.guru
+- sales.yoohoo.guru
+- science.yoohoo.guru
+- sports.yoohoo.guru
+- tech.yoohoo.guru
+- wellness.yoohoo.guru
+- writing.yoohoo.guru
 
-Use Vercel's environment variable inheritance or create `.env.shared` at root:
+### Environment Variables
+
+Configure in Vercel dashboard for all environments (Production, Preview, Development):
 
 ```bash
+# NextAuth Configuration
+NEXTAUTH_SECRET=your_secure_secret_key
+NEXTAUTH_URL=https://www.yoohoo.guru
+AUTH_COOKIE_DOMAIN=.yoohoo.guru
+
+# Google OAuth
+GOOGLE_OAUTH_CLIENT_ID=your_client_id
+GOOGLE_OAUTH_CLIENT_SECRET=your_client_secret
+
+# Firebase (Frontend)
+NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+
+# Stripe
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_...
+
 # API Configuration
 NEXT_PUBLIC_API_URL=https://api.yoohoo.guru
 
-# Firebase Configuration
-NEXT_PUBLIC_FIREBASE_API_KEY=<key>
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=<domain>
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=<project-id>
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=<bucket>
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=<sender-id>
-NEXT_PUBLIC_FIREBASE_APP_ID=<app-id>
-
-# Auth Configuration
-AUTH_COOKIE_DOMAIN=.yoohoo.guru
-NEXTAUTH_SECRET=<secret>
+# Analytics
+NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+NEXT_PUBLIC_GTM_CONTAINER_ID=GTM-XXXXXXX
 ```
 
-### App-Specific Variables
+### Deployment Process
 
-Each app needs its own `NEXTAUTH_URL`:
-
+**Automatic Deployment:**
 ```bash
-# Main app
-NEXTAUTH_URL=https://www.yoohoo.guru
-
-# Angel app
-NEXTAUTH_URL=https://angel.yoohoo.guru
-
-# etc...
+# Push to main branch triggers automatic deployment
+git push origin main
 ```
 
-## Testing Deployment
-
-### Local Testing
-
-Before deploying, test locally:
-
+**Manual Deployment:**
 ```bash
-# Test specific app
-npm run dev:main
-npm run dev:angel
-npm run dev:coach
+# Using Vercel CLI
+vercel --prod
 
-# Test all apps
-npm run dev
+# Or deploy specific branch
+vercel --prod --branch=staging
 ```
 
-### Production Testing
+### Post-Deployment Verification
 
-After deployment:
+After deployment, verify:
 
-1. Visit each subdomain
-2. Test authentication across subdomains
-3. Verify cross-subdomain cookie sharing
-4. Test API connectivity
-5. Check that all links work correctly
+1. **All subdomains resolve correctly**:
+   ```bash
+   curl -I https://www.yoohoo.guru
+   curl -I https://coach.yoohoo.guru
+   curl -I https://art.yoohoo.guru
+   # ... test all 29 subdomains
+   ```
+
+2. **Redirects work properly**:
+   ```bash
+   curl -I https://heroes.yoohoo.guru/login
+   # Should redirect to https://www.yoohoo.guru/login
+   ```
+
+3. **Authentication works across subdomains**:
+   - Sign in at www.yoohoo.guru
+   - Navigate to any subdomain
+   - Verify session persists
+
+4. **Middleware routing works**:
+   - Visit each subdomain
+   - Verify correct content loads
+   - Check browser console for errors
+
+## DNS Configuration
+
+Configure DNS records for all subdomains to point to Vercel:
+
+```
+# Main domain
+yoohoo.guru         A       76.76.21.21
+www.yoohoo.guru     CNAME   cname.vercel-dns.com
+
+# Core services
+coach.yoohoo.guru   CNAME   cname.vercel-dns.com
+angel.yoohoo.guru   CNAME   cname.vercel-dns.com
+heroes.yoohoo.guru  CNAME   cname.vercel-dns.com
+dashboard.yoohoo.guru CNAME cname.vercel-dns.com
+
+# Content hubs (24 subdomains)
+art.yoohoo.guru     CNAME   cname.vercel-dns.com
+business.yoohoo.guru CNAME  cname.vercel-dns.com
+# ... repeat for all 24 content subdomains
+```
+
+## Routing and Authentication
+
+### Middleware-Based Routing
+
+The `apps/main/middleware.ts` file handles all subdomain routing:
+
+```typescript
+// Detects subdomain from hostname
+// Rewrites subdomain.yoohoo.guru/* to /_apps/subdomain/*
+// Serves content from apps/main/pages/_apps/subdomain/
+```
+
+**Valid Subdomains:**
+- Core: www, angel, coach, heroes, dashboard
+- Content: art, business, coding, cooking, crafts, data, design, finance, fitness, gardening, history, home, investing, language, marketing, math, music, photography, sales, science, sports, tech, wellness, writing
+
+### Centralized Authentication
+
+**NextAuth Configuration:**
+- Location: `apps/main/pages/api/auth/[...nextauth].ts`
+- Providers: Google OAuth, Email/Password
+- Session: JWT with HTTP-only cookies
+- Cookie Domain: `.yoohoo.guru` (works across all subdomains)
+
+**Shared Pages:**
+All authentication and legal pages are centralized on www.yoohoo.guru:
+- `/login` - Sign in
+- `/signup` - Registration
+- `/terms` - Terms of service
+- `/privacy` - Privacy policy
+- `/safety` - Safety guidelines
+- `/contact` - Contact
+- `/faq` - FAQ
+- `/help` - Help center
+- `/pricing` - Pricing
+- `/how-it-works` - Guide
+- `/hubs` - Community hubs
+- `/about` - About
+
+**Subdomain Redirects:**
+When users visit these pages on any subdomain, they are redirected to www.yoohoo.guru. This ensures consistent authentication and easier maintenance.
 
 ## Troubleshooting
 
-### Build Failures
+### Common Issues
 
-If builds fail:
+**1. Subdomain not resolving:**
+- Verify DNS records are correct
+- Check Vercel domain configuration
+- Wait for DNS propagation (up to 48 hours)
 
-1. Check that all dependencies are installed at root
-2. Verify `turbo.json` configuration is correct
-3. Ensure `package.json` workspaces are configured properly
-4. Check build logs in Vercel dashboard
-5. Test build locally: `npm run build` (uses Turborepo)
-6. If Turborepo cache issues occur, force rebuild: `npx turbo run build --force`
+**2. Authentication not working across subdomains:**
+- Verify `AUTH_COOKIE_DOMAIN=.yoohoo.guru` is set
+- Check browser cookies (should have domain `.yoohoo.guru`)
+- Ensure HTTPS is enabled on all subdomains
 
-**Understanding Turborepo:**
-- This repository uses Turborepo to manage builds across multiple packages
-- The `turbo.json` file defines build tasks and dependencies
-- Turborepo caches build outputs to speed up subsequent builds
-- For more details, see [Turborepo Documentation](https://turbo.build/repo/docs)
+**3. Middleware not routing correctly:**
+- Check `apps/main/middleware.ts` configuration
+- Verify subdomain is in `VALID_SUBDOMAINS` set
+- Check Vercel deployment logs
 
-### Authentication Issues
+**4. 404 errors on subdomain pages:**
+- Verify page exists in `apps/main/pages/_apps/{subdomain}/`
+- Check middleware rewrite rules
+- Review vercel.json redirects
 
-If auth doesn't work across subdomains:
+**5. Redirects not working:**
+- Verify vercel.json redirect configuration
+- Check redirect has correct subdomain pattern
+- Test with curl to see actual HTTP response
 
-1. Verify `AUTH_COOKIE_DOMAIN=.yoohoo.guru` is set
-2. Check `NEXTAUTH_URL` is correct for each app
-3. Ensure cookies are being set with correct domain
-4. Test in incognito mode to rule out cached cookies
+### Debugging Tools
 
-### API Connection Issues
-
-If apps can't connect to API:
-
-1. Verify `NEXT_PUBLIC_API_URL` is set correctly
-2. Check CORS settings in backend
-3. Ensure backend API is deployed and accessible
-4. Test API endpoints directly
-
-## Rollback
-
-To rollback a deployment:
-
+**Check deployment logs:**
 ```bash
-vercel rollback <deployment-url>
+vercel logs
 ```
 
-Or use Vercel dashboard to rollback to previous deployment.
+**Test middleware locally:**
+```bash
+cd apps/main
+npm run dev
+# Test with: http://localhost:3000
+```
 
-## Continuous Deployment
+**Verify environment variables:**
+```bash
+vercel env ls
+```
 
-Vercel automatically deploys:
-- `main` branch → Production
-- Other branches → Preview deployments
+## Rollback Procedure
 
-Configure branch protection rules in GitHub to require reviews before merging to main.
+If deployment fails or causes issues:
+
+1. **Revert to previous deployment** in Vercel dashboard
+2. **Or rollback via CLI:**
+   ```bash
+   vercel rollback
+   ```
+
+3. **Or revert Git commit:**
+   ```bash
+   git revert HEAD
+   git push origin main
+   ```
 
 ## Monitoring
 
-Use Vercel Analytics and Logs to monitor:
-- Build times
-- Error rates
-- Traffic patterns
-- Performance metrics
+**Set up monitoring for:**
+- Uptime monitoring for all 29 subdomains
+- Error tracking (Sentry, LogRocket)
+- Performance monitoring (Vercel Analytics)
+- API health checks
+
+**Recommended tools:**
+- Vercel Analytics (built-in)
+- Sentry for error tracking
+- UptimeRobot for uptime monitoring
+- Google Analytics for user tracking
+
+## Recent Changes (November 2024)
+
+### PR #489: Fix Routing Issues and 404 Errors
+
+**Changes:**
+- Fixed broken redirects in vercel.json
+- Added subdomain-to-main redirects for all shared pages
+- Created missing subdomain pages (coach/experts, heroes/skills)
+- Standardized authentication terminology
+
+**Impact:**
+- Reduced 404 errors from 149 to ~0-5
+- Improved success rate from 34% to ~88%
+- Consistent authentication across all subdomains
+
+**Testing:**
+After deploying PR #489, verify:
+- All subdomain redirects work
+- Authentication persists across subdomains
+- No 404 errors on shared pages
+- New subdomain pages load correctly
 
 ## Support
 
 For deployment issues:
-- Check Vercel documentation: https://vercel.com/docs
-- Review build logs in Vercel dashboard
-- Consult MONOREPO_README.md for architecture details
+- Check Vercel deployment logs
+- Review GitHub Actions (if configured)
+- Check Railway logs for backend issues
+- Run site audit tool to verify deployment
