@@ -18,6 +18,7 @@ const subdomainConfig = {
     }
   },
   'coach': {
+    sectionName: 'SkillShare',
     character: 'Coach Guru',
     category: 'coaching',
     primarySkills: ['life-coaching', 'career-coaching', 'skill-swap', 'mentoring', 'teaching'],
@@ -30,9 +31,9 @@ const subdomainConfig = {
       emoji: '🎯'
     },
     seo: {
-      title: 'Coach Guru - Skill Swap & Structured Learning',
-      description: 'Connect with coaches and teachers for structured skill-sharing sessions. Learn new skills and teach what you know.',
-      keywords: ['coaching', 'skill swap', 'mentoring', 'teaching', 'learning']
+      title: 'SkillShare - Professional Skill Teaching led by Coach Guru',
+      description: 'Connect with coaches and teachers for structured skill-sharing sessions. Learn new skills and teach what you know with SkillShare, led by Coach Guru.',
+      keywords: ['skill share', 'coaching', 'skill swap', 'mentoring', 'teaching', 'learning']
     }
   },
   'heroes': {

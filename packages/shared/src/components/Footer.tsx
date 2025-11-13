@@ -23,7 +23,7 @@ const Footer: React.FC<{ currentDomain?: string }> = ({ currentDomain = 'main' }
       { name: 'GDPR Compliance', href: '/gdpr' },
     ],
     services: [
-      { name: 'Coach Guru', href: 'https://coach.yoohoo.guru' },
+      { name: 'SkillShare', href: 'https://coach.yoohoo.guru' },
       { name: "Angel's List", href: 'https://angel.yoohoo.guru' },
       { name: 'Hero Gurus', href: 'https://heroes.yoohoo.guru' },
       { name: 'Content Hubs', href: '/hubs' },

@@ -8,18 +8,25 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Enhanced Orbitron Theme Colors
-        primarydark: '#0a0a1a',     // Deep space blue-black
-        secondarydark: '#1a1a2e',   // Dark navy blue
-        tertiarydark: '#16213e',    // Medium dark blue
-        
-        // Accent Colors - Expanded Palette
+        // Enhanced Orbitron Theme Colors - Dark Indigo + Hunter Green blend
+        primarydark: '#1e2749',     // Dark indigo
+        secondarydark: '#2C5530',   // Hunter green dark
+        tertiarydark: '#2d3561',    // Medium dark indigo
+
+        // Accent Colors - Dark Indigo + Hunter Green Palette
+        indigo: {
+          50: '#e0e7ff',
+          400: '#6366f1',
+          500: '#3d3d6b',
+          600: '#2d3561',
+          700: '#1e2749',
+        },
         emerald: {
           50: '#d1fae5',
-          400: '#34d399', 
-          500: '#10b981',
-          600: '#059669',
-          700: '#047857',
+          400: '#34d399',
+          500: '#355E3B',
+          600: '#2C5530',
+          700: '#1e3a20',
         },
         blue: {
           50: '#dbeafe',
@@ -74,16 +81,16 @@ module.exports = {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
         
-        // Enhanced gradients
-        'orbitron-primary': 'linear-gradient(135deg, #0a0a1a 0%, #111827 50%, #1a1a2e 100%)',
-        'orbitron-secondary': 'linear-gradient(135deg, #1a1a2e 0%, #111827 50%, #0a0a1a 100%)',
+        // Enhanced gradients - Dark Indigo + Hunter Green
+        'orbitron-primary': 'linear-gradient(135deg, #1e2749 0%, #2d3561 50%, #2C5530 100%)',
+        'orbitron-secondary': 'linear-gradient(135deg, #2C5530 0%, #2d3561 50%, #1e2749 100%)',
         'orbitron-hero': 'linear-gradient(to right, var(--tw-gradient-stops))',
-        'gradient-subtle': 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%)',
-        'gradient-strong': 'linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(59, 130, 246, 0.2) 100%)',
-        'gradient-emerald': 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-        'gradient-blue': 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+        'gradient-subtle': 'linear-gradient(135deg, rgba(53, 94, 59, 0.1) 0%, rgba(61, 61, 107, 0.1) 100%)',
+        'gradient-strong': 'linear-gradient(135deg, rgba(53, 94, 59, 0.2) 0%, rgba(61, 61, 107, 0.2) 100%)',
+        'gradient-emerald': 'linear-gradient(135deg, #355E3B 0%, #2C5530 100%)',
+        'gradient-indigo': 'linear-gradient(135deg, #3d3d6b 0%, #2d3561 100%)',
         'gradient-purple': 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
-        'gradient-text': 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)',
+        'gradient-text': 'linear-gradient(135deg, #355E3B 0%, #3d3d6b 100%)',
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',

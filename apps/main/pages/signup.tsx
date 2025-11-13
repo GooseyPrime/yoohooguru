@@ -108,6 +108,12 @@ export default function Signup() {
       icon: '🛠️'
     },
     {
+      value: 'gig-poster',
+      label: 'Job Poster',
+      description: 'Post a Gig or Small Job in your Area',
+      icon: '📍'
+    },
+    {
       value: 'hero',
       label: 'Hero (Volunteer)',
       description: 'I want to volunteer my time',
@@ -151,7 +157,7 @@ export default function Signup() {
                   <label className="block text-sm font-medium text-white mb-3">
                     I want to join as a...
                   </label>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                     {userTypes.map((userType) => (
                       <label
                         key={userType.value}

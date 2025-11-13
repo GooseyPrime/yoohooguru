@@ -5,7 +5,7 @@
 YooHooGuru is a **24-subdomain AI-powered content and skill-sharing platform** that combines automated content curation with marketplace functionality. Each subdomain serves as both a niche content hub (news/blogs) and a specialized service marketplace, monetized through affiliate marketing, Stripe payments, and lead generation.
 
 **Platform Scale:**
-- 24 thematic subdomains + 3 core products (Hub, Angel's List, Coach Guru, Hero Gurus)
+- 24 thematic subdomains + 3 core products (Hub, Angel's List, SkillShare, Hero Gurus)
 - 96 AI-curated news articles per day (2 per subdomain, twice daily)
 - 24 AI-generated blog posts per week (1 per subdomain)
 - Multi-layer monetization: affiliate links, Stripe payments, Connect payouts, lead capture
@@ -29,7 +29,8 @@ YooHooGuru is a **24-subdomain AI-powered content and skill-sharing platform** t
 - Rental listings
 - Service provider directory
 
-#### **Coach Guru: coach.yoohoo.guru**
+#### **SkillShare: coach.yoohoo.guru**
+- Professional skill-sharing marketplace led by Coach Guru
 - Structured skill-swap sessions
 - Educational service bookings
 - Skill matching and discovery
