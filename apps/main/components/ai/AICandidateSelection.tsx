@@ -216,7 +216,7 @@ export default function AICandidateSelection({ jobDescription, candidates }: AIC
                   <CandidateRank>#{index + 1}</CandidateRank>
                   <CandidateName style={{ display: 'inline' }}>{candidate.name}</CandidateName>
                 </div>
-                <Text style={{ color: '#ffffff' }}>{candidate.analysis}</Text>
+                <Text style={{ color: '#ffffff' }}>Score: {candidate.score}%</Text>
               </CandidateCard>
             ))}
 

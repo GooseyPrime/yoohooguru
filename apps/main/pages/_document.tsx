@@ -16,9 +16,9 @@ export default function Document() {
               src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
             />
             <Script
+              id="google-analytics"
+              strategy="afterInteractive"
               dangerouslySetInnerHTML={{
-                 id="google-analytics"
-                 strategy="afterInteractive"
                 __html: `
                   window.dataLayer = window.dataLayer || [];
                   function gtag(){dataLayer.push(arguments);}
@@ -36,9 +36,9 @@ export default function Document() {
         {/* Google Tag Manager */}
         {gtmId && (
           <Script
+            id="google-tag-manager"
+            strategy="afterInteractive"
             dangerouslySetInnerHTML={{
-               id="google-tag-manager"
-               strategy="afterInteractive"
               __html: `
                 (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],

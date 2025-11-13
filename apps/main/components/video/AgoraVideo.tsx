@@ -92,7 +92,7 @@ export default function AgoraVideo({ channel, token, uid, onLeave }: AgoraVideoP
   const localVideoRef = useRef<HTMLDivElement>(null);
   const remoteVideoRefs = useRef<{[key: string]: HTMLDivElement | null}>({});
   
-  // Don't render on server side
+  // Don&apos;t render on server side
   const [isClient, setIsClient] = useState(false);
   
   useEffect(() => {

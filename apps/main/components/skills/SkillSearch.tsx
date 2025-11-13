@@ -187,7 +187,7 @@ export default function SkillSearch() {
   
   useEffect(() => {
     // In a real implementation, this would be an API call
-    // For now, we'll filter the mock data
+    // For now, we&apos;ll filter the mock data
     let filtered = MOCK_SKILLS;
     
     if (searchTerm) {

@@ -133,7 +133,7 @@ export default function Home() {
                 Choose Your Path
               </h2>
               <p className="text-xl text-white-80 max-w-3xl mx-auto">
-                Three unique ways to learn, earn, and make an impact in your community. Whether you're seeking knowledge, offering expertise, or volunteering time, we have a place for you.
+                Three unique ways to learn, earn, and make an impact in your community. Whether you&apos;re seeking knowledge, offering expertise, or volunteering time, we have a place for you.
               </p>
             </div>
 
