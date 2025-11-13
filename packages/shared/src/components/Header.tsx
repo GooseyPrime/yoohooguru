@@ -10,7 +10,7 @@ const Header: React.FC<{ currentDomain?: string }> = ({ currentDomain = 'main' }
   const navItems = [
     { name: 'Home', href: 'https://www.yoohoo.guru', domain: 'main' },
     { name: "Angel's List", href: 'https://angel.yoohoo.guru', domain: 'angel' },
-    { name: 'Coach Guru', href: 'https://coach.yoohoo.guru', domain: 'coach' },
+    { name: 'SkillShare', href: 'https://coach.yoohoo.guru', domain: 'coach' },
     { name: 'Hero Gurus', href: 'https://heroes.yoohoo.guru', domain: 'heroes' },
   ];
 

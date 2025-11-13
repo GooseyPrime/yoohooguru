@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Repository vs Site Review Discrepancy Fixes - November 13, 2025
+
+#### Fixed
+- **Build Error:** Added `firebase-admin` dependency to `apps/main/package.json` (fixes API routes that use Firestore)
+- **Authentication Integration:** Login and signup pages now properly integrate with NextAuth and backend API
+  - Login form calls `/api/backend/auth/login` endpoint with error handling
+  - Signup form calls `/api/backend/auth/register` endpoint with validation
+  - Google OAuth buttons properly use NextAuth `signIn()` function
+  - Added loading states and user feedback on errors
+  - Form validation for password matching and terms agreement
+
+#### Added
+- **IMPLEMENTATION_FINDINGS.md:** Comprehensive analysis document detailing:
+  - Current state of each reported issue
+  - Analysis showing 80% of issues are deployment/config, not code bugs
+  - Detailed findings for landing page routing, dashboard routing, auth buttons, Angel's List content, and admin tools
+  - Build issues and recommended fixes
+- **docs/ADMIN_GUIDE.md:** Complete administrator documentation including:
+  - Admin dashboard access and authentication
+  - All admin routes (frontend and backend API)
+  - AI agent management instructions
+  - Content moderation workflows
+  - User management procedures
+  - Analytics and reporting features
+  - Security and permissions model
+  - Common admin tasks and troubleshooting
+
+#### Documented
+- **Landing Page Routing:** Analysis confirms code is correct - www.yoohoo.guru properly serves pillar selection homepage. No redirect to heroes exists in codebase. Issue is likely deployment/caching related.
+- **Dashboard Routing:** Code correctly implements protected /dashboard route with NextAuth. Redirect to login only occurs when user not authenticated (expected behavior).
+- **Angel's List Content:** Verified content at `apps/main/pages/_apps/angel/index.tsx` correctly focuses on gig marketplace, not learning. No code changes needed.
+- **Feature Status:** Documented that Payments (Stripe), Video Chat (Agora), Maps (Google), AI Matchmaker, and Admin Tools ARE implemented but may need environment variable configuration.
+- **Admin Tools:** Confirmed admin routes exist at `/admin/*` with proper implementation for agent management, moderation, and analytics.
+
 ### Turborepo Monorepo Migration (Major Architecture Change)
 
 #### Added - Monorepo Architecture
