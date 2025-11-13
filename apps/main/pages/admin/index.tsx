@@ -372,7 +372,7 @@ export default function AdminDashboard() {
                 value={adminKey}
                 onChange={(e) => setAdminKey(e.target.value)}
                 className="w-full p-3 bg-black/30 border border-gray-600 rounded text-white placeholder-gray-400"
-                onKeyPress={(e) => e.key === &apos;Enter&apos; && handleLogin()}
+                onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
               />
               
               {error && (
