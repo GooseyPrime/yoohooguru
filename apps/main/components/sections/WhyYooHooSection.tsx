@@ -113,7 +113,7 @@ export const WhyYooHooSection: React.FC = () => {
             Why Choose <span className="gradient-text-emerald-blue">YooHoo.Guru</span>?
           </h2>
           <p className="text-xl md:text-2xl text-white-80 max-w-4xl mx-auto">
-            We&apos;re not just another learning platform. We&apos;re a community where real people connect, 
+            We're not just another learning platform. We're a community where real people connect, 
             share knowledge, and transform lives—one session at a time.
           </p>
         </div>

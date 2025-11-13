@@ -130,7 +130,7 @@ export default function Terms() {
           <List>
             <ListItem>Skill-sharing marketplace for finding teachers and learners</ListItem>
             <ListItem>Guru dashboard for educators and coaches</ListItem>
-            <ListItem>Angel&apos;s List for service providers and seekers</ListItem>
+            <ListItem>Angel's List for service providers and seekers</ListItem>
             <ListItem>Community features for networking and collaboration</ListItem>
             <ListItem>Payment processing for premium features and services</ListItem>
           </List>
@@ -157,7 +157,7 @@ export default function Terms() {
             <ListItem>Violate any local, state, national, or international law or regulation</ListItem>
             <ListItem>Transmit or post any content that is unlawful, harmful, threatening, abusive, or discriminatory</ListItem>
             <ListItem>Impersonate any person or entity or misrepresent your affiliation</ListItem>
-            <ListItem>Interfere with or disrupt the platform&apos;s operation or security</ListItem>
+            <ListItem>Interfere with or disrupt the platform's operation or security</ListItem>
             <ListItem>Collect or harvest personal information from other users without consent</ListItem>
             <ListItem>Use the platform for commercial purposes without authorization</ListItem>
           </List>
@@ -175,7 +175,7 @@ export default function Terms() {
           <List>
             <ListItem>Provide accurate descriptions of your skills and qualifications</ListItem>
             <ListItem>Deliver services as promised and maintain professional standards</ListItem>
-            <ListItem>Respect learners&apos; time and provide value in your interactions</ListItem>
+            <ListItem>Respect learners' time and provide value in your interactions</ListItem>
             <ListItem>Handle any disputes or issues professionally and transparently</ListItem>
           </List>
 
@@ -192,7 +192,7 @@ export default function Terms() {
           
           <SubSectionTitle>6.1 Payment Processing</SubSectionTitle>
           <Paragraph>
-            Payments are processed securely through Stripe. By making a payment, you agree to Stripe&apos;s terms of service
+            Payments are processed securely through Stripe. By making a payment, you agree to Stripe's terms of service
             and authorize us to charge your payment method for the specified amount.
           </Paragraph>
 
@@ -272,7 +272,7 @@ export default function Terms() {
           <SectionTitle>15. Severability</SectionTitle>
           <Paragraph>
             If any provision of these Terms is found to be unenforceable, that provision will be modified to reflect
-            the parties&apos; intention or eliminated while the remainder of the Terms remains in full force and effect.
+            the parties' intention or eliminated while the remainder of the Terms remains in full force and effect.
           </Paragraph>
 
           <SectionTitle>16. Contact Information</SectionTitle>

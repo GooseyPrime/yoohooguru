@@ -46,7 +46,7 @@ export default function SiteTextManager() {
         page: 'angel',
         section: 'hero',
         key: 'title',
-        value: "Angel&apos;s List - Local Services & Small Jobs",
+        value: "Angel's List - Local Services & Small Jobs",
         subdomain: 'angel',
         type: 'heading'
       },
@@ -64,7 +64,7 @@ export default function SiteTextManager() {
         page: 'heroes',
         section: 'hero',
         key: 'title',
-        value: "Hero Guru&apos;s - Community Heroes & Local Support",
+        value: "Hero Guru's - Community Heroes & Local Support",
         subdomain: 'heroes',
         type: 'heading'
       },
@@ -176,11 +176,11 @@ export default function SiteTextManager() {
         text.page,
         text.section,
         text.key,
-        `"${text.value.replace(/"/g, &apos;""&apos;)}"`, // Escape quotes in CSV
+        `"${text.value.replace(/"/g, '""')}"`, // Escape quotes in CSV
         text.subdomain || '',
         text.type
       ])
-    ].map(row => row.join(&apos;,&apos;)).join('\n')
+    ].map(row => row.join(',')).join('\n')
 
     const blob = new Blob([csvContent], { type: 'text/csv' })
     const url = window.URL.createObjectURL(blob)
@@ -365,7 +365,7 @@ export default function SiteTextManager() {
                   <label className="block text-gray-400 text-sm mb-2">Type</label>
                   <select
                     value={editingText.type}
-                    onChange={(e) => setEditingText({...editingText, type: e.target.value as &apos;heading&apos; | 'paragraph' | 'button' | 'meta' | 'other'})}
+                    onChange={(e) => setEditingText({...editingText, type: e.target.value as 'heading' | 'paragraph' | 'button' | 'meta' | 'other'})}
                     className="w-full p-2 bg-black/30 border border-gray-600 rounded text-white"
                   >
                     <option value="heading">Heading</option>

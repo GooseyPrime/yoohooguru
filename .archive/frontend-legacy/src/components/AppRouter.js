@@ -493,7 +493,7 @@ function RedirectToMainSite({ path }) {
     }}>
       <div>
         <h3>Redirecting to YooHoo.guru...</h3>
-        <p>You&apos;re being redirected to the main platform.</p>
+        <p>You're being redirected to the main platform.</p>
       </div>
     </div>
   );
@@ -582,7 +582,7 @@ function AppRouter() {
             <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', textAlign: 'center'}}>
               <div>
                 <h2>Redirecting to Coach Guru...</h2>
-                <p>You&apos;ll be redirected to <a href="https://coach.yoohoo.guru">coach.yoohoo.guru</a></p>
+                <p>You'll be redirected to <a href="https://coach.yoohoo.guru">coach.yoohoo.guru</a></p>
                 {typeof window !== 'undefined' && window.location.replace('https://coach.yoohoo.guru')}
               </div>
             </div>
@@ -592,8 +592,8 @@ function AppRouter() {
           <Suspense fallback={<LoadingScreen />}>
             <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', textAlign: 'center'}}>
               <div>
-                <h2>Redirecting to Angel&apos;s List...</h2>
-                <p>You&apos;ll be redirected to <a href="https://angel.yoohoo.guru">angel.yoohoo.guru</a></p>
+                <h2>Redirecting to Angel's List...</h2>
+                <p>You'll be redirected to <a href="https://angel.yoohoo.guru">angel.yoohoo.guru</a></p>
                 {typeof window !== 'undefined' && window.location.replace('https://angel.yoohoo.guru')}
               </div>
             </div>
@@ -725,7 +725,7 @@ function AppRouter() {
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', textAlign: 'center'}}>
                   <div>
                     <h2>Redirecting to Dashboard...</h2>
-                    <p>You&apos;ll be redirected to <a href="https://dashboard.yoohoo.guru">dashboard.yoohoo.guru</a></p>
+                    <p>You'll be redirected to <a href="https://dashboard.yoohoo.guru">dashboard.yoohoo.guru</a></p>
                     {typeof window !== 'undefined' && window.location.replace('https://dashboard.yoohoo.guru')}
                   </div>
                 </div>
@@ -877,8 +877,8 @@ function AppRouter() {
           <Suspense fallback={<LoadingScreen />}>
             <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', textAlign: 'center'}}>
               <div>
-                <h2>Redirecting to Hero Guru&apos;s...</h2>
-                <p>You&apos;ll be redirected to <a href="https://heroes.yoohoo.guru">heroes.yoohoo.guru</a></p>
+                <h2>Redirecting to Hero Guru's...</h2>
+                <p>You'll be redirected to <a href="https://heroes.yoohoo.guru">heroes.yoohoo.guru</a></p>
                 {typeof window !== 'undefined' && window.location.replace('https://heroes.yoohoo.guru')}
               </div>
             </div>
@@ -889,8 +889,8 @@ function AppRouter() {
           <Suspense fallback={<LoadingScreen />}>
             <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', textAlign: 'center'}}>
               <div>
-                <h2>Redirecting to Hero Guru&apos;s...</h2>
-                <p>You&apos;ll be redirected to <a href="https://heroes.yoohoo.guru">heroes.yoohoo.guru</a></p>
+                <h2>Redirecting to Hero Guru's...</h2>
+                <p>You'll be redirected to <a href="https://heroes.yoohoo.guru">heroes.yoohoo.guru</a></p>
                 {typeof window !== 'undefined' && window.location.replace('https://heroes.yoohoo.guru')}
               </div>
             </div>

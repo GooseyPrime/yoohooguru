@@ -89,7 +89,7 @@ function NotFoundPage() {
         <ErrorMessage>Page Not Found</ErrorMessage>
         <ErrorDescription>
           The page you are looking for might have been removed, had its name changed, 
-          or is temporarily unavailable. Let&apos;s get you back to exploring amazing skills!
+          or is temporarily unavailable. Let's get you back to exploring amazing skills!
         </ErrorDescription>
         <BackButton to="/">
           Return to Home

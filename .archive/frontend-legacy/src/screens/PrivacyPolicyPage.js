@@ -137,8 +137,8 @@ function PrivacyPolicyPage() {
             <li>Performance data and analytics for service improvement</li>
           </ul>
 
-          <h3>Angel&apos;s List and Professional Services</h3>
-          <p>For users providing professional services through Angel&apos;s List, we may also collect:</p>
+          <h3>Angel's List and Professional Services</h3>
+          <p>For users providing professional services through Angel's List, we may also collect:</p>
           <ul>
             <li>Professional certifications and licenses</li>
             <li>Background check results (where applicable)</li>
@@ -155,8 +155,8 @@ function PrivacyPolicyPage() {
             <li>Provide and maintain our skill-sharing platform and specialized subdomains</li>
             <li>Connect you with other community members for skill exchanges and mentorships</li>
             <li>Enable AI-powered skill matching and recommendations</li>
-            <li>Process payments and facilitate Angel&apos;s List professional services</li>
-            <li>Verify credentials and conduct background checks for Angel&apos;s List providers</li>
+            <li>Process payments and facilitate Angel's List professional services</li>
+            <li>Verify credentials and conduct background checks for Angel's List providers</li>
             <li>Improve our services, develop new features, and enhance user experience</li>
             <li>Send you updates, notifications, community news, and relevant opportunities</li>
             <li>Ensure platform safety, prevent fraud, and investigate suspicious activity</li>
@@ -172,11 +172,11 @@ function PrivacyPolicyPage() {
           <ul>
             <li><strong>With Other Users:</strong> Your profile information and skills are visible to other community members based on your privacy settings</li>
             <li><strong>Subdomain Communities:</strong> Information may be shared across relevant specialized subdomains (e.g., cooking.yoohoo.guru)</li>
-            <li><strong>Angel&apos;s List Verification:</strong> Professional credentials and verification status may be displayed to potential clients</li>
+            <li><strong>Angel's List Verification:</strong> Professional credentials and verification status may be displayed to potential clients</li>
             <li><strong>Payment Processors:</strong> Financial information shared with Stripe and other payment providers for transaction processing</li>
             <li><strong>Service Providers:</strong> We may share information with trusted third-party services that help us operate our platform (Firebase, analytics providers, etc.)</li>
             <li><strong>AI Matching Services:</strong> Anonymized data used to improve our AI-powered skill matching algorithms</li>
-            <li><strong>Background Check Providers:</strong> Information shared with certified background check services for Angel&apos;s List verification</li>
+            <li><strong>Background Check Providers:</strong> Information shared with certified background check services for Angel's List verification</li>
             <li><strong>Legal Requirements:</strong> We may disclose information when required by law or to protect our rights and safety</li>
             <li><strong>Business Transfers:</strong> Information may be transferred in connection with a merger, acquisition, or sale of assets</li>
           </ul>

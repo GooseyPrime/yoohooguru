@@ -122,7 +122,7 @@ export default function Login() {
               {/* Sign Up Link */}
               <div className="mt-6 text-center">
                 <p className="text-white-80">
-                  Don&apos;t have an account?{' '}
+                  Don't have an account?{' '}
                   <Link href="/signup" className="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors">
                     Sign up
                   </Link>
@@ -136,7 +136,7 @@ export default function Login() {
                 By signing in, you agree to our{' '}
                 <Link href="/terms" className="text-emerald-400 hover:text-emerald-300 transition-colors">
                   Terms of Service
-                </Link>{&apos; '}
+                </Link>{' '}
                 and{' '}
                 <Link href="/privacy" className="text-emerald-400 hover:text-emerald-300 transition-colors">
                   Privacy Policy

@@ -308,7 +308,7 @@ function AngelsListPage() {
   return (
     <PageContainer>
       <Header>
-        <Title>Angel&apos;s List</Title>
+        <Title>Angel's List</Title>
         <Subtitle>
           Browse local help, rentals, and odd jobs. Booking will prompt sign‑in.
         </Subtitle>

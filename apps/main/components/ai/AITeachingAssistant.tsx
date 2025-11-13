@@ -193,7 +193,7 @@ export default function AITeachingAssistant() {
       <Card>
         <Title>🎓 AI Teaching Assistant</Title>
         <Text>
-          Get AI-powered teaching recommendations tailored to your student&apos;s level and learning style.
+          Get AI-powered teaching recommendations tailored to your student's level and learning style.
         </Text>
 
         {!result && (

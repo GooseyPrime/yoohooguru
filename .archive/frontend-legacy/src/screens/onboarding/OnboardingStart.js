@@ -160,7 +160,7 @@ export default function OnboardingStart() {
   return (
     <div style={{maxWidth: '680px', margin: '0 auto', padding: '2rem'}}>
       <h1>Become a Guru</h1>
-      <p>Let&apos;s set up your YooHoo Guru profile and get you earning.</p>
+      <p>Let's set up your YooHoo Guru profile and get you earning.</p>
 
       {row('Profile', status.profileComplete, '/onboarding/profile')}
       {row('Categories', status.categoriesComplete, '/onboarding/categories')}

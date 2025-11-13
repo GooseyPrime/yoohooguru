@@ -123,7 +123,7 @@ export default function AngelList() {
       name: "Maria Garcia",
       role: "Small Business Owner",
       company: "Local Cafe",
-      content: "Found an amazing graphic designer through Angel&apos;s List who completely redesigned our branding. The process was smooth, communication was excellent, and the results exceeded our expectations.",
+      content: "Found an amazing graphic designer through Angel's List who completely redesigned our branding. The process was smooth, communication was excellent, and the results exceeded our expectations.",
       rating: 5,
       date: "1 month ago",
       featured: true,
@@ -140,7 +140,7 @@ export default function AngelList() {
       name: "Amanda White",
       role: "Event Planner",
       company: "Corporate Events",
-      content: "I use Angel&apos;s List to find reliable vendors for my events. The quality of service providers is consistently high, and the review system helps me make confident choices.",
+      content: "I use Angel's List to find reliable vendors for my events. The quality of service providers is consistently high, and the review system helps me make confident choices.",
       rating: 5,
       date: "3 weeks ago",
       featured: true,
@@ -178,7 +178,7 @@ export default function AngelList() {
   return (
     <>
       <Head>
-        <title>Angel&apos;s List | Local Services Marketplace | YooHoo.Guru</title>
+        <title>Angel's List | Local Services Marketplace | YooHoo.Guru</title>
         <meta name="description" content="Find trusted local services or offer your expertise. Connect with your community for everyday tasks and specialized help." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
@@ -217,7 +217,7 @@ export default function AngelList() {
         <section className="py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="heading-2 mb-4">How Angel&apos;s List Works</h2>
+              <h2 className="heading-2 mb-4">How Angel's List Works</h2>
               <p className="body-large max-w-3xl mx-auto">
                 Connect with trusted local service providers through our secure and user-friendly platform.
               </p>
@@ -252,7 +252,7 @@ export default function AngelList() {
               <h3 className="heading-2 mb-4">Flexible Commission Rates</h3>
               <div className="text-6xl font-bold gradient-text-emerald-blue mb-4">10-15%</div>
               <p className="body-normal max-w-2xl mx-auto mb-8">
-                Angel&apos;s List charges a flexible 10-15% platform commission based on service type and complexity.
+                Angel's List charges a flexible 10-15% platform commission based on service type and complexity.
                 This competitive rate covers payment processing, platform maintenance, customer support,
                 provider verification, and marketing to help you grow your business.
               </p>
@@ -382,8 +382,8 @@ export default function AngelList() {
             <div className="card-featured text-center p-12">
               <h2 className="heading-2 mb-4">Ready to Connect with Your Community?</h2>
               <p className="body-large mb-8 max-w-2xl mx-auto">
-                Whether you&apos;re looking for reliable services or want to offer your expertise,
-                Angel&apos;s List makes it simple, secure, and rewarding.
+                Whether you're looking for reliable services or want to offer your expertise,
+                Angel's List makes it simple, secure, and rewarding.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button variant="gradient" size="lg" href="/signup?type=provider">
