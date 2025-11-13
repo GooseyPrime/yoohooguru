@@ -109,16 +109,6 @@ export default function Home() {
     }
   ];
 
-  // Content hubs
-  const contentHubs = [
-    { icon: "💻", title: "Technology", articleCount: 245, href: "https://tech.yoohoo.guru", gradient: "hover:bg-gradient-to-br hover:from-blue-500/10 hover:to-purple-500/10" },
-    { icon: "📊", title: "Business", articleCount: 189, href: "https://business.yoohoo.guru", gradient: "hover:bg-gradient-to-br hover:from-emerald-500/10 hover:to-blue-500/10" },
-    { icon: "🎨", title: "Art", articleCount: 167, href: "https://art.yoohoo.guru", gradient: "hover:bg-gradient-to-br hover:from-purple-500/10 hover:to-pink-500/10" },
-    { icon: "💪", title: "Fitness", articleCount: 134, href: "https://fitness.yoohoo.guru", gradient: "hover:bg-gradient-to-br hover:from-orange-500/10 hover:to-red-500/10" },
-    { icon: "📚", title: "Education", articleCount: 156, href: "https://language.yoohoo.guru", gradient: "hover:bg-gradient-to-br hover:from-blue-500/10 hover:to-cyan-500/10" },
-    { icon: "🏠", title: "Home", articleCount: 198, href: "https://home.yoohoo.guru", gradient: "hover:bg-gradient-to-br hover:from-green-500/10 hover:to-emerald-500/10" }
-  ];
-
   return (
     <>
       <Head>

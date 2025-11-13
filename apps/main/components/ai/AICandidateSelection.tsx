@@ -74,24 +74,6 @@ const ListItem = styled.li`
   border-left: 3px solid #8b5cf6;
 `;
 
-const TextArea = styled.textarea`
-  width: 100%;
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0.5rem;
-  color: #ffffff;
-  font-size: 1rem;
-  resize: vertical;
-  min-height: 150px;
-  margin-bottom: 1rem;
-  
-  &:focus {
-    outline: none;
-    border-color: #8b5cf6;
-  }
-`;
-
 const Button = styled.button`
   background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
   color: white;
