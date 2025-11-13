@@ -71,7 +71,7 @@ export default function Contact() {
     <>
       <Head>
         <title>Contact Us - YooHoo.Guru</title>
-        <meta name="description" content="Get in touch with the YooHoo.Guru team. We're here to help!" />
+        <meta name="description" content="Get in touch with the YooHoo.Guru team. We&apos;re here to help!" />
       </Head>
 
       <Navigation />

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import type { AICandidateSelectionResponse } from '@/lib/openai';
 
 const Container = styled.div`
   max-width: 1000px;
@@ -74,24 +75,6 @@ const ListItem = styled.li`
   border-left: 3px solid #8b5cf6;
 `;
 
-const TextArea = styled.textarea`
-  width: 100%;
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0.5rem;
-  color: #ffffff;
-  font-size: 1rem;
-  resize: vertical;
-  min-height: 150px;
-  margin-bottom: 1rem;
-  
-  &:focus {
-    outline: none;
-    border-color: #8b5cf6;
-  }
-`;
-
 const Button = styled.button`
   background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
   color: white;
@@ -151,7 +134,7 @@ interface AICandidateSelectionProps {
 
 export default function AICandidateSelection({ jobDescription, candidates }: AICandidateSelectionProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<AICandidateSelectionResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const analyzeCandidate = async () => {
@@ -227,7 +210,7 @@ export default function AICandidateSelection({ jobDescription, candidates }: AIC
             </Card>
 
             <SectionTitle>📊 Ranked Candidates</SectionTitle>
-            {result.rankedCandidates?.map((candidate: any, index: number) => (
+            {result.rankedCandidates?.map((candidate, index: number) => (
               <CandidateCard key={index}>
                 <div style={{ marginBottom: '1rem' }}>
                   <CandidateRank>#{index + 1}</CandidateRank>
@@ -238,10 +221,10 @@ export default function AICandidateSelection({ jobDescription, candidates }: AIC
             ))}
 
             <SectionTitle>📋 Detailed Analysis</SectionTitle>
-            {result.analysis?.map((analysis: any, index: number) => (
+            {result.analysis && Object.entries(result.analysis).map(([candidateName, details], index: number) => (
               <Card key={index} style={{ background: 'rgba(0, 0, 0, 0.2)' }}>
-                <CandidateName>{analysis.candidate}</CandidateName>
-                <Text style={{ color: '#ffffff' }}>{analysis.details}</Text>
+                <CandidateName>{candidateName}</CandidateName>
+                <Text style={{ color: '#ffffff' }}>{details}</Text>
               </Card>
             ))}
 

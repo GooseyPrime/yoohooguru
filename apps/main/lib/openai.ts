@@ -14,9 +14,17 @@ export interface AIMatchmakingRequest {
   gunuGoals: string;
 }
 
+export interface UserProfile {
+  name?: string;
+  bio?: string;
+  skills?: string[];
+  experience?: string;
+  [key: string]: unknown;
+}
+
 export interface AIProfileAssistantRequest {
   userType: 'guru' | 'gunu' | 'angel' | 'hero';
-  currentProfile: any;
+  currentProfile: UserProfile;
   goals?: string;
 }
 
@@ -54,10 +62,18 @@ export interface AILearningStyleRequest {
   responses: Record<string, string>;
 }
 
+export interface AIMatchmakingResponse {
+  compatibilityScore: number;
+  strengths: string[];
+  considerations: string[];
+  recommendation: string;
+  suggestedTopics: string[];
+}
+
 /**
  * AI Matchmaking for Guru-Gunu pairing
  */
-export async function getAIMatchmaking(request: AIMatchmakingRequest): Promise<any> {
+export async function getAIMatchmaking(request: AIMatchmakingRequest): Promise<AIMatchmakingResponse> {
   try {
     const prompt = `You are an expert matchmaking AI for an educational platform. Analyze the following information and provide a compatibility score and detailed explanation.
 
@@ -102,10 +118,19 @@ Provide a JSON response with:
   }
 }
 
+export interface AIProfileAssistanceResponse {
+  suggestions: string[];
+  missingElements: string[];
+  strengthAreas: string[];
+  optimizedBio: string;
+  keywordRecommendations: string[];
+  nextSteps: string[];
+}
+
 /**
  * AI Profile Setup Assistant
  */
-export async function getAIProfileAssistance(request: AIProfileAssistantRequest): Promise<any> {
+export async function getAIProfileAssistance(request: AIProfileAssistantRequest): Promise<AIProfileAssistanceResponse> {
   try {
     const prompt = `You are a profile optimization expert. Help improve this ${request.userType} profile.
 
@@ -144,10 +169,20 @@ Provide a JSON response with:
   }
 }
 
+export interface AITeachingAssistanceResponse {
+  teachingApproach: string;
+  keyPoints: string[];
+  examples: string[];
+  exercises: string[];
+  assessmentQuestions: string[];
+  resources: string[];
+  commonMistakes: string[];
+}
+
 /**
  * AI Teaching Assistant for Gurus
  */
-export async function getAITeachingAssistance(request: AITeachingAssistantRequest): Promise<any> {
+export async function getAITeachingAssistance(request: AITeachingAssistantRequest): Promise<AITeachingAssistanceResponse> {
   try {
     const prompt = `You are an expert teaching assistant helping a Guru teach ${request.topic} to a ${request.studentLevel} level student with ${request.learningStyle} learning style.
 
@@ -186,10 +221,19 @@ Provide a JSON response with:
   }
 }
 
+export interface AIPriceRecommendationResponse {
+  recommendedPrice: number;
+  priceRange: { min: number; max: number };
+  factors: string[];
+  marketComparison: string;
+  pricingStrategy: string;
+  valueProposition: string;
+}
+
 /**
  * AI Price Setting Recommendations
  */
-export async function getAIPriceRecommendation(request: AIPriceRecommendationRequest): Promise<any> {
+export async function getAIPriceRecommendation(request: AIPriceRecommendationRequest): Promise<AIPriceRecommendationResponse> {
   try {
     const prompt = `You are a pricing strategy expert for educational services. Analyze the following and recommend pricing.
 
@@ -231,10 +275,21 @@ Provide a JSON response with:
   }
 }
 
+export interface AIJobHelperResponse {
+  improvedTitle: string;
+  description: string;
+  requiredSkills: string[];
+  niceToHaveSkills: string[];
+  responsibilities: string[];
+  qualifications: string[];
+  budgetGuidance: string;
+  keywords: string[];
+}
+
 /**
  * AI Job Posting Helper
  */
-export async function getAIJobHelper(request: AIJobHelperRequest): Promise<any> {
+export async function getAIJobHelper(request: AIJobHelperRequest): Promise<AIJobHelperResponse> {
   try {
     const prompt = `You are a job posting expert. Help create an effective job posting.
 
@@ -277,10 +332,19 @@ Provide a JSON response with:
   }
 }
 
+export interface AICandidateSelectionResponse {
+  rankedCandidates: Array<{ name: string; rank: number; score: number }>;
+  topPick: { name: string; reasoning: string };
+  analysis: Record<string, string>;
+  interviewQuestions: string[];
+  redFlags: string[];
+  recommendations: string[];
+}
+
 /**
  * AI Candidate Selection Tool
  */
-export async function getAICandidateSelection(request: AICandidateSelectionRequest): Promise<any> {
+export async function getAICandidateSelection(request: AICandidateSelectionRequest): Promise<AICandidateSelectionResponse> {
   try {
     const prompt = `You are a candidate evaluation expert. Analyze these candidates for the job.
 
@@ -326,10 +390,21 @@ Provide a JSON response with:
   }
 }
 
+export interface AILearningStyleAssessmentResponse {
+  primaryStyle: 'visual' | 'auditory' | 'kinesthetic' | 'reading/writing';
+  secondaryStyle: 'visual' | 'auditory' | 'kinesthetic' | 'reading/writing';
+  stylePercentages: Record<string, number>;
+  characteristics: string[];
+  studyRecommendations: string[];
+  teachingApproach: string;
+  strengthAreas: string[];
+  developmentAreas: string[];
+}
+
 /**
  * AI Learning Style Assessment
  */
-export async function getAILearningStyleAssessment(request: AILearningStyleRequest): Promise<any> {
+export async function getAILearningStyleAssessment(request: AILearningStyleRequest): Promise<AILearningStyleAssessmentResponse> {
   try {
     const prompt = `You are a learning style assessment expert. Analyze these assessment responses and determine the learning style.
 

@@ -1,5 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
+import Link from 'next/link';
 import Navigation from '../../../components/ui/Navigation';
 import { NewsSection } from '../../../components/NewsSection';
 import { BlogList } from '../../../components/BlogList';
@@ -19,9 +21,9 @@ export default function WritingHome() {
         <section className="section-padding relative overflow-hidden">
           {/* Animated Background */}
           <div className="absolute inset-0 z-0">
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-500/20 via-primarydark to-from-indigo-500 to-purple-500/20" />
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 via-primarydark to-purple-500/20" />
             <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl animate-pulse-slow" />
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-500 to-500/20 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }} />
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }} />
           </div>
 
           {/* Content */}
@@ -48,13 +50,13 @@ export default function WritingHome() {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
-              </a>
+              </Link>
               <a
                 href="/signup?type=guru"
                 className="w-full sm:w-auto px-8 py-4 glass-button text-white text-lg font-semibold rounded-xl hover:bg-white-20 transition-all duration-300 flex items-center justify-center space-x-2"
               >
                 <span>Become a Writing Guru</span>
-              </a>
+              </Link>
             </div>
 
             {/* Stats */}
@@ -102,18 +104,18 @@ export default function WritingHome() {
                   className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-lg font-semibold rounded-xl hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-glow-indigo-lg hover:-translate-y-1"
                 >
                   Start Learning Writing
-                </a>
+                </Link>
                 <a
                   href="/signup?type=guru"
                   className="w-full sm:w-auto px-8 py-4 glass-button text-white text-lg font-semibold rounded-xl hover:bg-white-20 transition-all duration-300"
                 >
                   Become a Writing Guru
-                </a>
+                </Link>
               </div>
             </div>
           </div>
         </section>
       </main>
-    </gt;
+    </>
   );
 }

@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import Navigation from '../../../components/ui/Navigation';
-import NewsSection from '../../../components/NewsSection';
-import BlogList from '../../../components/BlogList';
+import { NewsSection } from '../../../components/NewsSection';
+import { BlogList } from '../../../components/BlogList';
 import { getSubjectConfig } from '../../../config/subjects';
 
 interface SubjectPageProps {
@@ -198,16 +198,16 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subject }) => {
       {/* News Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <NewsSection 
-          title={`${subjectData.title} News & Updates`}
-          newsItems={subjectData.news || []}
+          subdomain={subject}
+          limit={5}
         />
       </div>
 
       {/* Blog Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <BlogList 
-          title={`${subjectData.title} Articles & Tutorials`}
-          blogPosts={subjectData.blogs || []}
+          subdomain={subject}
+          limit={5}
         />
       </div>
 
