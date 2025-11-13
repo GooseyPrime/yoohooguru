@@ -63,7 +63,7 @@ export default function AdminDashboard() {
   const checkAuthStatus = useCallback(() => {
     const authCookie = document.cookie
       .split('; ')
-      .find(row => row.startsWith(&apos;yoohoo_admin=&apos;))
+      .find(row => row.startsWith('yoohoo_admin='))
     
     if (authCookie && authCookie.split('=')[1] === '1') {
       setIsAuthenticated(true)
