@@ -1,5 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import Navigation from '../components/ui/Navigation';
 
 export default function HowItWorks() {
@@ -167,18 +168,18 @@ export default function HowItWorks() {
                 Join thousands of learners and experts already using YooHoo.Guru
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a
+                <Link
                   href="/signup"
                   className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white text-lg font-semibold rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-300 shadow-lg hover:shadow-glow-emerald-lg hover:-translate-y-1"
                 >
                   Create Free Account
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/pricing"
                   className="w-full sm:w-auto px-8 py-4 glass-button text-white text-lg font-semibold rounded-xl hover:bg-white-20 transition-all duration-300"
                 >
                   View Pricing
-                </a>
+                </Link>
               </div>
             </div>
           </div>

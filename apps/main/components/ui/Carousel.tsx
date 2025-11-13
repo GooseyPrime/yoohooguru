@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface CarouselProps {
@@ -25,6 +25,16 @@ export const Carousel: React.FC<CarouselProps> = ({
 
   const totalSlides = Math.ceil(children.length / itemsPerView);
 
+  const handleNext = useCallback(() => {
+    setDirection(1);
+    setCurrentIndex((prev) => (prev + 1) % totalSlides);
+  }, [totalSlides]);
+
+  const handlePrev = useCallback(() => {
+    setDirection(-1);
+    setCurrentIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
+  }, [totalSlides]);
+
   useEffect(() => {
     if (!autoPlay) return;
 
@@ -33,17 +43,7 @@ export const Carousel: React.FC<CarouselProps> = ({
     }, interval);
 
     return () => clearInterval(timer);
-  }, [currentIndex, autoPlay, interval]);
-
-  const handleNext = () => {
-    setDirection(1);
-    setCurrentIndex((prev) => (prev + 1) % totalSlides);
-  };
-
-  const handlePrev = () => {
-    setDirection(-1);
-    setCurrentIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
-  };
+  }, [currentIndex, autoPlay, interval, handleNext]);
 
   const handleDotClick = (index: number) => {
     setDirection(index > currentIndex ? 1 : -1);
