@@ -38,27 +38,58 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ subdomain, limit = 5 }
       setArticles([]);
       return;
     }
+
+    let timeoutId: NodeJS.Timeout;
+    let isCancelled = false;
+
     const fetchNews = async () => {
       try {
         setLoading(true);
+        setError(null);
+
+        // Set timeout to prevent indefinite loading
+        timeoutId = setTimeout(() => {
+          if (!isCancelled && loading) {
+            setError('Request timeout. Content temporarily unavailable.');
+            setLoading(false);
+          }
+        }, 10000); // 10 second timeout
+
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.yoohoo.guru';
         const response = await fetch(`${apiUrl}/api/news/${subdomain}`);
 
+        if (isCancelled) return;
+
+        clearTimeout(timeoutId);
+
         if (!response.ok) {
-          throw new Error('Failed to fetch news');
+          throw new Error(`Failed to fetch news (${response.status})`);
         }
 
         const data = await response.json();
-        setArticles(data.news?.slice(0, limit) || []);
+        if (!isCancelled) {
+          setArticles(data.news?.slice(0, limit) || []);
+        }
       } catch (err) {
-        console.error('Error fetching news:', err);
-        setError('Unable to load news articles');
+        if (!isCancelled) {
+          console.error('Error fetching news:', err);
+          setError('Content temporarily unavailable. Please check back soon.');
+        }
       } finally {
-        setLoading(false);
+        if (!isCancelled) {
+          clearTimeout(timeoutId);
+          setLoading(false);
+        }
       }
     };
 
     fetchNews();
+
+    // Cleanup function
+    return () => {
+      isCancelled = true;
+      clearTimeout(timeoutId);
+    };
   }, [subdomain, limit]);
 
   if (loading) {
