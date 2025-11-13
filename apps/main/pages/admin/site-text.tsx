@@ -180,7 +180,7 @@ export default function SiteTextManager() {
         text.subdomain || '',
         text.type
       ])
-    ].map(row => row.join(&apos;,&apos;)).join('\n')
+    ].map(row => row.join(',')).join('\n')
 
     const blob = new Blob([csvContent], { type: 'text/csv' })
     const url = window.URL.createObjectURL(blob)
