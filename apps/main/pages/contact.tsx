@@ -263,7 +263,7 @@ export default function Contact() {
               <p className="text-white-80 mb-8">
                 Check out our Help Center for answers to common questions
               </p>
-              <a
+              <Link
                 href="/help"
                 className="inline-flex items-center space-x-2 px-8 py-4 bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-blue-600 transition-all duration-300"
               >
@@ -271,7 +271,7 @@ export default function Contact() {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
-              </a>
+              </Link>
             </div>
           </div>
         </section>
