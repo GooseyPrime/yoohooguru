@@ -192,6 +192,57 @@ module.exports = {
   createSkillAdditions,
   createAccessibilityPrefs,
   createUserProfileAdditions,
+  createDisabilityAttestation,
+  createHeroGuruPrefs,
   validateCoachingStyles,
   validateResourceLink
 };
+/**
+ * Create disability attestation object
+ * @param {Object} attestation - Attestation data
+ * @returns {Object} DisabilityAttestation object
+ */
+function createDisabilityAttestation({
+  attested = false,
+  attestedAt = null,
+  fullLegalName = '',
+  attestationText = '',
+  documentationProvided = false,
+  documentationVerified = false,
+  verifiedBy = null,
+  verifiedAt = null,
+  verificationNotes = ''
+} = {}) {
+  return {
+    attested,
+    attestedAt,
+    fullLegalName,
+    attestationText,
+    documentationProvided,
+    documentationVerified,
+    verifiedBy,
+    verifiedAt,
+    verificationNotes
+  };
+}
+
+/**
+ * Create Hero Guru preferences object
+ * @param {Object} prefs - Hero Guru preferences
+ * @returns {Object} HeroGuruPrefs object
+ */
+function createHeroGuruPrefs({
+  provideFreeServices = false,
+  enabledAt = null,
+  disabledAt = null,
+  totalFreeSessionsProvided = 0,
+  visible = true
+} = {}) {
+  return {
+    provideFreeServices,
+    enabledAt,
+    disabledAt,
+    totalFreeSessionsProvided,
+    visible
+  };
+}

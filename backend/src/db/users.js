@@ -138,5 +138,60 @@ module.exports = {
   updateModifiedMasters,
   findModifiedMasters,
   findByAccessibility,
-  updateLastActivity
+  updateLastActivity,
+  updateDisabilityAttestation,
+  updateHeroGuruPrefs,
+  findHeroGurusProvidingFreeServices,
+  findUsersWithDisabilityAttestation
 };
+/**
+ * Update disability attestation
+ * @param {string} userId - User ID
+ * @param {Object} attestation - Disability attestation data
+ * @returns {Object} Updated user document
+ */
+async function updateDisabilityAttestation(userId, attestation) {
+  return merge(userId, { disabilityAttestation: attestation });
+}
+
+/**
+ * Update Hero Guru preferences
+ * @param {string} userId - User ID
+ * @param {Object} heroGuruPrefs - Hero Guru preferences
+ * @returns {Object} Updated user document
+ */
+async function updateHeroGuruPrefs(userId, heroGuruPrefs) {
+  return merge(userId, { heroGuruPrefs });
+}
+
+/**
+ * Find Hero Gurus who provide free services
+ * @param {Object} filters - Search filters
+ * @returns {Array} Array of Hero Gurus
+ */
+async function findHeroGurusProvidingFreeServices(filters = {}) {
+  const col = getCollection();
+  let query = col
+    .where('heroGuruPrefs.provideFreeServices', '==', true)
+    .where('heroGuruPrefs.visible', '==', true);
+  
+  const snap = await query.limit(50).get();
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+/**
+ * Find users with disability attestation
+ * @param {boolean} verified - Filter by verification status
+ * @returns {Array} Array of users with disability attestation
+ */
+async function findUsersWithDisabilityAttestation(verified = null) {
+  const col = getCollection();
+  let query = col.where('disabilityAttestation.attested', '==', true);
+  
+  if (verified !== null) {
+    query = query.where('disabilityAttestation.documentationVerified', '==', verified);
+  }
+  
+  const snap = await query.limit(100).get();
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
