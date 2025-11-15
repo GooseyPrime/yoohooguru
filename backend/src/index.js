@@ -317,6 +317,17 @@ if (config.nodeEnv !== 'test') {
     if (req.path.startsWith('/api/webhooks/')) {
       return next();
     }
+    // Skip CSRF ONLY for public authentication endpoints (register, verify)
+    // that are called during initial sign-up before a session exists.
+    // All authenticated state-changing endpoints (profile updates, account deletion, etc.)
+    // MUST still have CSRF protection to prevent account takeover attacks.
+    const publicAuthEndpoints = [
+      '/api/auth/register',
+      '/api/auth/verify'
+    ];
+    if (publicAuthEndpoints.some(endpoint => req.path === endpoint)) {
+      return next();
+    }
     // Apply CSRF protection to all other routes
     return csrf()(req, res, next);
   });
