@@ -1,0 +1,95 @@
+# Orphan Detection Ignore File
+# Files and patterns that should NOT be flagged as orphans
+
+# ============================================
+# Next.js Pages (Auto-routed)
+# ============================================
+# All pages are automatically routed by Next.js and don't need explicit imports
+pages/**/*.tsx
+pages/**/*.ts
+pages/**/*.jsx
+pages/**/*.js
+
+# ============================================
+# Next.js Special Files
+# ============================================
+# These files are automatically used by Next.js
+pages/_app.tsx
+pages/_document.tsx
+pages/_error.tsx
+pages/404.tsx
+next.config.js
+middleware.ts
+postcss.config.js
+tailwind.config.js
+
+# ============================================
+# API Routes (Auto-routed)
+# ============================================
+# API routes are automatically routed
+pages/api/**/*.ts
+pages/api/**/*.js
+
+# ============================================
+# Test Files
+# ============================================
+# Test files are not imported in production code
+**/*.test.ts
+**/*.test.tsx
+**/*.test.js
+**/*.spec.ts
+**/*.spec.tsx
+**/*.spec.js
+tests/**/*
+__tests__/**/*
+jest.setup.js
+jest.config.js
+playwright.config.ts
+
+# ============================================
+# Configuration Files
+# ============================================
+babel.config.js
+eslint.config.js
+.eslintrc.*
+tsconfig.json
+vercel.json
+
+# ============================================
+# Build/Development Scripts
+# ============================================
+scripts/**/*.js
+scripts/**/*.sh
+*.config.js
+*.config.ts
+
+# ============================================
+# Type Definitions
+# ============================================
+types/**/*.d.ts
+**/*.d.ts
+
+# ============================================
+# Backend Utility Scripts
+# ============================================
+# These are run manually, not imported
+backend/populate-initial-content.js
+backend/seed-content.js
+backend/show-content-summary.js
+backend/ai-content-migration.js
+backend/test-*.js
+backend/src/scripts/**/*
+
+# ============================================
+# Components That May Be Dynamically Imported
+# ============================================
+# These components might be imported dynamically or used in pages
+components/**/*.tsx
+components/**/*.ts
+
+# ============================================
+# Library Files
+# ============================================
+# Utility libraries that may be imported conditionally
+lib/**/*.ts
+lib/**/*.tsx
