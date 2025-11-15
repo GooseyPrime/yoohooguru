@@ -2,12 +2,12 @@ import React from 'react';
 import Navigation from '../../../components/ui/Navigation';
 import Seo from '../../../components/Seo';
 
-export default function Skills() {{
+export default function Skills() {
   return (
     <>
       <Seo
-        title="Skills - Angel's List - YooHoo.Guru"
-        description="Explore skills and courses available on Angel's List. Start learning today."
+        title="Skills - Angel&apos;s List - YooHoo.Guru"
+        description="Explore skills and courses available on Angel&apos;s List. Start learning today."
         url="https://angel.yoohoo.guru/skills"
         image="https://angel.yoohoo.guru/assets/og-skills.jpg"
       />
@@ -21,7 +21,7 @@ export default function Skills() {{
             <div className="max-w-4xl mx-auto text-center">
               <h1 className="text-5xl md:text-6xl font-display font-bold text-white mb-6">
                 Skills & Courses
-                <span className="block gradient-text-emerald-blue mt-2">on Angel's List</span>
+                <span className="block gradient-text-emerald-blue mt-2">on Angel&apos;s List</span>
               </h1>
               <p className="text-xl text-white-80 leading-relaxed">
                 Discover a wide range of skills and courses to help you achieve your goals.
@@ -41,4 +41,4 @@ export default function Skills() {{
       </main>
     </>
   );
-}}
+}

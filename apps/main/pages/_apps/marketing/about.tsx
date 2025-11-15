@@ -2,7 +2,7 @@ import React from 'react';
 import Navigation from '../../../components/ui/Navigation';
 import Seo from '../../../components/Seo';
 
-export default function About() {{
+export default function About() {
   return (
     <>
       <Seo
@@ -39,7 +39,7 @@ export default function About() {{
                 Marketing Guru is part of the YooHoo.Guru ecosystem, dedicated to connecting learners with expert teachers and service providers. Our mission is to make quality education and services accessible to everyone.
               </p>
               <p className="text-lg text-white-80 leading-relaxed">
-                Whether you're looking to learn new skills, share your expertise, or find trusted service providers, Marketing Guru provides the platform and community to make it happen.
+                Whether you&apos;re looking to learn new skills, share your expertise, or find trusted service providers, Marketing Guru provides the platform and community to make it happen.
               </p>
             </div>
           </div>
@@ -47,4 +47,4 @@ export default function About() {{
       </main>
     </>
   );
-}}
+}
