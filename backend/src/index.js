@@ -311,16 +311,21 @@ app.use('/api/webhooks/stripe', express.raw({ type: 'application/json' }), strip
 
 // CSRF protection (disabled in test environment to simplify testing)
 // Skip CSRF validation for webhook endpoints (they use signature verification instead)
-// and authentication endpoints (they use session-based auth)
 if (config.nodeEnv !== 'test') {
   app.use((req, res, next) => {
     // Skip CSRF for webhook routes
     if (req.path.startsWith('/api/webhooks/')) {
       return next();
     }
-    // Skip CSRF for auth routes (login, register, OAuth callbacks)
-    // These routes handle their own authentication and session management
-    if (req.path.startsWith('/api/auth/')) {
+    // Skip CSRF ONLY for public authentication endpoints (register, verify)
+    // that are called during initial sign-up before a session exists.
+    // All authenticated state-changing endpoints (profile updates, account deletion, etc.)
+    // MUST still have CSRF protection to prevent account takeover attacks.
+    const publicAuthEndpoints = [
+      '/api/auth/register',
+      '/api/auth/verify'
+    ];
+    if (publicAuthEndpoints.some(endpoint => req.path === endpoint)) {
       return next();
     }
     // Apply CSRF protection to all other routes
