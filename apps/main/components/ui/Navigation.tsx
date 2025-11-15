@@ -17,12 +17,13 @@ export default function Navigation() {
   }, []);
 
   const navLinks = [
-    { href: '/about', label: 'About' },
-    { href: '/how-it-works', label: 'How It Works' },
-    { href: '/pricing', label: 'Pricing' },
-    { href: '/blog', label: 'Blog' },
-    { href: '/help', label: 'Help' },
-  ];
+      { href: '/about', label: 'About' },
+      { href: '/how-it-works', label: 'How It Works' },
+      { href: '/pricing', label: 'Pricing' },
+      { href: '/blog', label: 'Blog' },
+      { href: '/help', label: 'Help' },
+      { href: '/safety', label: 'Safety' },
+    ];
 
   return (
     <>
