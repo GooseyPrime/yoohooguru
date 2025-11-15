@@ -6,6 +6,7 @@ const { getSubdomainConfig, isValidSubdomain } = require('../config/subdomains')
 const { logger } = require('../utils/logger');
 const { uuidv4 } = require('../utils/uuid');
 const { cacheMiddleware } = require('../middleware/cache');
+const { requireAuth } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -17,6 +18,35 @@ const guruPagesLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   // Remove custom keyGenerator to use the default IPv6-compatible one
+});
+
+// Rate limiter for lead form submissions (strict: 5 submissions/hour per user)
+const leadSubmissionLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5, // Limit each user to 5 requests per windowMs
+  message: 'Too many leads submitted from this account, please try again in an hour',
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: function (req /*, res*/) {
+    // Use user ID for per-user rate limiting. Fallback to IP if user hasn't been set by requireAuth (should not happen).
+    if (req.user && req.user.id) {
+      return req.user.id;
+    }
+    return req.ip;
+  },
+});
+
+// Rate limiter for lead submissions (stricter limits to prevent spam)
+const leadSubmissionLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5, // Limit each user to 5 lead submissions per hour
+  message: 'Too many lead submissions, please try again later',
+  standardHeaders: true,
+  legacyHeaders: false,
+  // Use user ID as key for authenticated requests, fallback to IP
+  keyGenerator: (req) => {
+    return req.user?.uid || req.ip;
+  }
 });
 
 /**
@@ -499,8 +529,17 @@ router.get('/:subdomain/posts/:slug', async (req, res) => {
 /**
  * POST /:subdomain/leads
  * Submit a lead form for a guru subdomain
+ * 
+ * Security:
+ * - Requires authentication (requireAuth middleware) to prevent anonymous spam
+ * - Rate limited (leadSubmissionLimiter) to 5 submissions per hour per user
+ * - Tracks user ID (createdBy) for audit trail
+ * - Validates email format and required fields
+ * 
+ * @middleware requireAuth - Authenticates user and sets req.user
+ * @middleware leadSubmissionLimiter - Rate limits to 5 requests/hour per user
  */
-router.post('/:subdomain/leads', async (req, res) => {
+router.post('/:subdomain/leads', requireAuth, leadSubmissionLimiter, async (req, res) => {
   try {
     const { subdomain } = req.params;
     const { name, email, service, message, phone } = req.body;
@@ -553,12 +592,13 @@ router.post('/:subdomain/leads', async (req, res) => {
       message: message ? message.trim() : '',
       phone: phone ? phone.trim() : null,
       subdomain,
-      guruCharacter: guru.config.character,
+      guruCharacter: guru.config.character || null,
       createdAt: new Date().toISOString(),
+      createdBy: req.user.uid, // Track which authenticated user created the lead
       status: 'new',
       source: 'guru-website',
-      ip: req.ip,
-      userAgent: req.get('User-Agent')
+      ip: req.ip || null,
+      userAgent: req.get('User-Agent') || null
     };
 
     // Save lead to Firebase using batch operations
