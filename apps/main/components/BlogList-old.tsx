@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { fetchWithRetry, buildAPIUrl } from '../utils/apiHelpers';
 
 interface BlogPost {
   id: string;
@@ -20,7 +19,7 @@ interface BlogListProps {
   showExcerpts?: boolean;
 }
 
-// Allow-list of valid subjects
+// Allow-list of valid subjects (copy from getStaticPaths in [subject]/index.tsx)
 const VALID_SUBJECTS = [
   'art', 'auto', 'business', 'coding', 'cooking', 'crafts', 'data',
   'design', 'finance', 'fitness', 'gardening', 'history',
@@ -34,10 +33,10 @@ export const BlogList: React.FC<BlogListProps> = ({
   limit = 6,
   showExcerpts = true
 }) => {
+
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     // Validate subdomain before making the request
@@ -48,82 +47,74 @@ export const BlogList: React.FC<BlogListProps> = ({
       return;
     }
 
+    let timeoutId: NodeJS.Timeout;
     let isCancelled = false;
 
-    const fetchPosts = async () => {
+    const fetchBlogPosts = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        // Use fetchWithRetry for automatic retry logic
-        const response = await fetchWithRetry(
-          buildAPIUrl(`/api/${subdomain}/posts?limit=${limit}&page=1`),
-          {},
-          {
-            maxRetries: 3,
-            retryDelay: 1000,
-            backoff: true,
-            timeout: 10000,
+        // Set timeout to prevent indefinite loading
+        timeoutId = setTimeout(() => {
+          if (!isCancelled && loading) {
+            setError('Request timeout. Content temporarily unavailable.');
+            setLoading(false);
           }
-        );
+        }, 10000); // 10 second timeout
+
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.yoohoo.guru';
+        const response = await fetch(`${apiUrl}/api/${subdomain}/posts?limit=${limit}&page=1`);
 
         if (isCancelled) return;
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch blog posts (${response.status})`);
+        }
 
         const data = await response.json();
         if (!isCancelled) {
           setPosts(data.posts || []);
-          setRetryCount(0); // Reset retry count on success
         }
       } catch (err) {
         if (!isCancelled) {
           console.error('Error fetching blog posts:', err);
-          setError('Blog posts temporarily unavailable. Please check back soon.');
+          setError('Content temporarily unavailable. Please check back soon.');
         }
       } finally {
         if (!isCancelled) {
+          clearTimeout(timeoutId);
           setLoading(false);
         }
       }
     };
 
-    fetchPosts();
+    fetchBlogPosts();
 
     // Cleanup function
     return () => {
       isCancelled = true;
+      clearTimeout(timeoutId);
     };
-  }, [subdomain, limit, retryCount]);
-
-  const handleRetry = () => {
-    setRetryCount((prev) => prev + 1);
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subdomain, limit]);
 
   if (loading) {
     return (
-      <div className="blog-list loading" role="status" aria-live="polite">
+      <div className="blog-list loading">
         <h2>Latest Blog Posts</h2>
-        <div className="loading-spinner" aria-label="Loading blog posts">
-          <div className="spinner"></div>
-          <p>Loading blog posts...</p>
-        </div>
+        <p>Loading blog posts...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="blog-list error" role="alert">
+      <div className="blog-list error">
         <h2>Latest Blog Posts</h2>
-        <div className="error-message">
-          <p>{error}</p>
-          <button
-            onClick={handleRetry}
-            className="retry-button"
-            aria-label="Retry loading blog posts"
-          >
-            Try Again
-          </button>
-        </div>
+        <p>{error}</p>
       </div>
     );
   }
@@ -132,62 +123,61 @@ export const BlogList: React.FC<BlogListProps> = ({
     return (
       <div className="blog-list empty">
         <h2>Latest Blog Posts</h2>
-        <p>No blog posts available at this time. Check back soon!</p>
+        <p>No blog posts available yet. Check back soon for expert insights!</p>
       </div>
     );
   }
 
   return (
-    <section className="blog-list" aria-label="Latest blog posts">
+    <section className="blog-list">
       <h2>Latest Blog Posts</h2>
       <div className="blog-grid">
         {posts.map((post) => (
           <article key={post.id} className="blog-card">
             <div className="blog-header">
               <h3 className="blog-title">
-                <Link
-                  href={`/blog/${post.slug}`}
-                  className="blog-link"
-                  aria-label={`Read blog post: ${post.title}`}
-                >
-                  {post.title}
+                <Link href={`/_apps/${subdomain}/blog/${post.slug}`}>
+                  <a className="blog-link">{post.title}</a>
                 </Link>
               </h3>
               <div className="blog-meta">
-                <span className="blog-author" aria-label={`Written by ${post.author}`}>
-                  By {post.author}
-                </span>
-                <span className="blog-date" aria-label={`Published ${formatDate(post.publishedAt)}`}>
-                  {formatDate(post.publishedAt)}
-                </span>
+                <span className="author">{post.author}</span>
                 {post.readTime && (
-                  <span className="blog-read-time" aria-label={`Reading time: ${post.readTime}`}>
-                    {post.readTime}
-                  </span>
+                  <>
+                    <span className="separator">•</span>
+                    <span className="read-time">{post.readTime}</span>
+                  </>
                 )}
+                <span className="separator">•</span>
+                <span className="date">{formatDate(post.publishedAt)}</span>
               </div>
             </div>
+
             {showExcerpts && post.excerpt && (
               <p className="blog-excerpt">{post.excerpt}</p>
             )}
+
             {post.tags && post.tags.length > 0 && (
-              <div className="blog-tags" aria-label="Post tags">
-                {post.tags.slice(0, 3).map((tag) => (
-                  <span key={tag} className="blog-tag">
+              <div className="blog-tags">
+                {post.tags.slice(0, 3).map((tag, index) => (
+                  <span key={index} className="tag">
                     {tag}
                   </span>
                 ))}
               </div>
             )}
-            <Link
-              href={`/blog/${post.slug}`}
-              className="read-more"
-              aria-label={`Read full post: ${post.title}`}
-            >
-              Read more →
+
+            <Link href={`/_apps/${subdomain}/blog/${post.slug}`}>
+              <a className="read-more">Read full post →</a>
             </Link>
           </article>
         ))}
+      </div>
+
+      <div className="view-all">
+        <Link href={`/_apps/${subdomain}/blog`}>
+          <a className="view-all-link">View all blog posts →</a>
+        </Link>
       </div>
 
       <style jsx>{`
@@ -205,28 +195,24 @@ export const BlogList: React.FC<BlogListProps> = ({
 
         .blog-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+          grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
           gap: 2rem;
+          margin-bottom: 2rem;
         }
 
         .blog-card {
           background: #fff;
           border: 1px solid #e0e0e0;
           border-radius: 8px;
-          padding: 1.5rem;
+          padding: 1.75rem;
           transition: box-shadow 0.3s ease, transform 0.2s ease;
           display: flex;
           flex-direction: column;
         }
 
         .blog-card:hover {
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-          transform: translateY(-2px);
-        }
-
-        .blog-card:focus-within {
-          outline: 2px solid #2563eb;
-          outline-offset: 2px;
+          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+          transform: translateY(-3px);
         }
 
         .blog-header {
@@ -236,7 +222,8 @@ export const BlogList: React.FC<BlogListProps> = ({
         .blog-title {
           font-size: 1.375rem;
           margin: 0 0 0.75rem 0;
-          line-height: 1.4;
+          line-height: 1.3;
+          font-weight: 600;
         }
 
         .blog-link {
@@ -245,30 +232,30 @@ export const BlogList: React.FC<BlogListProps> = ({
           transition: color 0.2s ease;
         }
 
-        .blog-link:hover,
-        .blog-link:focus {
+        .blog-link:hover {
           color: #2563eb;
         }
 
         .blog-meta {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.75rem;
           font-size: 0.875rem;
           color: #666;
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 0.5rem;
         }
 
-        .blog-author {
+        .separator {
+          color: #ccc;
+        }
+
+        .author {
           font-weight: 500;
-        }
-
-        .blog-date,
-        .blog-read-time {
-          color: #888;
+          color: #333;
         }
 
         .blog-excerpt {
-          color: #333;
+          color: #555;
           line-height: 1.6;
           margin-bottom: 1rem;
           flex-grow: 1;
@@ -281,12 +268,12 @@ export const BlogList: React.FC<BlogListProps> = ({
           margin-bottom: 1rem;
         }
 
-        .blog-tag {
+        .tag {
+          background: #f3f4f6;
+          color: #4b5563;
           padding: 0.25rem 0.75rem;
-          background: #f0f0f0;
-          color: #666;
-          font-size: 0.75rem;
-          border-radius: 12px;
+          border-radius: 4px;
+          font-size: 0.8rem;
           font-weight: 500;
         }
 
@@ -296,11 +283,29 @@ export const BlogList: React.FC<BlogListProps> = ({
           text-decoration: none;
           font-size: 0.9rem;
           transition: color 0.2s ease;
-          align-self: flex-start;
+          margin-top: auto;
         }
 
-        .read-more:hover,
-        .read-more:focus {
+        .read-more:hover {
+          color: #1d4ed8;
+          text-decoration: underline;
+        }
+
+        .view-all {
+          text-align: center;
+          padding-top: 1rem;
+          border-top: 1px solid #e0e0e0;
+        }
+
+        .view-all-link {
+          color: #2563eb;
+          font-weight: 600;
+          text-decoration: none;
+          font-size: 1.1rem;
+          transition: color 0.2s ease;
+        }
+
+        .view-all-link:hover {
           color: #1d4ed8;
           text-decoration: underline;
         }
@@ -311,51 +316,6 @@ export const BlogList: React.FC<BlogListProps> = ({
           color: #666;
         }
 
-        .loading-spinner {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 1rem;
-        }
-
-        .spinner {
-          width: 40px;
-          height: 40px;
-          border: 4px solid #e0e0e0;
-          border-top-color: #2563eb;
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-
-        .error-message {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 1rem;
-        }
-
-        .retry-button {
-          padding: 0.75rem 1.5rem;
-          background: #2563eb;
-          color: white;
-          border: none;
-          border-radius: 8px;
-          font-weight: 500;
-          cursor: pointer;
-          transition: background 0.2s ease;
-        }
-
-        .retry-button:hover,
-        .retry-button:focus {
-          background: #1d4ed8;
-          outline: 2px solid #2563eb;
-          outline-offset: 2px;
-        }
-
         @media (max-width: 768px) {
           .blog-grid {
             grid-template-columns: 1fr;
@@ -363,6 +323,10 @@ export const BlogList: React.FC<BlogListProps> = ({
 
           .blog-list h2 {
             font-size: 1.5rem;
+          }
+
+          .blog-title {
+            font-size: 1.2rem;
           }
         }
       `}</style>
