@@ -36,19 +36,6 @@ const leadSubmissionLimiter = rateLimit({
   },
 });
 
-// Rate limiter for lead submissions (stricter limits to prevent spam)
-const leadSubmissionLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 5, // Limit each user to 5 lead submissions per hour
-  message: 'Too many lead submissions, please try again later',
-  standardHeaders: true,
-  legacyHeaders: false,
-  // Use user ID as key for authenticated requests, fallback to IP
-  keyGenerator: (req) => {
-    return req.user?.uid || req.ip;
-  }
-});
-
 /**
  * Middleware to validate subdomain parameter in URL path
  * This handles cases where subdomain comes from URL path rather than host header
