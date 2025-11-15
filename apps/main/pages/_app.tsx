@@ -3,6 +3,7 @@ import { SessionProvider } from 'next-auth/react'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import AnalyticsPageTracker from '../components/AnalyticsPageTracker'
+import CookieConsent from '../components/CookieConsent'
 import '../styles/globals.css'
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
@@ -12,6 +13,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
       <AnalyticsPageTracker />
       <Analytics />
       <SpeedInsights />
-    </SessionProvider>
+          <CookieConsent />
+      </SessionProvider>
   )
 }
