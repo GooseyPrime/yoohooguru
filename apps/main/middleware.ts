@@ -19,10 +19,10 @@ const VALID_SUBDOMAINS = new Set([
   // Core services
   "www", "angel", "coach", "heroes", "dashboard",
 
-  // Subject-specific subdomains (24 content hubs)
-  "art", "business", "coding", "cooking", "crafts", "data", "design",
+  // Subject-specific subdomains (27 content hubs)
+  "art", "auto", "business", "coding", "cooking", "crafts", "data", "design",
   "finance", "fitness", "gardening", "history", "home", "investing",
-  "language", "marketing", "math", "music", "photography", "sales",
+  "language", "marketing", "math", "mechanical", "music", "photography", "sales",
   "science", "sports", "tech", "wellness", "writing"
 ]);
 

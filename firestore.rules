@@ -51,6 +51,58 @@ service cloud.firestore {
       allow write: if false; // Categories managed via admin SDK only
     }
 
+    // Guru subdomain collections - AI-curated content and user interactions
+    match /gurus/{subdomain} {
+      // Guru posts (blog posts) - public read, admin write only
+      match /posts/{postId} {
+        allow read: if true; // Public can read published posts
+        allow write: if false; // Only admin SDK can write
+      }
+
+      // Guru news (curated news articles) - public read, admin write only
+      match /news/{newsId} {
+        allow read: if true; // Public can read news
+        allow write: if false; // Only admin SDK can write
+      }
+
+      // Guru leads (contact form submissions) - authenticated write only
+      match /leads/{leadId} {
+        allow read: if false; // Private - only accessible via admin SDK
+        allow create: if true; // Anyone can submit a lead
+        allow update, delete: if false; // No updates or deletions
+      }
+
+      // Guru services (service offerings) - public read, admin write only
+      match /services/{serviceId} {
+        allow read: if true; // Public can view services
+        allow write: if false; // Only admin SDK can write
+      }
+
+      // Guru stats (analytics and metrics) - public read, admin write only
+      match /stats/{statsId} {
+        allow read: if true; // Public can view stats
+        allow write: if false; // Only admin SDK can update stats
+      }
+
+      // Guru pages (custom content pages) - public read, admin write only
+      match /pages/{pageId} {
+        allow read: if true; // Public can read pages
+        allow write: if false; // Only admin SDK can write
+      }
+    }
+
+    // Global leads collection - for admin dashboard
+    match /leads/{leadId} {
+      allow read: if false; // Private - only accessible via admin SDK
+      allow create: if true; // Anyone can submit a lead
+      allow update, delete: if false; // No updates or deletions
+    }
+
+    // Analytics collection - for tracking
+    match /analytics/{document=**} {
+      allow read, write: if false; // Only accessible via admin SDK
+    }
+
     // Admin collections - restricted (managed via admin SDK)
     match /admin/{document=**} {
       allow read, write: if false; // Admin operations via server only
