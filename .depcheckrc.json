@@ -1,0 +1,32 @@
+{
+  "ignores": [
+    "@googlemaps/js-api-loader",
+    "react-dom",
+    "bcryptjs",
+    "multer",
+    "newrelic"
+  ],
+  "skip-missing": true,
+  "ignore-patterns": [
+    "dist",
+    "build",
+    ".next",
+    "node_modules",
+    "coverage",
+    "*.test.ts",
+    "*.test.tsx",
+    "*.test.js",
+    "*.spec.ts",
+    "*.spec.tsx",
+    "*.spec.js",
+    "tests",
+    "__tests__"
+  ],
+  "specials": [
+    "bin",
+    "eslint",
+    "webpack",
+    "babel",
+    "jest"
+  ]
+}

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orphan Module Report - yoohoo.guru</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; }
+        .header h1 { margin: 0; font-size: 28px; }
+        .header .timestamp { opacity: 0.9; margin-top: 10px; }
+        .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 30px; }
+        .metric { background: #f8f9fa; padding: 20px; border-radius: 6px; border-left: 4px solid #007bff; }
+        .metric .value { font-size: 32px; font-weight: bold; color: #2c3e50; }
+        .metric .label { color: #6c757d; margin-top: 5px; }
+        .section { padding: 0 30px 30px; }
+        .section h2 { color: #2c3e50; border-bottom: 2px solid #e9ecef; padding-bottom: 10px; }
+        .item-list { background: #f8f9fa; border-radius: 6px; padding: 15px; margin: 10px 0; }
+        .item { padding: 10px; border-bottom: 1px solid #dee2e6; }
+        .item:last-child { border-bottom: none; }
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        .badge.medium { background: #ffc107; color: #000; }
+        .badge.low { background: #28a745; color: white; }
+        .no-items { color: #6c757d; font-style: italic; text-align: center; padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Orphan Module Report</h1>
+            <div class="timestamp">Generated: 2025-11-15T16:05:54.790Z</div>
+        </div>
+        
+        <div class="summary">
+            <div class="metric">
+                <div class="value">397</div>
+                <div class="label">Total Orphans Found</div>
+            </div>
+            <div class="metric">
+                <div class="value">5</div>
+                <div class="label">Unused Dependencies</div>
+            </div>
+            <div class="metric">
+                <div class="value">392</div>
+                <div class="label">Unreachable Modules</div>
+            </div>
+            <div class="metric">
+                <div class="value">0</div>
+                <div class="label">Orphaned Files</div>
+            </div>
+        </div>
+
+        
+      <div class="section">
+          <h2>Recommendations</h2>
+          <div class="item-list">
+              
+        <div class="item">
+            <strong>Remove 5 unused dependencies</strong> 
+            <span class="badge medium">medium</span>
+            <div style="margin-top: 8px; color: #6c757d;">These dependencies are taking up space and could pose security risks</div>
+            <div style="margin-top: 8px; font-family: monospace; background: #e9ecef; padding: 8px; border-radius: 4px; font-size: 14px;">
+                Run `npm uninstall <package-name>` for each unused dependency
+            </div>
+        </div>
+      
+        <div class="item">
+            <strong>Remove or refactor 392 unreachable modules</strong> 
+            <span class="badge low">low</span>
+            <div style="margin-top: 8px; color: #6c757d;">These modules are not reachable from any entry point and may be dead code</div>
+            <div style="margin-top: 8px; font-family: monospace; background: #e9ecef; padding: 8px; border-radius: 4px; font-size: 14px;">
+                Review each module and either delete it or add proper imports
+            </div>
+        </div>
+      
+          </div>
+      </div>
+    
+        
+      <div class="section">
+          <h2>Unused Dependencies</h2>
+          <div class="item-list">
+              
+        <div class="item">
+            <strong>root</strong> (1 unused)
+            <div style="margin-top: 8px; font-family: monospace; color: #dc3545;">
+                newrelic
+            </div>
+        </div>
+      
+        <div class="item">
+            <strong>apps/main</strong> (2 unused)
+            <div style="margin-top: 8px; font-family: monospace; color: #dc3545;">
+                @googlemaps/js-api-loader, react-dom
+            </div>
+        </div>
+      
+        <div class="item">
+            <strong>backend</strong> (2 unused)
+            <div style="margin-top: 8px; font-family: monospace; color: #dc3545;">
+                bcryptjs, multer
+            </div>
+        </div>
+      
+          </div>
+      </div>
+    
+        
+      <div class="section">
+          <h2>Unreachable Modules</h2>
+          <div class="item-list">
+              
+        <div class="item">
+            <strong>apps/main</strong> (331 unreachable)
+            <div style="margin-top: 8px; font-family: monospace; color: #dc3545;">
+                components/AgoraVideoChat.tsx<br>components/AttestationPrompt.tsx<br>components/BlogList.tsx<br>components/DisabilityAttestationForm.tsx<br>components/HeroGurusAccessGate.tsx<br>components/LegacyVideoChat.tsx<br>components/NewsSection.tsx<br>components/SubdomainLayout.tsx<br>components/VideoChat.tsx<br>components/ai/AICandidateSelection.tsx<br>components/ai/AIJobHelper.tsx<br>components/ai/AIMatchmaking.tsx<br>components/ai/AIPriceRecommendation.tsx<br>components/ai/AIProfileAssistant.tsx<br>components/ai/AITeachingAssistant.tsx<br>components/ai/LearningStyleAssessment.tsx<br>components/categories/CategoryTemplate.tsx<br>components/compliance/ComplianceRequirements.tsx<br>components/disputes/DisputeResolution.tsx<br>components/location/GoogleMap.tsx<br>components/location/PlacesAutocomplete.tsx<br>components/orbitron/OrbitronButton.tsx<br>components/orbitron/OrbitronCTA.tsx<br>components/orbitron/OrbitronCard.tsx<br>components/orbitron/OrbitronContainer.tsx<br>components/orbitron/OrbitronFeatures.tsx<br>components/orbitron/OrbitronFooter.tsx<br>components/orbitron/OrbitronHero.tsx<br>components/orbitron/OrbitronHeroSimple.tsx<br>components/orbitron/OrbitronSection.tsx<br>components/orbitron/OrbitronShowcase.tsx<br>components/orbitron/index.ts<br>components/payments/StripePayment.tsx<br>components/profile/HeroGuruSettings.tsx<br>components/profile/ProfileManager.tsx<br>components/ratings/RatingSystem.tsx<br>components/sessions/HeroGuruSessionBooking.tsx<br>components/sessions/SessionBooking.tsx<br>components/skills/SkillSearch.tsx<br>components/ui/Button.tsx<br>components/ui/Carousel.tsx<br>components/video/AgoraVideo.tsx<br>config/subjects.ts<br>lib/openai.ts<br>lib/validators.ts<br>next.config.js<br>pages/_apps/[subject]/index.tsx<br>pages/_apps/angel/about.tsx<br>pages/_apps/angel/blog/[slug].tsx<br>pages/_apps/angel/blog/index.tsx<br>pages/_apps/angel/contact.tsx<br>pages/_apps/angel/index.tsx<br>pages/_apps/angel/skills.tsx<br>pages/_apps/angel/teachers.tsx<br>pages/_apps/art/about.tsx<br>pages/_apps/art/blog/[slug].tsx<br>pages/_apps/art/blog/index.tsx<br>pages/_apps/art/contact.tsx<br>pages/_apps/art/index.tsx<br>pages/_apps/art/skills.tsx<br>pages/_apps/art/teachers.tsx<br>pages/_apps/auto/blog/[slug].tsx<br>pages/_apps/auto/blog/index.tsx<br>pages/_apps/auto/index.tsx<br>pages/_apps/business/about.tsx<br>pages/_apps/business/blog/[slug].tsx<br>pages/_apps/business/blog/index.tsx<br>pages/_apps/business/contact.tsx<br>pages/_apps/business/index.tsx<br>pages/_apps/business/skills.tsx<br>pages/_apps/business/teachers.tsx<br>pages/_apps/coach/about.tsx<br>pages/_apps/coach/blog/[slug].tsx<br>pages/_apps/coach/blog/index.tsx<br>pages/_apps/coach/contact.tsx<br>pages/_apps/coach/experts.tsx<br>pages/_apps/coach/index.tsx<br>pages/_apps/coach/session/[id].tsx<br>pages/_apps/coach/skills.tsx<br>pages/_apps/coach/teachers.tsx<br>pages/_apps/coding/about.tsx<br>pages/_apps/coding/blog/[slug].tsx<br>pages/_apps/coding/blog/index.tsx<br>pages/_apps/coding/contact.tsx<br>pages/_apps/coding/index.tsx<br>pages/_apps/coding/skills.tsx<br>pages/_apps/coding/teachers.tsx<br>pages/_apps/cooking/about.tsx<br>pages/_apps/cooking/blog/[slug].tsx<br>pages/_apps/cooking/blog/index.tsx<br>pages/_apps/cooking/contact.tsx<br>pages/_apps/cooking/index.tsx<br>pages/_apps/cooking/skills.tsx<br>pages/_apps/cooking/teachers.tsx<br>pages/_apps/crafts/about.tsx<br>pages/_apps/crafts/blog/[slug].tsx<br>pages/_apps/crafts/blog/index.tsx<br>pages/_apps/crafts/contact.tsx<br>pages/_apps/crafts/index.tsx<br>pages/_apps/crafts/skills.tsx<br>pages/_apps/crafts/teachers.tsx<br>pages/_apps/dashboard/blog/[slug].tsx<br>pages/_apps/dashboard/blog/index.tsx<br>pages/_apps/dashboard/index.tsx<br>pages/_apps/data/about.tsx<br>pages/_apps/data/blog/[slug].tsx<br>pages/_apps/data/blog/index.tsx<br>pages/_apps/data/contact.tsx<br>pages/_apps/data/index.tsx<br>pages/_apps/data/skills.tsx<br>pages/_apps/data/teachers.tsx<br>pages/_apps/design/about.tsx<br>pages/_apps/design/blog/[slug].tsx<br>pages/_apps/design/blog/index.tsx<br>pages/_apps/design/contact.tsx<br>pages/_apps/design/index.tsx<br>pages/_apps/design/skills.tsx<br>pages/_apps/design/teachers.tsx<br>pages/_apps/finance/about.tsx<br>pages/_apps/finance/blog/[slug].tsx<br>pages/_apps/finance/blog/index.tsx<br>pages/_apps/finance/contact.tsx<br>pages/_apps/finance/index.tsx<br>pages/_apps/finance/skills.tsx<br>pages/_apps/finance/teachers.tsx<br>pages/_apps/fitness/about.tsx<br>pages/_apps/fitness/blog/[slug].tsx<br>pages/_apps/fitness/blog/index.tsx<br>pages/_apps/fitness/contact.tsx<br>pages/_apps/fitness/index.tsx<br>pages/_apps/fitness/skills.tsx<br>pages/_apps/fitness/teachers.tsx<br>pages/_apps/gardening/about.tsx<br>pages/_apps/gardening/blog/[slug].tsx<br>pages/_apps/gardening/blog/index.tsx<br>pages/_apps/gardening/contact.tsx<br>pages/_apps/gardening/index.tsx<br>pages/_apps/gardening/skills.tsx<br>pages/_apps/gardening/teachers.tsx<br>pages/_apps/heroes/about.tsx<br>pages/_apps/heroes/blog/[slug].tsx<br>pages/_apps/heroes/blog/index.tsx<br>pages/_apps/heroes/contact.tsx<br>pages/_apps/heroes/index.tsx<br>pages/_apps/heroes/skills.tsx<br>pages/_apps/heroes/teachers.tsx<br>pages/_apps/history/about.tsx<br>pages/_apps/history/blog/[slug].tsx<br>pages/_apps/history/blog/index.tsx<br>pages/_apps/history/contact.tsx<br>pages/_apps/history/index.tsx<br>pages/_apps/history/skills.tsx<br>pages/_apps/history/teachers.tsx<br>pages/_apps/home/about.tsx<br>pages/_apps/home/blog/[slug].tsx<br>pages/_apps/home/blog/index.tsx<br>pages/_apps/home/contact.tsx<br>pages/_apps/home/index.tsx<br>pages/_apps/home/skills.tsx<br>pages/_apps/home/teachers.tsx<br>pages/_apps/investing/about.tsx<br>pages/_apps/investing/blog/[slug].tsx<br>pages/_apps/investing/blog/index.tsx<br>pages/_apps/investing/contact.tsx<br>pages/_apps/investing/index.tsx<br>pages/_apps/investing/skills.tsx<br>pages/_apps/investing/teachers.tsx<br>pages/_apps/language/about.tsx<br>pages/_apps/language/blog/[slug].tsx<br>pages/_apps/language/blog/index.tsx<br>pages/_apps/language/contact.tsx<br>pages/_apps/language/index.tsx<br>pages/_apps/language/skills.tsx<br>pages/_apps/language/teachers.tsx<br>pages/_apps/marketing/about.tsx<br>pages/_apps/marketing/blog/[slug].tsx<br>pages/_apps/marketing/blog/index.tsx<br>pages/_apps/marketing/contact.tsx<br>pages/_apps/marketing/index.tsx<br>pages/_apps/marketing/skills.tsx<br>pages/_apps/marketing/teachers.tsx<br>pages/_apps/math/about.tsx<br>pages/_apps/math/blog/[slug].tsx<br>pages/_apps/math/blog/index.tsx<br>pages/_apps/math/contact.tsx<br>pages/_apps/math/index.tsx<br>pages/_apps/math/skills.tsx<br>pages/_apps/math/teachers.tsx<br>pages/_apps/mechanical/blog/[slug].tsx<br>pages/_apps/mechanical/blog/index.tsx<br>pages/_apps/mechanical/index.tsx<br>pages/_apps/music/about.tsx<br>pages/_apps/music/blog/[slug].tsx<br>pages/_apps/music/blog/index.tsx<br>pages/_apps/music/contact.tsx<br>pages/_apps/music/index.tsx<br>pages/_apps/music/skills.tsx<br>pages/_apps/music/teachers.tsx<br>pages/_apps/photography/about.tsx<br>pages/_apps/photography/blog/[slug].tsx<br>pages/_apps/photography/blog/index.tsx<br>pages/_apps/photography/contact.tsx<br>pages/_apps/photography/index.tsx<br>pages/_apps/photography/skills.tsx<br>pages/_apps/photography/teachers.tsx<br>pages/_apps/sales/about.tsx<br>pages/_apps/sales/blog/[slug].tsx<br>pages/_apps/sales/blog/index.tsx<br>pages/_apps/sales/contact.tsx<br>pages/_apps/sales/index.tsx<br>pages/_apps/sales/skills.tsx<br>pages/_apps/sales/teachers.tsx<br>pages/_apps/science/about.tsx<br>pages/_apps/science/blog/[slug].tsx<br>pages/_apps/science/blog/index.tsx<br>pages/_apps/science/contact.tsx<br>pages/_apps/science/index.tsx<br>pages/_apps/science/skills.tsx<br>pages/_apps/science/teachers.tsx<br>pages/_apps/sports/about.tsx<br>pages/_apps/sports/blog/[slug].tsx<br>pages/_apps/sports/blog/index.tsx<br>pages/_apps/sports/contact.tsx<br>pages/_apps/sports/index.tsx<br>pages/_apps/sports/skills.tsx<br>pages/_apps/sports/teachers.tsx<br>pages/_apps/tech/about.tsx<br>pages/_apps/tech/blog/[slug].tsx<br>pages/_apps/tech/blog/index.tsx<br>pages/_apps/tech/contact.tsx<br>pages/_apps/tech/index.tsx<br>pages/_apps/tech/skills.tsx<br>pages/_apps/tech/teachers.tsx<br>pages/_apps/wellness/about.tsx<br>pages/_apps/wellness/blog/[slug].tsx<br>pages/_apps/wellness/blog/index.tsx<br>pages/_apps/wellness/contact.tsx<br>pages/_apps/wellness/index.tsx<br>pages/_apps/wellness/skills.tsx<br>pages/_apps/wellness/teachers.tsx<br>pages/_apps/writing/about.tsx<br>pages/_apps/writing/blog/[slug].tsx<br>pages/_apps/writing/blog/index.tsx<br>pages/_apps/writing/contact.tsx<br>pages/_apps/writing/index.tsx<br>pages/_apps/writing/skills.tsx<br>pages/_apps/writing/teachers.tsx<br>pages/_document.tsx<br>pages/about.tsx<br>pages/admin/index.tsx<br>pages/admin/site-text.tsx<br>pages/ai/learning-style-assessment.tsx<br>pages/angel/profile.tsx<br>pages/api/ai/candidate-selection.ts<br>pages/api/ai/job-helper.ts<br>pages/api/ai/learning-style.ts<br>pages/api/ai/matchmaking.ts<br>pages/api/ai/price-recommendation.ts<br>pages/api/ai/profile-assistant.ts<br>pages/api/ai/teaching-assistant.ts<br>pages/api/auth/[...nextauth].ts<br>pages/api/jobs/create.ts<br>pages/api/jobs/index.ts<br>pages/api/robots.txt.ts<br>pages/api/sitemap.xml.ts<br>pages/api/stripe/webhook.ts<br>pages/attestation/disability.tsx<br>pages/auth/error.tsx<br>pages/blog.tsx<br>pages/compliance/index.tsx<br>pages/contact.tsx<br>pages/cookies.tsx<br>pages/dashboard.tsx<br>pages/disputes/index.tsx<br>pages/faq.tsx<br>pages/guru/[id]/book-session.tsx<br>pages/guru/[id]/ratings.tsx<br>pages/guru/profile.tsx<br>pages/help.tsx<br>pages/heroes/profile.tsx<br>pages/how-it-works.tsx<br>pages/hubs.tsx<br>pages/jobs/index.tsx<br>pages/jobs/post.tsx<br>pages/learning/ai-assessment.tsx<br>pages/location/search.tsx<br>pages/login.tsx<br>pages/orbitron.tsx<br>pages/pricing.tsx<br>pages/privacy.tsx<br>pages/safety.tsx<br>pages/session/[id]/video.tsx<br>pages/signup.tsx<br>pages/skills/art.tsx<br>pages/skills/auto.tsx<br>pages/skills/business.tsx<br>pages/skills/coding/web-dev.tsx<br>pages/skills/coding.tsx<br>pages/skills/cooking.tsx<br>pages/skills/crafts.tsx<br>pages/skills/data.tsx<br>pages/skills/design.tsx<br>pages/skills/finance.tsx<br>pages/skills/fitness.tsx<br>pages/skills/gardening.tsx<br>pages/skills/history.tsx<br>pages/skills/home.tsx<br>pages/skills/index.tsx<br>pages/skills/investing.tsx<br>pages/skills/language.tsx<br>pages/skills/marketing.tsx<br>pages/skills/math.tsx<br>pages/skills/mechanical.tsx<br>pages/skills/music.tsx<br>pages/skills/photography.tsx<br>pages/skills/sales.tsx<br>pages/skills/science.tsx<br>pages/skills/sports.tsx<br>pages/skills/tech.tsx<br>pages/skills/wellness.tsx<br>pages/skills/writing.tsx<br>pages/terms.tsx<br>playwright.config.ts<br>postcss.config.js<br>tailwind.config.js<br>tests/comprehensive-visual-audit.spec.ts<br>tests/forms-auth.spec.ts<br>tests/navigation-links.spec.ts<br>tests/visual-inspection.spec.ts<br>types/google-maps.d.ts<br>types/next-auth.d.ts
+            </div>
+        </div>
+      
+        <div class="item">
+            <strong>backend</strong> (61 unreachable)
+            <div style="margin-top: 8px; font-family: monospace; color: #dc3545;">
+                ai-content-migration.js<br>babel.config.js<br>eslint.config.js<br>jest.setup.js<br>populate-initial-content.js<br>seed-content.js<br>show-content-summary.js<br>src/firebase/admin.js<br>src/index.test.js<br>src/lib/auth.js<br>src/scripts/seedCategories.js<br>src/utils/skillCategorization.test.js<br>test-curation-agents.js<br>test-curation.js<br>test-news-only.js<br>tests/account-recovery.test.js<br>tests/agora.test.js<br>tests/ai-skill-matching.test.js<br>tests/angels-jobs.test.js<br>tests/basic.test.js<br>tests/body-parser-handling.test.js<br>tests/cors-config.test.js<br>tests/cors-origin-sync.test.js<br>tests/cors-redos-security.test.js<br>tests/cors-security.test.js<br>tests/cors-subdomain.test.js<br>tests/curationAgents.test.js<br>tests/environment-validation.test.js<br>tests/favicon.test.js<br>tests/firebase-validation.test.js<br>tests/frontend-serving.test.js<br>tests/guru-leads-auth.test.js<br>tests/guru-subdomain-validation-simple.test.js<br>tests/headers.test.js<br>tests/host-binding.test.js<br>tests/images.test.js<br>tests/instant-payouts.test.js<br>tests/liability.test.js<br>tests/models-url-validation.test.js<br>tests/new-subdomains.test.js<br>tests/onboarding-requirements.test.js<br>tests/payouts.test.js<br>tests/railway-502-fix.test.js<br>tests/railway-error-improvements.test.js<br>tests/rate-limit-proxy.test.js<br>tests/requirementsMapper.test.js<br>tests/route-rate-limiting.test.js<br>tests/routes-redos-security.test.js<br>tests/secrets-integration.test.js<br>tests/seed-test-data.js<br>tests/session-csrf.test.js<br>tests/session-lusca-integration.test.js<br>tests/session-store.test.js<br>tests/stripe-config.test.js<br>tests/stripe-warning.test.js<br>tests/test.auth.spec.js<br>tests/trust-proxy.test.js<br>tests/url-validation-security.test.js<br>tests/uuid-utility.test.js<br>tests/webhook-csrf-bypass.test.js<br>tests/webhooks.test.js
+            </div>
+        </div>
+      
+          </div>
+      </div>
+    
+        
+        <div class="section">
+            <h2>Orphaned Files</h2>
+            <div class="no-items">No orphaned files found ✅</div>
+        </div>
+      
+    </div>
+</body>
+</html>
