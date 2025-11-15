@@ -17,9 +17,9 @@ describe('New Subdomains Configuration', () => {
       expect(isValidSubdomain(subdomain)).toBe(true);
     });
 
-    it('should have 20 total subdomains configured', () => {
+    it('should have 29 total subdomains configured', () => {
       const allSubdomains = getAllSubdomains();
-      expect(allSubdomains.length).toBe(20);
+      expect(allSubdomains.length).toBe(29);
     });
 
     it('should include all new subdomains in the list', () => {
