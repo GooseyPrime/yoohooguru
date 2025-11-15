@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { isValidEmail, isValidLength, sanitizeString } from '../../utils/validation';
 
 interface ContactFormData {
   name: string;
@@ -28,37 +29,43 @@ export default async function handler(
       });
     }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    // Sanitize inputs
+    const sanitizedName = sanitizeString(name);
+    const sanitizedEmail = sanitizeString(email);
+    const sanitizedSubject = sanitizeString(subject || '');
+    const sanitizedMessage = sanitizeString(message);
+
+    // Validate email format (safe from ReDoS)
+    if (!isValidEmail(sanitizedEmail)) {
       return res.status(400).json({ 
         error: 'Invalid email format'
       });
     }
 
-    // Validate message length
-    if (message.length < 10) {
+    // Validate name length
+    if (!isValidLength(sanitizedName, 1, 100)) {
       return res.status(400).json({ 
-        error: 'Message too short',
-        details: 'Message must be at least 10 characters'
+        error: 'Invalid name',
+        details: 'Name must be between 1 and 100 characters'
       });
     }
 
-    if (message.length > 5000) {
+    // Validate message length
+    if (!isValidLength(sanitizedMessage, 10, 5000)) {
       return res.status(400).json({ 
-        error: 'Message too long',
-        details: 'Message must be less than 5000 characters'
+        error: 'Invalid message length',
+        details: 'Message must be between 10 and 5000 characters'
       });
     }
 
     // TODO: Implement actual email sending or database storage
     // For now, we'll log the submission and return success
     console.log('Contact form submission:', {
-      name,
-      email,
-      subject,
+      name: sanitizedName,
+      email: sanitizedEmail,
+      subject: sanitizedSubject,
       category,
-      message,
+      message: sanitizedMessage,
       timestamp: new Date().toISOString()
     });
 
@@ -73,8 +80,8 @@ export default async function handler(
       success: true,
       message: 'Thank you for contacting us! We\'ll get back to you within 24 hours.',
       data: {
-        name,
-        email,
+        name: sanitizedName,
+        email: sanitizedEmail,
         category,
         timestamp: new Date().toISOString()
       }
