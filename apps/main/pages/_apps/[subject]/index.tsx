@@ -25,46 +25,46 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subject }) => {
     description: string;
   } | null>(null);
 
-  const loadSubjectData = async () => {
-    try {
-      // Fetch subject-specific news and blogs
-      const [newsData, blogData] = await Promise.all([
-        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://api.yoohoo.guru'}/api/news?subject=${subject}`).then(res => {
-          if (!res.ok) throw new Error('Failed to fetch news');
-          return res.json();
-        }).catch(() => []),
-        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://api.yoohoo.guru'}/api/blogs?subject=${subject}`).then(res => {
-          if (!res.ok) throw new Error('Failed to fetch blogs');
-          return res.json();
-        }).catch(() => [])
-      ]);
-
-      setSubjectData({
-        news: newsData,
-        blogs: blogData,
-        title: subject.charAt(0).toUpperCase() + subject.slice(1),
-        description: `Discover the best ${subject} resources, tutorials, and expert guidance on YooHoo.Guru`
-      });
-    } catch (error) {
-      console.error('Error loading subject data:', error);
-      setSubjectData({
-        news: [],
-        blogs: [],
-        title: subject.charAt(0).toUpperCase() + subject.slice(1),
-        description: `Discover the best ${subject} resources, tutorials, and expert guidance on YooHoo.Guru`
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (router.isReady && subject) {
+      const loadSubjectData = async () => {
+        try {
+          // Fetch subject-specific news and blogs
+          const [newsData, blogData] = await Promise.all([
+            fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://api.yoohoo.guru'}/api/news?subject=${subject}`).then(res => {
+              if (!res.ok) throw new Error('Failed to fetch news');
+              return res.json();
+            }).catch(() => []),
+            fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://api.yoohoo.guru'}/api/blogs?subject=${subject}`).then(res => {
+              if (!res.ok) throw new Error('Failed to fetch blogs');
+              return res.json();
+            }).catch(() => [])
+          ]);
+
+          setSubjectData({
+            news: newsData,
+            blogs: blogData,
+            title: subject.charAt(0).toUpperCase() + subject.slice(1),
+            description: `Discover the best ${subject} resources, tutorials, and expert guidance on YooHoo.Guru`
+          });
+        } catch (error) {
+          console.error('Error loading subject data:', error);
+          setSubjectData({
+            news: [],
+            blogs: [],
+            title: subject.charAt(0).toUpperCase() + subject.slice(1),
+            description: `Discover the best ${subject} resources, tutorials, and expert guidance on YooHoo.Guru`
+          });
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
       loadSubjectData();
       const subjectConfig = getSubjectConfig(subject);
       setConfig(subjectConfig);
     }
-  }, [router.isReady, subject, loadSubjectData]);
+  }, [router.isReady, subject]);
 
   if (isLoading) {
     return (
