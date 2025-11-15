@@ -385,7 +385,7 @@ export default function HeroGuruSessionBooking({
           text: errorData.error?.message || 'Failed to book session. Please try again.'
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({
         type: 'error',
         text: 'An error occurred while booking the session. Please try again.'

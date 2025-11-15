@@ -132,7 +132,7 @@ export default function AttestationPrompt({ userRole, onDismiss }: AttestationPr
           Would you like to access our Hero Gurus program? This program provides free learning sessions
           from volunteer Gurus for individuals with disabilities.
           <br /><br />
-          To access this program, you'll need to complete a simple disability self-attestation form.
+          To access this program, you&apos;ll need to complete a simple disability self-attestation form.
           This helps us ensure the program serves those it was designed for.
         </Description>
         <ButtonGroup>

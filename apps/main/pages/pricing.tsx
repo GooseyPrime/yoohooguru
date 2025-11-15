@@ -210,7 +210,7 @@ export default function Pricing() {
                 Frequently Asked Questions
               </h2>
               <p className="text-xl text-white-80 max-w-3xl mx-auto">
-                Got questions? We've got answers.
+                Got questions? We&apos;ve got answers.
               </p>
             </div>
 

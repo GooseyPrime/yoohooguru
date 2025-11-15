@@ -67,7 +67,7 @@ export default function Signup() {
         const errorData = await response.json();
         setError(errorData.error?.message || 'Registration failed. Please try again.');
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred during registration. Please try again.');
     } finally {
       setIsLoading(false);
@@ -82,7 +82,7 @@ export default function Signup() {
       await signIn('google', {
         callbackUrl: '/dashboard',
       });
-    } catch (err) {
+    } catch {
       setError('Google sign-up failed. Please try again.');
       setIsLoading(false);
     }

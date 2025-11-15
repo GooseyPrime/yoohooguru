@@ -29,14 +29,13 @@ export default function Login() {
       });
 
       if (response.ok) {
-        const data = await response.json();
         // After successful backend authentication, redirect to dashboard
         router.push('/dashboard');
       } else {
         const errorData = await response.json();
         setError(errorData.error?.message || 'Invalid email or password');
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred during login. Please try again.');
     } finally {
       setIsLoading(false);
@@ -51,7 +50,7 @@ export default function Login() {
       await signIn('google', {
         callbackUrl: '/dashboard',
       });
-    } catch (err) {
+    } catch {
       setError('Google sign-in failed. Please try again.');
       setIsLoading(false);
     }

@@ -20,7 +20,6 @@ interface Session {
 export default function Dashboard() {
   const [session, setSession] = useState<Session | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [showAttestationPrompt, setShowAttestationPrompt] = useState(false)
   const router = useRouter()
 
   useEffect(() => {

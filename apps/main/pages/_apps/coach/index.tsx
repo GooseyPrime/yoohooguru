@@ -1,5 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import Navigation from '../../../components/ui/Navigation';
 import HeroSection from '../../../components/sections/HeroSection';
 import { ExpertCard } from '../../../components/ui/Card';

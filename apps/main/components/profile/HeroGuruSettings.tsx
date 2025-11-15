@@ -254,7 +254,7 @@ export default function HeroGuruSettings() {
         type: 'success',
         text: 'Hero Guru settings saved successfully!',
       });
-    } catch (error) {
+    } catch {
       setMessage({
         type: 'error',
         text: 'Failed to save settings. Please try again.',
