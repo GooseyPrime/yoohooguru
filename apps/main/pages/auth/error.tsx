@@ -104,6 +104,18 @@ const SecondaryButton = styled(Button)`
 `
 
 const errorMessages: Record<string, { title: string; description: string }> = {
+  OAuthCallback: {
+    title: 'OAuth Callback Error',
+    description: 'There was an issue completing the Google sign-in process. This may be due to a configuration issue or an interrupted authentication flow. Please try signing in again, or contact support if the problem persists.',
+  },
+  OAuthSignin: {
+    title: 'OAuth Sign-In Error',
+    description: 'An error occurred while attempting to sign in with Google. Please try again or use a different authentication method.',
+  },
+  OAuthCreateAccount: {
+    title: 'Account Creation Error',
+    description: 'We could not create your account using Google authentication. Please try signing up with email and password instead.',
+  },
   Configuration: {
     title: 'Configuration Error',
     description: 'There was an issue with the authentication configuration. Please try again later or contact support if the problem persists.',
