@@ -69,7 +69,7 @@ class ErrorBoundary extends Component<Props, State> {
 
             {/* Description */}
             <p className="text-lg text-white-80 mb-8 leading-relaxed">
-              We encountered an unexpected error. Don't worry, our team has been notified.
+              We encountered an unexpected error. Don&apos;t worry, our team has been notified.
             </p>
 
             {/* Error Details (Development Only) */}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 export default function CookieConsent() {
   const [showBanner, setShowBanner] = useState(false);
@@ -81,9 +82,9 @@ export default function CookieConsent() {
               <p className="text-white-80 text-sm mb-4">
                 We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. 
                 By clicking "Accept All", you consent to our use of cookies.{' '}
-                <a href="/cookies" className="text-emerald-400 hover:text-emerald-300 underline">
+                <Link href="/cookies" className="text-emerald-400 hover:text-emerald-300 underline">
                   Learn more
-                </a>
+                </Link>
               </p>
 
               {/* Cookie Categories */}

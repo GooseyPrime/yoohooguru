@@ -1,5 +1,5 @@
 const express = require('express');
-const rateLimit = require('express-rate-limit');
+const { rateLimit, ipKeyGenerator } = require('express-rate-limit');
 const { getFirestore } = require('../config/firebase');
 const admin = require('firebase-admin');
 const { getSubdomainConfig, isValidSubdomain } = require('../config/subdomains');
@@ -33,7 +33,7 @@ const leadSubmissionLimiter = rateLimit({
       return req.user.id;
     }
     // Use the built-in IPv6-safe IP key generator as fallback
-    return req.ip || 'unknown';
+    return ipKeyGenerator(req);
   },
 });
 
