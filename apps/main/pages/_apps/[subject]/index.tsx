@@ -241,12 +241,12 @@ export async function getStaticProps({ params }: { params: { subject: string } }
 }
 
 export async function getStaticPaths() {
-  // Define all possible subject paths
+  // Define all possible subject paths (27 total)
   const subjects = [
-    'art', 'business', 'coding', 'cooking', 'crafts', 'data', 
-    'design', 'finance', 'fitness', 'gardening', 'history', 
-    'home', 'investing', 'language', 'marketing', 'math', 
-    'music', 'photography', 'sales', 'science', 'sports', 
+    'art', 'auto', 'business', 'coding', 'cooking', 'crafts', 'data',
+    'design', 'finance', 'fitness', 'gardening', 'history',
+    'home', 'investing', 'language', 'marketing', 'math', 'mechanical',
+    'music', 'photography', 'sales', 'science', 'sports',
     'tech', 'wellness', 'writing'
   ];
 
