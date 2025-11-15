@@ -126,8 +126,8 @@ const subdomainConfig = {
       keywords: ['programming lessons', 'coding bootcamp', 'web development', 'mobile development', 'tech skills']
     }
   },
-  'art': { 
-    character: 'Art Guru', 
+  'art': {
+    character: 'Art Guru',
     category: 'creative',
     primarySkills: ['drawing', 'painting', 'digital-art', 'sculpture', 'photography'],
     affiliateCategories: ['supplies', 'tools', 'courses', 'books'],
@@ -142,6 +142,24 @@ const subdomainConfig = {
       title: 'Art Guru - Master Visual Arts & Creative Skills',
       description: 'Learn drawing, painting, digital art, and photography from professional artists and creatives.',
       keywords: ['art lessons', 'drawing classes', 'painting tutorials', 'digital art', 'photography courses']
+    }
+  },
+  'auto': {
+    character: 'Auto Guru',
+    category: 'automotive',
+    primarySkills: ['auto-repair', 'maintenance', 'diagnostics', 'detailing', 'restoration'],
+    affiliateCategories: ['tools', 'parts', 'accessories', 'courses'],
+    theme: {
+      primaryColor: '#d32f2f',
+      secondaryColor: '#c62828',
+      accentColor: '#b71c1c',
+      icon: '🚗',
+      emoji: '🔧'
+    },
+    seo: {
+      title: 'Auto Guru - Master Auto Repair & Maintenance',
+      description: 'Learn auto repair, maintenance, diagnostics, and restoration from experienced mechanics and automotive professionals.',
+      keywords: ['auto repair', 'car maintenance', 'automotive diagnostics', 'auto restoration', 'car detailing']
     }
   },
   'language': { 
@@ -306,8 +324,8 @@ const subdomainConfig = {
       keywords: ['financial planning', 'investment advice', 'budgeting tips', 'tax planning', 'retirement planning']
     }
   },
-  'home': { 
-    character: 'Home Guru', 
+  'home': {
+    character: 'Home Guru',
     category: 'lifestyle',
     primarySkills: ['organization', 'cleaning', 'home-improvement', 'interior-design', 'maintenance'],
     affiliateCategories: ['tools', 'supplies', 'furniture', 'appliances'],
@@ -322,6 +340,24 @@ const subdomainConfig = {
       title: 'Home Guru - Home Organization & Improvement',
       description: 'Learn home organization, cleaning, interior design, and home improvement from professional organizers.',
       keywords: ['home organization', 'interior design', 'home improvement', 'cleaning tips', 'home maintenance']
+    }
+  },
+  'history': {
+    character: 'History Guru',
+    category: 'education',
+    primarySkills: ['world-history', 'archaeology', 'historical-research', 'cultural-studies', 'genealogy'],
+    affiliateCategories: ['books', 'courses', 'documentaries', 'tools'],
+    theme: {
+      primaryColor: '#8d6e63',
+      secondaryColor: '#795548',
+      accentColor: '#6d4c41',
+      icon: '📚',
+      emoji: '🏛️'
+    },
+    seo: {
+      title: 'History Guru - Explore World History & Culture',
+      description: 'Discover world history, archaeology, cultural studies, and historical research with expert historians.',
+      keywords: ['history lessons', 'world history', 'archaeology', 'historical research', 'cultural studies']
     }
   },
   'data': { 
@@ -360,8 +396,8 @@ const subdomainConfig = {
       keywords: ['investment strategies', 'stock trading', 'cryptocurrency', 'portfolio management', 'passive income']
     }
   },
-  'marketing': { 
-    character: 'Marketing Guru', 
+  'marketing': {
+    character: 'Marketing Guru',
     category: 'professional',
     primarySkills: ['digital-marketing', 'seo', 'social-media', 'content-marketing', 'email-marketing'],
     affiliateCategories: ['courses', 'books', 'software', 'tools'],
@@ -378,8 +414,44 @@ const subdomainConfig = {
       keywords: ['digital marketing', 'seo optimization', 'social media marketing', 'content strategy', 'marketing automation']
     }
   },
-  'sales': { 
-    character: 'Sales Guru', 
+  'math': {
+    character: 'Math Guru',
+    category: 'education',
+    primarySkills: ['algebra', 'calculus', 'statistics', 'geometry', 'applied-mathematics'],
+    affiliateCategories: ['courses', 'books', 'software', 'tools'],
+    theme: {
+      primaryColor: '#1565c0',
+      secondaryColor: '#0d47a1',
+      accentColor: '#01579b',
+      icon: '🔢',
+      emoji: '📐'
+    },
+    seo: {
+      title: 'Math Guru - Master Mathematics & Statistics',
+      description: 'Learn algebra, calculus, statistics, and applied mathematics from expert mathematicians and educators.',
+      keywords: ['math tutoring', 'algebra help', 'calculus lessons', 'statistics', 'mathematics education']
+    }
+  },
+  'mechanical': {
+    character: 'Mechanical Guru',
+    category: 'engineering',
+    primarySkills: ['mechanical-engineering', 'cad-design', 'manufacturing', 'robotics', 'thermodynamics'],
+    affiliateCategories: ['tools', 'software', 'courses', 'equipment'],
+    theme: {
+      primaryColor: '#37474f',
+      secondaryColor: '#263238',
+      accentColor: '#455a64',
+      icon: '⚙️',
+      emoji: '🔩'
+    },
+    seo: {
+      title: 'Mechanical Guru - Master Mechanical Engineering',
+      description: 'Learn mechanical engineering, CAD design, manufacturing, and robotics from experienced engineers.',
+      keywords: ['mechanical engineering', 'cad design', 'manufacturing', 'robotics', 'engineering education']
+    }
+  },
+  'sales': {
+    character: 'Sales Guru',
     category: 'professional',
     primarySkills: ['sales-techniques', 'negotiation', 'cold-calling', 'closing', 'crm'],
     affiliateCategories: ['courses', 'books', 'software', 'tools'],
@@ -394,6 +466,42 @@ const subdomainConfig = {
       title: 'Sales Guru - Master Sales & Negotiation',
       description: 'Learn sales techniques, negotiation, closing strategies, and CRM management from top sales professionals.',
       keywords: ['sales training', 'negotiation skills', 'sales techniques', 'closing strategies', 'b2b sales']
+    }
+  },
+  'science': {
+    character: 'Science Guru',
+    category: 'education',
+    primarySkills: ['biology', 'chemistry', 'physics', 'environmental-science', 'research-methods'],
+    affiliateCategories: ['books', 'courses', 'lab-equipment', 'software'],
+    theme: {
+      primaryColor: '#0097a7',
+      secondaryColor: '#00838f',
+      accentColor: '#006064',
+      icon: '🔬',
+      emoji: '⚗️'
+    },
+    seo: {
+      title: 'Science Guru - Explore Biology, Chemistry & Physics',
+      description: 'Learn biology, chemistry, physics, and scientific research methods from experienced scientists and educators.',
+      keywords: ['science education', 'biology lessons', 'chemistry help', 'physics tutoring', 'scientific research']
+    }
+  },
+  'sports': {
+    character: 'Sports Guru',
+    category: 'athletics',
+    primarySkills: ['athletic-training', 'sports-coaching', 'nutrition', 'injury-prevention', 'performance-analysis'],
+    affiliateCategories: ['equipment', 'apparel', 'supplements', 'courses'],
+    theme: {
+      primaryColor: '#ff6f00',
+      secondaryColor: '#e65100',
+      accentColor: '#bf360c',
+      icon: '⚽',
+      emoji: '🏃'
+    },
+    seo: {
+      title: 'Sports Guru - Athletic Training & Performance',
+      description: 'Improve athletic performance, learn sports techniques, and master training methods from professional coaches.',
+      keywords: ['sports training', 'athletic performance', 'sports coaching', 'fitness training', 'sports nutrition']
     }
   },
   'coding': { 

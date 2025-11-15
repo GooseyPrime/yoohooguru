@@ -12,6 +12,12 @@ export const subjectConfigs: Record<string, SubjectConfig> = {
     title: 'Art & Design',
     description: 'Master painting, drawing, digital art, and creative expression with expert guidance'
   },
+  auto: {
+    icon: '🚗',
+    gradient: 'from-red-500 via-orange-500 to-yellow-500',
+    title: 'Auto & Automotive',
+    description: 'Learn auto repair, maintenance, diagnostics, and restoration from expert mechanics'
+  },
   business: {
     icon: '💼',
     gradient: 'from-blue-500 via-cyan-500 to-teal-500',
@@ -101,6 +107,12 @@ export const subjectConfigs: Record<string, SubjectConfig> = {
     gradient: 'from-blue-500 via-purple-500 to-indigo-500',
     title: 'Mathematics & Statistics',
     description: 'Master mathematics, calculus, algebra, statistics, and quantitative reasoning'
+  },
+  mechanical: {
+    icon: '⚙️',
+    gradient: 'from-gray-600 via-gray-500 to-blue-500',
+    title: 'Mechanical Engineering',
+    description: 'Master mechanical engineering, CAD design, manufacturing, and robotics'
   },
   music: {
     icon: '🎵',
