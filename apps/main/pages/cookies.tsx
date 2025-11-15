@@ -1,15 +1,17 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../components/Seo';
 import Link from 'next/link';
 import Navigation from '../components/ui/Navigation';
 
 export default function Cookies() {
   return (
     <>
-      <Head>
-        <title>Cookie Policy - YooHoo.Guru</title>
-        <meta name="description" content="Learn about how YooHoo.Guru uses cookies and similar technologies." />
-      </Head>
+      <Seo
+        title="Cookie Policy - YooHoo.Guru"
+        description="Understand how YooHoo.Guru uses cookies and similar technologies."
+        url="https://www.yoohoo.guru/cookies"
+        image="https://www.yoohoo.guru/assets/og-cookies.jpg"
+      />
 
       <Navigation />
 

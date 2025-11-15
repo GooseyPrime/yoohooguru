@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 
 import Navigation from '../../../components/ui/Navigation';
@@ -9,10 +9,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function DesignHome() {
   return (
     <>
-      <Head>
-        <title>Design Guru - YooHoo.Guru</title>
-        <meta name="description" content="Learn graphic design, UI/UX, and creative direction from professional designers." />
-      </Head>
+      <Seo
+        title="Design Guru | Visual & UX Design | YooHoo.Guru"
+        description="Learn design principles, tools, and create stunning visual experiences."
+        url="https://design.yoohoo.guru"
+        image="https://design.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 

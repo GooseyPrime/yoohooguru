@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 
 import Navigation from '../../../components/ui/Navigation';
@@ -9,10 +9,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function WritingHome() {
   return (
     <>
-      <Head>
-        <title>Writing Guru - YooHoo.Guru</title>
-        <meta name="description" content="Master the craft of writing with published authors and writing coaches." />
-      </Head>
+      <Seo
+        title="Writing Guru | Master the Written Word | YooHoo.Guru"
+        description="Develop writing skills and craft compelling stories and content."
+        url="https://writing.yoohoo.guru"
+        image="https://writing.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 

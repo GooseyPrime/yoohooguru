@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 
 import Navigation from '../../../components/ui/Navigation';
@@ -9,10 +9,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function MarketingHome() {
   return (
     <>
-      <Head>
-        <title>Marketing Guru - YooHoo.Guru</title>
-        <meta name="description" content="Master digital marketing with experts from leading agencies and brands." />
-      </Head>
+      <Seo
+        title="Marketing Guru | Digital Marketing Mastery | YooHoo.Guru"
+        description="Master marketing strategies, digital advertising, and brand building."
+        url="https://marketing.yoohoo.guru"
+        image="https://marketing.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 import Navigation from '../../../components/ui/Navigation';
 import { NewsSection } from '../../../components/NewsSection';
@@ -8,10 +8,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function CodingHome() {
   return (
     <>
-      <Head>
-        <title>Coding Guru - YooHoo.Guru</title>
-        <meta name="description" content="Master programming languages and software development with expert developers from top tech companies." />
-      </Head>
+      <Seo
+        title="Coding Guru | Master Programming Languages | YooHoo.Guru"
+        description="Learn programming and software development from experienced developers."
+        url="https://coding.yoohoo.guru"
+        image="https://coding.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 

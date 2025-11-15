@@ -1,6 +1,7 @@
 import { Header, Footer } from '@yoohooguru/shared'
 import Head from 'next/head'
 import styled from 'styled-components'
+import Seo from '../components/Seo';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -103,10 +104,12 @@ const ContactDetails = styled.p`
 export default function Terms() {
   return (
     <Container>
-      <Head>
-        <title>Terms of Service | YooHoo.Guru</title>
-        <meta name="description" content="Terms of Service for YooHoo.Guru - Learn about the rules and guidelines for using our skill-sharing platform." />
-      </Head>
+      <Seo
+        title="Terms of Service - YooHoo.Guru"
+        description="Read our terms of service and understand the rules and guidelines for using YooHoo.Guru platform."
+        url="https://www.yoohoo.guru/terms"
+        image="https://www.yoohoo.guru/assets/og-terms.jpg"
+      />
 
       <Header />
 

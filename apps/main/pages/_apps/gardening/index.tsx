@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 import Navigation from '../../../components/ui/Navigation';
 import { NewsSection } from '../../../components/NewsSection';
@@ -8,10 +8,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function GardeningHome() {
   return (
     <>
-      <Head>
-        <title>Gardening Guru - YooHoo.Guru</title>
-        <meta name="description" content="Grow your green thumb with expert gardeners and horticulturists." />
-      </Head>
+      <Seo
+        title="Gardening Guru | Growing & Landscaping | YooHoo.Guru"
+        description="Learn gardening techniques and create beautiful outdoor spaces."
+        url="https://gardening.yoohoo.guru"
+        image="https://gardening.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 

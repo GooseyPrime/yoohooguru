@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../components/Seo';
 import Link from 'next/link';
 import Navigation from '../components/ui/Navigation';
 
@@ -70,10 +70,12 @@ export default function HowItWorks() {
 
   return (
     <>
-      <Head>
-        <title>How It Works - YooHoo.Guru</title>
-        <meta name="description" content="Learn how YooHoo.Guru connects learners with experts through our simple 4-step process." />
-      </Head>
+      <Seo
+        title="How It Works - YooHoo.Guru"
+        description="Discover how YooHoo.Guru connects learners with expert teachers and service providers in four simple steps."
+        url="https://www.yoohoo.guru/how-it-works"
+        image="https://www.yoohoo.guru/assets/og-how-it-works.jpg"
+      />
 
       <Navigation />
 

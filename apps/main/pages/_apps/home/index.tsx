@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 import Navigation from '../../../components/ui/Navigation';
 import { NewsSection } from '../../../components/NewsSection';
@@ -8,10 +8,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function HomeHome() {
   return (
     <>
-      <Head>
-        <title>Home Guru - YooHoo.Guru</title>
-        <meta name="description" content="Transform your living space with expert interior designers and home improvement specialists." />
-      </Head>
+      <Seo
+        title="Home Guru | Home Improvement & DIY | YooHoo.Guru"
+        description="Master home improvement, maintenance, and DIY projects."
+        url="https://home.yoohoo.guru"
+        image="https://home.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 

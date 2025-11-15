@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Navigation from '../../../components/ui/Navigation';
 import HeroSection from '../../../components/sections/HeroSection';
 import { ExpertCard } from '../../../components/ui/Card';
@@ -149,11 +149,12 @@ export default function CoachGuru() {
 
   return (
     <>
-      <Head>
-        <title>SkillShare | Professional Skill Teaching | YooHoo.Guru</title>
-        <meta name="description" content="Share your expertise and earn income through professional skill teaching with SkillShare, led by Coach Guru. Join our community of expert instructors and start teaching what you love." />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Head>
+      <Seo
+        title="SkillShare | Professional Skill Teaching | YooHoo.Guru"
+        description="Share your expertise and teach skills to eager learners in your community."
+        url="https://coach.yoohoo.guru"
+        image="https://coach.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <div className="min-h-screen bg-orbitron-primary">
         <Navigation />

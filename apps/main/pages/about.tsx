@@ -1,15 +1,17 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../components/Seo';
 import Link from 'next/link';
 import Navigation from '../components/ui/Navigation';
 
 export default function About() {
   return (
     <>
-      <Head>
-        <title>About Us - YooHoo.Guru</title>
-        <meta name="description" content="Learn about YooHoo.Guru's mission to build community through skill sharing." />
-      </Head>
+      <Seo
+        title="About Us - YooHoo.Guru"
+        description="Learn about YooHoo.Guru's mission to build community through skill sharing and democratize knowledge through the exchange of skills and expertise."
+        url="https://www.yoohoo.guru/about"
+        image="https://www.yoohoo.guru/assets/og-about.jpg"
+      />
 
       <Navigation />
 

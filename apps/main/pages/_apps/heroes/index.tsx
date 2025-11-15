@@ -1,5 +1,5 @@
 import { Header, Footer } from '@yoohooguru/shared';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 import { OrbitronContainer, OrbitronCard } from '../../../components/orbitron';
 import HeroGurusAccessGate from '../../../components/HeroGurusAccessGate';
@@ -8,10 +8,12 @@ export default function HeroGurusHome() {
   return (
     <HeroGurusAccessGate>
       <OrbitronContainer gradient="primary">
-        <Head>
-          <title>Hero Gurus | Free Accessible Learning | YooHoo.Guru</title>
-          <meta name="description" content="Free accessible skill-sharing for people with disabilities. Join our community of adaptive learners and volunteer Gurus." />
-        </Head>
+        <Seo
+        title="Hero Gurus | Elite Expert Network | YooHoo.Guru"
+        description="Connect with top-tier experts and thought leaders in various fields."
+        url="https://heroes.yoohoo.guru"
+        image="https://heroes.yoohoo.guru/assets/og-home.jpg"
+      />
 
         <Header />
 

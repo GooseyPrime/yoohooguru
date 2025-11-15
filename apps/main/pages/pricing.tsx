@@ -1,12 +1,12 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../components/Seo';
 import Link from 'next/link';
 import Navigation from '../components/ui/Navigation';
 
 export default function Pricing() {
   const plans = [
     {
-      name: "Gunu (Learner)",
+      name: "Guru (Learner)",
       description: "Perfect for those looking to learn new skills",
       price: "Free",
       period: "to join",
@@ -73,7 +73,7 @@ export default function Pricing() {
       answer: "Payments are processed securely through Stripe. Learners pay upfront when booking sessions, and funds are released to Gurus after successful completion. Our platform takes a small commission to maintain and improve the service."
     },
     {
-      question: "Can I be both a Guru and a Gunu?",
+      question: "Can I be both a Guru and a Guru?",
       answer: "Absolutely! Many of our members both teach and learn on the platform. You can switch between roles seamlessly and enjoy the benefits of both."
     },
     {
@@ -96,10 +96,12 @@ export default function Pricing() {
 
   return (
     <>
-      <Head>
-        <title>Pricing - YooHoo.Guru</title>
-        <meta name="description" content="Simple, transparent pricing for learners, teachers, and service providers. Join YooHoo.Guru today." />
-      </Head>
+      <Seo
+        title="Pricing - YooHoo.Guru"
+        description="Choose the perfect plan for your needs. From learners to teachers and service providers, we have flexible pricing options."
+        url="https://www.yoohoo.guru/pricing"
+        image="https://www.yoohoo.guru/assets/og-pricing.jpg"
+      />
 
       <Navigation />
 

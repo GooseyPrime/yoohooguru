@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Head from 'next/head';
+import Seo from '../components/Seo';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { signIn } from 'next-auth/react';
@@ -77,10 +77,13 @@ export default function Login() {
 
   return (
     <>
-      <Head>
-        <title>Sign In - YooHoo.Guru</title>
-        <meta name="description" content="Sign in to your YooHoo.Guru account" />
-      </Head>
+      <Seo
+        title="Sign In - YooHoo.Guru"
+        description="Sign in to your YooHoo.Guru account to access your dashboard and connect with the community."
+        url="https://www.yoohoo.guru/login"
+        image="https://www.yoohoo.guru/assets/og-login.jpg"
+        noindex={true}
+      />
 
       <Navigation />
 

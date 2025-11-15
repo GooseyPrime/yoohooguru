@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 
 import Navigation from '../../../components/ui/Navigation';
@@ -9,10 +9,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function CookingHome() {
   return (
     <>
-      <Head>
-        <title>Cooking Guru - YooHoo.Guru</title>
-        <meta name="description" content="Learn culinary arts from professional chefs and passionate home cooks." />
-      </Head>
+      <Seo
+        title="Cooking Guru | Culinary Arts & Recipes | YooHoo.Guru"
+        description="Master cooking techniques and explore cuisines from around the world."
+        url="https://cooking.yoohoo.guru"
+        image="https://cooking.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 

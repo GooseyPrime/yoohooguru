@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 
 import Navigation from '../../../components/ui/Navigation';
@@ -9,10 +9,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function PhotographyHome() {
   return (
     <>
-      <Head>
-        <title>Photography Guru - YooHoo.Guru</title>
-        <meta name="description" content="Capture stunning photos with guidance from professional photographers." />
-      </Head>
+      <Seo
+        title="Photography Guru | Capture Perfect Moments | YooHoo.Guru"
+        description="Master photography techniques and create stunning visual stories."
+        url="https://photography.yoohoo.guru"
+        image="https://photography.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 

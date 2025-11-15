@@ -55,21 +55,10 @@ export default function Document() {
         <Script async type="module" src="https://js.jam.dev/recorder.js"></Script>
 
         {/* Jam.dev Event Capture - Captures user events and developer logs */}
-        <Script async type="module" src="https://js.jam.dev/capture.js"></Script>
-
-        {/* Meta Tags for SEO and Analytics */}
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta charSet="utf-8" />
-        <meta name="robots" content="index, follow" />
-        <meta name="author" content="YooHoo.Guru" />
-        
-        {/* Open Graph / Facebook */}
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="YooHoo.Guru" />
-        
-        {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@yoohooguru" />
+        <Script async type="module" src="https://js.jam.dev/capture.js"></Script>          {/* Meta Tags - Only global tags here, page-specific tags in individual pages */}
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <meta charSet="utf-8" />
+          <meta name="author" content="YooHoo.Guru" />
         
         {/* Preconnect to external domains for performance */}
         <link rel="preconnect" href="https://www.google-analytics.com" />

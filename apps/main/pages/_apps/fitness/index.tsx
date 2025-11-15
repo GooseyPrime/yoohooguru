@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 
 import Navigation from '../../../components/ui/Navigation';
@@ -9,10 +9,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function FitnessHome() {
   return (
     <>
-      <Head>
-        <title>Fitness Guru - YooHoo.Guru</title>
-        <meta name="description" content="Transform your body and health with certified personal trainers and fitness experts." />
-      </Head>
+      <Seo
+        title="Fitness Guru | Health & Wellness | YooHoo.Guru"
+        description="Achieve your fitness goals with expert guidance and training programs."
+        url="https://fitness.yoohoo.guru"
+        image="https://fitness.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 

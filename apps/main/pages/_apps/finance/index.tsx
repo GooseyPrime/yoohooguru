@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 import Navigation from '../../../components/ui/Navigation';
 import { NewsSection } from '../../../components/NewsSection';
@@ -8,10 +8,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function FinanceHome() {
   return (
     <>
-      <Head>
-        <title>Finance Guru - YooHoo.Guru</title>
-        <meta name="description" content="Take control of your finances with expert guidance on investing, budgeting, and wealth management." />
-      </Head>
+      <Seo
+        title="Finance Guru | Financial Literacy & Planning | YooHoo.Guru"
+        description="Master personal finance, investing, and financial planning strategies."
+        url="https://finance.yoohoo.guru"
+        image="https://finance.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 
