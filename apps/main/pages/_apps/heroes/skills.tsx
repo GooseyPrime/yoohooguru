@@ -17,7 +17,7 @@ export default function HeroesSkills() {
               Skills Marketplace
             </h1>
             <p className="text-xl text-white-80 mb-8">
-              This page is under construction. We're building an amazing skills marketplace for our Heroes community.
+              This page is under construction. We&apos;re building an amazing skills marketplace for our Heroes community.
             </p>
             <div className="flex gap-4 justify-center">
               <Link 

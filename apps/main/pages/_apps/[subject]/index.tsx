@@ -58,40 +58,13 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subject }) => {
     }
   };
 
-  // Sample blog posts
-  const blogPosts = [
-    {
-      title: "Getting Started: A Complete Guide",
-      excerpt: "Everything you need to know to begin your journey. This comprehensive guide covers fundamentals, tools, and first steps.",
-      author: "Teaching Team",
-      category: "Beginner",
-      readTime: "12 min read",
-      featured: true
-    },
-    {
-      title: "Common Mistakes to Avoid",
-      excerpt: "Learn from the experiences of others. These pitfalls can slow your progress if you&apos;re not aware of them.",
-      author: "Expert Community",
-      category: "Learning",
-      readTime: "8 min read"
-    },
-    {
-      title: "Building Your Portfolio",
-      excerpt: "Showcase your skills effectively. Learn what makes a portfolio stand out to potential clients or employers.",
-      author: "Career Advisors",
-      category: "Career",
-      readTime: "15 min read"
-    }
-  ];
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (router.isReady && subject) {
       loadSubjectData();
       const subjectConfig = getSubjectConfig(subject);
       setConfig(subjectConfig);
     }
-  }, [router.isReady, subject]);
+  }, [router.isReady, subject, loadSubjectData]);
 
   if (isLoading) {
     return (

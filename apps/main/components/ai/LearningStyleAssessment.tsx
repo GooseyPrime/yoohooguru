@@ -301,7 +301,7 @@ export default function LearningStyleAssessment() {
         <ResultsContainer>
           <ResultsTitle>Learning Style Assessment Complete</ResultsTitle>
           <ResultsDescription>
-            Based on your responses, we've identified your preferred learning style and
+            Based on your responses, we&apos;ve identified your preferred learning style and
             recommendations for maximizing your learning potential.
           </ResultsDescription>
           

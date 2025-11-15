@@ -84,7 +84,7 @@ export default function Contact() {
               Get in <span className="gradient-text-emerald-blue">Touch</span>
             </h1>
             <p className="text-xl text-white-80 max-w-3xl mx-auto">
-              Have a question, suggestion, or need help? We'd love to hear from you.
+              Have a question, suggestion, or need help? We&apos;d love to hear from you.
             </p>
           </div>
         </section>

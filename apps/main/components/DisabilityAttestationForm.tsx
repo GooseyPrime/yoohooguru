@@ -68,7 +68,7 @@ export default function DisabilityAttestationForm({ onComplete }: DisabilityAtte
         const errorData = await response.json();
         setError(errorData.error?.message || 'Failed to submit attestation');
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);

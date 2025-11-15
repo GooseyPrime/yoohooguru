@@ -41,21 +41,13 @@ export default function FinanceHome() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-              <a
-                href="/signup?type=gunu"
-                className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-green-500 to-teal-500 text-white text-lg font-semibold rounded-xl hover:from-green-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-glow-green-lg hover:-translate-y-1 flex items-center justify-center space-x-2"
-              >
-                <span>Start Learning Finance</span>
+              <Link href="/signup?type=gunu"><a className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-green-500 to-teal-500 text-white text-lg font-semibold rounded-xl hover:from-green-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-glow-green-lg hover:-translate-y-1 flex items-center justify-center space-x-2"
+              ><span>Start Learning Finance</span>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </a>
-              <a
-                href="/signup?type=guru"
-                className="w-full sm:w-auto px-8 py-4 glass-button text-white text-lg font-semibold rounded-xl hover:bg-white-20 transition-all duration-300 flex items-center justify-center space-x-2"
-              >
-                <span>Become a Finance Guru</span>
-              </a>
+                </svg></a></Link>
+              <Link href="/signup?type=guru"><a className="w-full sm:w-auto px-8 py-4 glass-button text-white text-lg font-semibold rounded-xl hover:bg-white-20 transition-all duration-300 flex items-center justify-center space-x-2"
+              ><span>Become a Finance Guru</span></a></Link>
             </div>
 
             {/* Stats */}
@@ -98,18 +90,10 @@ export default function FinanceHome() {
                 Join thousands of finance enthusiasts learning and teaching on YooHoo.Guru
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a
-                  href="/signup?type=gunu"
-                  className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-green-500 to-teal-500 text-white text-lg font-semibold rounded-xl hover:from-green-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-glow-green-lg hover:-translate-y-1"
-                >
-                  Start Learning Finance
-                </a>
-                <a
-                  href="/signup?type=guru"
-                  className="w-full sm:w-auto px-8 py-4 glass-button text-white text-lg font-semibold rounded-xl hover:bg-white-20 transition-all duration-300"
-                >
-                  Become a Finance Guru
-                </a>
+                <Link href="/signup?type=gunu"><a className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-green-500 to-teal-500 text-white text-lg font-semibold rounded-xl hover:from-green-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-glow-green-lg hover:-translate-y-1"
+                >Start Learning Finance</a></Link>
+                <Link href="/signup?type=guru"><a className="w-full sm:w-auto px-8 py-4 glass-button text-white text-lg font-semibold rounded-xl hover:bg-white-20 transition-all duration-300"
+                >Become a Finance Guru</a></Link>
               </div>
             </div>
           </div>
