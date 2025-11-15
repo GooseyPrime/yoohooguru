@@ -32,7 +32,8 @@ const leadSubmissionLimiter = rateLimit({
     if (req.user && req.user.id) {
       return req.user.id;
     }
-    return req.ip;
+    // Use the built-in IPv6-safe IP key generator as fallback
+    return req.ip || 'unknown';
   },
 });
 

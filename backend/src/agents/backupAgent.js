@@ -242,8 +242,7 @@ async function restoreFromBackup(backupId) {
       throw new Error(`Backup ${backupId} not found`);
     }
 
-    const backupMetadata = backupDoc.data();
-    const subdomainList = backupMetadata.subdomainList || [];
+    // Backup metadata is stored but actual restoration uses subcollection data
     let restoredArticles = 0;
     let restoredPosts = 0;
 

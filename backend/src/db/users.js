@@ -169,7 +169,7 @@ async function updateHeroGuruPrefs(userId, heroGuruPrefs) {
  * @param {Object} filters - Search filters
  * @returns {Array} Array of Hero Gurus
  */
-async function findHeroGurusProvidingFreeServices(filters = {}) {
+async function findHeroGurusProvidingFreeServices(/* filters = {} */) {
   const col = getCollection();
   let query = col
     .where('heroGuruPrefs.provideFreeServices', '==', true)

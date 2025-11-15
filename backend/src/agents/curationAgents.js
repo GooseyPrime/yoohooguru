@@ -332,7 +332,7 @@ class NewsCurationAgent {
    * @param {number} limit - Number of articles to find
    */
   async searchRealNewsArticles(category, skills, limit = 2) {
-    const axios = require('axios');
+    // axios not needed - using built-in methods in called functions
     const { getConfig } = require('../config/appConfig');
     const config = getConfig();
 
@@ -623,7 +623,7 @@ Return the complete articles with improved summaries in this JSON format:
     const urls = content.match(urlPattern) || [];
 
     // Try to extract structured information
-    const lines = content.split('\n').filter(line => line.trim());
+    // Parse content for article metadata
 
     for (let i = 0; i < Math.min(limit, urls.length); i++) {
       const url = urls[i];
