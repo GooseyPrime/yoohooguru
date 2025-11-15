@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { isValidEmail, isValidLength, sanitizeString } from '../../utils/validation';
 
 interface NewsletterData {
   email: string;
@@ -21,40 +22,51 @@ export default async function handler(
     // Validate required fields
     if (!email) {
       return res.status(400).json({ 
-        error: 'Email is required'
+        error: 'Missing required field',
+        details: 'Email is required'
       });
     }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    // Sanitize inputs
+    const sanitizedEmail = sanitizeString(email);
+    const sanitizedName = name ? sanitizeString(name) : '';
+
+    // Validate email format (safe from ReDoS)
+    if (!isValidEmail(sanitizedEmail)) {
       return res.status(400).json({ 
         error: 'Invalid email format'
+      });
+    }
+
+    // Validate name if provided
+    if (sanitizedName && !isValidLength(sanitizedName, 1, 100)) {
+      return res.status(400).json({ 
+        error: 'Invalid name',
+        details: 'Name must be between 1 and 100 characters'
       });
     }
 
     // TODO: Implement actual newsletter subscription
     // For now, we'll log the subscription and return success
     console.log('Newsletter subscription:', {
-      email,
-      name: name || 'Not provided',
+      email: sanitizedEmail,
+      name: sanitizedName,
       source: source || 'unknown',
       timestamp: new Date().toISOString()
     });
 
     // In production, you would:
-    // 1. Add to email marketing service (Mailchimp, ConvertKit, etc.)
+    // 1. Add to email marketing service (Mailchimp, SendGrid, etc.)
     // 2. Store in database
     // 3. Send welcome email
-    // 4. Handle double opt-in if required
+    // 4. Handle unsubscribe requests
 
     // Return success response
     return res.status(200).json({
       success: true,
       message: 'Successfully subscribed to newsletter!',
       data: {
-        email,
-        subscribed: true,
+        email: sanitizedEmail,
         timestamp: new Date().toISOString()
       }
     });
