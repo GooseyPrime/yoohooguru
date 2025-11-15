@@ -68,7 +68,7 @@ service cloud.firestore {
       // Guru leads (contact form submissions) - authenticated write only
       match /leads/{leadId} {
         allow read: if false; // Private - only accessible via admin SDK
-        allow create: if true; // Anyone can submit a lead
+        allow create: if isSignedIn(); // Authenticated users can submit a lead
         allow update, delete: if false; // No updates or deletions
       }
 
@@ -94,7 +94,7 @@ service cloud.firestore {
     // Global leads collection - for admin dashboard
     match /leads/{leadId} {
       allow read: if false; // Private - only accessible via admin SDK
-      allow create: if true; // Anyone can submit a lead
+      allow create: if isSignedIn(); // Authenticated users can submit a lead
       allow update, delete: if false; // No updates or deletions
     }
 

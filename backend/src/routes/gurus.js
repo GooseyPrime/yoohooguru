@@ -6,6 +6,7 @@ const { getSubdomainConfig, isValidSubdomain } = require('../config/subdomains')
 const { logger } = require('../utils/logger');
 const { uuidv4 } = require('../utils/uuid');
 const { cacheMiddleware } = require('../middleware/cache');
+const { requireAuth } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -499,8 +500,9 @@ router.get('/:subdomain/posts/:slug', async (req, res) => {
 /**
  * POST /:subdomain/leads
  * Submit a lead form for a guru subdomain
+ * Requires authentication to prevent spam and abuse
  */
-router.post('/:subdomain/leads', async (req, res) => {
+router.post('/:subdomain/leads', requireAuth, async (req, res) => {
   try {
     const { subdomain } = req.params;
     const { name, email, service, message, phone } = req.body;
@@ -553,12 +555,13 @@ router.post('/:subdomain/leads', async (req, res) => {
       message: message ? message.trim() : '',
       phone: phone ? phone.trim() : null,
       subdomain,
-      guruCharacter: guru.config.character,
+      guruCharacter: guru.config.character || null,
       createdAt: new Date().toISOString(),
+      createdBy: req.user.uid, // Track which authenticated user created the lead
       status: 'new',
       source: 'guru-website',
-      ip: req.ip,
-      userAgent: req.get('User-Agent')
+      ip: req.ip || null,
+      userAgent: req.get('User-Agent') || null
     };
 
     // Save lead to Firebase using batch operations
