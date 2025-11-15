@@ -63,7 +63,7 @@ export default function Signup() {
     setIsLoading(true);
 
     try {
-      // Call backend API for registration
+      // Call backend API for registration (creates Firebase user and Firestore profile)
       const response = await fetch('/api/backend/auth/register', {
         method: 'POST',
         headers: {
@@ -80,8 +80,19 @@ export default function Signup() {
       });
 
       if (response.ok) {
-        // Redirect to dashboard after successful registration
-        router.push('/dashboard');
+        // After successful registration, sign in with NextAuth to create session
+        const signInResult = await signIn('credentials', {
+          email: formData.email,
+          password: formData.password,
+          redirect: false,
+        });
+
+        if (signInResult?.ok) {
+          // Successfully registered and signed in - redirect to dashboard
+          router.push('/dashboard');
+        } else {
+          setError('Registration succeeded but automatic login failed. Please try logging in manually.');
+        }
       } else {
         const errorData = await response.json();
         setError(errorData.error?.message || 'Registration failed. Please try again.');
