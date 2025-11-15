@@ -513,8 +513,15 @@ router.get('/:subdomain/posts/:slug', async (req, res) => {
 /**
  * POST /:subdomain/leads
  * Submit a lead form for a guru subdomain
- * Requires authentication to prevent spam and abuse
- * Rate limited to 5 submissions per hour per user
+ * 
+ * Security:
+ * - Requires authentication (requireAuth middleware) to prevent anonymous spam
+ * - Rate limited (leadSubmissionLimiter) to 5 submissions per hour per user
+ * - Tracks user ID (createdBy) for audit trail
+ * - Validates email format and required fields
+ * 
+ * @middleware requireAuth - Authenticates user and sets req.user
+ * @middleware leadSubmissionLimiter - Rate limits to 5 requests/hour per user
  */
 router.post('/:subdomain/leads', requireAuth, leadSubmissionLimiter, async (req, res) => {
   try {
