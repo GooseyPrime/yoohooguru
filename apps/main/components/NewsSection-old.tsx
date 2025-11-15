@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { fetchWithRetry, buildAPIUrl } from '../utils/apiHelpers';
 
 interface NewsArticle {
   id: string;
@@ -16,7 +15,7 @@ interface NewsSectionProps {
   limit?: number;
 }
 
-// Allow-list of valid subjects
+// Allow-list of valid subjects (copy from getStaticPaths in [subject]/index.tsx)
 const VALID_SUBJECTS = [
   'art', 'auto', 'business', 'coding', 'cooking', 'crafts', 'data',
   'design', 'finance', 'fitness', 'gardening', 'history',
@@ -26,10 +25,10 @@ const VALID_SUBJECTS = [
 ];
 
 export const NewsSection: React.FC<NewsSectionProps> = ({ subdomain, limit = 5 }) => {
+
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     // Validate subdomain before making the request
@@ -40,6 +39,7 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ subdomain, limit = 5 }
       return;
     }
 
+    let timeoutId: NodeJS.Timeout;
     let isCancelled = false;
 
     const fetchNews = async () => {
@@ -47,24 +47,28 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ subdomain, limit = 5 }
         setLoading(true);
         setError(null);
 
-        // Use fetchWithRetry for automatic retry logic
-        const response = await fetchWithRetry(
-          buildAPIUrl(`/api/news/${subdomain}`),
-          {},
-          {
-            maxRetries: 3,
-            retryDelay: 1000,
-            backoff: true,
-            timeout: 10000,
+        // Set timeout to prevent indefinite loading
+        timeoutId = setTimeout(() => {
+          if (!isCancelled && loading) {
+            setError('Request timeout. Content temporarily unavailable.');
+            setLoading(false);
           }
-        );
+        }, 10000); // 10 second timeout
+
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.yoohoo.guru';
+        const response = await fetch(`${apiUrl}/api/news/${subdomain}`);
 
         if (isCancelled) return;
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch news (${response.status})`);
+        }
 
         const data = await response.json();
         if (!isCancelled) {
           setArticles(data.news?.slice(0, limit) || []);
-          setRetryCount(0); // Reset retry count on success
         }
       } catch (err) {
         if (!isCancelled) {
@@ -73,6 +77,7 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ subdomain, limit = 5 }
         }
       } finally {
         if (!isCancelled) {
+          clearTimeout(timeoutId);
           setLoading(false);
         }
       }
@@ -83,39 +88,25 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ subdomain, limit = 5 }
     // Cleanup function
     return () => {
       isCancelled = true;
+      clearTimeout(timeoutId);
     };
-  }, [subdomain, limit, retryCount]);
-
-  const handleRetry = () => {
-    setRetryCount((prev) => prev + 1);
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subdomain, limit]);
 
   if (loading) {
     return (
-      <div className="news-section loading" role="status" aria-live="polite">
+      <div className="news-section loading">
         <h2>Latest News</h2>
-        <div className="loading-spinner" aria-label="Loading news articles">
-          <div className="spinner"></div>
-          <p>Loading news articles...</p>
-        </div>
+        <p>Loading news articles...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="news-section error" role="alert">
+      <div className="news-section error">
         <h2>Latest News</h2>
-        <div className="error-message">
-          <p>{error}</p>
-          <button
-            onClick={handleRetry}
-            className="retry-button"
-            aria-label="Retry loading news"
-          >
-            Try Again
-          </button>
-        </div>
+        <p>{error}</p>
       </div>
     );
   }
@@ -130,7 +121,7 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ subdomain, limit = 5 }
   }
 
   return (
-    <section className="news-section" aria-label="Latest news articles">
+    <section className="news-section">
       <h2>Latest News</h2>
       <div className="news-grid">
         {articles.map((article) => (
@@ -142,12 +133,11 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ subdomain, limit = 5 }
                   target="_blank"
                   rel="noopener noreferrer"
                   className="news-link"
-                  aria-label={`Read article: ${article.title}`}
                 >
                   {article.title}
                 </a>
               </h3>
-              <span className="news-meta" aria-label={`Published by ${article.source} ${formatDate(article.publishedAt)}`}>
+              <span className="news-meta">
                 {article.source} • {formatDate(article.publishedAt)}
               </span>
             </div>
@@ -157,7 +147,6 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ subdomain, limit = 5 }
               target="_blank"
               rel="noopener noreferrer"
               className="read-more"
-              aria-label={`Read full article: ${article.title}`}
             >
               Read full article →
             </a>
@@ -197,11 +186,6 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ subdomain, limit = 5 }
           transform: translateY(-2px);
         }
 
-        .news-card:focus-within {
-          outline: 2px solid #2563eb;
-          outline-offset: 2px;
-        }
-
         .news-header {
           margin-bottom: 1rem;
         }
@@ -218,8 +202,7 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ subdomain, limit = 5 }
           transition: color 0.2s ease;
         }
 
-        .news-link:hover,
-        .news-link:focus {
+        .news-link:hover {
           color: #1d4ed8;
           text-decoration: underline;
         }
@@ -243,8 +226,7 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ subdomain, limit = 5 }
           transition: color 0.2s ease;
         }
 
-        .read-more:hover,
-        .read-more:focus {
+        .read-more:hover {
           color: #1d4ed8;
           text-decoration: underline;
         }
@@ -253,51 +235,6 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ subdomain, limit = 5 }
           text-align: center;
           padding: 2rem;
           color: #666;
-        }
-
-        .loading-spinner {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 1rem;
-        }
-
-        .spinner {
-          width: 40px;
-          height: 40px;
-          border: 4px solid #e0e0e0;
-          border-top-color: #2563eb;
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-
-        .error-message {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 1rem;
-        }
-
-        .retry-button {
-          padding: 0.75rem 1.5rem;
-          background: #2563eb;
-          color: white;
-          border: none;
-          border-radius: 8px;
-          font-weight: 500;
-          cursor: pointer;
-          transition: background 0.2s ease;
-        }
-
-        .retry-button:hover,
-        .retry-button:focus {
-          background: #1d4ed8;
-          outline: 2px solid #2563eb;
-          outline-offset: 2px;
         }
 
         @media (max-width: 768px) {
