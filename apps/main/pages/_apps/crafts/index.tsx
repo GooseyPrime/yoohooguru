@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 import Navigation from '../../../components/ui/Navigation';
 import { NewsSection } from '../../../components/NewsSection';
@@ -8,10 +8,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function CraftsHome() {
   return (
     <>
-      <Head>
-        <title>Crafts Guru - YooHoo.Guru</title>
-        <meta name="description" content="Discover the joy of handmade creations with expert crafters and artisans." />
-      </Head>
+      <Seo
+        title="Crafts Guru | DIY & Handmade Creations | YooHoo.Guru"
+        description="Learn crafting techniques and create beautiful handmade items."
+        url="https://crafts.yoohoo.guru"
+        image="https://crafts.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 

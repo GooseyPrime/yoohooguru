@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 import Navigation from '../../../components/ui/Navigation';
 import { NewsSection } from '../../../components/NewsSection';
@@ -8,10 +8,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function HistoryHome() {
   return (
     <>
-      <Head>
-        <title>History Guru - YooHoo.Guru</title>
-        <meta name="description" content="Explore the past with expert historians and archaeologists." />
-      </Head>
+      <Seo
+        title="History Guru | Explore the Past | YooHoo.Guru"
+        description="Discover historical events, cultures, and civilizations."
+        url="https://history.yoohoo.guru"
+        image="https://history.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 

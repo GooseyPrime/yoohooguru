@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Navigation from '../../../components/ui/Navigation';
 import HeroSection from '../../../components/sections/HeroSection';
 import { ServiceCard } from '../../../components/ui/Card';
@@ -177,11 +177,12 @@ export default function AngelList() {
 
   return (
     <>
-      <Head>
-        <title>Angel&apos;s List | Local Services Marketplace | YooHoo.Guru</title>
-        <meta name="description" content="Find trusted local services or offer your expertise. Connect with your community for everyday tasks and specialized help." />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Head>
+      <Seo
+        title="Angel's List | Local Services Marketplace | YooHoo.Guru"
+        description="Connect with trusted local service providers for home, business, and personal needs."
+        url="https://angel.yoohoo.guru"
+        image="https://angel.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <div className="min-h-screen bg-orbitron-primary">
         <Navigation />

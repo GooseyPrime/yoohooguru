@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 
 import Navigation from '../../../components/ui/Navigation';
@@ -9,10 +9,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function LanguageHome() {
   return (
     <>
-      <Head>
-        <title>Language Guru - YooHoo.Guru</title>
-        <meta name="description" content="Master new languages with native speakers and expert linguists." />
-      </Head>
+      <Seo
+        title="Language Guru | Master New Languages | YooHoo.Guru"
+        description="Learn languages and improve communication skills with native speakers."
+        url="https://language.yoohoo.guru"
+        image="https://language.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 

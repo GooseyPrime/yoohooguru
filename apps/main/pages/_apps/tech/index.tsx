@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 
 import Navigation from '../../../components/ui/Navigation';
@@ -9,10 +9,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function TechHome() {
   return (
     <>
-      <Head>
-        <title>Tech Guru - YooHoo.Guru</title>
-        <meta name="description" content="Stay ahead in technology with expert guidance from tech industry leaders." />
-      </Head>
+      <Seo
+        title="Tech Guru | Technology & Innovation | YooHoo.Guru"
+        description="Stay ahead with the latest technology trends and innovations."
+        url="https://tech.yoohoo.guru"
+        image="https://tech.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 

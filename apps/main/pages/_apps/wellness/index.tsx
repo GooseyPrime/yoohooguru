@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 
 import Navigation from '../../../components/ui/Navigation';
@@ -9,10 +9,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function WellnessHome() {
   return (
     <>
-      <Head>
-        <title>Wellness Guru - YooHoo.Guru</title>
-        <meta name="description" content="Achieve holistic health and wellness with certified health experts." />
-      </Head>
+      <Seo
+        title="Wellness Guru | Holistic Health | YooHoo.Guru"
+        description="Achieve holistic wellness through mindfulness, nutrition, and self-care."
+        url="https://wellness.yoohoo.guru"
+        image="https://wellness.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../components/Seo';
 import Link from 'next/link';
 import Navigation from '../components/ui/Navigation';
 import HeroSection from '../components/sections/HeroSection';
@@ -112,12 +112,12 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <title>YooHoo.Guru - Community Skill Sharing Platform</title>
-        <meta name="description" content="Connect with local experts, exchange knowledge, and create meaningful impact through our trusted skill-sharing platform." />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <Seo
+        title="YooHoo.Guru - Community Skill Sharing Platform"
+        description="Connect with expert teachers, find local service providers, and share your skills. Join YooHoo.Guru to learn, teach, and grow together."
+        url="https://www.yoohoo.guru"
+        image="https://www.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 

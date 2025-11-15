@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 import Navigation from '../../../components/ui/Navigation';
 import { NewsSection } from '../../../components/NewsSection';
@@ -8,10 +8,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function ArtHome() {
   return (
     <>
-      <Head>
-        <title>Art Guru - YooHoo.Guru</title>
-        <meta name="description" content="Master painting, drawing, sculpture, and digital art with expert guidance from professional artists." />
-      </Head>
+      <Seo
+        title="Art Guru | Explore Creative Expression | YooHoo.Guru"
+        description="Discover art techniques, styles, and creative skills from talented artists."
+        url="https://art.yoohoo.guru"
+        image="https://art.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 

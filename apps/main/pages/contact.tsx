@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Head from 'next/head';
+import Seo from '../components/Seo';
 import Link from 'next/link';
 import Navigation from '../components/ui/Navigation';
 
@@ -69,10 +69,12 @@ export default function Contact() {
 
   return (
     <>
-      <Head>
-        <title>Contact Us - YooHoo.Guru</title>
-        <meta name="description" content="Get in touch with the YooHoo.Guru team. We&apos;re here to help!" />
-      </Head>
+      <Seo
+        title="Contact Us - YooHoo.Guru"
+        description="Get in touch with YooHoo.Guru. We're here to help with questions about our platform, partnerships, or support."
+        url="https://www.yoohoo.guru/contact"
+        image="https://www.yoohoo.guru/assets/og-contact.jpg"
+      />
 
       <Navigation />
 

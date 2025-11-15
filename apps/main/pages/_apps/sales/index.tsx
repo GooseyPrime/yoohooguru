@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 
 import Navigation from '../../../components/ui/Navigation';
@@ -9,10 +9,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function SalesHome() {
   return (
     <>
-      <Head>
-        <title>Sales Guru - YooHoo.Guru</title>
-        <meta name="description" content="Master sales techniques with top performers and sales experts." />
-      </Head>
+      <Seo
+        title="Sales Guru | Sales Excellence | YooHoo.Guru"
+        description="Master sales techniques and close more deals with proven strategies."
+        url="https://sales.yoohoo.guru"
+        image="https://sales.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 

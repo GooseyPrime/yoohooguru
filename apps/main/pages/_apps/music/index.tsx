@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 
 import Navigation from '../../../components/ui/Navigation';
@@ -9,10 +9,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function MusicHome() {
   return (
     <>
-      <Head>
-        <title>Music Guru - YooHoo.Guru</title>
-        <meta name="description" content="Master the art of music with expert guidance from professional musicians." />
-      </Head>
+      <Seo
+        title="Music Guru | Musical Mastery | YooHoo.Guru"
+        description="Learn instruments, music theory, and develop your musical talents."
+        url="https://music.yoohoo.guru"
+        image="https://music.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 

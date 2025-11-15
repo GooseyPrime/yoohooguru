@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Head from 'next/head';
+import Seo from '../components/Seo';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { signIn } from 'next-auth/react';
@@ -142,10 +142,13 @@ export default function Signup() {
 
   return (
     <>
-      <Head>
-        <title>Sign Up - YooHoo.Guru</title>
-        <meta name="description" content="Create your YooHoo.Guru account and start your journey" />
-      </Head>
+      <Seo
+        title="Sign Up - YooHoo.Guru"
+        description="Create your YooHoo.Guru account and start sharing skills or learning from experts today."
+        url="https://www.yoohoo.guru/signup"
+        image="https://www.yoohoo.guru/assets/og-signup.jpg"
+        noindex={true}
+      />
 
       <Navigation />
 

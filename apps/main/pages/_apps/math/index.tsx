@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 
 import Navigation from '../../../components/ui/Navigation';
@@ -9,10 +9,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function MathHome() {
   return (
     <>
-      <Head>
-        <title>Math Guru - YooHoo.Guru</title>
-        <meta name="description" content="Master mathematics from basics to advanced concepts with expert mathematicians." />
-      </Head>
+      <Seo
+        title="Math Guru | Mathematical Excellence | YooHoo.Guru"
+        description="Master mathematics from basics to advanced topics with expert guidance."
+        url="https://math.yoohoo.guru"
+        image="https://math.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 

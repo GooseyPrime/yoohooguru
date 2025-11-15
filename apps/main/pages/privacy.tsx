@@ -1,6 +1,6 @@
 import { Header, Footer } from '@yoohooguru/shared'
-import Head from 'next/head'
 import styled from 'styled-components'
+import Seo from '../components/Seo';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -90,10 +90,12 @@ const ContactDetails = styled.p`
 export default function Privacy() {
   return (
     <Container>
-      <Head>
-        <title>Privacy Policy | YooHoo.Guru</title>
-        <meta name="description" content="Privacy Policy for YooHoo.Guru - Learn how we collect, use, and protect your personal information." />
-      </Head>
+      <Seo
+        title="Privacy Policy - YooHoo.Guru"
+        description="Learn how YooHoo.Guru protects your privacy and handles your personal information."
+        url="https://www.yoohoo.guru/privacy"
+        image="https://www.yoohoo.guru/assets/og-privacy.jpg"
+      />
 
       <Header />
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Head from 'next/head';
+import Seo from '../components/Seo';
 import Link from 'next/link';
 import Navigation from '../components/ui/Navigation';
 
@@ -145,10 +145,12 @@ export default function FAQ() {
 
   return (
     <>
-      <Head>
-        <title>FAQ - YooHoo.Guru</title>
-        <meta name="description" content="Frequently asked questions about YooHoo.Guru" />
-      </Head>
+      <Seo
+        title="FAQ - YooHoo.Guru"
+        description="Frequently asked questions about YooHoo.Guru platform, features, and services."
+        url="https://www.yoohoo.guru/faq"
+        image="https://www.yoohoo.guru/assets/og-faq.jpg"
+      />
 
       <Navigation />
 

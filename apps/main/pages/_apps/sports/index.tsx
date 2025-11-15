@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 
 import Navigation from '../../../components/ui/Navigation';
@@ -9,10 +9,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function SportsHome() {
   return (
     <>
-      <Head>
-        <title>Sports Guru - YooHoo.Guru</title>
-        <meta name="description" content="Master any sport with professional athletes and expert coaches." />
-      </Head>
+      <Seo
+        title="Sports Guru | Athletic Excellence | YooHoo.Guru"
+        description="Improve athletic performance and master sports techniques."
+        url="https://sports.yoohoo.guru"
+        image="https://sports.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 

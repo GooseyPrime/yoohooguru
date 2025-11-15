@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 
 import Navigation from '../../../components/ui/Navigation';
@@ -9,10 +9,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function ScienceHome() {
   return (
     <>
-      <Head>
-        <title>Science Guru - YooHoo.Guru</title>
-        <meta name="description" content="Explore scientific concepts with expert scientists and researchers." />
-      </Head>
+      <Seo
+        title="Science Guru | Scientific Discovery | YooHoo.Guru"
+        description="Explore scientific concepts and develop critical thinking skills."
+        url="https://science.yoohoo.guru"
+        image="https://science.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 

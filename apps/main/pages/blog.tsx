@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../components/Seo';
 import Navigation from '../components/ui/Navigation';
 
 export default function Blog() {
@@ -80,10 +80,12 @@ export default function Blog() {
 
   return (
     <>
-      <Head>
-        <title>Blog - YooHoo.Guru</title>
-        <meta name="description" content="Read the latest updates, success stories, and tips from the YooHoo.Guru community." />
-      </Head>
+      <Seo
+        title="Blog - YooHoo.Guru"
+        description="Explore articles, tips, and insights about skill sharing, learning, and community building on YooHoo.Guru."
+        url="https://www.yoohoo.guru/blog"
+        image="https://www.yoohoo.guru/assets/og-blog.jpg"
+      />
 
       <Navigation />
 

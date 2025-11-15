@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 import Navigation from '../../../components/ui/Navigation';
 import { NewsSection } from '../../../components/NewsSection';
@@ -8,10 +8,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function InvestingHome() {
   return (
     <>
-      <Head>
-        <title>Investing Guru - YooHoo.Guru</title>
-        <meta name="description" content="Build wealth with expert investors and financial analysts." />
-      </Head>
+      <Seo
+        title="Investing Guru | Investment Strategies | YooHoo.Guru"
+        description="Learn investment strategies and build wealth through smart investing."
+        url="https://investing.yoohoo.guru"
+        image="https://investing.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 

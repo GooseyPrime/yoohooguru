@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import Seo from '../../../components/Seo';
 import Link from 'next/link';
 
 import Navigation from '../../../components/ui/Navigation';
@@ -9,10 +9,12 @@ import { BlogList } from '../../../components/BlogList';
 export default function BusinessHome() {
   return (
     <>
-      <Head>
-        <title>Business Guru - YooHoo.Guru</title>
-        <meta name="description" content="Build your entrepreneurial skills with expert guidance on startups, management, and business strategy." />
-      </Head>
+      <Seo
+        title="Business Guru | Master Business Skills | YooHoo.Guru"
+        description="Learn business strategies, entrepreneurship, and professional development."
+        url="https://business.yoohoo.guru"
+        image="https://business.yoohoo.guru/assets/og-home.jpg"
+      />
 
       <Navigation />
 
