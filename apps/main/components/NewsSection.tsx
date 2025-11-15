@@ -17,10 +17,10 @@ interface NewsSectionProps {
 
 // Allow-list of valid subjects (copy from getStaticPaths in [subject]/index.tsx)
 const VALID_SUBJECTS = [
-  'art', 'business', 'coding', 'cooking', 'crafts', 'data',
+  'art', 'auto', 'business', 'coding', 'cooking', 'crafts', 'data',
   'design', 'finance', 'fitness', 'gardening', 'history',
   'home', 'investing', 'language', 'marketing', 'math',
-  'music', 'photography', 'sales', 'science', 'sports',
+  'mechanical', 'music', 'photography', 'sales', 'science', 'sports',
   'tech', 'wellness', 'writing'
 ];
 
