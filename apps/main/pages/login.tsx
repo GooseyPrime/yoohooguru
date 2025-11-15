@@ -1,9 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { signIn } from 'next-auth/react';
 import Navigation from '../components/ui/Navigation';
+
+const oauthErrorMessages: Record<string, string> = {
+  OAuthCallback: 'Google authentication failed. This may be due to a configuration issue. Please try again or contact support if the problem persists.',
+  OAuthSignin: 'Error occurred while signing in with Google. Please try again.',
+  OAuthCreateAccount: 'Could not create account with Google. Please try a different method.',
+  Configuration: 'There is a problem with the server configuration. Please contact support.',
+  AccessDenied: 'Access was denied. You may not have permission to sign in.',
+  Verification: 'The verification token has expired or has already been used.',
+  Default: 'An authentication error occurred. Please try again.',
+};
 
 export default function Login() {
   const router = useRouter();
@@ -12,6 +22,15 @@ export default function Login() {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Detect OAuth errors from URL query parameters
+  useEffect(() => {
+    const errorParam = router.query.error as string;
+    if (errorParam) {
+      const errorMessage = oauthErrorMessages[errorParam] || oauthErrorMessages.Default;
+      setError(errorMessage);
+    }
+  }, [router.query.error]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
