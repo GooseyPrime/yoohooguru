@@ -144,6 +144,79 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
   }
 });
 
+// @desc    Login user (email/password authentication via Firebase)
+// @route   POST /api/auth/login
+// @access  Public
+router.post('/login', authLimiter, async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        error: { message: 'Email and password are required' }
+      });
+    }
+
+    // Use Firebase Auth REST API to verify email/password
+    const firebaseApiKey = process.env.FIREBASE_API_KEY;
+    if (!firebaseApiKey) {
+      logger.error('FIREBASE_API_KEY not configured');
+      return res.status(500).json({
+        success: false,
+        error: { message: 'Server configuration error' }
+      });
+    }
+
+    const signInUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${firebaseApiKey}`;
+
+    const authResponse = await fetch(signInUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email,
+        password,
+        returnSecureToken: true
+      })
+    });
+
+    const authData = await authResponse.json();
+
+    if (!authResponse.ok) {
+      logger.warn(`Login failed for ${email}: ${authData.error?.message}`);
+      return res.status(401).json({
+        success: false,
+        error: { message: authData.error?.message || 'Invalid email or password' }
+      });
+    }
+
+    // Get user profile from Firestore
+    const userData = await usersDB.get(authData.localId);
+
+    logger.info(`User logged in successfully: ${email}`);
+
+    res.json({
+      success: true,
+      data: {
+        idToken: authData.idToken,
+        refreshToken: authData.refreshToken,
+        expiresIn: authData.expiresIn,
+        user: userData || {
+          uid: authData.localId,
+          email: authData.email
+        }
+      }
+    });
+
+  } catch (error) {
+    logger.error('Login error:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: 'Login failed' }
+    });
+  }
+});
+
 // @desc    Get user profile
 // @route   GET /api/auth/profile
 // @access  Private
