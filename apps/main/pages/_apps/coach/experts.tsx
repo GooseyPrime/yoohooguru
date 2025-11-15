@@ -17,7 +17,7 @@ export default function CoachExperts() {
               Expert Coaches
             </h1>
             <p className="text-xl text-white-80 mb-8">
-              This page is under construction. We're working on bringing you the best coaching experience.
+              This page is under construction. We&apos;re working on bringing you the best coaching experience.
             </p>
             <div className="flex gap-4 justify-center">
               <Link 
