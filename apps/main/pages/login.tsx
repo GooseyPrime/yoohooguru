@@ -38,25 +38,22 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      // Call backend API for email/password authentication
-      const response = await fetch('/api/backend/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
+      // Use NextAuth credentials provider for email/password authentication
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
       });
 
-      if (response.ok) {
-        // After successful backend authentication, redirect to dashboard
+      if (result?.error) {
+        setError('Invalid email or password');
+        setIsLoading(false);
+      } else if (result?.ok) {
+        // Successful authentication - redirect to dashboard
         router.push('/dashboard');
-      } else {
-        const errorData = await response.json();
-        setError(errorData.error?.message || 'Invalid email or password');
       }
     } catch {
       setError('An error occurred during login. Please try again.');
-    } finally {
       setIsLoading(false);
     }
   };

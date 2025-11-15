@@ -1,5 +1,6 @@
 import NextAuth, { Session } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { getAuthOptions } from "@yoohooguru/auth";
 import { JWT } from "next-auth/jwt";
 
@@ -16,6 +17,72 @@ const authOptions = getAuthOptions({
           prompt: "consent",
           access_type: "offline",
           response_type: "code"
+        }
+      }
+    }),
+    CredentialsProvider({
+      id: 'credentials',
+      name: 'Email and Password',
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
+
+        try {
+          // Use Firebase Auth REST API to verify email/password
+          const firebaseApiKey = process.env.FIREBASE_API_KEY;
+          if (!firebaseApiKey) {
+            console.error('FIREBASE_API_KEY not configured');
+            return null;
+          }
+
+          const signInUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${firebaseApiKey}`;
+
+          const response = await fetch(signInUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: credentials.email,
+              password: credentials.password,
+              returnSecureToken: true
+            })
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Firebase auth error:', errorData.error?.message);
+            return null;
+          }
+
+          const authData = await response.json();
+
+          // Fetch user profile from backend
+          const profileResponse = await fetch(`${process.env.NEXTAUTH_URL}/api/backend/auth/profile`, {
+            headers: {
+              'Authorization': `Bearer ${authData.idToken}`
+            }
+          });
+
+          let userData = null;
+          if (profileResponse.ok) {
+            const profileData = await profileResponse.json();
+            userData = profileData.data;
+          }
+
+          // Return user object for NextAuth session
+          return {
+            id: authData.localId,
+            email: authData.email,
+            name: userData?.displayName || authData.email.split('@')[0],
+            role: userData?.role || 'gunu'
+          };
+        } catch (error) {
+          console.error('Authorization error:', error);
+          return null;
         }
       }
     }),
