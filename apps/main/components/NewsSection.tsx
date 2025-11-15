@@ -90,6 +90,7 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ subdomain, limit = 5 }
       isCancelled = true;
       clearTimeout(timeoutId);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subdomain, limit]);
 
   if (loading) {

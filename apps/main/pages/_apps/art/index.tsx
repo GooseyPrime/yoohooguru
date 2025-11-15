@@ -41,21 +41,13 @@ export default function ArtHome() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-              <a
-                href="/signup?type=gunu"
-                className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-lg font-semibold rounded-xl hover:from-pink-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-glow-pink-lg hover:-translate-y-1 flex items-center justify-center space-x-2"
-              >
-                <span>Start Learning Art</span>
+              <Link href="/signup?type=gunu"><a className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-lg font-semibold rounded-xl hover:from-pink-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-glow-pink-lg hover:-translate-y-1 flex items-center justify-center space-x-2"
+              ><span>Start Learning Art</span>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </a>
-              <a
-                href="/signup?type=guru"
-                className="w-full sm:w-auto px-8 py-4 glass-button text-white text-lg font-semibold rounded-xl hover:bg-white-20 transition-all duration-300 flex items-center justify-center space-x-2"
-              >
-                <span>Become a Art Guru</span>
-              </a>
+                </svg></a></Link>
+              <Link href="/signup?type=guru"><a className="w-full sm:w-auto px-8 py-4 glass-button text-white text-lg font-semibold rounded-xl hover:bg-white-20 transition-all duration-300 flex items-center justify-center space-x-2"
+              ><span>Become a Art Guru</span></a></Link>
             </div>
 
             {/* Stats */}
@@ -98,18 +90,10 @@ export default function ArtHome() {
                 Join thousands of art enthusiasts learning and teaching on YooHoo.Guru
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a
-                  href="/signup?type=gunu"
-                  className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-lg font-semibold rounded-xl hover:from-pink-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-glow-pink-lg hover:-translate-y-1"
-                >
-                  Start Learning Art
-                </a>
-                <a
-                  href="/signup?type=guru"
-                  className="w-full sm:w-auto px-8 py-4 glass-button text-white text-lg font-semibold rounded-xl hover:bg-white-20 transition-all duration-300"
-                >
-                  Become a Art Guru
-                </a>
+                <Link href="/signup?type=gunu"><a className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-lg font-semibold rounded-xl hover:from-pink-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-glow-pink-lg hover:-translate-y-1"
+                >Start Learning Art</a></Link>
+                <Link href="/signup?type=guru"><a className="w-full sm:w-auto px-8 py-4 glass-button text-white text-lg font-semibold rounded-xl hover:bg-white-20 transition-all duration-300"
+                >Become a Art Guru</a></Link>
               </div>
             </div>
           </div>

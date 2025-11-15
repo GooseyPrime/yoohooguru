@@ -123,7 +123,7 @@ export default function Safety() {
               Your Safety is Our <span className="gradient-text-emerald-blue">Priority</span>
             </h1>
             <p className="text-xl text-white-80 max-w-3xl mx-auto">
-              We've built comprehensive safety features and guidelines to create a trusted community where everyone can learn, teach, and connect with confidence.
+              We&apos;ve built comprehensive safety features and guidelines to create a trusted community where everyone can learn, teach, and connect with confidence.
             </p>
           </div>
         </section>
