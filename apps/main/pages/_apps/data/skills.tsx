@@ -2,7 +2,7 @@ import React from 'react';
 import Navigation from '../../../components/ui/Navigation';
 import Seo from '../../../components/Seo';
 
-export default function Skills() {{
+export default function Skills() {
   return (
     <>
       <Seo
@@ -41,4 +41,4 @@ export default function Skills() {{
       </main>
     </>
   );
-}}
+}

@@ -2,12 +2,12 @@ import React from 'react';
 import Navigation from '../../../components/ui/Navigation';
 import Seo from '../../../components/Seo';
 
-export default function Teachers() {{
+export default function Teachers() {
   return (
     <>
       <Seo
-        title="Teachers - Angel's List - YooHoo.Guru"
-        description="Meet expert teachers and instructors on Angel's List. Learn from the best in the field."
+        title="Teachers - Angel&apos;s List - YooHoo.Guru"
+        description="Meet expert teachers and instructors on Angel&apos;s List. Learn from the best in the field."
         url="https://angel.yoohoo.guru/teachers"
         image="https://angel.yoohoo.guru/assets/og-teachers.jpg"
       />
@@ -21,7 +21,7 @@ export default function Teachers() {{
             <div className="max-w-4xl mx-auto text-center">
               <h1 className="text-5xl md:text-6xl font-display font-bold text-white mb-6">
                 Expert Teachers
-                <span className="block gradient-text-emerald-blue mt-2">on Angel's List</span>
+                <span className="block gradient-text-emerald-blue mt-2">on Angel&apos;s List</span>
               </h1>
               <p className="text-xl text-white-80 leading-relaxed">
                 Learn from experienced professionals who are passionate about sharing their knowledge.
@@ -41,4 +41,4 @@ export default function Teachers() {{
       </main>
     </>
   );
-}}
+}

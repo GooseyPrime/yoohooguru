@@ -2,7 +2,7 @@ import React from 'react';
 import Navigation from '../../../components/ui/Navigation';
 import Seo from '../../../components/Seo';
 
-export default function Teachers() {{
+export default function Teachers() {
   return (
     <>
       <Seo
@@ -41,4 +41,4 @@ export default function Teachers() {{
       </main>
     </>
   );
-}}
+}

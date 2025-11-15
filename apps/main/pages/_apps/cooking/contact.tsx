@@ -2,12 +2,12 @@ import React from 'react';
 import Navigation from '../../../components/ui/Navigation';
 import Seo from '../../../components/Seo';
 
-export default function Contact() {{
+export default function Contact() {
   return (
     <>
       <Seo
         title="Contact Cooking Guru - YooHoo.Guru"
-        description="Get in touch with Cooking Guru. We're here to help with questions and support."
+        description="Get in touch with Cooking Guru. We&apos;re here to help with questions and support."
         url="https://cooking.yoohoo.guru/contact"
         image="https://cooking.yoohoo.guru/assets/og-contact.jpg"
       />
@@ -24,7 +24,7 @@ export default function Contact() {{
                 <span className="block gradient-text-emerald-blue mt-2">Cooking Guru</span>
               </h1>
               <p className="text-xl text-white-80 leading-relaxed">
-                Have questions? We're here to help. Reach out to our team for support.
+                Have questions? We&apos;re here to help. Reach out to our team for support.
               </p>
             </div>
           </div>
@@ -60,7 +60,7 @@ export default function Contact() {{
                   <textarea
                     id="message"
                     name="message"
-                    rows={{6}}
+                    rows={6}
                     className="w-full px-4 py-3 rounded-lg bg-primarydark/50 border border-white/10 text-white focus:outline-none focus:border-emerald-500"
                     required
                   />
@@ -78,4 +78,4 @@ export default function Contact() {{
       </main>
     </>
   );
-}}
+}

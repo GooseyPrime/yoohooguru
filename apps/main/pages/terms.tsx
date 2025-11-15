@@ -1,5 +1,4 @@
 import { Header, Footer } from '@yoohooguru/shared'
-import Head from 'next/head'
 import styled from 'styled-components'
 import Seo from '../components/Seo';
 
