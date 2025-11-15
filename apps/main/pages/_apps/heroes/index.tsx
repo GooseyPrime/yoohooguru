@@ -2,10 +2,12 @@ import { Header, Footer } from '@yoohooguru/shared';
 import Head from 'next/head';
 import Link from 'next/link';
 import { OrbitronContainer, OrbitronCard } from '../../../components/orbitron';
+import HeroGurusAccessGate from '../../../components/HeroGurusAccessGate';
 
 export default function HeroGurusHome() {
   return (
-    <OrbitronContainer gradient="primary">
+    <HeroGurusAccessGate>
+      <OrbitronContainer gradient="primary">
       <Head>
         <title>Hero Gurus | Free Accessible Learning | YooHoo.Guru</title>
         <meta name="description" content="Free accessible skill-sharing for people with disabilities. Join our community of adaptive learners and volunteer Gurus." />
