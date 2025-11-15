@@ -20,6 +20,22 @@ const guruPagesLimiter = rateLimit({
   // Remove custom keyGenerator to use the default IPv6-compatible one
 });
 
+// Rate limiter for lead form submissions (strict: 5 submissions/hour per user)
+const leadSubmissionLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5, // Limit each user to 5 requests per windowMs
+  message: 'Too many leads submitted from this account, please try again in an hour',
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: function (req /*, res*/) {
+    // Use user ID for per-user rate limiting. Fallback to IP if user hasn't been set by requireAuth (should not happen).
+    if (req.user && req.user.id) {
+      return req.user.id;
+    }
+    return req.ip;
+  },
+});
+
 // Rate limiter for lead submissions (stricter limits to prevent spam)
 const leadSubmissionLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
