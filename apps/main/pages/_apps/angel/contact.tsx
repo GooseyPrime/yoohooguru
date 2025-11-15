@@ -2,12 +2,12 @@ import React from 'react';
 import Navigation from '../../../components/ui/Navigation';
 import Seo from '../../../components/Seo';
 
-export default function Contact() {{
+export default function Contact() {
   return (
     <>
       <Seo
-        title="Contact Angel's List - YooHoo.Guru"
-        description="Get in touch with Angel's List. We're here to help with questions and support."
+        title="Contact Angel&apos;s List - YooHoo.Guru"
+        description="Get in touch with Angel&apos;s List. We&apos;re here to help with questions and support."
         url="https://angel.yoohoo.guru/contact"
         image="https://angel.yoohoo.guru/assets/og-contact.jpg"
       />
@@ -21,10 +21,10 @@ export default function Contact() {{
             <div className="max-w-4xl mx-auto text-center">
               <h1 className="text-5xl md:text-6xl font-display font-bold text-white mb-6">
                 Contact
-                <span className="block gradient-text-emerald-blue mt-2">Angel's List</span>
+                <span className="block gradient-text-emerald-blue mt-2">Angel&apos;s List</span>
               </h1>
               <p className="text-xl text-white-80 leading-relaxed">
-                Have questions? We're here to help. Reach out to our team for support.
+                Have questions? We&apos;re here to help. Reach out to our team for support.
               </p>
             </div>
           </div>
@@ -60,7 +60,7 @@ export default function Contact() {{
                   <textarea
                     id="message"
                     name="message"
-                    rows={{6}}
+                    rows={6}
                     className="w-full px-4 py-3 rounded-lg bg-primarydark/50 border border-white/10 text-white focus:outline-none focus:border-emerald-500"
                     required
                   />
@@ -78,4 +78,4 @@ export default function Contact() {{
       </main>
     </>
   );
-}}
+}
