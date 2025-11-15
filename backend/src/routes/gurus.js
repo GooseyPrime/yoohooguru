@@ -20,6 +20,19 @@ const guruPagesLimiter = rateLimit({
   // Remove custom keyGenerator to use the default IPv6-compatible one
 });
 
+// Rate limiter for lead submissions (stricter limits to prevent spam)
+const leadSubmissionLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5, // Limit each user to 5 lead submissions per hour
+  message: 'Too many lead submissions, please try again later',
+  standardHeaders: true,
+  legacyHeaders: false,
+  // Use user ID as key for authenticated requests, fallback to IP
+  keyGenerator: (req) => {
+    return req.user?.uid || req.ip;
+  }
+});
+
 /**
  * Middleware to validate subdomain parameter in URL path
  * This handles cases where subdomain comes from URL path rather than host header
@@ -501,8 +514,9 @@ router.get('/:subdomain/posts/:slug', async (req, res) => {
  * POST /:subdomain/leads
  * Submit a lead form for a guru subdomain
  * Requires authentication to prevent spam and abuse
+ * Rate limited to 5 submissions per hour per user
  */
-router.post('/:subdomain/leads', requireAuth, async (req, res) => {
+router.post('/:subdomain/leads', requireAuth, leadSubmissionLimiter, async (req, res) => {
   try {
     const { subdomain } = req.params;
     const { name, email, service, message, phone } = req.body;

@@ -107,8 +107,7 @@ describe('Guru Leads Authentication', () => {
     test('authenticated lead submissions should still respect rate limits', async () => {
       // Note: This test documents the expectation that rate limiting
       // is still in place for authenticated users, preventing abuse
-      // from compromised accounts. The actual rate limiting is tested
-      // in route-rate-limiting.test.js
+      // from compromised accounts. Rate limit: 5 submissions per hour per user
       
       const response = await request(app)
         .post(`/api/gurus/${testSubdomain}/leads`)
@@ -120,6 +119,7 @@ describe('Guru Leads Authentication', () => {
       
       // Note: We don't exhaust rate limits in this test to avoid
       // interfering with other tests, but the middleware is present
+      // and configured for 5 submissions per hour per user
     });
   });
 });
