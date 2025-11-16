@@ -5,6 +5,15 @@ import { Header, Footer } from '@yoohooguru/shared'
 import Head from 'next/head'
 import { OrbitronContainer, OrbitronCard, OrbitronButton, OrbitronSection } from '../components/orbitron'
 
+/**
+ * Dashboard Page
+ * 
+ * SSR-Safe Implementation:
+ * This component uses the `mounted` state pattern to ensure all router operations
+ * (router.push, router.query access) only occur after client-side hydration.
+ * This prevents "NextRouter was not mounted" errors during SSR/SSG.
+ */
+
 interface User {
   id: string;
   name?: string | null;
