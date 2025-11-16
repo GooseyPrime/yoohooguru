@@ -17,6 +17,12 @@ const nextConfig = {
 
   // Configure for gateway architecture
   async rewrites() {
+          {
+            source: "/api/backend/:path*",
+            destination: process.env.BACKEND_API_URL 
+              ? `${process.env.BACKEND_API_URL}/api/:path*`
+              : "https://api.yoohoo.guru/api/:path*",
+          },
     return {
       beforeFiles: [
         // These rewrites are checked before pages/public files
