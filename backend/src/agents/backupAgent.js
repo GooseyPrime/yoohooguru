@@ -307,7 +307,7 @@ async function listBackups() {
   try {
     const backupsSnapshot = await db.collection('backups')
       .orderBy('timestamp', 'desc')
-      .limit(50)
+      .limit(10)
       .get();
 
     const backups = [];
@@ -405,3 +405,35 @@ module.exports = {
   restoreFromBackup,
   listBackups
 };
+
+/**
+ * Retry function with exponential backoff for Firestore operations
+ */
+async function retryWithBackoff(operation, operationName, maxRetries = 2) {
+  let attempt = 0;
+  
+  while (attempt < maxRetries) {
+    try {
+      return await operation();
+    } catch (error) {
+      attempt++;
+      
+      // Check if this is a quota error
+      if (error.message.includes('RESOURCE_EXHAUSTED') || error.code === 8) {
+        const delay = Math.min(1000 * Math.pow(2, attempt), 5000); // Exponential backoff, max 5s
+        
+        if (attempt < maxRetries) {
+          logger.warn(`⚠️ Quota exceeded for ${operationName}, retry ${attempt}/${maxRetries} in ${delay}ms`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          continue;
+        } else {
+          logger.error(`❌ ${operationName}: Max retries reached due to quota exhaustion`);
+          throw new Error(`Quota exceeded for ${operationName} after ${maxRetries} retries`);
+        }
+      }
+      
+      // For non-quota errors, throw immediately
+      throw error;
+    }
+  }
+}

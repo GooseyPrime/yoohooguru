@@ -249,8 +249,19 @@ const initializeFirebase = () => {
       validateProductionFirebaseConfig(firebaseConfig);
     }
 
-    firebaseApp = admin.initializeApp(firebaseConfig);
+    try {
+          firebaseApp = admin.initializeApp(firebaseConfig);
     logger.info('Firebase Admin SDK initialized successfully');
+          } catch (initError) {
+      // Handle specific Firebase initialization errors
+      if (initError.message.includes('Failed to parse private key')) {
+        logger.error('❌ Firebase private key parsing error detected');
+        logger.error('   This usually means the FIREBASE_PRIVATE_KEY environment variable');
+        logger.error('   is malformed or contains incorrect line endings');
+        logger.error('   Please check your private key format in environment variables');
+      }
+      throw initError;
+    }
     logger.info(`Environment: ${env}`);
 
     if (env === 'production' || env === 'staging') {

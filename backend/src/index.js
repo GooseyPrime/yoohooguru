@@ -172,7 +172,7 @@ app.use((req, res, next) => {
           "'unsafe-inline'" // Fallback for browsers that don't support nonces
         ],
         "frame-src": ["'self'", "https://js.stripe.com", "https://accounts.google.com", "https://*.firebaseapp.com", "https://www.google.com"],
-        "connect-src": ["'self'", "https://api.stripe.com", "https://accounts.google.com", "https://www.googleapis.com", "https://identitytoolkit.googleapis.com", "https://securetoken.googleapis.com", "https://oauth2.googleapis.com", "https://api.unsplash.com", "https://images.unsplash.com", "https://api.bigdatacloud.net", "https://api-bdc.io", "https://www.google-analytics.com", "https://analytics.google.com", "https://stats.g.doubleclick.net"],
+        "connect-src": ["'self'", "webpack://", "ws://localhost:*", "wss://localhost:*", "https://api.stripe.com", "https://accounts.google.com", "https://www.googleapis.com", "https://identitytoolkit.googleapis.com", "https://securetoken.googleapis.com", "https://oauth2.googleapis.com", "https://api.unsplash.com", "https://images.unsplash.com", "https://api.bigdatacloud.net", "https://api-bdc.io", "https://www.google-analytics.com", "https://analytics.google.com", "https://stats.g.doubleclick.net"],
       },
     },
     // Add missing security headers

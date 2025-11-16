@@ -129,6 +129,7 @@ export default function Login() {
                   </label>
                   <input
                     type="password"
+                      autoComplete="current-password"
                     id="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
