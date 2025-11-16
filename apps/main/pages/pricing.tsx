@@ -6,7 +6,7 @@ import Navigation from '../components/ui/Navigation';
 export default function Pricing() {
   const plans = [
     {
-      name: "Guru (Learner)",
+      name: "Gunu (Learner)",
       description: "Perfect for those looking to learn new skills",
       price: "Free",
       period: "to join",
@@ -73,7 +73,7 @@ export default function Pricing() {
       answer: "Payments are processed securely through Stripe. Learners pay upfront when booking sessions, and funds are released to Gurus after successful completion. Our platform takes a small commission to maintain and improve the service."
     },
     {
-      question: "Can I be both a Guru and a Guru?",
+      question: "Can I be both a Guru and a Gunu?",
       answer: "Absolutely! Many of our members both teach and learn on the platform. You can switch between roles seamlessly and enjoy the benefits of both."
     },
     {
