@@ -3,7 +3,7 @@ import { getSession, useSession, signOut } from 'next-auth/react';
 import { useState } from 'react';
 import Seo from '../components/Seo';
 import Navigation from '../components/ui/Navigation';
-import Link from 'next/link';
+// import Link from 'next/link'; // Unused import
 
 export default function Settings() {
   const { data: session } = useSession();

@@ -1,12 +1,12 @@
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
+// import { useRouter } from 'next/router'; // Unused import
 import Seo from '../components/Seo';
 import Navigation from '../components/ui/Navigation';
 import ProfileManager from '../components/profile/ProfileManager';
 
 export default function Profile() {
-  const router = useRouter();
+  // const router = useRouter(); // Unused variable
 
   return (
     <>

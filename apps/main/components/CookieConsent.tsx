@@ -81,7 +81,7 @@ export default function CookieConsent() {
               </div>
               <p className="text-white-80 text-sm mb-4">
                 We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. 
-                By clicking "Accept All", you consent to our use of cookies.{' '}
+                By clicking &quot;Accept All&quot;, you consent to our use of cookies.{' '}
                 <Link href="/cookies" className="text-emerald-400 hover:text-emerald-300 underline">
                   Learn more
                 </Link>
