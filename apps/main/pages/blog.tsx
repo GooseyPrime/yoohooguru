@@ -1,5 +1,6 @@
 import React from 'react';
 import Seo from '../components/Seo';
+import Link from 'next/link';
 import Navigation from '../components/ui/Navigation';
 
 export default function Blog() {
@@ -29,7 +30,8 @@ export default function Blog() {
       date: "November 8, 2024",
       readTime: "4 min read",
       category: "Tips & Guides",
-      icon: "👨‍🏫"
+      icon: "👨‍🏫",
+      slug: "10-tips-becoming-successful-guru"
     },
     {
       title: "Success Story: From Learner to Expert in 6 Months",
@@ -38,7 +40,8 @@ export default function Blog() {
       date: "November 5, 2024",
       readTime: "6 min read",
       category: "Success Stories",
-      icon: "⭐"
+      icon: "⭐",
+      slug: "success-story-learner-to-expert"
     },
     {
       title: "Building Community Through Hero Gurus",
@@ -47,7 +50,8 @@ export default function Blog() {
       date: "November 3, 2024",
       readTime: "5 min read",
       category: "Community",
-      icon: "❤️"
+      icon: "❤️",
+      slug: "building-community-hero-gurus"
     },
     {
       title: "AI-Powered Matchmaking: Finding Your Perfect Guru",
@@ -56,7 +60,8 @@ export default function Blog() {
       date: "November 1, 2024",
       readTime: "7 min read",
       category: "Platform Updates",
-      icon: "🤖"
+      icon: "🤖",
+      slug: "ai-powered-matchmaking"
     },
     {
       title: "Maximizing Your Learning Experience",
@@ -65,7 +70,8 @@ export default function Blog() {
       date: "October 28, 2024",
       readTime: "4 min read",
       category: "Tips & Guides",
-      icon: "📚"
+      icon: "📚",
+      slug: "maximizing-learning-experience"
     },
     {
       title: "Angel's List: Supporting Local Communities",
@@ -74,7 +80,8 @@ export default function Blog() {
       date: "October 25, 2024",
       readTime: "5 min read",
       category: "Community",
-      icon: "🏘️"
+      icon: "🏘️",
+      slug: "angels-list-supporting-communities"
     }
   ];
 
@@ -144,9 +151,12 @@ export default function Blog() {
                   <span>•</span>
                   <span>{featuredPost.readTime}</span>
                 </div>
-                <button className="px-6 py-2 bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-blue-600 transition-all duration-300">
+                <Link
+                  href="/blog/yoohoo-guru-transforming-skill-sharing-2024"
+                  className="px-6 py-2 bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-blue-600 transition-all duration-300"
+                >
                   Read More →
-                </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -175,18 +185,24 @@ export default function Blog() {
                     <span>{post.author}</span>
                     <span>{post.readTime}</span>
                   </div>
-                  <button className="w-full py-2 text-center text-emerald-400 border border-emerald-500/30 rounded-lg hover:bg-emerald-500/10 transition-all duration-300 font-semibold">
+                  <Link
+                    href={`/blog/${post.slug}`}
+                    className="block w-full py-2 text-center text-emerald-400 border border-emerald-500/30 rounded-lg hover:bg-emerald-500/10 transition-all duration-300 font-semibold"
+                  >
                     Read Article →
-                  </button>
+                  </Link>
                 </div>
               ))}
             </div>
 
             {/* Load More */}
             <div className="text-center mt-12">
-              <button className="px-8 py-4 glass-button text-white font-semibold rounded-xl hover:bg-white-20 transition-all duration-300">
+              <Link
+                href="/blog?page=2"
+                className="inline-block px-8 py-4 glass-button text-white font-semibold rounded-xl hover:bg-white-20 transition-all duration-300"
+              >
                 Load More Posts
-              </button>
+              </Link>
             </div>
           </div>
         </section>

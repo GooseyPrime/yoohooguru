@@ -31,8 +31,8 @@ const subdomainConfig = {
       emoji: '🎯'
     },
     seo: {
-      title: 'SkillShare - Professional Skill Teaching led by Coach Guru',
-      description: 'Connect with coaches and teachers for structured skill-sharing sessions. Learn new skills and teach what you know with SkillShare, led by Coach Guru.',
+      title: 'SkillShare - Professional Skill Teaching',
+      description: 'Connect with coaches and teachers for structured skill-sharing sessions. Learn new skills and teach what you know with SkillShare.',
       keywords: ['skill share', 'coaching', 'skill swap', 'mentoring', 'teaching', 'learning']
     }
   },

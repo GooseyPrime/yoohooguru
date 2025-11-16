@@ -192,7 +192,7 @@ export default function CoachGuru() {
             <div className="text-center mb-16">
               <h2 className="heading-2 mb-4">How SkillShare Works</h2>
               <p className="body-large max-w-3xl mx-auto">
-                Simple, secure, and effective skill sharing led by Coach Guru that benefits both learners and expert instructors.
+                Simple, secure, and effective skill sharing that benefits both learners and expert instructors.
               </p>
             </div>
 

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useSession, signOut } from 'next-auth/react';
 
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,20 +70,62 @@ export default function Navigation() {
               ))}
             </div>
 
-            {/* CTA Buttons */}
+            {/* CTA Buttons / User Menu */}
             <div className="hidden md:flex items-center space-x-4">
-              <Link
-                href="/login"
-                className="px-6 py-2.5 text-sm font-semibold text-white hover:text-emerald-400 transition-colors duration-300"
-              >
-                Sign In
-              </Link>
-              <Link
-                href="/signup"
-                className="px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white text-sm font-semibold rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-300 shadow-lg hover:shadow-glow-emerald hover:-translate-y-0.5"
-              >
-                Get Started
-              </Link>
+              {status === 'loading' ? (
+                <div className="w-6 h-6 border-2 border-white-20 border-t-emerald-400 rounded-full animate-spin"></div>
+              ) : session ? (
+                <div className="flex items-center space-x-4">
+                  <div className="relative group">
+                    <button className="flex items-center space-x-2 px-4 py-2 glass-button rounded-xl hover:bg-white-20 transition-all duration-300">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center text-white text-sm font-semibold">
+                        {session.user?.name?.charAt(0).toUpperCase() || 'U'}
+                      </div>
+                      <span className="text-sm font-medium text-white">{session.user?.name || 'User'}</span>
+                      <svg className="w-4 h-4 text-white-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+
+                    {/* Dropdown Menu */}
+                    <div className="absolute right-0 mt-2 w-48 glass-effect-strong rounded-xl border border-white-20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 shadow-xl z-50">
+                      <div className="py-2">
+                        <Link href="/dashboard" className="block px-4 py-2 text-sm text-white hover:bg-white-10 transition-colors">
+                          Dashboard
+                        </Link>
+                        <Link href="/profile" className="block px-4 py-2 text-sm text-white hover:bg-white-10 transition-colors">
+                          Profile
+                        </Link>
+                        <Link href="/settings" className="block px-4 py-2 text-sm text-white hover:bg-white-10 transition-colors">
+                          Settings
+                        </Link>
+                        <hr className="my-2 border-white-10" />
+                        <button
+                          onClick={() => signOut()}
+                          className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-white-10 transition-colors"
+                        >
+                          Sign Out
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="px-6 py-2.5 text-sm font-semibold text-white hover:text-emerald-400 transition-colors duration-300"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white text-sm font-semibold rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-300 shadow-lg hover:shadow-glow-emerald hover:-translate-y-0.5"
+                  >
+                    Get Started
+                  </Link>
+                </>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -135,20 +179,63 @@ export default function Navigation() {
                 </Link>
               ))}
               <div className="pt-4 space-y-3">
-                <Link
-                  href="/login"
-                  className="block w-full py-3 text-center text-base font-semibold text-white glass-button rounded-xl hover:bg-white-20 transition-all duration-300"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Sign In
-                </Link>
-                <Link
-                  href="/signup"
-                  className="block w-full py-3 text-center bg-gradient-to-r from-emerald-500 to-emerald-600 text-white text-base font-semibold rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-300"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Get Started
-                </Link>
+                {status === 'loading' ? (
+                  <div className="flex justify-center py-3">
+                    <div className="w-6 h-6 border-2 border-white-20 border-t-emerald-400 rounded-full animate-spin"></div>
+                  </div>
+                ) : session ? (
+                  <>
+                    <div className="flex items-center space-x-3 px-4 py-3 glass-button rounded-xl">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center text-white font-semibold">
+                        {session.user?.name?.charAt(0).toUpperCase() || 'U'}
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-sm font-semibold text-white">{session.user?.name || 'User'}</div>
+                        <div className="text-xs text-white-60">{session.user?.email}</div>
+                      </div>
+                    </div>
+                    <Link
+                      href="/dashboard"
+                      className="block w-full py-3 text-center text-base font-semibold text-white glass-button rounded-xl hover:bg-white-20 transition-all duration-300"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                    <Link
+                      href="/profile"
+                      className="block w-full py-3 text-center text-base font-semibold text-white glass-button rounded-xl hover:bg-white-20 transition-all duration-300"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Profile
+                    </Link>
+                    <button
+                      onClick={() => {
+                        signOut();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="block w-full py-3 text-center text-base font-semibold text-white glass-button rounded-xl hover:bg-white-20 transition-all duration-300"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/login"
+                      className="block w-full py-3 text-center text-base font-semibold text-white glass-button rounded-xl hover:bg-white-20 transition-all duration-300"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      href="/signup"
+                      className="block w-full py-3 text-center bg-gradient-to-r from-emerald-500 to-emerald-600 text-white text-base font-semibold rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-300"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Get Started
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>

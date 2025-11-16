@@ -30,7 +30,7 @@ YooHooGuru is a **24-subdomain AI-powered content and skill-sharing platform** t
 - Service provider directory
 
 #### **SkillShare: coach.yoohoo.guru**
-- Professional skill-sharing marketplace led by Coach Guru
+- Professional skill-sharing marketplace
 - Structured skill-swap sessions
 - Educational service bookings
 - Skill matching and discovery

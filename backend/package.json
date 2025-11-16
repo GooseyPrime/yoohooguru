@@ -8,6 +8,9 @@
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
     "build": "echo 'Build completed'",
+    "postbuild": "npm run curate:blogs",
+    "curate:blogs": "node scripts/trigger-blog-curation.js",
+    "curate:blogs:force": "node scripts/trigger-blog-curation.js",
     "ensure-frontend-built": "cd ../frontend && (test -d dist || npm run build:fast)",
     "pretest": "node ../scripts/generate-cors-origins.js",
     "test": "firebase emulators:exec --project=yoohoo-dev-testing --only firestore,auth 'npm run jest'",
@@ -20,6 +23,7 @@
     "lint:fix": "eslint src/ --fix",
     "format": "prettier --write src/**/*.js",
     "deploy": "railway up",
+    "postdeploy": "npm run curate:blogs",
     "test:bcrypt": "jest src/utils/__tests__/bcrypt.test.js"
   },
   "dependencies": {
