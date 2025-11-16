@@ -23,8 +23,12 @@ export default function Dashboard() {
   const router = useRouter()
 
   useEffect(() => {
+    // Only run session check on client side to avoid SSR router issues
+    if (typeof window === 'undefined') return
+
     getSession().then((session) => {
       if (!session) {
+        // Client-side only navigation - safe for SSR
         router.push('/login')
       } else {
         setSession(session)
