@@ -73,7 +73,7 @@ export default function Dashboard() {
 
   // Different dashboard cards based on user role
   const getDashboardCards = () => {
-    const userRole = session.user.role || 'gunu';
+    const userRole = session.user?.role || 'gunu';
     
     switch (userRole) {
       case 'guru':
@@ -264,7 +264,7 @@ export default function Dashboard() {
               <h2 className="text-white text-xl mb-1 flex items-center gap-3">
                 {session.user.name || 'Welcome!'}
                 <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
-                  {session.user.role || 'Learner'}
+                  {session.user?.role || 'Learner'}
                 </span>
               </h2>
               <p className="text-gray-400 text-sm">{session.user.email}</p>

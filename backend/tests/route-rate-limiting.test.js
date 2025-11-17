@@ -1,7 +1,6 @@
 const request = require('supertest');
 const express = require('express');
-const rateLimit = require('express-rate-limit');
-const { ipKeyGenerator } = require('express-rate-limit');
+const { rateLimit, ipKeyGenerator } = require('express-rate-limit');
 
 describe('Route-level Rate Limiting', () => {
   describe('Auth Routes Rate Limiting', () => {
