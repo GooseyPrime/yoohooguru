@@ -5,6 +5,15 @@ import { Header, Footer } from '@yoohooguru/shared'
 import Head from 'next/head'
 import { OrbitronContainer, OrbitronCard, OrbitronButton, OrbitronSection } from '../components/orbitron'
 
+/**
+ * Dashboard Page
+ * 
+ * SSR-Safe Implementation:
+ * This component uses the `mounted` state pattern to ensure all router operations
+ * (router.push, router.query access) only occur after client-side hydration.
+ * This prevents "NextRouter was not mounted" errors during SSR/SSG.
+ */
+
 interface User {
   id: string;
   name?: string | null;
@@ -20,22 +29,28 @@ interface Session {
 export default function Dashboard() {
   const [session, setSession] = useState<Session | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [mounted, setMounted] = useState(false)
   const router = useRouter()
 
+  // Track when component mounts on client side
   useEffect(() => {
-    // Only run session check on client side to avoid SSR router issues
-    if (typeof window === 'undefined') return
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    // Only run session check on client side after mount to avoid SSR router issues
+    if (!mounted) return
 
     getSession().then((session) => {
       if (!session) {
-        // Client-side only navigation - safe for SSR
+        // Client-side only navigation - safe after mount
         router.push('/login')
       } else {
         setSession(session)
       }
       setIsLoading(false)
     })
-  }, [router])
+  }, [mounted, router])
 
   if (isLoading) {
     return (

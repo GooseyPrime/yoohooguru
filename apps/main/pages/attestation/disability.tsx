@@ -9,8 +9,17 @@ export default function DisabilityAttestation() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [hasAttestation, setHasAttestation] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Track when component mounts on client side
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
+    // Only run on client side after mount to avoid SSR router issues
+    if (!mounted) return;
+    
     const checkAuth = async () => {
       const session = await getSession();
       
@@ -36,7 +45,7 @@ export default function DisabilityAttestation() {
     };
 
     checkAuth();
-  }, [router]);
+  }, [mounted, router]);
 
   if (isLoading) {
     return (
