@@ -49,7 +49,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   
   // Check if user has Hero Guru role
   // In a real implementation, this would check the user's actual role in the database
-  const userRole = (session.user as { role?: string }).role || 'gunu';
+  const userRole = session.user.role || 'gunu';
   
   if (userRole !== 'hero-guru' && userRole !== 'admin') {
     return {

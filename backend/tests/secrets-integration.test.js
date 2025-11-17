@@ -11,7 +11,7 @@ app.use(express.json());
 // Mock payments config endpoint
 app.get('/api/payments/config', (req, res) => {
   const config = getConfig();
-  
+
   res.json({
     success: true,
     data: {
@@ -47,9 +47,12 @@ describe('Secrets Integration Tests', () => {
       process.env.FIREBASE_MESSAGING_SENDER_ID = '123456789';
       process.env.FIREBASE_PROJECT_ID = 'test-project';
       process.env.FIREBASE_STORAGE_BUCKET = 'test.appspot.com';
-      
+
       process.env.JWT_SECRET = 'fake_jwt_key_for_testing_only';
       
+      // Set secure SESSION_SECRET for testing
+      process.env.SESSION_SECRET = require('crypto').randomBytes(32).toString('hex');
+
       process.env.STRIPE_GURU_PASS_PRICE_ID = 'price_guru_pass_test';
       process.env.STRIPE_PUBLISHABLE_KEY = 'pk_test_publishable';
       process.env.STRIPE_SECRET_KEY = 'sk_test_fake_key_for_testing';
@@ -57,13 +60,13 @@ describe('Secrets Integration Tests', () => {
       process.env.STRIPE_TRUST_SAFETY_PRICE_ID = 'price_trust_safety_test';
       process.env.STRIPE_WEBHOOK_ID = 'we_1S3nQHJF6bibA8neDupDJ3j4';
       process.env.STRIPE_WEBHOOK_SECRET = 'whsec_fake_webhook_secret_for_testing';
-      
+
       // Google OAuth Configuration
       process.env.GOOGLE_OAUTH_CLIENT_ID = 'test_google_oauth_client_id';
       process.env.GOOGLE_OAUTH_CLIENT_SECRET = 'test_google_oauth_client_secret';
 
       const config = getConfig();
-      
+
       // Verify Firebase configuration
       expect(config.firebaseApiKey).toBe('test_firebase_api_key');
       expect(config.firebaseAppId).toBe('test_firebase_app_id');
@@ -72,10 +75,10 @@ describe('Secrets Integration Tests', () => {
       expect(config.firebaseMessagingSenderId).toBe('123456789');
       expect(config.firebaseProjectId).toBe('test-project');
       expect(config.firebaseStorageBucket).toBe('test.appspot.com');
-      
+
       // Verify JWT configuration
       expect(config.jwtSecret).toBe('fake_jwt_key_for_testing_only');
-      
+
       // Verify Stripe configuration
       expect(config.stripeGuruPassPriceId).toBe('price_guru_pass_test');
       expect(config.stripePublishableKey).toBe('pk_test_publishable');
@@ -84,7 +87,7 @@ describe('Secrets Integration Tests', () => {
       expect(config.stripeTrustSafetyPriceId).toBe('price_trust_safety_test');
       expect(config.stripeWebhookId).toBe('we_1S3nQHJF6bibA8neDupDJ3j4');
       expect(config.stripeWebhookSecret).toBe('whsec_fake_webhook_secret_for_testing');
-      
+
       // Verify Google OAuth configuration
       expect(config.googleOAuthClientId).toBe('test_google_oauth_client_id');
       expect(config.googleOAuthClientSecret).toBe('test_google_oauth_client_secret');
@@ -96,6 +99,8 @@ describe('Secrets Integration Tests', () => {
       process.env.STRIPE_GURU_PASS_PRICE_ID = 'price_guru_api_test';
       process.env.STRIPE_SKILL_VERIFICATION_PRICE_ID = 'price_skill_api_test';
       process.env.STRIPE_TRUST_SAFETY_PRICE_ID = 'price_safety_api_test';
+      // Set secure SESSION_SECRET for testing
+      process.env.SESSION_SECRET = require('crypto').randomBytes(32).toString('hex');
 
       const response = await request(app)
         .get('/api/payments/config');
@@ -113,9 +118,11 @@ describe('Secrets Integration Tests', () => {
       // Set webhook configuration as mentioned in the issue
       process.env.STRIPE_WEBHOOK_ID = 'we_1S3nQHJF6bibA8neDupDJ3j4';
       process.env.STRIPE_WEBHOOK_SECRET = 'whsec_fake_webhook_from_issue_test';
+      // Set secure SESSION_SECRET for testing
+      process.env.SESSION_SECRET = require('crypto').randomBytes(32).toString('hex');
 
       const config = getConfig();
-      
+
       expect(config.stripeWebhookId).toBe('we_1S3nQHJF6bibA8neDupDJ3j4');
       expect(config.stripeWebhookSecret).toBe('whsec_fake_webhook_from_issue_test');
     });
@@ -126,9 +133,11 @@ describe('Secrets Integration Tests', () => {
       // Set Google OAuth environment variables
       process.env.GOOGLE_OAUTH_CLIENT_ID = 'test_google_client_id_12345';
       process.env.GOOGLE_OAUTH_CLIENT_SECRET = 'test_google_client_secret_abcdef';
+      // Set secure SESSION_SECRET for testing
+      process.env.SESSION_SECRET = require('crypto').randomBytes(32).toString('hex');
 
       const config = getConfig();
-      
+
       expect(config.googleOAuthClientId).toBe('test_google_client_id_12345');
       expect(config.googleOAuthClientSecret).toBe('test_google_client_secret_abcdef');
     });
@@ -137,9 +146,11 @@ describe('Secrets Integration Tests', () => {
       // Don't set Google OAuth environment variables
       delete process.env.GOOGLE_OAUTH_CLIENT_ID;
       delete process.env.GOOGLE_OAUTH_CLIENT_SECRET;
+      // Set secure SESSION_SECRET for testing
+      process.env.SESSION_SECRET = require('crypto').randomBytes(32).toString('hex');
 
       const config = getConfig();
-      
+
       expect(config.googleOAuthClientId).toBeUndefined();
       expect(config.googleOAuthClientSecret).toBeUndefined();
     });
@@ -151,6 +162,8 @@ describe('Secrets Integration Tests', () => {
       process.env.JWT_SECRET = 'fake_production_jwt_key_for_testing';
       process.env.FIREBASE_PROJECT_ID = 'production_project';
       process.env.FIREBASE_API_KEY = 'production_api_key';
+      // Set a secure SESSION_SECRET for production environment testing
+      process.env.SESSION_SECRET = require('crypto').randomBytes(32).toString('hex');
 
       // Should not throw with required variables set
       expect(() => getConfig()).not.toThrow();
@@ -158,6 +171,7 @@ describe('Secrets Integration Tests', () => {
 
     test('should fail validation when required secrets are missing in production', () => {
       process.env.NODE_ENV = 'production';
+      process.env.SESSION_SECRET = require('crypto').randomBytes(32).toString('hex');
       delete process.env.JWT_SECRET;
       delete process.env.FIREBASE_PROJECT_ID;
       delete process.env.FIREBASE_API_KEY;

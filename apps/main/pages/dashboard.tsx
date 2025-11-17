@@ -73,7 +73,7 @@ export default function Dashboard() {
 
   // Different dashboard cards based on user role
   const getDashboardCards = () => {
-    const userRole = session.user?.role || 'gunu';
+    const userRole = session.user.role || 'gunu';
     
     switch (userRole) {
       case 'guru':

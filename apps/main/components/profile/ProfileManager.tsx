@@ -208,7 +208,7 @@ export default function ProfileManager() {
         ...prev,
         name: session.user?.name || '',
         email: session.user?.email || '',
-        role: (session.user as { role?: string }).role || 'guru'
+        role: session.user.role || 'guru'
       }));
     }
   }, [session]);

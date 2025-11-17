@@ -130,7 +130,7 @@ const authOptions = getAuthOptions({
     async session({ session, token }: { session: Session; token: JWT }) {
       if (session.user && token.id) {
         session.user.id = token.id;
-        (session.user as { role?: string }).role = token.role as string | undefined;
+        session.user.role = token.role as string | undefined;
       }
       return session;
     },

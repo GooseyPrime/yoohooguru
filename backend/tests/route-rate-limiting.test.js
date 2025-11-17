@@ -1,6 +1,7 @@
 const request = require('supertest');
 const express = require('express');
 const rateLimit = require('express-rate-limit');
+const { ipKeyGenerator } = require('express-rate-limit');
 
 describe('Route-level Rate Limiting', () => {
   describe('Auth Routes Rate Limiting', () => {
@@ -18,12 +19,7 @@ describe('Route-level Rate Limiting', () => {
         message: 'Too many profile requests from this IP, please try again later',
         standardHeaders: true,
         legacyHeaders: false,
-          keyGenerator: (req) => {
-            return req.ip || req.connection.remoteAddress || req.socket.remoteAddress;
-          },
-        keyGenerator: (req) => {
-          return req.ip || req.connection.remoteAddress || 'unknown';
-        }
+        keyGenerator: ipKeyGenerator
       });
 
       // Mock authenticated routes with rate limiting
@@ -59,7 +55,7 @@ describe('Route-level Rate Limiting', () => {
 
     test('should apply rate limiting to GET /api/auth/profile', async () => {
       const clientIP = '203.0.113.1';
-      
+
       // Make 30 successful requests
       for (let i = 0; i < 30; i++) {
         await request(app)
@@ -67,19 +63,19 @@ describe('Route-level Rate Limiting', () => {
           .set('X-Forwarded-For', clientIP)
           .expect(200);
       }
-      
+
       // The 31st request should be rate limited
       const response = await request(app)
         .get('/api/auth/profile')
         .set('X-Forwarded-For', clientIP)
         .expect(429);
-      
+
       expect(response.text).toContain('Too many profile requests');
     });
 
     test('should apply rate limiting to PUT /api/auth/profile', async () => {
       const clientIP = '203.0.113.2';
-      
+
       // Make 30 successful requests
       for (let i = 0; i < 30; i++) {
         await request(app)
@@ -88,7 +84,7 @@ describe('Route-level Rate Limiting', () => {
           .send({ displayName: 'Test User' })
           .expect(200);
       }
-      
+
       // The 31st request should be rate limited
       await request(app)
         .put('/api/auth/profile')
@@ -99,7 +95,7 @@ describe('Route-level Rate Limiting', () => {
 
     test('should apply rate limiting to PUT /api/auth/profile/visibility', async () => {
       const clientIP = '203.0.113.3';
-      
+
       // Make 30 successful requests
       for (let i = 0; i < 30; i++) {
         await request(app)
@@ -108,7 +104,7 @@ describe('Route-level Rate Limiting', () => {
           .send({ hidden: true })
           .expect(200);
       }
-      
+
       // The 31st request should be rate limited
       await request(app)
         .put('/api/auth/profile/visibility')
@@ -119,7 +115,7 @@ describe('Route-level Rate Limiting', () => {
 
     test('should apply rate limiting to DELETE /api/auth/account', async () => {
       const clientIP = '203.0.113.4';
-      
+
       // Make 30 successful requests
       for (let i = 0; i < 30; i++) {
         await request(app)
@@ -128,7 +124,7 @@ describe('Route-level Rate Limiting', () => {
           .send({ confirmEmail: 'test@example.com' })
           .expect(200);
       }
-      
+
       // The 31st request should be rate limited
       await request(app)
         .delete('/api/auth/account')
@@ -139,7 +135,7 @@ describe('Route-level Rate Limiting', () => {
 
     test('should apply rate limiting to PUT /api/auth/account/restore', async () => {
       const clientIP = '203.0.113.5';
-      
+
       // Make 30 successful requests
       for (let i = 0; i < 30; i++) {
         await request(app)
@@ -147,7 +143,7 @@ describe('Route-level Rate Limiting', () => {
           .set('X-Forwarded-For', clientIP)
           .expect(200);
       }
-      
+
       // The 31st request should be rate limited
       await request(app)
         .put('/api/auth/account/restore')
@@ -157,7 +153,7 @@ describe('Route-level Rate Limiting', () => {
 
     test('should apply rate limiting to POST /api/auth/merge/request', async () => {
       const clientIP = '203.0.113.6';
-      
+
       // Make 30 successful requests
       for (let i = 0; i < 30; i++) {
         await request(app)
@@ -166,7 +162,7 @@ describe('Route-level Rate Limiting', () => {
           .send({ targetEmail: 'target@example.com', provider: 'google.com' })
           .expect(200);
       }
-      
+
       // The 31st request should be rate limited
       await request(app)
         .post('/api/auth/merge/request')
@@ -191,9 +187,7 @@ describe('Route-level Rate Limiting', () => {
         message: 'Too many requests to guru pages, please try again later',
         standardHeaders: true,
         legacyHeaders: false,
-        keyGenerator: (req) => {
-          return req.ip || req.connection.remoteAddress || 'unknown';
-        }
+        keyGenerator: ipKeyGenerator
       });
 
       app.get('/:subdomain/home', guruPagesLimiter, (req, res) => {
@@ -207,7 +201,7 @@ describe('Route-level Rate Limiting', () => {
 
     test('should apply rate limiting to GET /:subdomain/home', async () => {
       const clientIP = '203.0.113.10';
-      
+
       // Make 100 successful requests
       for (let i = 0; i < 100; i++) {
         await request(app)
@@ -215,19 +209,19 @@ describe('Route-level Rate Limiting', () => {
           .set('X-Forwarded-For', clientIP)
           .expect(200);
       }
-      
+
       // The 101st request should be rate limited
       const response = await request(app)
         .get('/test-guru/home')
         .set('X-Forwarded-For', clientIP)
         .expect(429);
-      
+
       expect(response.text).toContain('Too many requests to guru pages');
     });
 
     test('should apply rate limiting to GET /news/:subdomain', async () => {
       const clientIP = '203.0.113.11';
-      
+
       // Make 100 successful requests
       for (let i = 0; i < 100; i++) {
         await request(app)
@@ -235,7 +229,7 @@ describe('Route-level Rate Limiting', () => {
           .set('X-Forwarded-For', clientIP)
           .expect(200);
       }
-      
+
       // The 101st request should be rate limited
       await request(app)
         .get('/news/test-guru')
