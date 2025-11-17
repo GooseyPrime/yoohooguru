@@ -30,15 +30,23 @@ export default function Signup() {
 
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // Detect OAuth errors from URL query parameters
+  // Track when component mounts on client side
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Detect OAuth errors from URL query parameters (client-side only)
+  useEffect(() => {
+    if (!mounted) return;
+    
     const errorParam = router.query.error as string;
     if (errorParam) {
       const errorMessage = oauthErrorMessages[errorParam] || oauthErrorMessages.Default;
       setError(errorMessage);
     }
-  }, [router.query.error]);
+  }, [mounted, router.query.error]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,8 +96,10 @@ export default function Signup() {
         });
 
         if (signInResult?.ok) {
-          // Successfully registered and signed in - redirect to dashboard
-          router.push('/dashboard');
+          // Successfully registered and signed in - redirect to dashboard (client-side only)
+          if (mounted) {
+            router.push('/dashboard');
+          }
         } else {
           setError('Registration succeeded but automatic login failed. Please try logging in manually.');
         }

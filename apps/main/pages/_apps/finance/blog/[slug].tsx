@@ -35,11 +35,18 @@ export default function BlogPost() {
   const [relatedPosts, setRelatedPosts] = useState<RelatedPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   const subdomain = 'finance';
 
+  // Track when component mounts on client side
   useEffect(() => {
-    if (!slug) return;
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    // Only run on client side after mount to avoid SSR router issues
+    if (!mounted || !slug) return;
 
     // Validate slug to prevent SSRF/path traversal
     if (!isValidSlug(slug)) {
@@ -70,7 +77,7 @@ export default function BlogPost() {
     };
 
     fetchPost();
-  }, [slug]);
+  }, [mounted, slug]);
 
   if (loading) {
     return (
