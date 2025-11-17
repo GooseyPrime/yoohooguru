@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import React from 'react';
 import Seo from '../components/Seo';
 import Link from 'next/link';

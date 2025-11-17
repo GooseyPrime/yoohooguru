@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Navigation from '../../components/ui/Navigation';
 import Head from 'next/head';
@@ -87,6 +87,12 @@ const questions = [
 ];
 
 export default function LearningStyleAssessment() {
+  const [mounted, setMounted] = useState(false);
+
+  // Track when component mounts on client side
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const router = useRouter();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [responses, setResponses] = useState<Record<string, string>>({});
@@ -252,7 +258,7 @@ export default function LearningStyleAssessment() {
 
             <div className="flex gap-4">
               <button
-                onClick={() => router.push('/dashboard')}
+                onClick={() => mounted && router.push('/dashboard')}
                 className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-full font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300"
               >
                 Go to Dashboard
