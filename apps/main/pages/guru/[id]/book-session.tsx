@@ -21,13 +21,22 @@ export default function BookSession() {
   const router = useRouter();
   const { id } = router.query;
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+  
+  // Track when component mounts on client side
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   
   useEffect(() => {
+    // Only validate on client side after mount to avoid SSR router issues
+    if (!mounted) return;
+    
     // Validate guru ID to prevent SSRF/path traversal
     if (id && !isValidId(id)) {
       setError('Invalid guru identifier');
     }
-  }, [id]);
+  }, [mounted, id]);
   
   // Mock guru data - in a real implementation, this would come from your backend
   const guruData = {
