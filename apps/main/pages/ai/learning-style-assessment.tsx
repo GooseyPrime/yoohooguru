@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import Navigation from '../../components/ui/Navigation';
 import Head from 'next/head';
@@ -357,3 +358,9 @@ export default function LearningStyleAssessment() {
     </div>
   );
 }
+// Make this page server-side rendered to avoid SSG issues with useRouter
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {},
+  };
+};

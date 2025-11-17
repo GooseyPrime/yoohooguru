@@ -6,8 +6,22 @@ import { useSession, signOut } from 'next-auth/react';
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [currentPath, setCurrentPath] = useState('');
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const { data: session, status } = useSession();
+
+  // Track when component mounts on client side
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Update current path only on client side to avoid SSR issues
+  useEffect(() => {
+    if (mounted) {
+      setCurrentPath(router.pathname);
+    }
+  }, [mounted, router.pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,7 +74,7 @@ export default function Navigation() {
                   key={link.href}
                   href={link.href}
                   className={`text-sm font-medium transition-all duration-300 hover:text-emerald-400 ${
-                    router.pathname === link.href
+                    currentPath === link.href
                       ? 'text-emerald-400'
                       : 'text-white-80'
                   }`}
@@ -169,7 +183,7 @@ export default function Navigation() {
                   key={link.href}
                   href={link.href}
                   className={`block py-2 text-base font-medium transition-colors duration-300 ${
-                    router.pathname === link.href
+                    currentPath === link.href
                       ? 'text-emerald-400'
                       : 'text-white-80 hover:text-emerald-400'
                   }`}

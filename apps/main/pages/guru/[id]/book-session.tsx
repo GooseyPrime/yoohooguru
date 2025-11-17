@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import { GetServerSideProps } from 'next';
 import { useEffect, useState } from 'react';
 import { Header, Footer } from '@yoohooguru/shared';
 import Head from 'next/head';
@@ -92,3 +93,9 @@ export default function BookSession() {
     </Container>
   );
 }
+// Make this page server-side rendered to avoid SSG issues with useRouter
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {},
+  };
+};

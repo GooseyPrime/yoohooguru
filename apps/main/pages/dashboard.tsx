@@ -1,4 +1,5 @@
 import { getSession } from 'next-auth/react'
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { Header, Footer } from '@yoohooguru/shared'
@@ -306,3 +307,9 @@ export default function Dashboard() {
     </OrbitronContainer>
   )
 }
+// Make this page server-side rendered to avoid SSG issues with useRouter
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {},
+  };
+};

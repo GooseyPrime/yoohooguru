@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import Navigation from '../../components/ui/Navigation';
@@ -301,3 +302,9 @@ export default function PostJob() {
     </div>
   );
 }
+// Make this page server-side rendered to avoid SSG issues with Navigation component using useRouter
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {},
+  };
+};

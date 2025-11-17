@@ -1,4 +1,5 @@
 import React from 'react';
+import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Navigation from '../components/ui/Navigation';
 
@@ -272,3 +273,9 @@ export default function Safety() {
     </>
   );
 }
+// Make this page server-side rendered to avoid SSG issues with Navigation component using useRouter
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {},
+  };
+};

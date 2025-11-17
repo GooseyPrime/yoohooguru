@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic";
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -312,3 +312,10 @@ function formatDate(timestamp: number): string {
     year: 'numeric'
   });
 }
+
+// Make this page server-side rendered to avoid SSG issues with useRouter
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {},
+  };
+};
