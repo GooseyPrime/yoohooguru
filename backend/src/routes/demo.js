@@ -50,7 +50,7 @@ router.get('/unified-requirements', (req, res) => {
       }
     });
 
-  } catch (error) {
+  } catch {
     res.status(500).json({
       success: false,
       error: { message: 'Failed to generate unified requirements demo' }

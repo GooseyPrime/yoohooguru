@@ -18,6 +18,9 @@ describe('Route-level Rate Limiting', () => {
         message: 'Too many profile requests from this IP, please try again later',
         standardHeaders: true,
         legacyHeaders: false,
+          keyGenerator: (req) => {
+            return req.ip || req.connection.remoteAddress || req.socket.remoteAddress;
+          },
         keyGenerator: (req) => {
           return req.ip || req.connection.remoteAddress || 'unknown';
         }

@@ -599,7 +599,7 @@ Return the complete articles with improved summaries in this JSON format:
           const summarizedArticles = JSON.parse(jsonMatch[0]);
           return summarizedArticles;
         }
-      } catch (parseError) {
+      } catch {
         logger.warn('Failed to parse summarized articles, using originals');
       }
 

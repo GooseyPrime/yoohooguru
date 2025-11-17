@@ -142,7 +142,7 @@ const optionalAuth = async (req, res, next) => {
             role: decoded.role || 'user'
           };
           return next();
-        } catch (error) {
+        } catch {
           // Fall through to Firebase
         }
       }
@@ -151,14 +151,14 @@ const optionalAuth = async (req, res, next) => {
       try {
         const decodedToken = await getAuth().verifyIdToken(token);
         req.user = decodedToken;
-      } catch (error) {
+      } catch {
         // Token is invalid, but optionalAuth continues without user
         logger.debug('Optional auth: Invalid token, continuing without user');
       }
     }
     
     next();
-  } catch (error) {
+  } catch {
     // Continue without authentication if token is invalid
     next();
   }

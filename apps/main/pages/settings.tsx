@@ -27,7 +27,7 @@ export default function Settings() {
       // Placeholder for save settings logic
       await new Promise(resolve => setTimeout(resolve, 1000));
       setMessage({ type: 'success', text: 'Settings saved successfully!' });
-    } catch (error) {
+    } catch {
       setMessage({ type: 'error', text: 'Failed to save settings. Please try again.' });
     } finally {
       setLoading(false);

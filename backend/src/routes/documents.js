@@ -22,7 +22,7 @@ router.get('/pending', requireRole(['admin']), async (req, res) => {
     }));
     
     res.json({ success: true, data: { pending } });
-  } catch (error) {
+  } catch {
     res.status(500).json({ success: false, error: { message: 'Failed to fetch pending documents' } });
   }
 });
@@ -49,7 +49,7 @@ router.post('/:uid/:docId/status', requireRole(['admin']), async (req, res) => {
     }, { merge: true });
     
     res.json({ success: true });
-  } catch (error) {
+  } catch {
     res.status(500).json({ success: false, error: { message: 'Failed to update document status' } });
   }
 });

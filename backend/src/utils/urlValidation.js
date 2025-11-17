@@ -98,7 +98,7 @@ function validateUrl(urlString, options = {}) {
   let parsedUrl;
   try {
     parsedUrl = new URL(urlString);
-  } catch (error) {
+  } catch {
     return {
       valid: false,
       error: 'Invalid URL format'
