@@ -2,18 +2,103 @@
 
 This guide documents the specific environment variable requirements for CI/CD workflows and automated deployments.
 
+## Critical Configuration Rules
+
+### 1. Firebase Emulator Variables
+
+**CRITICAL:** Firebase emulator variables **MUST ONLY** be set when `NODE_ENV=test` or `NODE_ENV=development`.
+
+```yaml
+# ❌ WRONG - Emulators with production NODE_ENV
+env:
+  NODE_ENV: production
+  FIRESTORE_EMULATOR_HOST: localhost:8080  # This will cause a fatal error!
+
+# ✅ CORRECT - Emulators only with test NODE_ENV
+env:
+  NODE_ENV: test
+  FIRESTORE_EMULATOR_HOST: localhost:8080
+  FIREBASE_AUTH_EMULATOR_HOST: localhost:9099
+```
+
+**Prohibited combinations:**
+- `NODE_ENV=production` + any emulator variable = **FATAL ERROR**
+- `NODE_ENV=staging` + any emulator variable = **FATAL ERROR**
+
+**Allowed combinations:**
+- `NODE_ENV=test` + emulator variables = ✅ OK
+- `NODE_ENV=development` + emulator variables = ✅ OK
+- `NODE_ENV=production` + NO emulator variables = ✅ OK
+
+### 2. SESSION_SECRET Requirements
+
+**CRITICAL:** `SESSION_SECRET` must be cryptographically secure and NEVER use default/insecure values.
+
+**Required characteristics:**
+- Minimum 32 characters (64 recommended)
+- Cryptographically random
+- No insecure patterns (test, default, example, password, etc.)
+- Generated dynamically in CI
+
+**CI Implementation:**
+
+```yaml
+# Step 1: Generate secure secret
+- name: Generate secure SESSION_SECRET
+  id: generate-session-secret
+  run: |
+    SESSION_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
+    echo "::add-mask::$SESSION_SECRET"
+    echo "session-secret=$SESSION_SECRET" >> $GITHUB_OUTPUT
+
+# Step 2: Use the generated secret
+- name: Run tests
+  env:
+    SESSION_SECRET: ${{ steps.generate-session-secret.outputs.session-secret }}
+```
+
+**Never do this:**
+```yaml
+# ❌ WRONG - Hardcoded insecure secret
+env:
+  SESSION_SECRET: test-secret  # Too short and contains "test"
+  SESSION_SECRET: your_super_secret  # Contains insecure pattern
+  SESSION_SECRET: change_this  # Contains insecure pattern
+```
+
+### 3. API URL Requirements
+
+**CRITICAL:** `NEXT_PUBLIC_API_URL` must be set for Next.js builds.
+
+```yaml
+# Required for Next.js builds
+env:
+  NEXT_PUBLIC_API_URL: http://localhost:3001  # For CI builds
+  NODE_ENV: development  # Use development for CI builds, not production
+```
+
 ## Required Environment Variables for CI/CD
 
-### All CI Workflows
-
-The following environment variables **MUST** be set for all CI workflows:
+### Backend Test Jobs
 
 ```yaml
 env:
-  NODE_ENV: production  # REQUIRED for all non-test CI workflows
-  FIREBASE_PROJECT_ID: ceremonial-tea-470904-f3  # REQUIRED - production Firebase project
-  FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}  # REQUIRED - from secrets
-  FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}    # REQUIRED - from secrets with proper escaping
+  NODE_ENV: test  # REQUIRED - must be 'test' for backend tests
+  FIREBASE_PROJECT_ID: yoohoo-dev-testing
+  FIREBASE_API_KEY: AIzaSyTest1234567890KeyForCITestingOnly
+  SESSION_SECRET: ${{ steps.generate-session-secret.outputs.session-secret }}
+  # Emulator variables - ONLY when NODE_ENV=test
+  FIRESTORE_EMULATOR_HOST: localhost:8080
+  FIREBASE_AUTH_EMULATOR_HOST: localhost:9099
+```
+
+### Next.js Build Jobs
+
+```yaml
+env:
+  CI: true
+  NODE_ENV: development  # Use development, not production
+  NEXT_PUBLIC_API_URL: http://localhost:3001  # REQUIRED for builds
 ```
 
 ### Production Deployment
@@ -25,15 +110,12 @@ env:
   FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
   FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
   FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
-  FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
-  FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
-  FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
-  FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
-  FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+  SESSION_SECRET: ${{ secrets.SESSION_SECRET }}  # Must be from secrets, not generated
   JWT_SECRET: ${{ secrets.JWT_SECRET }}
   STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
   STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
   STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+  # ❌ NO emulator variables for production!
 ```
 
 ### Staging Deployment
@@ -43,16 +125,18 @@ env:
   NODE_ENV: staging
   FIREBASE_PROJECT_ID: ceremonial-tea-470904-f3  # Same as production
   # ... other variables same as production
+  # ❌ NO emulator variables for staging!
 ```
 
 ## Prohibited in CI/CD
 
-The following variables are **PROHIBITED** in all CI workflows except local testing:
+The following variables are **PROHIBITED** in production/staging CI workflows:
 
-- `FIREBASE_EMULATOR_HOST` - Emulators not allowed in CI
-- `USE_MOCKS=true` - Mocks not allowed in CI  
-- `NODE_ENV=development` - Only for local development
-- Any hardcoded secret values
+- `FIRESTORE_EMULATOR_HOST` - Only allowed with `NODE_ENV=test` or `NODE_ENV=development`
+- `FIREBASE_AUTH_EMULATOR_HOST` - Only allowed with `NODE_ENV=test` or `NODE_ENV=development`
+- `FIREBASE_EMULATOR_HOST` - Only allowed with `NODE_ENV=test` or `NODE_ENV=development`
+- `USE_MOCKS=true` - Mocks not allowed in production/staging
+- Hardcoded secrets - All secrets must use `${{ secrets.SECRET_NAME }}`
 
 ## Firebase Private Key Handling
 

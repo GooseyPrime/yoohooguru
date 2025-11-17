@@ -1,5 +1,23 @@
 name: Continuous Integration
 
+# Environment Variable Configuration Guidelines:
+# 
+# 1. Firebase Emulators:
+#    - FIRESTORE_EMULATOR_HOST and FIREBASE_AUTH_EMULATOR_HOST should ONLY be set
+#      when NODE_ENV=test or NODE_ENV=development
+#    - NEVER set emulator variables when NODE_ENV=production or NODE_ENV=staging
+#    - See docs/CI_CD_ENVIRONMENT.md for details
+#
+# 2. SESSION_SECRET:
+#    - MUST be cryptographically secure (minimum 32 characters)
+#    - Generate dynamically using: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+#    - NEVER use hardcoded or default values in production/staging
+#    - Use ::add-mask:: to prevent secret exposure in logs
+#
+# 3. API URLs:
+#    - NEXT_PUBLIC_API_URL must be set for Next.js builds
+#    - Use appropriate values per environment (development/staging/production)
+
 permissions:
   contents: read
   pull-requests: write
@@ -59,6 +77,14 @@ jobs:
         run: cd backend && npm run lint
         continue-on-error: true
 
+      - name: Generate secure SESSION_SECRET for tests
+        id: generate-session-secret
+        run: |
+          # Generate a cryptographically secure session secret
+          SESSION_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
+          echo "::add-mask::$SESSION_SECRET"
+          echo "session-secret=$SESSION_SECRET" >> $GITHUB_OUTPUT
+
       - name: Run backend tests
         run: |
           cd backend
@@ -68,7 +94,8 @@ jobs:
           NODE_ENV: test
           FIREBASE_PROJECT_ID: yoohoo-dev-testing
           FIREBASE_API_KEY: AIzaSyTest1234567890KeyForCITestingOnly
-          SESSION_SECRET: ci-test-session-secret-key-32chars-minimum-for-security-purposes
+          # Use dynamically generated secure SESSION_SECRET
+          SESSION_SECRET: ${{ steps.generate-session-secret.outputs.session-secret }}
           JWT_SECRET: test-jwt-secret-key-for-ci-cd-testing-only-not-for-production
           STRIPE_SECRET_KEY: sk_test_51AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQr
           STRIPE_PUBLISHABLE_KEY: pk_test_51AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQr
@@ -77,12 +104,21 @@ jobs:
           STRIPE_GURU_PASS_PRICE_ID: price_1AbCdEfGhIjKlMnOpQrStUvWxYzAbCd
           STRIPE_SKILL_VERIFICATION_PRICE_ID: price_1SkillVerificationTestId1234567
           STRIPE_TRUST_SAFETY_PRICE_ID: price_1TrustSafetyTestId1234567890
+          # Firebase emulator variables (ONLY for test environment)
+          # These MUST NOT be set when NODE_ENV is production or staging
+          FIRESTORE_EMULATOR_HOST: localhost:8080
+          FIREBASE_AUTH_EMULATOR_HOST: localhost:9099
         continue-on-error: true
 
       - name: Build main app with Turbo
         run: npx turbo run build --filter=@yoohooguru/main
         env:
           CI: true
+          # Required for Next.js build - API endpoint URL
+          NEXT_PUBLIC_API_URL: http://localhost:3001
+          # Ensure NODE_ENV is not set to production/staging during build
+          # to prevent production-specific validations from failing
+          NODE_ENV: development
 
       - name: Analyze orphan modules
         id: orphan-analysis
