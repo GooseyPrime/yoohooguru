@@ -1,4 +1,5 @@
 import { Header, Footer } from '@yoohooguru/shared'
+import { GetServerSideProps } from 'next';
 import styled from 'styled-components'
 import Seo from '../components/Seo';
 
@@ -219,3 +220,9 @@ export default function Privacy() {
     </Container>
   )
 }
+// Make this page server-side rendered to avoid SSG issues with Navigation component using useRouter
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {},
+  };
+};

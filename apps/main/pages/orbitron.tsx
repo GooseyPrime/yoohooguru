@@ -1,4 +1,5 @@
 import React from 'react';
+import { GetServerSideProps } from 'next';
 
 export default function OrbitronPage() {
   return (
@@ -10,3 +11,9 @@ export default function OrbitronPage() {
     </main>
   );
 }
+// Make this page server-side rendered to avoid SSG issues with Navigation component using useRouter
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {},
+  };
+};

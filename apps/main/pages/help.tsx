@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { GetServerSideProps } from 'next';
 import Seo from '../components/Seo';
 import Link from 'next/link';
 import Navigation from '../components/ui/Navigation';
@@ -253,3 +254,9 @@ export default function Help() {
     </>
   );
 }
+// Make this page server-side rendered to avoid SSG issues with Navigation component using useRouter
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {},
+  };
+};

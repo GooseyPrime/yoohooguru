@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import Navigation from '../../components/ui/Navigation';
 import Head from 'next/head';
@@ -219,3 +220,10 @@ export default function JobsPage() {
   );
 }
 
+
+// Make this page server-side rendered to avoid SSG issues with Navigation component using useRouter
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {},
+  };
+};
