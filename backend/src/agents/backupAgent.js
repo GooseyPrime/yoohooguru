@@ -409,7 +409,8 @@ module.exports = {
 /**
  * Retry function with exponential backoff for Firestore operations
  */
-async function retryWithBackoff(operation, operationName, maxRetries = 2) {
+// eslint-disable-next-line no-unused-vars
+   async function retryWithBackoff(operation, operationName, maxRetries = 2) {
   let attempt = 0;
   
   while (attempt < maxRetries) {

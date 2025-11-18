@@ -87,7 +87,7 @@ router.post('/profile', authenticateUser, async (req, res) => {
     
     await db.collection('profiles').doc(uid).update(updateData);
     res.json({ success:true });
-  } catch (e) {
+  } catch {
     res.status(500).json({ success:false, error:{ message:'Failed to save profile' }});
   }
 });
@@ -105,7 +105,7 @@ router.post('/categories', authenticateUser, async (req, res) => {
 
     await db.collection('profile_categories').doc(uid).set(picks);
     res.json({ success:true });
-  } catch (e) {
+  } catch {
     res.status(500).json({ success:false, error:{ message:'Failed to save categories' }});
   }
 });
@@ -166,7 +166,7 @@ router.post('/documents', authenticateUser, async (req, res) => {
       created_at: new Date().toISOString()
     });
     res.json({ success:true, data:{ id: ref.key }});
-  } catch (e) {
+  } catch {
     res.status(500).json({ success:false, error:{ message:'Failed to add document' }});
   }
 });

@@ -8,8 +8,10 @@ export default function CookieConsent() {
     analytics: false,
     marketing: false,
   });
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     // Check if user has already made a choice
     const consent = localStorage.getItem('cookieConsent');
     if (!consent) {
@@ -26,6 +28,11 @@ export default function CookieConsent() {
     }
   }, []);
 
+
+  // Prevent hydration mismatch by only rendering after mount
+  if (!mounted) {
+    return null;
+  }
   const handleAcceptAll = () => {
     const allAccepted = {
       necessary: true,

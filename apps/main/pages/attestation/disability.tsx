@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { getSession } from 'next-auth/react';
@@ -118,3 +119,9 @@ export default function DisabilityAttestation() {
     </>
   );
 }
+// Make this page server-side rendered to avoid SSG issues with useRouter
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {},
+  };
+};

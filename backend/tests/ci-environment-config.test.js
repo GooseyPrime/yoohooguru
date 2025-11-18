@@ -75,8 +75,8 @@ describe('CI Environment Configuration', () => {
   describe('SESSION_SECRET Validation', () => {
     it('should accept cryptographically secure SESSION_SECRET', () => {
       process.env.NODE_ENV = 'test';
-      // Simulate a properly generated secure secret (64 hex characters)
-      process.env.SESSION_SECRET = 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7b8c9d0e1f2';
+      // Generate a properly secure secret dynamically
+      process.env.SESSION_SECRET = require('crypto').randomBytes(32).toString('hex');
 
       expect(process.env.SESSION_SECRET.length).toBeGreaterThanOrEqual(32);
       expect(() => {

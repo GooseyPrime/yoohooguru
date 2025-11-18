@@ -1,3 +1,4 @@
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Header } from '@yoohooguru/shared';
@@ -402,3 +403,10 @@ function formatDate(timestamp: number): string {
     year: 'numeric'
   });
 }
+
+// Make this page server-side rendered to avoid SSG issues with useRouter
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {},
+  };
+};

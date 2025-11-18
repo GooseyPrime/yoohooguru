@@ -2,7 +2,7 @@
 let admin;
 try {
   admin = require('firebase-admin');
-} catch (error) {
+} catch {
   // Only allow mocks in test environment
   if (process.env.NODE_ENV === 'test') {
     // Load mock from dedicated test directory

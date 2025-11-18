@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { GetServerSideProps } from 'next';
 import Seo from '../components/Seo';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -123,6 +124,7 @@ export default function Login() {
                   </label>
                   <input
                     type="email"
+                      autoComplete="username"
                     id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -243,3 +245,9 @@ export default function Login() {
     </>
   );
 }
+// Make this page server-side rendered to avoid SSG issues with useRouter
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {},
+  };
+};

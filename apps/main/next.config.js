@@ -21,6 +21,12 @@ const nextConfig = {
       beforeFiles: [
         // These rewrites are checked before pages/public files
         // The middleware will handle subdomain routing
+        {
+          source: "/api/backend/:path*",
+          destination: process.env.BACKEND_API_URL 
+            ? `${process.env.BACKEND_API_URL}/api/:path*`
+            : "https://api.yoohoo.guru/api/:path*",
+        },
       ],
       afterFiles: [
         // These rewrites are checked after pages/public files

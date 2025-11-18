@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+import { GetServerSideProps } from 'next';
 import React from 'react';
 import Seo from '../components/Seo';
 import Link from 'next/link';
@@ -281,3 +283,9 @@ export default function Cookies() {
     </>
   );
 }
+// Make this page server-side rendered to avoid SSG issues with Navigation component using useRouter
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {},
+  };
+};

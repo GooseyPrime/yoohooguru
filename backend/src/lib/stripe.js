@@ -54,7 +54,7 @@ if (!process.env.STRIPE_SECRET_KEY) {
           // Return parsed event
           try {
             return JSON.parse(payloadString);
-          } catch (error) {
+          } catch {
             throw new Error('Invalid JSON payload');
           }
         }

@@ -1,4 +1,5 @@
 import { getSession } from 'next-auth/react'
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { Header, Footer } from '@yoohooguru/shared'
@@ -264,7 +265,7 @@ export default function Dashboard() {
               <h2 className="text-white text-xl mb-1 flex items-center gap-3">
                 {session.user.name || 'Welcome!'}
                 <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
-                  {session.user.role || 'Learner'}
+                  {session.user?.role || 'Learner'}
                 </span>
               </h2>
               <p className="text-gray-400 text-sm">{session.user.email}</p>
@@ -306,3 +307,9 @@ export default function Dashboard() {
     </OrbitronContainer>
   )
 }
+// Make this page server-side rendered to avoid SSG issues with useRouter
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {},
+  };
+};

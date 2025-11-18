@@ -147,7 +147,7 @@ router.get('/blog/posts/:slug', async (req, res) => {
     });
 
     // Fetch related posts from same category/subdomain
-    const category = data.category || data.subdomain;
+    // const category = data.category || data.subdomain;
     const relatedSnapshot = await db.collection('posts')
       .where('published', '==', true)
       .where('subdomain', '==', data.subdomain)

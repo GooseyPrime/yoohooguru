@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import Navigation from '../components/ui/Navigation';
+import ClientNavigation from '../components/ui/ClientNavigation';
 import Seo from '../components/Seo';
 
 export default function Custom404() {
@@ -12,7 +12,7 @@ export default function Custom404() {
         url="https://www.yoohoo.guru/404"
       />
 
-      <Navigation />
+      <ClientNavigation />
 
       <main className="min-h-screen flex items-center justify-center">
         <div className="container-custom">

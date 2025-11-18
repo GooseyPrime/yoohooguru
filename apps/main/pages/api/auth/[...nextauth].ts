@@ -29,6 +29,7 @@ const authOptions = getAuthOptions({
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
+          console.error('Missing credentials');
           return null;
         }
 
@@ -41,6 +42,8 @@ const authOptions = getAuthOptions({
           }
 
           const signInUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${firebaseApiKey}`;
+
+          console.log('Attempting Firebase authentication for:', credentials.email);
 
           const response = await fetch(signInUrl, {
             method: 'POST',
@@ -59,27 +62,45 @@ const authOptions = getAuthOptions({
           }
 
           const authData = await response.json();
+          console.log('Firebase authentication successful for:', authData.email);
 
-          // Fetch user profile from backend
-          const profileResponse = await fetch(`${process.env.NEXTAUTH_URL}/api/backend/auth/profile`, {
-            headers: {
-              'Authorization': `Bearer ${authData.idToken}`
-            }
-          });
-
+          // Fetch user profile from backend (optional - gracefully handle failures)
           let userData = null;
-          if (profileResponse.ok) {
-            const profileData = await profileResponse.json();
-            userData = profileData.data;
+          try {
+            const backendUrl = process.env.BACKEND_API_URL || 'https://api.yoohoo.guru';
+            const profileUrl = `${backendUrl}/api/auth/profile`;
+            
+            console.log('Fetching user profile from:', profileUrl);
+            
+            const profileResponse = await fetch(profileUrl, {
+              headers: {
+                'Authorization': `Bearer ${authData.idToken}`,
+                'Content-Type': 'application/json'
+              }
+            });
+
+            if (profileResponse.ok) {
+              const profileData = await profileResponse.json();
+              userData = profileData.data;
+              console.log('User profile fetched successfully');
+            } else {
+              console.warn('Profile fetch returned non-OK status:', profileResponse.status);
+            }
+          } catch (profileError) {
+            // Profile fetch failed, continue with Firebase data only
+            console.warn('Backend profile fetch failed, using Firebase data only:', profileError);
           }
 
           // Return user object for NextAuth session
-          return {
+          const user = {
             id: authData.localId,
             email: authData.email,
-            name: userData?.displayName || authData.email.split('@')[0],
+            name: userData?.displayName || authData.displayName || authData.email.split('@')[0],
             role: userData?.role || 'gunu'
           };
+
+          console.log('Returning user object:', { ...user, id: '***' });
+          return user;
         } catch (error) {
           console.error('Authorization error:', error);
           return null;
@@ -92,19 +113,24 @@ const authOptions = getAuthOptions({
     error: '/auth/error',
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id;
-        // Fetch user role from database
-        // This is a placeholder - in a real implementation, you would fetch from your database
-        token.role = 'gunu'; // Default role
+        token.role = user.role || 'gunu';
       }
+      
+      // Add account info for OAuth providers
+      if (account) {
+        token.accessToken = account.access_token;
+        token.provider = account.provider;
+      }
+      
       return token;
     },
     async session({ session, token }: { session: Session; token: JWT }) {
       if (session.user && token.id) {
         session.user.id = token.id;
-        (session.user as { role?: string }).role = token.role as string | undefined;
+        session.user.role = token.role as string | undefined;
       }
       return session;
     },
@@ -129,6 +155,8 @@ const authOptions = getAuthOptions({
       return baseUrl;
     },
   },
+  // Add debug logging in non-production
+  debug: process.env.NODE_ENV !== 'production',
 });
 
 export default NextAuth(authOptions);
