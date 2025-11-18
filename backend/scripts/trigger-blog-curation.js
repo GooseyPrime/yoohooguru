@@ -20,9 +20,37 @@ async function triggerBlogCuration() {
   try {
     logger.info('🚀 Deployment hook: Starting blog curation...');
 
+    // Check if Firebase credentials are available
+    const hasFirebaseCredentials = 
+      process.env.FIREBASE_PROJECT_ID &&
+      process.env.FIREBASE_CLIENT_EMAIL &&
+      process.env.FIREBASE_PRIVATE_KEY;
+
+    if (!hasFirebaseCredentials) {
+      logger.info('ℹ️  Firebase credentials not configured - skipping blog curation');
+      logger.info('   This is expected during local builds without deployment');
+      logger.info('   Blog curation will run automatically during actual deployment');
+      process.exit(0);
+    }
+
     // Initialize Firebase
-    initializeFirebase();
-    logger.info('✅ Firebase initialized');
+    try {
+      initializeFirebase();
+      logger.info('✅ Firebase initialized');
+    } catch (firebaseError) {
+      // Handle Firebase initialization errors gracefully
+      if (firebaseError.message.includes('Failed to parse private key')) {
+        logger.warn('⚠️ Firebase private key parsing failed');
+        logger.info('   This is likely due to malformed credentials in your local environment');
+        logger.info('   Skipping blog curation - will run during actual deployment with valid credentials');
+        logger.info('');
+        logger.info('   💡 Tip: Ensure FIREBASE_PRIVATE_KEY has proper line breaks (\\n)');
+        logger.info('   💡 On Windows, verify your .env file encoding is UTF-8');
+        process.exit(0);
+      }
+      // Re-throw other Firebase errors
+      throw firebaseError;
+    }
 
     // Create and trigger blog curation agent
     const blogAgent = new BlogCurationAgent();
