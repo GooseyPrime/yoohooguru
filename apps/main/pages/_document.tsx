@@ -1,5 +1,4 @@
 import { Html, Head, Main, NextScript } from 'next/document'
-import Script from 'next/script'
 
 export default function Document() {
   const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
@@ -11,13 +10,12 @@ export default function Document() {
         {/* Google Analytics */}
         {gaId && (
           <>
-            <Script
+            <script
               async
               src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
             />
-            <Script
+            <script
               id="google-analytics"
-              strategy="afterInteractive"
               dangerouslySetInnerHTML={{
                 __html: `
                   window.dataLayer = window.dataLayer || [];
@@ -35,9 +33,8 @@ export default function Document() {
         
         {/* Google Tag Manager */}
         {gtmId && (
-          <Script
+          <script
             id="google-tag-manager"
-            strategy="afterInteractive"
             dangerouslySetInnerHTML={{
               __html: `
                 (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -52,13 +49,15 @@ export default function Document() {
 
         {/* Jam.dev Screen Recording - Lets users record their screen from your site */}
         <meta name="jam:team" content="7a93cd08-992a-4acf-8f73-72dea0a67c7b" />
-        <Script async type="module" src="https://js.jam.dev/recorder.js"></Script>
+        <script async type="module" src="https://js.jam.dev/recorder.js"></script>
 
         {/* Jam.dev Event Capture - Captures user events and developer logs */}
-        <Script async type="module" src="https://js.jam.dev/capture.js"></Script>          {/* Meta Tags - Only global tags here, page-specific tags in individual pages */}
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <meta charSet="utf-8" />
-          <meta name="author" content="YooHoo.Guru" />
+        <script async type="module" src="https://js.jam.dev/capture.js"></script>
+        
+        {/* Meta Tags - Only global tags here, page-specific tags in individual pages */}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta charSet="utf-8" />
+        <meta name="author" content="YooHoo.Guru" />
         
         {/* Preconnect to external domains for performance */}
         <link rel="preconnect" href="https://www.google-analytics.com" />
