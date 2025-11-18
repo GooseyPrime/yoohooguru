@@ -56,26 +56,31 @@ I've fixed the OAuth callback error that was preventing users from logging in to
 
 The code is now ready, but **you must complete the configuration** for authentication to work. This takes about 10 minutes.
 
-### Step 1: Configure Google Cloud Console (5 minutes)
+### Step 1: Configure Google Cloud Console (2 minutes)
 
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
 2. Navigate to: **APIs & Services** → **Credentials**
 3. Find your OAuth 2.0 Client ID: `427120165904-462nd1ouk7vkl5kcmsmfib631055t41a.apps.googleusercontent.com`
 4. Click on it to edit
-5. Under **Authorized redirect URIs**, add these exact URIs:
+5. Under **Authorized redirect URIs**, add this exact URI:
 
 ```
 https://www.yoohoo.guru/api/auth/callback/google
-https://coach.yoohoo.guru/api/auth/callback/google
-https://angel.yoohoo.guru/api/auth/callback/google
-https://masters.yoohoo.guru/api/auth/callback/google
-https://hero.yoohoo.guru/api/auth/callback/google
 ```
 
 6. Click **Save**
 7. Wait 5-10 minutes for Google to propagate the changes globally
 
-**Why this is needed:** NextAuth.js uses the path `/api/auth/callback/google` for OAuth callbacks. When Google redirects users back after authentication, it must redirect to one of these exact URIs. If the URI isn't in the authorized list, you get the `OAuthCallback` error.
+**Why only ONE redirect URI?**
+
+YooHoo.Guru uses **centralized authentication**. Users from ANY subdomain (coach.yoohoo.guru, angel.yoohoo.guru, etc.) are redirected to www.yoohoo.guru/login for authentication. The OAuth flow ONLY happens at this central location:
+
+1. User on coach.yoohoo.guru clicks "Sign In" → redirected to www.yoohoo.guru/login
+2. User clicks "Sign in with Google" → Google OAuth happens at www.yoohoo.guru
+3. Google redirects to: www.yoohoo.guru/api/auth/callback/google (this is the ONLY OAuth redirect URI needed)
+4. After successful OAuth, NextAuth redirects user back to coach.yoohoo.guru using the `callbackUrl` parameter
+
+You do NOT need redirect URIs for other subdomains because OAuth never happens there directly.
 
 ### Step 2: Verify Vercel Environment Variables (2 minutes)
 
@@ -193,7 +198,7 @@ The real issue was the `OAuthCallback` error, which is now fixed with the change
 
 ## Next Steps
 
-1. **You:** Complete Steps 1-4 above (~10 minutes)
+1. **You:** Complete Steps 1-4 above (~7 minutes)
 2. **You:** Test login on www.yoohoo.guru
 3. **You:** Test cross-subdomain authentication
 4. **You:** Confirm authentication is working
@@ -202,12 +207,12 @@ The real issue was the `OAuthCallback` error, which is now fixed with the change
 ## Timeline
 
 - **Code changes:** ✅ Complete
-- **Google Cloud Console:** ⏳ **You must do** (5 min)
+- **Google Cloud Console:** ⏳ **You must do** (2 min - only ONE redirect URI needed!)
 - **Vercel variables:** ⏳ **You must verify** (2 min)
 - **Redeploy:** ⏳ **You must trigger** (1 min)
 - **Testing:** ⏳ **You must test** (2 min)
 
-**Total time to complete:** ~10 minutes of your time
+**Total time to complete:** ~7 minutes of your time
 
 ## Questions?
 

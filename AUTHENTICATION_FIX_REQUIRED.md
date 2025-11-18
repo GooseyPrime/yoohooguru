@@ -20,18 +20,16 @@ The authentication system code has been fixed and enhanced with better error han
 2. Navigate to: **APIs & Services** → **Credentials**
 3. Find OAuth Client ID: `427120165904-462nd1ouk7vkl5kcmsmfib631055t41a.apps.googleusercontent.com`
 4. Click to edit it
-5. Add these **Authorized redirect URIs**:
+5. Add this **Authorized redirect URI**:
 
 ```
 https://www.yoohoo.guru/api/auth/callback/google
-https://coach.yoohoo.guru/api/auth/callback/google
-https://angel.yoohoo.guru/api/auth/callback/google
-https://masters.yoohoo.guru/api/auth/callback/google
-https://hero.yoohoo.guru/api/auth/callback/google
 ```
 
 6. Click **Save**
 7. Wait 5-10 minutes for changes to propagate
+
+**Important:** You only need ONE redirect URI because YooHoo.Guru uses centralized authentication. All users from any subdomain (coach, angel, etc.) are redirected to www.yoohoo.guru/login for authentication, so OAuth only happens at this one location.
 
 ### Step 2: Verify Vercel Environment Variables (2 minutes)
 
@@ -101,7 +99,7 @@ The `OAuthCallback` error occurs when:
 3. NextAuth expects: `https://www.yoohoo.guru/api/auth/callback/google`
 4. But Google Cloud Console doesn't have this URI listed
 
-**Solution:** Add the redirect URIs in Google Cloud Console (Step 1 above)
+**Solution:** Add the redirect URI in Google Cloud Console (Step 1 above). You only need ONE redirect URI because authentication is centralized.
 
 ## Verification After Fix
 
@@ -127,12 +125,12 @@ If you encounter issues after following these steps:
 ## Timeline
 
 - **Code changes:** ✅ Complete (this PR)
-- **Google Cloud Console:** ⏳ You must do (5 min)
+- **Google Cloud Console:** ⏳ You must do (2 min - only ONE redirect URI)
 - **Vercel variables:** ⏳ You must verify (2 min)
 - **Redeploy:** ⏳ You must trigger (1 min)
 - **Testing:** ⏳ You must test (2 min)
 
-**Total time to fix:** ~10 minutes of your time
+**Total time to fix:** ~7 minutes of your time
 
 ---
 

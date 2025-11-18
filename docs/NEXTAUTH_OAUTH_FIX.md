@@ -36,40 +36,41 @@ Follow these steps **in order**:
 
 #### 1.2 Add Authorized JavaScript Origins
 
-Ensure these origins are ALL listed:
+Add this origin:
 
 ```
 https://www.yoohoo.guru
-https://yoohoo.guru
-https://coach.yoohoo.guru
-https://angel.yoohoo.guru
-https://masters.yoohoo.guru
-https://hero.yoohoo.guru
 ```
 
-**Why:** These allow the OAuth popup to open from any subdomain.
+**Why:** This allows the OAuth popup to open from the central login page.
 
-#### 1.3 Add Authorized Redirect URIs (CRITICAL)
+**Note:** You do NOT need to add other subdomains (coach, angel, etc.) because all authentication happens at the central login page (www.yoohoo.guru/login). Users from other subdomains are redirected to this central page.
+
+#### 1.3 Add Authorized Redirect URI (CRITICAL)
 
 **⚠️ THIS IS THE MOST IMPORTANT PART**
 
-Add these **exact** redirect URIs:
+Add this **one** redirect URI:
 
 ```
 https://www.yoohoo.guru/api/auth/callback/google
-https://yoohoo.guru/api/auth/callback/google
-https://coach.yoohoo.guru/api/auth/callback/google
-https://angel.yoohoo.guru/api/auth/callback/google
-https://masters.yoohoo.guru/api/auth/callback/google
-https://hero.yoohoo.guru/api/auth/callback/google
 ```
 
 **Critical Requirements:**
 - Path MUST be exactly: `/api/auth/callback/google`
 - No trailing slashes
 - HTTPS only (not HTTP)
-- One URI per subdomain where users can log in
-- The www subdomain is most important (primary login page)
+- Only the www subdomain is needed because OAuth happens centrally
+
+**Why only ONE redirect URI?**
+
+YooHoo.Guru uses a **centralized authentication model**:
+1. Users on ANY subdomain (coach, angel, etc.) click "Sign In" → redirected to www.yoohoo.guru/login
+2. User completes Google OAuth at www.yoohoo.guru/login
+3. Google redirects to: www.yoohoo.guru/api/auth/callback/google (this is the ONLY OAuth redirect)
+4. After successful authentication, NextAuth redirects user back to their original subdomain using the `callbackUrl` parameter
+
+This is NOT an OAuth redirect - it's a NextAuth application redirect handled by the redirect callback in NextAuth configuration.
 
 #### 1.4 Save Changes
 
