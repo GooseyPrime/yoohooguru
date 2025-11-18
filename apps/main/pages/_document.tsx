@@ -7,6 +7,12 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
+        {/* 
+          Note: Using regular <script> tags instead of next/script in _document.tsx
+          next/script is for pages/components only. In _document.tsx, use standard HTML script tags.
+          See: https://nextjs.org/docs/pages/building-your-application/optimizing/scripts
+        */}
+        
         {/* Google Analytics */}
         {gaId && (
           <>
