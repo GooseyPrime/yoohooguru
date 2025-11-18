@@ -201,7 +201,7 @@ const authOptions = getAuthOptions({
     },
   },
   events: {
-    async signIn({ user, account, profile, isNewUser }) {
+    async signIn({ user, account, isNewUser }) {
       console.log(`✅ Sign in event: ${user.email} via ${account?.provider}${isNewUser ? ' (new user)' : ''}`);
     },
     async signOut({ session, token }) {
@@ -210,10 +210,10 @@ const authOptions = getAuthOptions({
     async createUser({ user }) {
       console.log(`👤 New user created: ${user.email}`);
     },
-    async linkAccount({ user, account, profile }) {
+    async linkAccount({ user, account }) {
       console.log(`🔗 Account linked: ${account.provider} for ${user.email}`);
     },
-    async session({ session, token }) {
+    async session() {
       // Silent - this fires on every request
     },
   },
