@@ -222,7 +222,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://js.stripe.com https://apis.google.com https://www.google.com https://www.gstatic.com https://accounts.google.com https://maps.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; connect-src 'self' https://api.yoohoo.guru https://api.stripe.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://*.googleapis.com; frame-src 'self' https://js.stripe.com https://*.google.com https://*.firebaseapp.com; img-src 'self' data: blob: https://lh3.googleusercontent.com https://firebasestorage.googleapis.com https://images.unsplash.com; font-src 'self' https://fonts.gstatic.com"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://js.stripe.com https://apis.google.com https://www.google.com https://www.gstatic.com https://accounts.google.com https://maps.googleapis.com https://js.jam.dev; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; connect-src 'self' https://api.yoohoo.guru https://api.stripe.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://*.googleapis.com; frame-src 'self' https://js.stripe.com https://*.google.com https://*.firebaseapp.com; img-src 'self' data: blob: https://lh3.googleusercontent.com https://firebasestorage.googleapis.com https://images.unsplash.com; font-src 'self' https://fonts.gstatic.com"
         }
       ]
     },
