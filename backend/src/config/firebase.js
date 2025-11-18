@@ -253,13 +253,9 @@ const initializeFirebase = () => {
           firebaseApp = admin.initializeApp(firebaseConfig);
     logger.info('Firebase Admin SDK initialized successfully');
           } catch (initError) {
-      // Handle specific Firebase initialization errors
-      if (initError.message.includes('Failed to parse private key')) {
-        logger.error('❌ Firebase private key parsing error detected');
-        logger.error('   This usually means the FIREBASE_PRIVATE_KEY environment variable');
-        logger.error('   is malformed or contains incorrect line endings');
-        logger.error('   Please check your private key format in environment variables');
-      }
+      // Re-throw to be caught by outer try-catch
+      // Note: We don't log here because the caller should handle error logging
+      // with appropriate context for their use case
       throw initError;
     }
     logger.info(`Environment: ${env}`);
@@ -274,7 +270,11 @@ const initializeFirebase = () => {
 
     return firebaseApp;
   } catch (error) {
-    logger.error('Failed to initialize Firebase:', error);
+    // Only log full error details if it's not already been handled
+    // (e.g., private key parsing errors are already logged above with helpful context)
+    if (!error.message.includes('Failed to parse private key')) {
+      logger.error('Failed to initialize Firebase:', error);
+    }
     throw error;
   }
 };
