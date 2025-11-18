@@ -116,9 +116,7 @@ jobs:
           CI: true
           # Required for Next.js build - API endpoint URL
           NEXT_PUBLIC_API_URL: http://localhost:3001
-          # Ensure NODE_ENV is not set to production/staging during build
-          # to prevent production-specific validations from failing
-          NODE_ENV: development
+          # NODE_ENV defaults to 'production' for next build, which is correct for CI builds
 
       - name: Analyze orphan modules
         id: orphan-analysis
