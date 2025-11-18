@@ -6,6 +6,46 @@ import { JWT } from "next-auth/jwt";
 
 // TypeScript module augmentations for next-auth and next-auth/jwt have been moved to types/next-auth.d.ts for better organization.
 
+// Validate critical OAuth environment variables
+const validateOAuthConfig = () => {
+  const errors: string[] = [];
+  
+  if (!process.env.NEXTAUTH_SECRET) {
+    errors.push('NEXTAUTH_SECRET is not configured');
+  }
+  
+  if (!process.env.NEXTAUTH_URL) {
+    errors.push('NEXTAUTH_URL is not configured');
+  }
+  
+  if (!process.env.GOOGLE_OAUTH_CLIENT_ID) {
+    errors.push('GOOGLE_OAUTH_CLIENT_ID is not configured');
+  }
+  
+  if (!process.env.GOOGLE_OAUTH_CLIENT_SECRET) {
+    errors.push('GOOGLE_OAUTH_CLIENT_SECRET is not configured');
+  }
+  
+  if (errors.length > 0) {
+    console.error('❌ OAuth Configuration Errors:');
+    errors.forEach(error => console.error(`  - ${error}`));
+    console.error('\n📋 Required environment variables:');
+    console.error('  - NEXTAUTH_SECRET (generate with: openssl rand -base64 32)');
+    console.error('  - NEXTAUTH_URL (should be: https://www.yoohoo.guru)');
+    console.error('  - GOOGLE_OAUTH_CLIENT_ID (from Google Cloud Console)');
+    console.error('  - GOOGLE_OAUTH_CLIENT_SECRET (from Google Cloud Console)');
+    console.error('\n🔗 Setup guide: See docs/GOOGLE_OAUTH_SETUP.md\n');
+  }
+  
+  return errors;
+};
+
+// Validate configuration on module load
+const configErrors = validateOAuthConfig();
+if (configErrors.length > 0 && process.env.NODE_ENV === 'production') {
+  throw new Error(`OAuth configuration incomplete: ${configErrors.join(', ')}`);
+}
+
 // Get base NextAuth options with cross-subdomain cookie configuration
 const authOptions = getAuthOptions({
   providers: [
@@ -123,6 +163,7 @@ const authOptions = getAuthOptions({
       if (account) {
         token.accessToken = account.access_token;
         token.provider = account.provider;
+        console.log(`✅ OAuth login successful via ${account.provider} for user ${user?.email}`);
       }
       
       return token;
@@ -135,6 +176,8 @@ const authOptions = getAuthOptions({
       return session;
     },
     async redirect({ url, baseUrl }) {
+      console.log(`🔀 NextAuth redirect called - URL: ${url}, BaseURL: ${baseUrl}`);
+      
       // Allow redirect to any subdomain of yoohoo.guru
       if (url.startsWith("/")) return `${baseUrl}${url}`;
       
@@ -146,13 +189,32 @@ const authOptions = getAuthOptions({
         if (urlObj.hostname.endsWith(baseUrlObj.hostname) || 
             urlObj.hostname.endsWith('.yoohoo.guru') ||
             urlObj.hostname === 'yoohoo.guru') {
+          console.log(`✅ Redirect allowed to: ${url}`);
           return url;
         }
       } catch (error) {
-        console.error('Redirect URL parsing error:', error);
+        console.error('❌ Redirect URL parsing error:', error);
       }
       
+      console.log(`⚠️ Redirect blocked, returning baseUrl: ${baseUrl}`);
       return baseUrl;
+    },
+  },
+  events: {
+    async signIn({ user, account, profile, isNewUser }) {
+      console.log(`✅ Sign in event: ${user.email} via ${account?.provider}${isNewUser ? ' (new user)' : ''}`);
+    },
+    async signOut({ session, token }) {
+      console.log(`👋 Sign out event: ${session?.user?.email || token?.email || 'unknown'}`);
+    },
+    async createUser({ user }) {
+      console.log(`👤 New user created: ${user.email}`);
+    },
+    async linkAccount({ user, account, profile }) {
+      console.log(`🔗 Account linked: ${account.provider} for ${user.email}`);
+    },
+    async session({ session, token }) {
+      // Silent - this fires on every request
     },
   },
   // Add debug logging in non-production

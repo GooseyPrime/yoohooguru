@@ -4,6 +4,35 @@
 import type { NextAuthOptions } from 'next-auth';
 
 export const getAuthOptions = (overrides: Partial<NextAuthOptions> = {}): NextAuthOptions => {
+  // Validate NEXTAUTH_SECRET
+  if (!process.env.NEXTAUTH_SECRET) {
+    console.warn('⚠️ WARNING: NEXTAUTH_SECRET is not set!');
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('NEXTAUTH_SECRET must be set in production');
+    }
+  }
+  
+  // Validate NEXTAUTH_URL
+  if (!process.env.NEXTAUTH_URL) {
+    console.warn('⚠️ WARNING: NEXTAUTH_URL is not set!');
+  } else {
+    console.log(`ℹ️ NEXTAUTH_URL: ${process.env.NEXTAUTH_URL}`);
+  }
+  
+  // Log cookie domain configuration
+  const cookieDomain = (() => {
+    if (process.env.NODE_ENV === 'production') {
+      if (!process.env.AUTH_COOKIE_DOMAIN) {
+        console.error('❌ AUTH_COOKIE_DOMAIN must be set in production for cross-subdomain authentication');
+        throw new Error('AUTH_COOKIE_DOMAIN must be set in production for secure cookie handling.');
+      }
+      console.log(`ℹ️ Cookie domain: ${process.env.AUTH_COOKIE_DOMAIN}`);
+      return process.env.AUTH_COOKIE_DOMAIN;
+    }
+    console.log('ℹ️ Cookie domain: undefined (development mode)');
+    return undefined;
+  })();
+  
   return {
     // Configuration shared across all apps
     session: {
@@ -19,15 +48,7 @@ export const getAuthOptions = (overrides: Partial<NextAuthOptions> = {}): NextAu
           path: '/',
           secure: process.env.NODE_ENV === 'production',
           // CRITICAL: Cross-subdomain cookie domain
-          domain: (() => {
-            if (process.env.NODE_ENV === 'production') {
-              if (!process.env.AUTH_COOKIE_DOMAIN) {
-                throw new Error('AUTH_COOKIE_DOMAIN must be set in production for secure cookie handling.');
-              }
-              return process.env.AUTH_COOKIE_DOMAIN;
-            }
-            return undefined;
-          })(),
+          domain: cookieDomain,
         }
       },
     },
