@@ -180,6 +180,32 @@
 
   "headers": [
     {
+      "source": "/(.*).html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "Vary",
+          "value": "Accept-Encoding, User-Agent"
+        }
+      ]
+    },
+    {
+      "source": "/",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "Vary",
+          "value": "Accept-Encoding, User-Agent"
+        }
+      ]
+    },
+    {
       "source": "/_next/static/(.*)",
       "headers": [
         {
