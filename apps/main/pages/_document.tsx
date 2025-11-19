@@ -40,6 +40,7 @@ export default function Document() {
         
         {/* Google Tag Manager */}
         {gtmId && (
+          /* eslint-disable-next-line @next/next/next-script-for-ga */
           <script
             id="google-tag-manager"
             dangerouslySetInnerHTML={{
