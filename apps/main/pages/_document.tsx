@@ -20,6 +20,7 @@ export default function Document() {
               async
               src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
             />
+            {/* eslint-disable-next-line @next/next/next-script-for-ga */}
             <script
               id="google-analytics"
               dangerouslySetInnerHTML={{
