@@ -86,7 +86,7 @@ export default function Navigation() {
 
             {/* CTA Buttons / User Menu */}
             <div className="hidden md:flex items-center space-x-4">
-              {status === 'loading' ? (
+              {!mounted || status === 'loading' ? (
                 <div className="w-6 h-6 border-2 border-white-20 border-t-emerald-400 rounded-full animate-spin"></div>
               ) : session ? (
                 <div className="flex items-center space-x-4">
@@ -193,7 +193,7 @@ export default function Navigation() {
                 </Link>
               ))}
               <div className="pt-4 space-y-3">
-                {status === 'loading' ? (
+                {!mounted || status === 'loading' ? (
                   <div className="flex justify-center py-3">
                     <div className="w-6 h-6 border-2 border-white-20 border-t-emerald-400 rounded-full animate-spin"></div>
                   </div>
