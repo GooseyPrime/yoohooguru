@@ -74,7 +74,8 @@ Blog listing pages with:
 - Automatic cleanup (keeps 10 most recent per subdomain)
 - NO fake or generated news content
 
-**Database Storage**: `Firestore: gurus/{subdomain}/news`
+**Database Storage**: `Firestore: gurus/{subdomain}/news` (subcollection structure)
+**API Endpoint**: `/api/news/{subdomain}` - reads from the same subcollection path
 
 #### Blog Curation Agent
 **Location**: `backend/src/agents/curationAgents.js`
@@ -91,7 +92,8 @@ Blog listing pages with:
 - Schema markup for rich snippets
 - Automatic topic rotation
 
-**Database Storage**: `Firestore: gurus/{subdomain}/posts`
+**Database Storage**: `Firestore: gurus/{subdomain}/posts` (subcollection structure)
+**API Endpoint**: `/api/{subdomain}/posts` - reads from the same subcollection path
 
 #### Backup Agent
 **Location**: `backend/src/agents/backupAgent.js`
@@ -419,8 +421,90 @@ All agent activity is logged with timestamps and details:
 
 Check logs in backend console or logging service.
 
+## Troubleshooting
+
+### Blog Posts Not Displaying on Subdomain Pages
+
+**Symptom**: Subdomain homepages show "Blog posts temporarily unavailable"
+
+**Root Cause**: Database collection path mismatch
+
+**Solution**: Verify API routes are querying the correct Firestore path:
+- ✅ Correct: `db.collection('gurus').doc(subdomain).collection('posts')`
+- ❌ Incorrect: `db.collection('posts').where('subdomain', '==', subdomain)`
+
+**Verification**:
+```bash
+# Check API route configuration
+grep "collection('gurus')" backend/src/routes/posts.js
+grep "collection('gurus')" backend/src/routes/news.js
+```
+
+### News Articles Not Displaying
+
+**Symptom**: NewsSection component shows "News temporarily unavailable"
+
+**Root Cause**: Same as above - collection path mismatch
+
+**Solution**: Same fix as blog posts - ensure routes query `gurus/{subdomain}/news`
+
+### Build Warnings About Google Analytics
+
+**Symptom**: ESLint warning `@next/next/next-script-for-ga` during build
+
+**Root Cause**: Next.js suggests using `next/script` component, but this is incorrect for `_document.tsx`
+
+**Solution**: Add ESLint exception comment:
+```tsx
+{/* eslint-disable-next-line @next/next/next-script-for-ga */}
+<script id="google-analytics" dangerouslySetInnerHTML={{...}} />
+```
+
+**Why**: In `_document.tsx`, you must use regular HTML `<script>` tags. The `next/script` component is only for pages and components.
+
+### "BlogCurationAgent is not a constructor" Error
+
+**Symptom**: Build fails with TypeError during `postbuild` step
+
+**Root Cause**: Incorrect import in `trigger-blog-curation.js`
+
+**Solution**: Import the instance, not the class:
+```javascript
+// ❌ Incorrect
+const BlogCurationAgent = require('../src/agents/curationAgents').BlogCurationAgent;
+const agent = new BlogCurationAgent();
+
+// ✅ Correct
+const { blogCurationAgent } = require('../src/agents/curationAgents');
+await blogCurationAgent.triggerManually();
+```
+
+### Missing Subdomains (angel, coach, heroes)
+
+**Symptom**: Content for angel.yoohoo.guru, coach.yoohoo.guru, or heroes.yoohoo.guru not appearing
+
+**Root Cause**: VALID_SUBJECTS arrays missing these subdomains
+
+**Solution**: Update VALID_SUBJECTS to include all subdomains:
+```javascript
+// In posts.js, news.js, BlogList.tsx, NewsSection.tsx
+const { getAllSubdomains } = require('../config/subdomains'); // Backend
+const VALID_SUBJECTS = getAllSubdomains().filter(s => !['www', 'api'].includes(s));
+```
+
+Or for frontend:
+```typescript
+const VALID_SUBJECTS = [
+  'angel', 'art', 'auto', 'business', 'coach', 'coding', 'cooking', 'crafts', 'data',
+  'design', 'finance', 'fitness', 'gardening', 'heroes', 'history',
+  'home', 'investing', 'language', 'marketing', 'math',
+  'mechanical', 'music', 'photography', 'sales', 'science', 'sports',
+  'tech', 'wellness', 'writing'
+];
+```
+
 ---
 
-**Last Updated**: 2025-10-22
-**Version**: 1.0.0
+**Last Updated**: 2025-11-19
+**Version**: 1.1.0
 **Maintained By**: YooHoo.guru Development Team
