@@ -43,10 +43,6 @@ describe('Vercel CSP Configuration', () => {
   });
 
   describe('CSP script-src directive', () => {
-    it('should include jam.dev for screen recording functionality', () => {
-      expect(cspHeader).toContain('https://js.jam.dev');
-    });
-
     it('should include Google domains for authentication', () => {
       expect(cspHeader).toContain('https://apis.google.com');
       expect(cspHeader).toContain('https://accounts.google.com');

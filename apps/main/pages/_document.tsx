@@ -53,12 +53,6 @@ export default function Document() {
           />
         )}
 
-        {/* Jam.dev Screen Recording - Lets users record their screen from your site */}
-        <meta name="jam:team" content="7a93cd08-992a-4acf-8f73-72dea0a67c7b" />
-        <script async type="module" src="https://js.jam.dev/recorder.js"></script>
-
-        {/* Jam.dev Event Capture - Captures user events and developer logs */}
-        <script async type="module" src="https://js.jam.dev/capture.js"></script>
         
         {/* Meta Tags - Only global tags here, page-specific tags in individual pages */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
