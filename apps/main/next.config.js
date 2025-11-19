@@ -8,6 +8,11 @@ const nextConfig = {
   swcMinify: true,
   compress: true,
 
+  // CRITICAL: Disable source maps in production to prevent CSP violations
+  // Source maps cause webpack:// protocol requests that violate CSP connect-src
+  // This was blocking authentication flows in production
+  productionBrowserSourceMaps: false,
+
   // Production optimizations
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? {
