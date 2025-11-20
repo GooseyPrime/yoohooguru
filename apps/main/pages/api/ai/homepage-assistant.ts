@@ -162,6 +162,16 @@ User ID: ${user.id || 'unknown'}`;
       ...messages
     ];
 
+    // Preferred models with conversational skills, web-searching, and logical reasoning
+    // OpenRouter will select the first available model from this list
+    const preferredModels = [
+      'anthropic/claude-3.5-sonnet',
+      'openai/gpt-4-turbo',
+      'google/gemini-pro',
+      'meta-llama/llama-3.1-70b-instruct',
+      'mistralai/mistral-large'
+    ];
+
     // Call OpenRouter API
     const openRouterResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
@@ -172,15 +182,17 @@ User ID: ${user.id || 'unknown'}`;
         'X-Title': 'YooHoo.Guru Homepage Assistant'
       },
       body: JSON.stringify({
-        model: 'anthropic/claude-3.5-sonnet', // or 'openai/gpt-4-turbo' or 'meta-llama/llama-3.1-70b-instruct'
+        // Use model routing to select from preferred models
+        models: preferredModels,
         messages: conversationMessages,
         temperature: 0.7,
         max_tokens: 1000,
-        // Enable web search for skill research
-        tools: [
+        // Use OpenRouter's plugin-based web search (works across all models)
+        // This is simpler and more reliable than function calling
+        plugins: [
           {
-            type: 'web_search',
-            description: 'Search the web for information about skills, categories, and platform features'
+            id: 'web',
+            max_results: 5
           }
         ]
       })
