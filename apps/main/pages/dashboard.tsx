@@ -233,7 +233,7 @@ export default function Dashboard() {
             title: 'AI Learning Match',
             description: 'Use our AI-powered learning style assessment to find the perfect Gurus.',
             action: 'Get Matched',
-            path: '/learning/ai-match'
+            path: '/ai/matchmaking'
           }
         ];
     }

@@ -170,7 +170,7 @@ export default function Home() {
 
             <div className="text-center">
               <a
-                href="https://coach.yoohoo.guru/experts"
+                href="/browse"
                 className="inline-flex items-center space-x-2 px-8 py-4 glass-button text-white font-semibold rounded-xl hover:bg-white-20 transition-all duration-300"
               >
                 <span>Browse All Experts</span>

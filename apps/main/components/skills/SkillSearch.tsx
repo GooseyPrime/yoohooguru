@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import styled from 'styled-components';
 
 const SearchContainer = styled.div`
@@ -255,19 +256,34 @@ export default function SkillSearch() {
       <ResultsContainer>
         {results.length > 0 ? (
           results.map(skill => (
-            <SkillCard key={skill.id}>
-              <SkillTitle>{skill.title}</SkillTitle>
-              <SkillDescription>{skill.description}</SkillDescription>
-              <SkillMeta>
-                <SkillCategory>
-                  {skill.category.charAt(0).toUpperCase() + skill.category.slice(1)}
-                </SkillCategory>
-                <SkillPrice>${skill.price}/hr</SkillPrice>
-              </SkillMeta>
-              <div style={{color: '#b0b0b0', fontSize: '0.9rem', marginTop: '0.5rem'}}>
-                by {skill.guru} • ★ {skill.rating}
-              </div>
-            </SkillCard>
+            <Link key={skill.id} href={`/guru/${skill.id}/book-session`} style={{textDecoration: 'none'}}>
+              <SkillCard>
+                <SkillTitle>{skill.title}</SkillTitle>
+                <SkillDescription>{skill.description}</SkillDescription>
+                <SkillMeta>
+                  <SkillCategory>
+                    {skill.category.charAt(0).toUpperCase() + skill.category.slice(1)}
+                  </SkillCategory>
+                  <SkillPrice>${skill.price}/hr</SkillPrice>
+                </SkillMeta>
+                <div style={{color: '#b0b0b0', fontSize: '0.9rem', marginTop: '0.5rem'}}>
+                  by {skill.guru} • ★ {skill.rating}
+                </div>
+                <div style={{
+                  marginTop: '1rem',
+                  padding: '0.75rem',
+                  background: 'linear-gradient(to right, rgba(52, 211, 153, 0.2), rgba(59, 130, 246, 0.2))',
+                  border: '1px solid rgba(52, 211, 153, 0.3)',
+                  borderRadius: '0.5rem',
+                  textAlign: 'center',
+                  color: '#34d399',
+                  fontWeight: '600',
+                  fontSize: '0.9rem'
+                }}>
+                  Book Session →
+                </div>
+              </SkillCard>
+            </Link>
           ))
         ) : (
           <NoResults>No skills found matching your criteria.</NoResults>

@@ -32,13 +32,12 @@ export default function Navigation() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
+  const navLinks: Array<{ href: string; label: string; highlight?: boolean }> = [
+      { href: '/browse', label: 'Find Gurus', highlight: true },
       { href: '/about', label: 'About' },
       { href: '/how-it-works', label: 'How It Works' },
       { href: '/pricing', label: 'Pricing' },
-      { href: '/blog', label: 'Blog' },
       { href: '/help', label: 'Help' },
-      { href: '/safety', label: 'Safety' },
     ];
 
   return (
@@ -73,10 +72,12 @@ export default function Navigation() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-sm font-medium transition-all duration-300 hover:text-emerald-400 ${
-                    currentPath === link.href
+                  className={`text-sm font-medium transition-all duration-300 ${
+                    link.highlight
+                      ? 'px-4 py-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-lg hover:from-emerald-600 hover:to-emerald-700 shadow-lg hover:shadow-glow-emerald'
+                      : currentPath === link.href
                       ? 'text-emerald-400'
-                      : 'text-white-80'
+                      : 'text-white-80 hover:text-emerald-400'
                   }`}
                 >
                   {link.label}

@@ -59,12 +59,14 @@ const Header: React.FC<{ currentDomain?: string }> = ({ currentDomain = 'main' }
 
             {/* Right Side Actions */}
             <div className="hidden lg:flex items-center space-x-4">
-              <button className="nav-link">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
-              
+              {/* Book Session CTA - Always visible */}
+              <a
+                href="https://www.yoohoo.guru/browse"
+                className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-emerald-700 transition-all duration-300 shadow-lg hover:shadow-emerald-400/50"
+              >
+                Book a Session
+              </a>
+
               {/* Conditional Navigation based on authentication */}
               {status === 'loading' ? (
                 <div className="w-6 h-6 border-2 border-gray-300 border-t-emerald-400 rounded-full animate-spin"></div>
@@ -157,7 +159,17 @@ const Header: React.FC<{ currentDomain?: string }> = ({ currentDomain = 'main' }
                 ))}
                 
                 <hr className="border-white/10 my-4" />
-                
+
+                {/* Mobile Book Session CTA */}
+                <a
+                  href="https://www.yoohoo.guru/browse"
+                  className="block btn-gradient text-center py-3 rounded-lg"
+                >
+                  Book a Session
+                </a>
+
+                <hr className="border-white/10 my-4" />
+
                 {/* Mobile Auth */}
                 {status === 'loading' ? (
                   <div className="flex justify-center py-2">

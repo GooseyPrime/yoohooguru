@@ -17,7 +17,7 @@ export default function CoachGuru() {
       reviews: 127,
       hourlyRate: 75,
       skills: ["React", "Node.js", "AWS", "TypeScript"],
-      href: "/experts/sarah-chen",
+      href: "https://www.yoohoo.guru/guru/1/book-session",
     },
     {
       name: "Marcus Rodriguez",
@@ -302,7 +302,7 @@ export default function CoachGuru() {
             </div>
 
             <div className="text-center">
-              <Button variant="gradient" size="lg" href="/experts">
+              <Button variant="gradient" size="lg" href="https://www.yoohoo.guru/browse">
                 Browse All Expert Gurus →
               </Button>
             </div>
@@ -334,7 +334,7 @@ export default function CoachGuru() {
                 <Button variant="gradient" size="lg" href="/signup?type=guru">
                   Become a Guru →
                 </Button>
-                <Button variant="ghost" size="lg" href="/signup?type=learner">
+                <Button variant="ghost" size="lg" href="https://www.yoohoo.guru/browse">
                   Find a Coach →
                 </Button>
               </div>
