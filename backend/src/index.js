@@ -116,9 +116,10 @@ if (process.env.SESSION_SECRET.length < 32 && (config.nodeEnv === 'production' |
 // Configure Express to trust proxy headers appropriately for the deployment environment
 // This is required for express-rate-limit to work correctly when deployed behind a proxy
 if (config.nodeEnv === 'production' || config.nodeEnv === 'staging') {
-  // In production/staging (Railway), trust proxy headers to get real client IPs
-  // Railway's load balancer sets X-Forwarded-For with the real client IP first
-  app.set('trust proxy', true);
+  // In production/staging (Railway), trust only the first proxy (Railway's load balancer)
+  // This prevents IP spoofing while allowing rate limiting to work correctly
+  // Using '1' means we trust only 1 hop (the immediate proxy), not unlimited hops
+  app.set('trust proxy', 1);
 } else {
   // In development/test, do not trust proxy headers to avoid rate limiting errors
   app.set('trust proxy', false);

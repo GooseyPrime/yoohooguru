@@ -48,12 +48,12 @@ export const ContentHubCarousel: React.FC<ContentHubCarouselProps> = ({ hubs }) 
   ];
 
   // Responsive items per page - always start with default for SSR
-  const getItemsPerPage = () => {
+  const getItemsPerPage = React.useCallback(() => {
     if (!mounted || typeof window === 'undefined') return 6;
     if (window.innerWidth >= 1024) return 12; // lg: 2 rows of 6
     if (window.innerWidth >= 768) return 6;   // md: 2 rows of 3
     return 4;                                  // sm: 2 rows of 2
-  };
+  }, [mounted]);
 
   const [itemsPerPage, setItemsPerPage] = React.useState(6); // Always start with 6 for SSR
 
@@ -63,7 +63,7 @@ export const ContentHubCarousel: React.FC<ContentHubCarouselProps> = ({ hubs }) 
     const handleResize = () => setItemsPerPage(getItemsPerPage());
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [mounted]);
+  }, [mounted, getItemsPerPage]);
 
   const totalPages = Math.ceil(allHubs.length / itemsPerPage);
 

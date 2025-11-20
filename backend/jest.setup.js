@@ -24,6 +24,65 @@ process.env.STRIPE_PUBLISHABLE_KEY = process.env.STRIPE_PUBLISHABLE_KEY || 'pk_t
 process.env.STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || 'whsec_test_placeholder';
 process.env.CORS_ORIGIN_PRODUCTION = process.env.CORS_ORIGIN_PRODUCTION || 'http://localhost:3000,http://127.0.0.1:3000';
 
+// Mock firebase-admin before it's imported by other modules
+jest.mock('firebase-admin', () => {
+  const mockAuth = {
+    verifyIdToken: jest.fn().mockResolvedValue({
+      uid: 'test-user-123',
+      email: 'test@example.com',
+      role: 'user'
+    }),
+    createUser: jest.fn().mockImplementation((properties) => Promise.resolve({
+      uid: 'test-user-' + Date.now(),
+      email: properties.email,
+      ...properties
+    })),
+    getUserByEmail: jest.fn().mockImplementation((email) => Promise.resolve({
+      uid: 'test-user-123',
+      email: email
+    })),
+    deleteUser: jest.fn().mockResolvedValue(undefined),
+    updateUser: jest.fn().mockResolvedValue({ uid: 'test-user-123' })
+  };
+
+  const mockFirestore = {
+    collection: jest.fn().mockReturnValue({
+      doc: jest.fn().mockReturnValue({
+        get: jest.fn().mockResolvedValue({ exists: false, data: () => null }),
+        set: jest.fn().mockResolvedValue(undefined),
+        update: jest.fn().mockResolvedValue(undefined),
+        delete: jest.fn().mockResolvedValue(undefined)
+      }),
+      get: jest.fn().mockResolvedValue({ docs: [] }),
+      add: jest.fn().mockResolvedValue({ id: 'test-doc-id-' + Date.now() }),
+      where: jest.fn().mockReturnThis(),
+      orderBy: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockReturnThis()
+    }),
+    batch: jest.fn().mockReturnValue({
+      set: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      commit: jest.fn().mockResolvedValue(undefined)
+    }),
+    Timestamp: {
+      now: () => ({ seconds: Math.floor(Date.now() / 1000), nanoseconds: 0 }),
+      fromDate: (date) => ({ seconds: Math.floor(date.getTime() / 1000), nanoseconds: 0 })
+    }
+  };
+
+  return {
+    apps: [],
+    initializeApp: jest.fn().mockReturnValue({ name: '[DEFAULT]' }),
+    app: jest.fn().mockReturnValue({ name: '[DEFAULT]' }),
+    auth: jest.fn().mockReturnValue(mockAuth),
+    firestore: jest.fn().mockReturnValue(mockFirestore),
+    credential: {
+      cert: jest.fn().mockReturnValue({})
+    }
+  };
+});
+
 // Initialize Firebase for testing before any tests run
 let firebaseInitialized = false;
 
@@ -52,9 +111,9 @@ beforeAll(async () => {
     // Initialize Firebase
     await firebaseConfig.initializeFirebase();
     firebaseInitialized = true;
-    console.log('✅ Firebase Emulator initialized for testing');
+    console.log('✅ Firebase initialized for testing (using mocked firebase-admin)');
   } catch (error) {
-    console.warn('❌ Firebase Emulator initialization failed:', error.message);
+    console.warn('❌ Firebase initialization failed:', error.message);
     console.log('🧪 Tests will continue without Firebase functionality');
     // Don't throw error - let tests handle Firebase gracefully
     firebaseInitialized = false;
