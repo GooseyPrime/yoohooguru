@@ -8,6 +8,7 @@ import WhyYooHooSection from '../components/sections/WhyYooHooSection';
 import { ServiceCard, ExpertCard } from '../components/ui/Card';
 import { TestimonialCarousel } from '../components/ui/TestimonialCard';
 import { ContentHubCarousel } from '../components/ui/ContentHubCarousel';
+import HomepageAssistant from '../components/HomepageAssistant';
 
 export default function Home() {
   // Service data
@@ -345,6 +346,9 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* AI Homepage Assistant */}
+      <HomepageAssistant />
     </>
   );
 }
