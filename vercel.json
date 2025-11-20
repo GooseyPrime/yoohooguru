@@ -16,14 +16,14 @@
 
   "redirects": [
     {
-      "source": "/",
+      "source": "/:path*",
       "has": [
         {
           "type": "host",
           "value": "yoohoo.guru"
         }
       ],
-      "destination": "https://www.yoohoo.guru",
+      "destination": "https://www.yoohoo.guru/:path*",
       "permanent": true
     },
     {
