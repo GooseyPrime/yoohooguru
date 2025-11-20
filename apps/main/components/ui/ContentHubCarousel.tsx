@@ -17,6 +17,7 @@ interface ContentHubCarouselProps {
 export const ContentHubCarousel: React.FC<ContentHubCarouselProps> = ({ hubs }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [direction, setDirection] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
   // All 24 content hubs
   const allHubs: ContentHub[] = hubs || [
@@ -46,21 +47,23 @@ export const ContentHubCarousel: React.FC<ContentHubCarouselProps> = ({ hubs }) 
     { icon: "🧠", title: "Psychology", articleCount: 134, href: "https://psychology.yoohoo.guru", gradient: "hover:bg-gradient-to-br hover:from-indigo-500/10 hover:to-purple-500/10" }
   ];
 
-  // Responsive items per page
+  // Responsive items per page - always start with default for SSR
   const getItemsPerPage = () => {
-    if (typeof window === 'undefined') return 6;
+    if (!mounted || typeof window === 'undefined') return 6;
     if (window.innerWidth >= 1024) return 12; // lg: 2 rows of 6
     if (window.innerWidth >= 768) return 6;   // md: 2 rows of 3
     return 4;                                  // sm: 2 rows of 2
   };
 
-  const [itemsPerPage, setItemsPerPage] = React.useState(getItemsPerPage());
+  const [itemsPerPage, setItemsPerPage] = React.useState(6); // Always start with 6 for SSR
 
   React.useEffect(() => {
+    setMounted(true);
+    setItemsPerPage(getItemsPerPage());
     const handleResize = () => setItemsPerPage(getItemsPerPage());
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [mounted]);
 
   const totalPages = Math.ceil(allHubs.length / itemsPerPage);
 

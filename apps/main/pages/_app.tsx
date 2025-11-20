@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import dynamic from 'next/dynamic'
 import CookieConsent from '../components/CookieConsent'
+import DevelopmentBanner from '../components/DevelopmentBanner'
 import ErrorBoundary from '../components/ErrorBoundary'
 import SkipToContent from '../components/SkipToContent'
 import '../styles/globals.css'
@@ -18,6 +19,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
   return (
     <SessionProvider session={session}>
       <ErrorBoundary>
+        <DevelopmentBanner />
         <SkipToContent />
         <Component {...pageProps} />
         <AnalyticsPageTracker />
