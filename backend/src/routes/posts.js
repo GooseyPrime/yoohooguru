@@ -2,15 +2,10 @@ const express = require('express');
 const router = express.Router();
 const { getFirestore } = require('../config/firebase');
 const { logger } = require('../utils/logger');
+const { getAllSubdomains } = require('../config/subdomains');
 
-// Valid subjects matching frontend VALID_SUBJECTS
-const VALID_SUBJECTS = [
-  'art', 'business', 'coding', 'cooking', 'crafts', 'data',
-  'design', 'finance', 'fitness', 'gardening', 'history',
-  'home', 'investing', 'language', 'marketing', 'math',
-  'music', 'photography', 'sales', 'science', 'sports',
-  'tech', 'wellness', 'writing'
-];
+// Get valid subjects dynamically from subdomain config
+const VALID_SUBJECTS = getAllSubdomains().filter(s => !['www', 'api'].includes(s));
 
 /**
  * @route GET /api/blog/posts
@@ -34,32 +29,34 @@ router.get('/blog/posts', async (req, res) => {
     const db = getFirestore();
 
     // For main blog, fetch from all subdomains and mix them
-    // Or use posts with isMainBlog flag if available
-    const postsRef = db.collection('posts');
-    let query = postsRef
-      .where('published', '==', true)
-      .orderBy('publishedAt', 'desc')
-      .limit(limit * 3); // Get more to mix from different subdomains
-
-    const snapshot = await query.get();
-
-    // Mix posts from different subdomains
-    const allPosts = snapshot.docs.map(doc => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        title: data.title || '',
-        slug: data.slug || doc.id,
-        excerpt: data.excerpt || '',
-        author: data.author || 'YooHoo Team',
-        publishedAt: data.publishedAt || Date.now(),
-        readTime: data.readTime || '5 min read',
-        tags: data.tags || [],
-        category: data.category || data.subdomain || 'General',
-        imageUrl: data.imageUrl || null,
-        subdomain: data.subdomain
-      };
+    // Fetch 2 posts from each subdomain to get a good mix
+    const postsPromises = VALID_SUBJECTS.map(async (subdomain) => {
+      const postsCollection = db.collection('gurus').doc(subdomain).collection('posts');
+      const snapshot = await postsCollection
+        .where('status', '==', 'published')
+        .orderBy('publishedAt', 'desc')
+        .limit(2)
+        .get();
+      return snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          title: data.title || '',
+          slug: data.slug || doc.id,
+          excerpt: data.excerpt || '',
+          author: data.author || 'YooHoo Team',
+          publishedAt: data.publishedAt || Date.now(),
+          readTime: data.readTime || '5 min read',
+          tags: data.tags || [],
+          category: data.category || subdomain || 'General',
+          imageUrl: data.imageUrl || null,
+          subdomain
+        };
+      });
     });
+
+    const allPostsArrays = await Promise.all(postsPromises);
+    const allPosts = allPostsArrays.flat();
 
     // Shuffle and limit to requested amount
     const shuffled = allPosts.sort(() => 0.5 - Math.random());
@@ -104,13 +101,26 @@ router.get('/blog/posts/:slug', async (req, res) => {
     const db = getFirestore();
 
     // Query by slug across all subdomains
-    const snapshot = await db.collection('posts')
-      .where('slug', '==', slug)
-      .where('published', '==', true)
-      .limit(1)
-      .get();
+    // Need to search in each subdomain's posts subcollection
+    let foundDoc = null;
+    let foundSubdomain = null;
 
-    if (snapshot.empty) {
+    for (const subdomain of VALID_SUBJECTS) {
+      const postsCollection = db.collection('gurus').doc(subdomain).collection('posts');
+      const snapshot = await postsCollection
+        .where('slug', '==', slug)
+        .where('status', '==', 'published')
+        .limit(1)
+        .get();
+
+      if (!snapshot.empty) {
+        foundDoc = snapshot.docs[0];
+        foundSubdomain = subdomain;
+        break;
+      }
+    }
+
+    if (!foundDoc) {
       logger.warn(`Blog post not found: ${slug}`);
       return res.status(404).json({
         error: 'Post not found',
@@ -118,13 +128,12 @@ router.get('/blog/posts/:slug', async (req, res) => {
       });
     }
 
-    const doc = snapshot.docs[0];
-    const data = doc.data();
+    const data = foundDoc.data();
 
     const post = {
-      id: doc.id,
+      id: foundDoc.id,
       title: data.title || '',
-      slug: data.slug || doc.id,
+      slug: data.slug || foundDoc.id,
       content: data.content || '',
       excerpt: data.excerpt || '',
       author: data.author || 'YooHoo Team',
@@ -132,31 +141,31 @@ router.get('/blog/posts/:slug', async (req, res) => {
       updatedAt: data.updatedAt || null,
       readTime: data.readTime || '5 min read',
       tags: data.tags || [],
-      category: data.category || data.subdomain || 'General',
+      category: data.category || foundSubdomain || 'General',
       imageUrl: data.imageUrl || null,
       views: data.views || 0,
-      seo: data.seo || {}
+      seo: data.seo || {},
+      subdomain: foundSubdomain
     };
 
     // Increment view count (fire and forget)
-    db.collection('posts').doc(doc.id).update({
+    const postsCollection = db.collection('gurus').doc(foundSubdomain).collection('posts');
+    postsCollection.doc(foundDoc.id).update({
       views: (data.views || 0) + 1,
       lastViewedAt: Date.now()
     }).catch(err => {
       logger.error('Failed to increment view count:', err);
     });
 
-    // Fetch related posts from same category/subdomain
-    // const category = data.category || data.subdomain;
-    const relatedSnapshot = await db.collection('posts')
-      .where('published', '==', true)
-      .where('subdomain', '==', data.subdomain)
+    // Fetch related posts from same subdomain
+    const relatedSnapshot = await postsCollection
+      .where('status', '==', 'published')
       .orderBy('publishedAt', 'desc')
       .limit(4)
       .get();
 
     const relatedPosts = relatedSnapshot.docs
-      .filter(d => d.id !== doc.id)
+      .filter(d => d.id !== foundDoc.id)
       .slice(0, 3)
       .map(d => {
         const rd = d.data();
@@ -168,7 +177,7 @@ router.get('/blog/posts/:slug', async (req, res) => {
         };
       });
 
-    logger.info(`Retrieved blog post: ${slug} from subdomain: ${data.subdomain}`);
+    logger.info(`Retrieved blog post: ${slug} from subdomain: ${foundSubdomain}`);
 
     res.json({ post, relatedPosts });
 
@@ -227,10 +236,10 @@ router.get('/:subdomain/posts', async (req, res) => {
     const db = getFirestore();
 
     // Query posts collection filtered by subdomain
-    const postsRef = db.collection('posts');
-    let query = postsRef
-      .where('subdomain', '==', subdomain)
-      .where('published', '==', true)
+    // Posts are stored in gurus/{subdomain}/posts
+    const postsCollection = db.collection('gurus').doc(subdomain).collection('posts');
+    let query = postsCollection
+      .where('status', '==', 'published')
       .orderBy('publishedAt', 'desc')
       .limit(limit);
 
@@ -243,9 +252,8 @@ router.get('/:subdomain/posts', async (req, res) => {
     const snapshot = await query.get();
 
     // Get total count for pagination metadata
-    const countSnapshot = await postsRef
-      .where('subdomain', '==', subdomain)
-      .where('published', '==', true)
+    const countSnapshot = await postsCollection
+      .where('status', '==', 'published')
       .get();
 
     const posts = snapshot.docs.map(doc => {
@@ -317,11 +325,11 @@ router.get('/:subdomain/posts/:slug', async (req, res) => {
 
     const db = getFirestore();
 
-    // Query by slug and subdomain
-    const snapshot = await db.collection('posts')
-      .where('subdomain', '==', subdomain)
+    // Query by slug and subdomain from gurus/{subdomain}/posts
+    const postsCollection = db.collection('gurus').doc(subdomain).collection('posts');
+    const snapshot = await postsCollection
       .where('slug', '==', slug)
-      .where('published', '==', true)
+      .where('status', '==', 'published')
       .limit(1)
       .get();
 
@@ -353,7 +361,7 @@ router.get('/:subdomain/posts/:slug', async (req, res) => {
     };
 
     // Increment view count (fire and forget)
-    db.collection('posts').doc(doc.id).update({
+    postsCollection.doc(doc.id).update({
       views: (data.views || 0) + 1,
       lastViewedAt: Date.now()
     }).catch(err => {

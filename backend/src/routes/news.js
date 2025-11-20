@@ -2,15 +2,10 @@ const express = require('express');
 const router = express.Router();
 const { getFirestore } = require('../config/firebase');
 const { logger } = require('../utils/logger');
+const { getAllSubdomains } = require('../config/subdomains');
 
-// Valid subjects matching frontend VALID_SUBJECTS
-const VALID_SUBJECTS = [
-  'art', 'business', 'coding', 'cooking', 'crafts', 'data',
-  'design', 'finance', 'fitness', 'gardening', 'history',
-  'home', 'investing', 'language', 'marketing', 'math',
-  'music', 'photography', 'sales', 'science', 'sports',
-  'tech', 'wellness', 'writing'
-];
+// Get valid subjects dynamically from subdomain config
+const VALID_SUBJECTS = getAllSubdomains().filter(s => !['www', 'api'].includes(s));
 
 /**
  * @route GET /api/news/:subdomain
@@ -44,10 +39,9 @@ router.get('/:subdomain', async (req, res) => {
     const db = getFirestore();
 
     // Query news collection filtered by subdomain
-    // News articles are curated external content
-    const snapshot = await db.collection('news')
-      .where('subdomain', '==', subdomain)
-      .where('active', '==', true)
+    // News articles are curated external content and stored in gurus/{subdomain}/news
+    const newsCollection = db.collection('gurus').doc(subdomain).collection('news');
+    const snapshot = await newsCollection
       .orderBy('publishedAt', 'desc')
       .limit(limit)
       .get();
@@ -110,16 +104,30 @@ router.get('/', async (req, res) => {
     const db = getFirestore();
 
     // Query recent news across all subdomains
-    const snapshot = await db.collection('news')
-      .where('active', '==', true)
-      .orderBy('publishedAt', 'desc')
-      .limit(limit)
-      .get();
+    // Fetch from each subdomain's news subcollection
+    const newsPromises = VALID_SUBJECTS.map(async (subdomain) => {
+      const newsCollection = db.collection('gurus').doc(subdomain).collection('news');
+      const snapshot = await newsCollection
+        .orderBy('publishedAt', 'desc')
+        .limit(3) // Get 3 from each to mix
+        .get();
+      return snapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id,
+        subdomain
+      }));
+    });
+
+    const allNewsArrays = await Promise.all(newsPromises);
+    const allNews = allNewsArrays.flat();
+    
+    // Sort by publishedAt and limit
+    const snapshot = { docs: allNews.sort((a, b) => b.publishedAt - a.publishedAt).slice(0, limit) };
 
     const news = snapshot.docs.map(doc => {
-      const data = doc.data();
+      const data = typeof doc.data === 'function' ? doc.data() : doc;
       return {
-        id: doc.id,
+        id: doc.id || data.id,
         title: data.title || '',
         summary: data.summary || data.excerpt || '',
         url: data.url || data.sourceUrl || '',
