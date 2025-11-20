@@ -18,8 +18,8 @@ interface NewsSectionProps {
 
 // Allow-list of valid subjects
 const VALID_SUBJECTS = [
-  'art', 'auto', 'business', 'coding', 'cooking', 'crafts', 'data',
-  'design', 'finance', 'fitness', 'gardening', 'history',
+  'angel', 'art', 'auto', 'business', 'coach', 'coding', 'cooking', 'crafts', 'data',
+  'design', 'finance', 'fitness', 'gardening', 'heroes', 'history',
   'home', 'investing', 'language', 'marketing', 'math',
   'mechanical', 'music', 'photography', 'sales', 'science', 'sports',
   'tech', 'wellness', 'writing'

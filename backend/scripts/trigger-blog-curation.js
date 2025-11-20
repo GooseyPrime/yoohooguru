@@ -13,8 +13,8 @@ require('dotenv').config();
 const { initializeFirebase } = require('../src/config/firebase');
 const { logger } = require('../src/utils/logger');
 
-// Import blog curation agent
-const BlogCurationAgent = require('../src/agents/curationAgents').BlogCurationAgent;
+// Import blog curation agent instance
+const { blogCurationAgent } = require('../src/agents/curationAgents');
 
 async function triggerBlogCuration() {
   try {
@@ -52,12 +52,9 @@ async function triggerBlogCuration() {
       throw firebaseError;
     }
 
-    // Create and trigger blog curation agent
-    const blogAgent = new BlogCurationAgent();
-
     // Validate dependencies
     try {
-      blogAgent.validateDependencies();
+      blogCurationAgent.validateDependencies();
       logger.info('✅ Blog agent dependencies validated');
     } catch (error) {
       logger.error('❌ Blog agent dependency validation failed:', error.message);
@@ -66,7 +63,7 @@ async function triggerBlogCuration() {
 
     // Trigger manual blog curation
     logger.info('📝 Triggering blog curation for all subdomains...');
-    await blogAgent.triggerManually();
+    await blogCurationAgent.triggerManually();
 
     logger.info('✅ Blog curation completed successfully');
     logger.info('📊 Check Firestore collection "posts" for generated content');
