@@ -5,12 +5,17 @@ describe('Stripe Warning Messages', () => {
   const stripePath = path.join(__dirname, '../src/lib/stripe.js');
   
   test('should show development warning when NODE_ENV is development', (done) => {
+    // Create clean environment without inheriting test NODE_ENV
+    const cleanEnv = { ...process.env };
+    delete cleanEnv.STRIPE_SECRET_KEY;
+    cleanEnv.NODE_ENV = 'development';
+
     const child = spawn('node', ['-e', `
       process.env.NODE_ENV = 'development';
       delete process.env.STRIPE_SECRET_KEY;
       require('${stripePath}');
     `], {
-      env: { ...process.env, NODE_ENV: 'development' }
+      env: cleanEnv
     });
     
     let stderr = '';
@@ -27,12 +32,17 @@ describe('Stripe Warning Messages', () => {
   });
   
   test('should show production warning when NODE_ENV is production', (done) => {
+    // Create clean environment without inheriting test NODE_ENV
+    const cleanEnv = { ...process.env };
+    delete cleanEnv.STRIPE_SECRET_KEY;
+    cleanEnv.NODE_ENV = 'production';
+
     const child = spawn('node', ['-e', `
       process.env.NODE_ENV = 'production';
       delete process.env.STRIPE_SECRET_KEY;
       require('${stripePath}');
     `], {
-      env: { ...process.env, NODE_ENV: 'production' }
+      env: cleanEnv
     });
     
     let stderr = '';
@@ -48,12 +58,17 @@ describe('Stripe Warning Messages', () => {
   });
   
   test('should show development warning when NODE_ENV is not set', (done) => {
+    // Create clean environment without NODE_ENV
+    const cleanEnv = { ...process.env };
+    delete cleanEnv.NODE_ENV;
+    delete cleanEnv.STRIPE_SECRET_KEY;
+
     const child = spawn('node', ['-e', `
       delete process.env.NODE_ENV;
       delete process.env.STRIPE_SECRET_KEY;
       require('${stripePath}');
     `], {
-      env: { ...process.env, NODE_ENV: undefined }
+      env: cleanEnv
     });
     
     let stderr = '';
@@ -69,12 +84,17 @@ describe('Stripe Warning Messages', () => {
   });
   
   test('should not show warning when STRIPE_SECRET_KEY is set', (done) => {
+    // Create clean environment with Stripe key set
+    const cleanEnv = { ...process.env };
+    cleanEnv.NODE_ENV = 'development';
+    cleanEnv.STRIPE_SECRET_KEY = 'sk_test_fake_key';
+
     const child = spawn('node', ['-e', `
       process.env.NODE_ENV = 'development';
       process.env.STRIPE_SECRET_KEY = 'sk_test_fake_key';
       require('${stripePath}');
     `], {
-      env: { ...process.env, NODE_ENV: 'development', STRIPE_SECRET_KEY: 'sk_test_fake_key' }
+      env: cleanEnv
     });
     
     let stderr = '';

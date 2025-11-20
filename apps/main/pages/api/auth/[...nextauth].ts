@@ -221,4 +221,5 @@ const authOptions = getAuthOptions({
   debug: process.env.NODE_ENV !== 'production',
 });
 
+export { authOptions };
 export default NextAuth(authOptions);
