@@ -230,10 +230,12 @@ const initializeFirebase = () => {
     validateTestEnvironmentSetup();
 
     // PRODUCTION/STAGING/DEVELOPMENT: Use real Firebase
+    const rawKey = process.env.FIREBASE_PRIVATE_KEY || '';
     const serviceAccount = {
       projectId: process.env.FIREBASE_PROJECT_ID,
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
+      // Normalize privateKey: if already has newlines use as-is, else replace literal '\n'
+      privateKey: rawKey.includes('\n') ? rawKey : rawKey.replace(/\\n/g, '\n'),
     };
 
     const firebaseConfig = {
