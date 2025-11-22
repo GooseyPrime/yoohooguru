@@ -41,10 +41,14 @@ export function initializeFirebaseAdmin(): admin.app.App {
     }
 
     // Production/Staging/Development: Use real Firebase credentials
+    // Normalize privateKey to handle different environment variable formats
+    const rawKey = process.env.FIREBASE_PRIVATE_KEY || '';
     const serviceAccount = {
       projectId: process.env.FIREBASE_PROJECT_ID,
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
+      // If key already contains newlines, use as-is; otherwise replace literal '\n' with newlines
+      // This handles both pre-formatted keys and env vars with literal \n text
+      privateKey: rawKey.includes('\n') ? rawKey : rawKey.replace(/\\n/g, '\n'),
     };
 
     const firebaseConfig: admin.AppOptions = {
