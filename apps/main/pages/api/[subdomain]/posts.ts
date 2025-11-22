@@ -51,24 +51,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .collection('posts')
       .orderBy('publishedAt', 'desc');
 
-    // Apply pagination: skip items for requested page
-    // For page 1: skip 0, for page 2: skip limitNum, etc.
-    const skipCount = (pageNum - 1) * limitNum;
+    // Apply pagination
+    // Firestore doesn't have offset(), so we implement page-based pagination
+    // by fetching documents up to the requested page and using the last doc as cursor
+    if (pageNum > 1) {
+      // For page > 1, fetch documents up to the previous page to get cursor
+      const skipCount = (pageNum - 1) * limitNum;
+      const cursorSnapshot = await query.limit(skipCount).get();
+      
+      if (cursorSnapshot.docs.length > 0) {
+        // Use the last document as the cursor for startAfter
+        const lastDoc = cursorSnapshot.docs[cursorSnapshot.docs.length - 1];
+        query = query.startAfter(lastDoc);
+      }
+    }
     
-    // Firestore doesn't have native skip/offset, so we need to fetch and skip
-    // For better performance with large datasets, consider cursor-based pagination
-    const allPostsSnapshot = await query.limit(skipCount + limitNum).get();
+    // Fetch the actual page of results
+    const postsSnapshot = await query.limit(limitNum).get();
     
-    // Skip the first (pageNum - 1) * limitNum documents
-    const posts = allPostsSnapshot.docs
-      .slice(skipCount)
-      .map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+    const posts = postsSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
 
-    // Calculate total count for pagination (optional - can be expensive)
-    // For now, we'll just return the posts without total count
+    // Return paginated results
     return res.status(200).json({
       posts,
       page: pageNum,
