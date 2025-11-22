@@ -13,11 +13,13 @@ interface Job {
 // Initialize Firebase Admin if not already initialized
 if (!getApps().length) {
   try {
+    const rawKey = process.env.FIREBASE_PRIVATE_KEY || '';
     initializeApp({
       credential: cert({
         projectId: process.env.FIREBASE_PROJECT_ID,
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        // Normalize privateKey: if already has newlines use as-is, else replace literal '\n'
+        privateKey: rawKey.includes('\n') ? rawKey : rawKey.replace(/\\n/g, '\n'),
       }),
     });
   } catch (error) {
