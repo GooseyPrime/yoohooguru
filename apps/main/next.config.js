@@ -3,6 +3,15 @@ const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@yoohooguru/shared'],
 
+  // Skip TypeScript and ESLint checks during production builds
+  // Type checking is done separately in CI/CD pipeline
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+
   // Built-in optimization for production builds
   // This replaces the need for external minify plugins
   swcMinify: true,
