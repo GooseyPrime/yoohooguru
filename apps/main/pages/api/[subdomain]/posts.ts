@@ -43,20 +43,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Initialize Firebase and get Firestore instance
     const db = getFirestore();
 
-    // Fetch blog posts from: gurus/{subdomain}/posts
+    // Build query for blog posts from: gurus/{subdomain}/posts
     // Backend stores posts at this exact path (see /backend/src/agents/curationAgents.js:1024)
-    const postsSnapshot = await db
+    let query = db
       .collection('gurus')
       .doc(subdomain)
       .collection('posts')
-      .orderBy('publishedAt', 'desc')
-      .limit(limitNum)
-      .get();
+      .orderBy('publishedAt', 'desc');
 
-    const posts = postsSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+    // Apply pagination: skip items for requested page
+    // For page 1: skip 0, for page 2: skip limitNum, etc.
+    const skipCount = (pageNum - 1) * limitNum;
+    
+    // Firestore doesn't have native skip/offset, so we need to fetch and skip
+    // For better performance with large datasets, consider cursor-based pagination
+    const allPostsSnapshot = await query.limit(skipCount + limitNum).get();
+    
+    // Skip the first (pageNum - 1) * limitNum documents
+    const posts = allPostsSnapshot.docs
+      .slice(skipCount)
+      .map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
 
     // Calculate total count for pagination (optional - can be expensive)
     // For now, we'll just return the posts without total count
