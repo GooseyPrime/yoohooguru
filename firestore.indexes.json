@@ -106,6 +106,14 @@
       ]
     },
     {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "heroGuruPrefs.provideFreeServices", "order": "ASCENDING" },
+        { "fieldPath": "heroGuruPrefs.visible", "order": "ASCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "posts",
       "queryScope": "COLLECTION",
       "fields": [
