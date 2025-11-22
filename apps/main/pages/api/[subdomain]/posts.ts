@@ -45,41 +45,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Build query for blog posts from: gurus/{subdomain}/posts
     // Backend stores posts at this exact path (see /backend/src/agents/curationAgents.js:1024)
-    let query = db
+    const query = db
       .collection('gurus')
       .doc(subdomain)
       .collection('posts')
       .orderBy('publishedAt', 'desc');
 
-    // Apply pagination
-    // Firestore doesn't have offset(), so we implement page-based pagination
-    // by fetching documents up to the requested page and using the last doc as cursor
-    if (pageNum > 1) {
-      // For page > 1, fetch documents up to the previous page to get cursor
-      const skipCount = (pageNum - 1) * limitNum;
-      const cursorSnapshot = await query.limit(skipCount).get();
-      
-      if (cursorSnapshot.docs.length > 0) {
-        // Use the last document as the cursor for startAfter
-        const lastDoc = cursorSnapshot.docs[cursorSnapshot.docs.length - 1];
-        query = query.startAfter(lastDoc);
-      }
-    }
+    // Fetch all posts (blog posts are limited - max ~10 per subdomain)
+    // For small datasets like blog posts, fetching all and slicing is more practical
+    // than implementing cursor-based pagination with page numbers
+    const allPostsSnapshot = await query.get();
     
-    // Fetch the actual page of results
-    const postsSnapshot = await query.limit(limitNum).get();
-    
-    const posts = postsSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+    // Apply pagination offset and limit
+    const startIndex = (pageNum - 1) * limitNum;
+    const endIndex = startIndex + limitNum;
+    const posts = allPostsSnapshot.docs
+      .slice(startIndex, endIndex)
+      .map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
 
-    // Return paginated results
+    // Return paginated results with total count
     return res.status(200).json({
       posts,
       page: pageNum,
       limit: limitNum,
-      count: posts.length
+      count: posts.length,
+      total: allPostsSnapshot.size
     });
   } catch (error) {
     console.error('Error fetching blog posts:', error);
