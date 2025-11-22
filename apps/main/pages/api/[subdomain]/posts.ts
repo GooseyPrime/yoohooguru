@@ -43,12 +43,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Initialize Firebase and get Firestore instance
     const db = getFirestore();
 
-    // Calculate offset for pagination
-    const offset = (pageNum - 1) * limitNum;
-
     // Fetch blog posts from: gurus/{subdomain}/posts
     // Backend stores posts at this exact path (see /backend/src/agents/curationAgents.js:1024)
-    const query = db
+    // Calculate offset for pagination: skip (pageNum - 1) * limitNum documents
+    const offset = (pageNum - 1) * limitNum;
+    
+    const postsSnapshot = await db
       .collection('gurus')
       .doc(subdomain)
       .collection('posts')
@@ -57,28 +57,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .limit(limitNum)
       .get();
 
-    // Fetch all posts (blog posts are limited - max ~10 per subdomain)
-    // For small datasets like blog posts, fetching all and slicing is more practical
-    // than implementing cursor-based pagination with page numbers
-    const allPostsSnapshot = await query.get();
-    
-    // Apply pagination offset and limit
-    const startIndex = (pageNum - 1) * limitNum;
-    const endIndex = startIndex + limitNum;
-    const posts = allPostsSnapshot.docs
-      .slice(startIndex, endIndex)
-      .map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+    const posts = postsSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
 
-    // Return paginated results with total count
+    // Calculate total count for pagination (optional - can be expensive)
+    // For now, we'll just return the posts without total count
     return res.status(200).json({
       posts,
       page: pageNum,
       limit: limitNum,
-      count: posts.length,
-      total: allPostsSnapshot.size
+      count: posts.length
     });
   } catch (error) {
     console.error('Error fetching blog posts:', error);
