@@ -43,13 +43,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Initialize Firebase and get Firestore instance
     const db = getFirestore();
 
-    // Build query for blog posts from: gurus/{subdomain}/posts
+    // Calculate offset for pagination
+    const offset = (pageNum - 1) * limitNum;
+
+    // Fetch blog posts from: gurus/{subdomain}/posts
     // Backend stores posts at this exact path (see /backend/src/agents/curationAgents.js:1024)
     const query = db
       .collection('gurus')
       .doc(subdomain)
       .collection('posts')
-      .orderBy('publishedAt', 'desc');
+      .orderBy('publishedAt', 'desc')
+      .offset(offset)
+      .limit(limitNum)
+      .get();
 
     // Fetch all posts (blog posts are limited - max ~10 per subdomain)
     // For small datasets like blog posts, fetching all and slicing is more practical
