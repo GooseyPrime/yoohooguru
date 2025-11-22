@@ -43,6 +43,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Initialize Firebase and get Firestore instance
     const db = getFirestore();
 
+    // Calculate offset for pagination
+    const offset = (pageNum - 1) * limitNum;
+
     // Fetch blog posts from: gurus/{subdomain}/posts
     // Backend stores posts at this exact path (see /backend/src/agents/curationAgents.js:1024)
     const postsSnapshot = await db
@@ -50,6 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .doc(subdomain)
       .collection('posts')
       .orderBy('publishedAt', 'desc')
+      .offset(offset)
       .limit(limitNum)
       .get();
 
