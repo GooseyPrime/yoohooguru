@@ -66,7 +66,8 @@ describe('Main App Trust Proxy Integration', () => {
     const indexContent = fs.readFileSync(indexPath, 'utf8');
     
     // Verify that trust proxy is configured with environment-aware settings
-    expect(indexContent).toContain("app.set('trust proxy', true)");
+    // Production/staging uses app.set('trust proxy', 1) while dev/test uses false
+    expect(indexContent).toMatch(/app\.set\('trust proxy', (1|false)\)/);
     expect(indexContent).toContain("config.nodeEnv === 'production'");
   });
 
