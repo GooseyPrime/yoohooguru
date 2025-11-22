@@ -12,12 +12,13 @@ const initializeFirebase = () => {
     if (!admin.apps.length) {
       // In CI/CD or environments where credentials are provided as discrete variables,
       // we must construct the service account object manually.
+      const rawKey = process.env.FIREBASE_PRIVATE_KEY || '';
       const serviceAccount = {
         projectId: process.env.FIREBASE_PROJECT_ID,
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        // This is the critical fix for CI environments. It correctly formats the
-        // private key by replacing escaped newlines with actual newlines.
-        privateKey: (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
+        // Normalize privateKey: if already has newlines use as-is, else replace literal '\n'
+        // This correctly formats the key for all environment types (CI, Vercel, Railway, etc.)
+        privateKey: rawKey.includes('\n') ? rawKey : rawKey.replace(/\\n/g, '\n'),
       };
 
       const firebaseConfig = {
