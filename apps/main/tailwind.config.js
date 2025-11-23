@@ -8,43 +8,55 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Enhanced Orbitron Theme Colors - Dark Indigo + Hunter Green blend
-        primarydark: '#1e2749',     // Dark indigo
-        secondarydark: '#2C5530',   // Hunter green dark
-        tertiarydark: '#2d3561',    // Medium dark indigo
+        // Professional Dual-Gradient System
+        primarydark: '#0e0e2e',     // Base page background
+        secondarydark: '#020024',   // Gradient dark base
+        tertiarydark: '#050518',    // Card dark base
 
-        // Accent Colors - Dark Indigo + Hunter Green Palette
+        // Gradient Endpoint Accents
+        'accent-main': '#188718',   // Green endpoint (grad-a)
+        'accent-alt': '#875018',    // Orange endpoint (grad-b)
+
+        // Gradient Colors
+        'grad-a-start': '#020024',
+        'grad-a-mid': '#090979',
+        'grad-a-end': '#188718',
+        'grad-b-start': '#020024',
+        'grad-b-mid': '#79096e',
+        'grad-b-end': '#875018',
+
+        // Extended palette for flexibility
         indigo: {
           50: '#e0e7ff',
           400: '#6366f1',
-          500: '#3d3d6b',
-          600: '#2d3561',
-          700: '#1e2749',
+          500: '#090979',
+          600: '#020024',
+          700: '#0e0e2e',
         },
         emerald: {
           50: '#d1fae5',
           400: '#34d399',
-          500: '#355E3B',
-          600: '#2C5530',
-          700: '#1e3a20',
+          500: '#188718',
+          600: '#10b981',
+          700: '#065f46',
         },
         blue: {
           50: '#dbeafe',
           400: '#60a5fa',
-          500: '#3b82f6', 
+          500: '#3b82f6',
           600: '#2563eb',
           700: '#1d4ed8',
         },
         purple: {
           50: '#ede9fe',
           400: '#a78bfa',
-          500: '#8b5cf6',
+          500: '#79096e',
           600: '#7c3aed',
         },
         orange: {
           50: '#fed7aa',
           400: '#fb923c',
-          500: '#f97316',
+          500: '#875018',
           600: '#ea580c',
         },
         
@@ -80,17 +92,28 @@ module.exports = {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        
-        // Enhanced gradients - Dark Indigo + Hunter Green
-        'orbitron-primary': 'linear-gradient(135deg, #1e2749 0%, #2d3561 50%, #2C5530 100%)',
-        'orbitron-secondary': 'linear-gradient(135deg, #2C5530 0%, #2d3561 50%, #1e2749 100%)',
-        'orbitron-hero': 'linear-gradient(to right, var(--tw-gradient-stops))',
-        'gradient-subtle': 'linear-gradient(135deg, rgba(53, 94, 59, 0.1) 0%, rgba(61, 61, 107, 0.1) 100%)',
-        'gradient-strong': 'linear-gradient(135deg, rgba(53, 94, 59, 0.2) 0%, rgba(61, 61, 107, 0.2) 100%)',
-        'gradient-emerald': 'linear-gradient(135deg, #355E3B 0%, #2C5530 100%)',
-        'gradient-indigo': 'linear-gradient(135deg, #3d3d6b 0%, #2d3561 100%)',
+
+        // Professional Dual-Gradient System
+        'grad-a': 'linear-gradient(157deg, #020024 0%, #090979 56%, #188718 100%)',
+        'grad-b': 'linear-gradient(207deg, #020024 0%, #79096e 56%, #875018 100%)',
+
+        // Utility gradients
+        'gradient-primary': 'var(--grad-a)',
+        'gradient-secondary': 'var(--grad-b)',
+        'gradient-accent': 'linear-gradient(135deg, #188718 0%, #875018 100%)',
+
+        // Subtle overlay gradients
+        'gradient-subtle-a': 'linear-gradient(135deg, rgba(24, 135, 24, 0.1) 0%, rgba(9, 9, 121, 0.1) 100%)',
+        'gradient-subtle-b': 'linear-gradient(135deg, rgba(135, 80, 24, 0.1) 0%, rgba(121, 9, 110, 0.1) 100%)',
+        'gradient-strong-a': 'linear-gradient(135deg, rgba(24, 135, 24, 0.2) 0%, rgba(9, 9, 121, 0.2) 100%)',
+        'gradient-strong-b': 'linear-gradient(135deg, rgba(135, 80, 24, 0.2) 0%, rgba(121, 9, 110, 0.2) 100%)',
+
+        // Legacy support
+        'orbitron-primary': 'var(--grad-a)',
+        'orbitron-secondary': 'var(--grad-b)',
+        'gradient-emerald': 'linear-gradient(135deg, #188718 0%, #10b981 100%)',
+        'gradient-indigo': 'linear-gradient(135deg, #090979 0%, #79096e 100%)',
         'gradient-purple': 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
-        'gradient-text': 'linear-gradient(135deg, #355E3B 0%, #3d3d6b 100%)',
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',
