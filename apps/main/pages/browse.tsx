@@ -5,6 +5,13 @@ import Seo from '../components/Seo';
 import Link from 'next/link';
 import Navigation from '../components/ui/Navigation';
 import { ExpertCard } from '../components/ui/Card';
+import dynamic from 'next/dynamic';
+
+// Dynamically import map to avoid SSR issues with Leaflet
+const InteractiveMap = dynamic(() => import('../components/location/InteractiveMap'), {
+  ssr: false,
+  loading: () => <div className="w-full h-[600px] bg-primarydark/50 rounded-xl flex items-center justify-center"><div className="text-white-60">Loading map...</div></div>
+});
 
 // This page will be the main "Browse Gurus" page
 // We'll fetch real guru data from the API in a future iteration
@@ -218,6 +225,7 @@ export default function BrowseGurus() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedPriceRange, setSelectedPriceRange] = useState('');
   const [filteredGurus, setFilteredGurus] = useState<Guru[]>(MOCK_GURUS);
+  const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
 
   useEffect(() => {
     let filtered = MOCK_GURUS;
@@ -334,9 +342,41 @@ export default function BrowseGurus() {
                   </div>
                 </div>
 
-                {/* Results Count */}
-                <div className="mt-4 text-center text-white-60">
-                  {filteredGurus.length} guru{filteredGurus.length !== 1 ? 's' : ''} found
+                {/* Results Count & View Toggle */}
+                <div className="mt-4 flex items-center justify-between">
+                  <div className="text-white-60">
+                    {filteredGurus.length} guru{filteredGurus.length !== 1 ? 's' : ''} found
+                  </div>
+
+                  {/* View Mode Toggle */}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setViewMode('list')}
+                      className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                        viewMode === 'list'
+                          ? 'bg-accent-main text-primarydark'
+                          : 'bg-white-10 text-white-60 hover:bg-white-20'
+                      }`}
+                    >
+                      <svg className="w-5 h-5 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                      </svg>
+                      List
+                    </button>
+                    <button
+                      onClick={() => setViewMode('map')}
+                      className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                        viewMode === 'map'
+                          ? 'bg-accent-main text-primarydark'
+                          : 'bg-white-10 text-white-60 hover:bg-white-20'
+                      }`}
+                    >
+                      <svg className="w-5 h-5 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                      </svg>
+                      Map
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -368,17 +408,40 @@ export default function BrowseGurus() {
               </div>
             )}
 
-            {/* Guru Grid */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredGurus.map((guru) => (
-                <div key={guru.id} className="animate-fade-in-up">
-                  <ExpertCard
-                    {...guru}
-                    href={`/guru/${guru.id}/book-session`}
-                  />
-                </div>
-              ))}
-            </div>
+            {/* Guru Grid or Map View */}
+            {viewMode === 'list' ? (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredGurus.map((guru) => (
+                  <div key={guru.id} className="animate-fade-in-up">
+                    <ExpertCard
+                      {...guru}
+                      href={`/guru/${guru.id}/book-session`}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="max-w-7xl mx-auto">
+                <InteractiveMap
+                  markers={filteredGurus
+                    .filter(guru => guru.location)
+                    .map(guru => ({
+                      id: guru.id,
+                      lat: guru.location!.lat,
+                      lng: guru.location!.lng,
+                      name: guru.name,
+                      type: 'guru' as const,
+                      title: guru.title,
+                      price: guru.hourlyRate,
+                      rating: guru.rating,
+                      category: guru.category,
+                      href: `/guru/${guru.id}/book-session`
+                    }))}
+                  showControls={true}
+                  filterTypes={['guru']}
+                />
+              </div>
+            )}
 
             {/* No Results */}
             {filteredGurus.length === 0 && (
