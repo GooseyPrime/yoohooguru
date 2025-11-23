@@ -22,6 +22,12 @@ interface Guru {
   category: string;
   image?: string;
   availability?: 'available' | 'busy' | 'offline';
+  location?: {
+    lat: number;
+    lng: number;
+    city: string;
+    state: string;
+  };
 }
 
 const MOCK_GURUS: Guru[] = [
@@ -35,7 +41,8 @@ const MOCK_GURUS: Guru[] = [
     hourlyRate: 75,
     skills: ['React', 'Node.js', 'AWS', 'TypeScript', 'Next.js'],
     category: 'coding',
-    availability: 'available'
+    availability: 'available',
+    location: { lat: 37.7749, lng: -122.4194, city: 'San Francisco', state: 'CA' }
   },
   {
     id: '2',
@@ -47,7 +54,8 @@ const MOCK_GURUS: Guru[] = [
     hourlyRate: 60,
     skills: ['SEO', 'Content Marketing', 'Analytics', 'Social Media'],
     category: 'marketing',
-    availability: 'available'
+    availability: 'available',
+    location: { lat: 40.7128, lng: -74.0060, city: 'New York', state: 'NY' }
   },
   {
     id: '3',
@@ -59,7 +67,8 @@ const MOCK_GURUS: Guru[] = [
     hourlyRate: 55,
     skills: ['UI/UX', 'Brand Design', 'Illustration', 'Figma', 'Prototyping'],
     category: 'design',
-    availability: 'available'
+    availability: 'available',
+    location: { lat: 34.0522, lng: -118.2437, city: 'Los Angeles', state: 'CA' }
   },
   {
     id: '4',
@@ -71,7 +80,8 @@ const MOCK_GURUS: Guru[] = [
     hourlyRate: 90,
     skills: ['Python', 'Machine Learning', 'Data Analysis', 'TensorFlow', 'Statistics'],
     category: 'data',
-    availability: 'busy'
+    availability: 'busy',
+    location: { lat: 42.3601, lng: -71.0589, city: 'Boston', state: 'MA' }
   },
   {
     id: '5',
@@ -83,7 +93,8 @@ const MOCK_GURUS: Guru[] = [
     hourlyRate: 60,
     skills: ['Italian Cooking', 'Pasta Making', 'Baking', 'Wine Pairing'],
     category: 'cooking',
-    availability: 'available'
+    availability: 'available',
+    location: { lat: 41.8781, lng: -87.6298, city: 'Chicago', state: 'IL' }
   },
   {
     id: '6',
@@ -95,7 +106,8 @@ const MOCK_GURUS: Guru[] = [
     hourlyRate: 65,
     skills: ['Budgeting', 'Investing', 'Retirement Planning', 'Tax Strategy'],
     category: 'finance',
-    availability: 'available'
+    availability: 'available',
+    location: { lat: 47.6062, lng: -122.3321, city: 'Seattle', state: 'WA' }
   },
   {
     id: '7',
@@ -107,7 +119,8 @@ const MOCK_GURUS: Guru[] = [
     hourlyRate: 45,
     skills: ['Yoga', 'Meditation', 'Mindfulness', 'Breathing Techniques'],
     category: 'fitness',
-    availability: 'available'
+    availability: 'available',
+    location: { lat: 30.2672, lng: -97.7431, city: 'Austin', state: 'TX' }
   },
   {
     id: '8',
@@ -119,7 +132,8 @@ const MOCK_GURUS: Guru[] = [
     hourlyRate: 100,
     skills: ['Strategy', 'Business Planning', 'Market Analysis', 'Startups'],
     category: 'business',
-    availability: 'busy'
+    availability: 'busy',
+    location: { lat: 33.4484, lng: -112.0740, city: 'Phoenix', state: 'AZ' }
   },
   {
     id: '9',
@@ -131,7 +145,8 @@ const MOCK_GURUS: Guru[] = [
     hourlyRate: 40,
     skills: ['French', 'Conversation', 'Grammar', 'Culture', 'DELF Prep'],
     category: 'language',
-    availability: 'available'
+    availability: 'available',
+    location: { lat: 38.9072, lng: -77.0369, city: 'Washington', state: 'DC' }
   },
   {
     id: '10',
@@ -143,7 +158,8 @@ const MOCK_GURUS: Guru[] = [
     hourlyRate: 55,
     skills: ['Portrait Photography', 'Lightroom', 'Composition', 'Lighting'],
     category: 'photography',
-    availability: 'available'
+    availability: 'available',
+    location: { lat: 39.7392, lng: -104.9903, city: 'Denver', state: 'CO' }
   },
   {
     id: '11',
@@ -155,7 +171,8 @@ const MOCK_GURUS: Guru[] = [
     hourlyRate: 80,
     skills: ['Product Strategy', 'Agile', 'User Research', 'Roadmapping'],
     category: 'tech',
-    availability: 'available'
+    availability: 'available',
+    location: { lat: 37.3382, lng: -121.8863, city: 'San Jose', state: 'CA' }
   },
   {
     id: '12',
@@ -167,7 +184,8 @@ const MOCK_GURUS: Guru[] = [
     hourlyRate: 50,
     skills: ['Guitar', 'Music Theory', 'Songwriting', 'Performance'],
     category: 'music',
-    availability: 'available'
+    availability: 'available',
+    location: { lat: 25.7617, lng: -80.1918, city: 'Miami', state: 'FL' }
   }
 ];
 
