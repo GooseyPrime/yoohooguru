@@ -1,12 +1,34 @@
 import { GetServerSideProps } from 'next';
-import { getSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 // import { useRouter } from 'next/router'; // Unused import
 import Seo from '../components/Seo';
 import Navigation from '../components/ui/Navigation';
 import ProfileManager from '../components/profile/ProfileManager';
+import AIProfileAssistant from '../components/ai/AIProfileAssistant';
 
 export default function Profile() {
   // const router = useRouter(); // Unused variable
+  const { data: session } = useSession();
+
+  // Mock profile data - in real implementation, fetch from backend
+  const currentProfile = session?.user ? {
+    name: session.user.name || '',
+    email: session.user.email || '',
+    bio: '',
+    skills: [],
+    experience: '',
+    hourlyRate: 0
+  } : {
+    name: '',
+    email: '',
+    bio: '',
+    skills: [],
+    experience: '',
+    hourlyRate: 0
+  };
+
+  // Determine user type from role (default to 'gunu' for learners)
+  const userType = (session?.user?.role || 'gunu') as 'guru' | 'gunu' | 'angel' | 'hero';
 
   return (
     <>
@@ -30,6 +52,11 @@ export default function Profile() {
           </div>
 
           <ProfileManager />
+
+          {/* AI Profile Assistant */}
+          <div className="mt-12">
+            <AIProfileAssistant userType={userType} currentProfile={currentProfile} />
+          </div>
         </div>
       </main>
     </>

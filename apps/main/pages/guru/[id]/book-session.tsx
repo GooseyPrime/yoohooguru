@@ -5,6 +5,7 @@ import { Header, Footer } from '@yoohooguru/shared';
 import Head from 'next/head';
 import styled from 'styled-components';
 import SessionBooking from '../../../components/sessions/SessionBooking';
+import BookingAssistant from '../../../components/ai/BookingAssistant';
 import { isValidId } from '../../../lib/validators';
 
 const Container = styled.div`
@@ -88,7 +89,14 @@ export default function BookSession() {
           onBookingSuccess={handleBookingSuccess}
         />
       </Main>
-      
+
+      {/* AI Booking Assistant */}
+      <BookingAssistant
+        guruName={guruData.name}
+        skill={guruData.skill}
+        price={guruData.price}
+      />
+
       <Footer />
     </Container>
   );

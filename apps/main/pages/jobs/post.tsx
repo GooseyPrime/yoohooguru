@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import Navigation from '../../components/ui/Navigation';
+import AIJobHelper from '../../components/ai/AIJobHelper';
 import Head from 'next/head';
 
 export default function PostJob() {
@@ -278,6 +279,11 @@ export default function PostJob() {
               </button>
             </div>
           </form>
+        </div>
+
+        {/* AI Job Helper */}
+        <div className="mt-12">
+          <AIJobHelper />
         </div>
 
         {/* Info Section */}
