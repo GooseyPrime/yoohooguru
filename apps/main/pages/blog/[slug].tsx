@@ -54,9 +54,17 @@ export default function BlogPost() {
         setLoading(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.yoohoo.guru';
 
+        // Sanitize and validate slug immediately before use (defense in depth)
+        const slugPattern = /^[A-Za-z0-9\-_]+$/;
+        const slugStr = typeof slug === 'string' ? slug : '';
+        if (!slugPattern.test(slugStr)) {
+          throw new Error('Invalid slug format');
+        }
+        const safeSlug = slugStr;
+
         // For main blog, we'll try to fetch from a general blog collection
         // This is a placeholder - you may need to adjust based on your API structure
-        const response = await fetch(`${apiUrl}/api/blog/posts/${slug}`);
+        const response = await fetch(`${apiUrl}/api/blog/posts/${safeSlug}`);
 
         if (!response.ok) {
           throw new Error('Post not found');
