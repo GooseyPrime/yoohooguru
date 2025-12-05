@@ -9,6 +9,7 @@ import { ServiceCard, ExpertCard } from '../components/ui/Card';
 import { TestimonialCarousel } from '../components/ui/TestimonialCard';
 import { ContentHubCarousel } from '../components/ui/ContentHubCarousel';
 import HomepageAssistant from '../components/HomepageAssistant';
+import MapSection from '../components/location/MapSection';
 
 export default function Home() {
   // Service data
@@ -126,6 +127,16 @@ export default function Home() {
       <main className="min-h-screen">
         {/* Hero Section */}
         <HeroSection />
+
+        {/* Searchable Map Section - Front and Center */}
+        <MapSection
+          title="Find Experts & Opportunities Near You"
+          subtitle="Search for skilled professionals and available gigs in your area. Use the interactive map to discover talent within your preferred radius."
+          mapType="all"
+          height="550px"
+          showFilters={true}
+          className="bg-gradient-to-b from-primarydark/30 to-transparent"
+        />
 
         {/* Services Section */}
         <section id="explore" className="section-padding bg-gradient-to-b from-transparent to-primarydark/50">

@@ -5,6 +5,7 @@ import HeroSection from '../../../components/sections/HeroSection';
 import { ServiceCard } from '../../../components/ui/Card';
 import { TestimonialCarousel } from '../../../components/ui/TestimonialCard';
 import Button from '../../../components/ui/Button';
+import MapSection from '../../../components/location/MapSection';
 
 export default function AngelList() {
   // Featured services
@@ -186,9 +187,19 @@ export default function AngelList() {
 
       <div className="min-h-screen bg-orbitron-primary">
         <Navigation />
-        
+
         {/* Hero Section */}
         <HeroSection />
+
+        {/* Find Local Gigs Map Section */}
+        <MapSection
+          title="Find Local Gigs & Services"
+          subtitle="Discover available jobs and service opportunities in your area. Filter by category, urgency, and distance to find the perfect match."
+          mapType="gigs"
+          height="500px"
+          showFilters={true}
+          className="py-8"
+        />
 
         {/* Trust Indicators */}
         <section className="py-12 bg-gradient-to-b from-transparent to-secondarydark/30">
