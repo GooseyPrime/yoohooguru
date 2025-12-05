@@ -50,7 +50,13 @@ export default function BlogPost() {
     if (!mounted || !slug) return;
 
     // Validate slug to prevent SSRF/path traversal
-    if (!isValidSlug(slug)) {
+    // Only allow slugs that are alphanumeric/dash, no dots, slashes, etc.
+    const SLUG_REGEX = /^[a-zA-Z0-9-]+$/;
+    if (
+      typeof slug !== "string" ||
+      !isValidSlug(slug) ||
+      !SLUG_REGEX.test(slug)
+    ) {
       setError('Invalid blog post identifier');
       setLoading(false);
       return;
@@ -60,6 +66,7 @@ export default function BlogPost() {
       try {
         setLoading(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.yoohoo.guru';
+        // Safe to use slug in outgoing URL only after strict validation
         const response = await fetch(`${apiUrl}/api/gurus/${subdomain}/posts/${slug}`);
 
         if (!response.ok) {

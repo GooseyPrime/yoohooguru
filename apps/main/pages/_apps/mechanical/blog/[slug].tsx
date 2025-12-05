@@ -60,7 +60,16 @@ export default function BlogPost() {
       try {
         setLoading(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.yoohoo.guru';
-        const response = await fetch(`${apiUrl}/api/gurus/${subdomain}/posts/${slug}`);
+        
+        // Sanitize and validate slug immediately before use (defense in depth)
+        const slugPattern = /^[A-Za-z0-9\-_]+$/;
+        const slugStr = typeof slug === 'string' ? slug : '';
+        if (!slugPattern.test(slugStr)) {
+          throw new Error('Invalid slug format');
+        }
+        const safeSlug = slugStr;
+        
+        const response = await fetch(`${apiUrl}/api/gurus/${subdomain}/posts/${safeSlug}`);
 
         if (!response.ok) {
           throw new Error('Post not found');
