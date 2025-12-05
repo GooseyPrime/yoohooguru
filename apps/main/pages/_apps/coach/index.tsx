@@ -5,6 +5,7 @@ import HeroSection from '../../../components/sections/HeroSection';
 import { ExpertCard } from '../../../components/ui/Card';
 import { TestimonialCarousel } from '../../../components/ui/TestimonialCard';
 import Button from '../../../components/ui/Button';
+import MapSection from '../../../components/location/MapSection';
 
 export default function CoachGuru() {
   // Featured experts
@@ -158,9 +159,19 @@ export default function CoachGuru() {
 
       <div className="min-h-screen bg-orbitron-primary">
         <Navigation />
-        
+
         {/* Hero Section */}
         <HeroSection />
+
+        {/* Find Expert Gurus Map Section */}
+        <MapSection
+          title="Find Expert Gurus Near You"
+          subtitle="Discover skilled coaches and mentors in your area. Book personalized 1-on-1 sessions with verified professionals."
+          mapType="gurus"
+          height="500px"
+          showFilters={true}
+          className="py-8"
+        />
 
         {/* Trust Indicators */}
         <section className="py-12 bg-gradient-to-b from-transparent to-secondarydark/30">
