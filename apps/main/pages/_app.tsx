@@ -7,6 +7,7 @@ import CookieConsent from '../components/CookieConsent'
 import DevelopmentBanner from '../components/DevelopmentBanner'
 import ErrorBoundary from '../components/ErrorBoundary'
 import SkipToContent from '../components/SkipToContent'
+import ContextNavigator from '../components/ContextNavigator'
 import '../styles/globals.css'
 import '../styles/accessibility.css'
 
@@ -22,6 +23,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
         <DevelopmentBanner />
         <SkipToContent />
         <Component {...pageProps} />
+        <ContextNavigator />
         <AnalyticsPageTracker />
         <Analytics />
         <SpeedInsights />
