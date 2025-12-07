@@ -98,7 +98,8 @@ export default function SearchableMap({
     const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
     if (!apiKey) {
-      setError('Google Maps API key is not configured');
+      console.error('Google Maps API key is missing. Please set NEXT_PUBLIC_GOOGLE_MAPS_API_KEY in your environment variables.');
+      setError('Google Maps API key is not configured. Please contact support or check back later.');
       return;
     }
 
@@ -114,7 +115,7 @@ export default function SearchableMap({
       })
       .catch((err) => {
         console.error('Failed to load Google Maps:', err);
-        setError('Failed to load Google Maps');
+        setError('Failed to load Google Maps. Please try again later.');
       });
   }, []);
 
