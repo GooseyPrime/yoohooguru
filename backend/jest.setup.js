@@ -26,11 +26,21 @@ process.env.CORS_ORIGIN_PRODUCTION = process.env.CORS_ORIGIN_PRODUCTION || 'http
 
 // Mock firebase-admin before it's imported by other modules
 jest.mock('firebase-admin', () => {
+  // Create in-memory storage for mock Firestore
+  const mockCollections = {};
+  
   const mockAuth = {
-    verifyIdToken: jest.fn().mockResolvedValue({
-      uid: 'test-user-123',
-      email: 'test@example.com',
-      role: 'user'
+    verifyIdToken: jest.fn().mockImplementation((token) => {
+      // Simulate Firebase Auth behavior: reject invalid tokens
+      if (!token || token === 'invalid-token' || token.startsWith('invalid-')) {
+        return Promise.reject(new Error('Invalid token'));
+      }
+      return Promise.resolve({
+        uid: 'test-user-123',
+        email: 'test@example.com',
+        email_verified: true,
+        role: 'user'
+      });
     }),
     createUser: jest.fn().mockImplementation((properties) => Promise.resolve({
       uid: 'test-user-' + Date.now(),
@@ -45,29 +55,132 @@ jest.mock('firebase-admin', () => {
     updateUser: jest.fn().mockResolvedValue({ uid: 'test-user-123' })
   };
 
-  const mockFirestore = {
-    collection: jest.fn().mockReturnValue({
-      doc: jest.fn().mockReturnValue({
-        get: jest.fn().mockResolvedValue({ exists: false, data: () => null }),
-        set: jest.fn().mockResolvedValue(undefined),
-        update: jest.fn().mockResolvedValue(undefined),
-        delete: jest.fn().mockResolvedValue(undefined)
+  const createMockDocRef = (collectionName, docId) => {
+    const ref = {
+      id: docId,
+      path: `${collectionName}/${docId}`,
+      _collectionName: collectionName,
+      _docId: docId,
+      toString: () => `${collectionName}/${docId}`
+    };
+    
+    return {
+      id: docId,
+      ref,
+      get: jest.fn().mockImplementation(() => {
+        const collection = mockCollections[collectionName] || {};
+        const docData = collection[docId];
+        return Promise.resolve({
+          exists: !!docData,
+          id: docId,
+          ref,
+          data: () => docData || null
+        });
       }),
-      get: jest.fn().mockResolvedValue({ docs: [] }),
-      add: jest.fn().mockResolvedValue({ id: 'test-doc-id-' + Date.now() }),
-      where: jest.fn().mockReturnThis(),
-      orderBy: jest.fn().mockReturnThis(),
-      limit: jest.fn().mockReturnThis()
+      set: jest.fn().mockImplementation((data) => {
+        if (!mockCollections[collectionName]) {
+          mockCollections[collectionName] = {};
+        }
+        mockCollections[collectionName][docId] = { ...data, id: docId };
+        return Promise.resolve(undefined);
+      }),
+      update: jest.fn().mockImplementation((data) => {
+        if (!mockCollections[collectionName]) {
+          mockCollections[collectionName] = {};
+        }
+        if (mockCollections[collectionName][docId]) {
+          mockCollections[collectionName][docId] = {
+            ...mockCollections[collectionName][docId],
+            ...data
+          };
+        }
+        return Promise.resolve(undefined);
+      }),
+      delete: jest.fn().mockImplementation(() => {
+        if (mockCollections[collectionName] && mockCollections[collectionName][docId]) {
+          delete mockCollections[collectionName][docId];
+        }
+        return Promise.resolve(undefined);
+      }),
+      // Support subcollections
+      collection: jest.fn().mockImplementation((subCollectionName) => {
+        const subCollectionPath = `${collectionName}/${docId}/${subCollectionName}`;
+        return createMockCollectionRef(subCollectionPath);
+      })
+    };
+  };
+
+  const createMockCollectionRef = (collectionName) => ({
+    doc: jest.fn().mockImplementation((docId) => createMockDocRef(collectionName, docId)),
+    get: jest.fn().mockImplementation(() => {
+      const collection = mockCollections[collectionName] || {};
+      const docs = Object.values(collection).map(data => {
+        const docRef = createMockDocRef(collectionName, data.id);
+        return {
+          id: data.id,
+          ref: docRef.ref,
+          data: () => data,
+          exists: true
+        };
+      });
+      return Promise.resolve({
+        docs,
+        forEach: (callback) => {
+          docs.forEach(callback);
+        },
+        empty: docs.length === 0,
+        size: docs.length
+      });
     }),
-    batch: jest.fn().mockReturnValue({
-      set: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      commit: jest.fn().mockResolvedValue(undefined)
+    add: jest.fn().mockImplementation((data) => {
+      const docId = 'test-doc-id-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+      if (!mockCollections[collectionName]) {
+        mockCollections[collectionName] = {};
+      }
+      mockCollections[collectionName][docId] = { ...data, id: docId };
+      return Promise.resolve({ id: docId });
     }),
-    Timestamp: {
-      now: () => ({ seconds: Math.floor(Date.now() / 1000), nanoseconds: 0 }),
-      fromDate: (date) => ({ seconds: Math.floor(date.getTime() / 1000), nanoseconds: 0 })
+    where: jest.fn().mockReturnThis(),
+    orderBy: jest.fn().mockReturnThis(),
+    limit: jest.fn().mockReturnThis()
+  });
+
+  const mockFirestore = {
+    collection: jest.fn().mockImplementation((name) => createMockCollectionRef(name)),
+    batch: jest.fn().mockImplementation(() => {
+      const operations = [];
+      return {
+        set: jest.fn((docRef, data) => {
+          operations.push({ type: 'set', docRef, data });
+        }),
+        update: jest.fn((docRef, data) => {
+          operations.push({ type: 'update', docRef, data });
+        }),
+        delete: jest.fn((docRef) => {
+          operations.push({ type: 'delete', docRef });
+        }),
+        commit: jest.fn().mockImplementation(() => {
+          // Execute all batched operations
+          operations.forEach(op => {
+            if (op.type === 'delete' && op.docRef) {
+              // Handle both doc.ref and direct docRef
+              const ref = op.docRef.ref || op.docRef;
+              if (ref && ref._collectionName && ref._docId) {
+                const collectionName = ref._collectionName;
+                const docId = ref._docId;
+                if (mockCollections[collectionName] && mockCollections[collectionName][docId]) {
+                  delete mockCollections[collectionName][docId];
+                }
+              }
+            }
+          });
+          return Promise.resolve(undefined);
+        })
+      };
+    }),
+    // Expose collections for clearing in tests
+    _clearCollections: () => {
+      Object.keys(mockCollections).forEach(key => delete mockCollections[key]);
     }
   };
 
@@ -76,7 +189,22 @@ jest.mock('firebase-admin', () => {
     initializeApp: jest.fn().mockReturnValue({ name: '[DEFAULT]' }),
     app: jest.fn().mockReturnValue({ name: '[DEFAULT]' }),
     auth: jest.fn().mockReturnValue(mockAuth),
-    firestore: jest.fn().mockReturnValue(mockFirestore),
+    firestore: Object.assign(
+      jest.fn().mockReturnValue(mockFirestore),
+      {
+        FieldValue: {
+          increment: (n) => ({ _increment: n }),
+          serverTimestamp: () => ({ _serverTimestamp: true }),
+          delete: () => ({ _delete: true }),
+          arrayUnion: (...elements) => ({ _arrayUnion: elements }),
+          arrayRemove: (...elements) => ({ _arrayRemove: elements })
+        },
+        Timestamp: {
+          now: () => ({ seconds: Math.floor(Date.now() / 1000), nanoseconds: 0 }),
+          fromDate: (date) => ({ seconds: Math.floor(date.getTime() / 1000), nanoseconds: 0 })
+        }
+      }
+    ),
     credential: {
       cert: jest.fn().mockReturnValue({})
     }

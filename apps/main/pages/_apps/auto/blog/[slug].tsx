@@ -60,6 +60,7 @@ export default function BlogPost() {
     if (
       typeof slug !== "string" ||
       !isValidSlug(slug)
+    ) {
       setError('Invalid blog post identifier');
       setLoading(false);
       return;
