@@ -90,7 +90,8 @@ Guidelines:
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       console.error('OpenRouter API error:', response.status, errorData);
-      throw new Error('OpenRouter API request failed');
+      const errorMessage = errorData.error?.message || errorData.message || 'Unknown error';
+      throw new Error(`OpenRouter API request failed (${response.status}): ${errorMessage}`);
     }
 
     const data = await response.json();

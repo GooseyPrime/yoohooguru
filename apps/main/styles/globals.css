@@ -369,3 +369,10 @@ h1, h2, h3, h4, h5, h6 {
     border: 1px solid #e5e7eb;
   }
 }
+
+/* Custom utility for vertical text in ContextNavigator */
+.vertical-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+}

@@ -159,7 +159,7 @@ export default function ContextNavigator() {
             <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
-            <span className="text-xs font-semibold writing-mode-vertical transform rotate-180">HELP</span>
+            <span className="text-xs font-semibold vertical-text">HELP</span>
           </div>
         </button>
       )}
@@ -192,7 +192,7 @@ export default function ContextNavigator() {
           </div>
 
           {/* ZONE 1: Quick-Route Actions (Top 40%) */}
-          <div className="p-4 border-b border-white/10 bg-gradient-to-b from-blue-900/10 to-transparent" style={{ height: '40%', overflowY: 'auto' }}>
+          <div className="p-4 border-b border-white/10 bg-gradient-to-b from-blue-900/10 to-transparent h-2/5 overflow-y-auto">
             <h4 className="text-white/80 text-xs font-semibold uppercase tracking-wide mb-3 flex items-center">
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -231,7 +231,7 @@ export default function ContextNavigator() {
           </div>
 
           {/* ZONE 2: Contextual AI Chat (Bottom 60%) */}
-          <div className="flex-1 flex flex-col" style={{ height: '60%' }}>
+          <div className="flex-1 flex flex-col h-3/5">
             {/* Chat Header */}
             <div className="px-4 py-3 border-b border-white/10">
               <h4 className="text-white/80 text-xs font-semibold uppercase tracking-wide flex items-center">
