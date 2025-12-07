@@ -101,6 +101,11 @@ jest.mock('firebase-admin', () => {
           delete mockCollections[collectionName][docId];
         }
         return Promise.resolve(undefined);
+      }),
+      // Support subcollections
+      collection: jest.fn().mockImplementation((subCollectionName) => {
+        const subCollectionPath = `${collectionName}/${docId}/${subCollectionName}`;
+        return createMockCollectionRef(subCollectionPath);
       })
     };
   };
@@ -173,10 +178,6 @@ jest.mock('firebase-admin', () => {
         })
       };
     }),
-    Timestamp: {
-      now: () => ({ seconds: Math.floor(Date.now() / 1000), nanoseconds: 0 }),
-      fromDate: (date) => ({ seconds: Math.floor(date.getTime() / 1000), nanoseconds: 0 })
-    },
     // Expose collections for clearing in tests
     _clearCollections: () => {
       Object.keys(mockCollections).forEach(key => delete mockCollections[key]);
@@ -188,7 +189,22 @@ jest.mock('firebase-admin', () => {
     initializeApp: jest.fn().mockReturnValue({ name: '[DEFAULT]' }),
     app: jest.fn().mockReturnValue({ name: '[DEFAULT]' }),
     auth: jest.fn().mockReturnValue(mockAuth),
-    firestore: jest.fn().mockReturnValue(mockFirestore),
+    firestore: Object.assign(
+      jest.fn().mockReturnValue(mockFirestore),
+      {
+        FieldValue: {
+          increment: (n) => ({ _increment: n }),
+          serverTimestamp: () => ({ _serverTimestamp: true }),
+          delete: () => ({ _delete: true }),
+          arrayUnion: (...elements) => ({ _arrayUnion: elements }),
+          arrayRemove: (...elements) => ({ _arrayRemove: elements })
+        },
+        Timestamp: {
+          now: () => ({ seconds: Math.floor(Date.now() / 1000), nanoseconds: 0 }),
+          fromDate: (date) => ({ seconds: Math.floor(date.getTime() / 1000), nanoseconds: 0 })
+        }
+      }
+    ),
     credential: {
       cert: jest.fn().mockReturnValue({})
     }
