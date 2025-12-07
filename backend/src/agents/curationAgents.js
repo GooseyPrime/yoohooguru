@@ -293,7 +293,7 @@ class NewsCurationAgent {
    */
   async fetchNewsArticles(category, skills, limit = 2) {
     try {
-      logger.info(`� Searching for ${limit} real news articles for category: ${category}`);
+      logger.info(`🔍 Searching for ${limit} real news articles for category: ${category}`);
 
       // Try multiple news search methods
       const searchResult = await this.searchRealNewsArticles(category, skills, limit);
@@ -494,7 +494,7 @@ class NewsCurationAgent {
       const rssFeedsByCategory = {
         tech: [
           'https://techcrunch.com/feed/',
-          'https://www.wired.com/feed/rss',
+          'https://www.wired.com/feed/',
           'https://feeds.arstechnica.com/arstechnica/index'
         ],
         business: [
@@ -535,7 +535,7 @@ class NewsCurationAgent {
             })
             .slice(0, limit)
             .map(item => ({
-              id: `rss-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+              id: `rss-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
               title: item.title,
               summary: item.contentSnippet || item.content?.substring(0, 200) + '...',
               url: item.link,

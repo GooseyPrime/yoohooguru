@@ -25,7 +25,7 @@ function categorizeError(error) {
 const testCases = [
   {
     name: 'Network not found error',
-    error: { code: 'ENOTFOUND', message: 'getaddrinfo ENOTFOUND feeds.reuters.com' },
+    error: { code: 'ENOTFOUND', message: 'getaddrinfo ENOTFOUND newsapi.org' },
     expected: 'Network connectivity issue - unable to reach NewsAPI.org'
   },
   {
