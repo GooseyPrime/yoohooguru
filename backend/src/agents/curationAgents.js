@@ -652,7 +652,7 @@ Return the complete articles with improved summaries in this JSON format:
         } else {
           logger.warn('⚠️ AI response did not contain valid JSON array, using original articles');
         }
-      } catch (parseError) {
+      } catch {
         logger.warn('⚠️ Failed to parse AI-generated summaries as JSON, using original articles');
       }
 
