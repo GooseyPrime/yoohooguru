@@ -3,7 +3,12 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Header } from '@yoohooguru/shared';
 import ReactMarkdown from 'react-markdown';
-import { isValidSlug } from '../../../../lib/validators';
+
+// Defensive slug validation: only allow a-z, A-Z, 0-9, and hyphens, min 1 char
+function isValidSlug(slug: string): boolean {
+  // Prevent SSRF & path traversal: must match regex ^[a-zA-Z0-9-]+$
+  return /^[a-zA-Z0-9-]+$/.test(slug);
+}
 
 interface BlogPost {
   id: string;
@@ -51,12 +56,10 @@ export default function BlogPost() {
 
     // Validate slug to prevent SSRF/path traversal
     // Only allow slugs that are alphanumeric/dash, no dots, slashes, etc.
-    const SLUG_REGEX = /^[a-zA-Z0-9-]+$/;
+    // `isValidSlug` ensures `slug` only contains [a-zA-Z0-9-].
     if (
       typeof slug !== "string" ||
-      !isValidSlug(slug) ||
-      !SLUG_REGEX.test(slug)
-    ) {
+      !isValidSlug(slug)
       setError('Invalid blog post identifier');
       setLoading(false);
       return;
