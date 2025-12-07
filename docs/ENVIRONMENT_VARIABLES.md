@@ -251,7 +251,7 @@ Sessions are stored in the `sessions` collection in Firestore in production envi
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `REACT_APP_GOOGLE_MAPS_API_KEY` | ✅ | Google Maps API key for location features (autocomplete, geocoding, maps display). Get from https://console.cloud.google.com/google/maps-apis. Required APIs: Places API, Geocoding API, Maps JavaScript API |
+| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | ✅ | Google Maps API key for location features (autocomplete, geocoding, maps display). Get from https://console.cloud.google.com/google/maps-apis. Required APIs: Places API, Geocoding API, Maps JavaScript API. **Note:** Use `NEXT_PUBLIC_` prefix for Next.js apps, not `REACT_APP_` |
 
 **Note:** The Google Maps API key is used for:
 - Location autocomplete on the homepage when autodetect is disabled
