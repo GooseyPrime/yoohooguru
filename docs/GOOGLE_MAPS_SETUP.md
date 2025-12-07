@@ -73,8 +73,8 @@ Restrict the key to only the required APIs:
 #### For Development (.env)
 
 ```bash
-# In your local .env file
-REACT_APP_GOOGLE_MAPS_API_KEY=your_actual_api_key_here
+# In your local .env file (Next.js apps use NEXT_PUBLIC_ prefix)
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_actual_api_key_here
 ```
 
 #### For Production (Vercel)
@@ -82,10 +82,12 @@ REACT_APP_GOOGLE_MAPS_API_KEY=your_actual_api_key_here
 1. Go to your Vercel project settings
 2. Navigate to "Environment Variables"
 3. Add a new variable:
-   - **Key:** `REACT_APP_GOOGLE_MAPS_API_KEY`
+   - **Key:** `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`
    - **Value:** Your API key
    - **Environment:** Production, Preview, Development (as needed)
 4. Redeploy your application
+
+**Important:** This is a Next.js application, so environment variables exposed to the browser must use the `NEXT_PUBLIC_` prefix, not `REACT_APP_`. The old `REACT_APP_` prefix was for Create React App and is no longer used.
 
 ## Usage in Components
 
@@ -101,7 +103,7 @@ Located at `frontend/src/components/EnhancedLocationSelector.js`
 
 ```javascript
 // Loaded automatically
-script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&libraries=places`;
+script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
 ```
 
 ### LocationMap
@@ -114,7 +116,7 @@ Located at `frontend/src/components/LocationMap.js`
 
 ```javascript
 // Loaded automatically
-script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&libraries=geometry,places`;
+script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=geometry,places`;
 ```
 
 ## Privacy Features
