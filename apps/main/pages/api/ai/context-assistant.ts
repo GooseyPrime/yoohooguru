@@ -7,6 +7,10 @@ interface Message {
   content: string;
 }
 
+/**
+ * NavigationAction interface documents the expected JSON structure
+ * returned by the AI when suggesting navigation actions
+ */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface NavigationAction {
   type: 'navigate';

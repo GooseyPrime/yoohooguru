@@ -65,8 +65,8 @@ export default function ContextNavigator() {
 
   // Reset messages when route changes to keep context fresh
   useEffect(() => {
-    if (isOpen && messages.length > 1) {
-      // Clear messages when navigating to new page
+    if (isOpen && messages.length >= 1) {
+      // Clear messages when navigating to new page (even if only greeting exists)
       const userName = session?.user?.name ? ` ${session.user.name}` : '';
       const greeting = `Hi${userName}! 👋 I'm here to help you navigate this page. What would you like to do?`;
       
