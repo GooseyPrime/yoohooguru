@@ -27,6 +27,33 @@ const requireAdmin = (req, res) => {
   return true;
 };
 
+const toISOStringOrEmpty = (timestamp) => {
+  if (!timestamp) return '';
+  
+  // Handle Firestore Timestamp objects
+  if (timestamp && typeof timestamp.toDate === 'function') {
+    return timestamp.toDate().toISOString();
+  }
+  
+  // Handle Date objects
+  if (timestamp instanceof Date) {
+    return timestamp.toISOString();
+  }
+  
+  // Handle numeric timestamps (milliseconds)
+  if (typeof timestamp === 'number') {
+    return new Date(timestamp).toISOString();
+  }
+  
+  // Handle string timestamps
+  if (typeof timestamp === 'string') {
+    const date = new Date(timestamp);
+    return isNaN(date.getTime()) ? '' : date.toISOString();
+  }
+  
+  return '';
+};
+
 const buildUserRecord = (doc) => {
   const data = doc.data() || {};
 
@@ -407,8 +434,8 @@ router.get('/console/export', (req, res) => {
           user.email,
           user.role,
           user.status,
-          user.lastActive ? new Date(user.lastActive).toISOString() : '',
-          user.signUp ? new Date(user.signUp).toISOString() : '',
+          toISOStringOrEmpty(user.lastActive),
+          toISOStringOrEmpty(user.signUp),
           user.entries,
           user.region,
           user.heroGuru
