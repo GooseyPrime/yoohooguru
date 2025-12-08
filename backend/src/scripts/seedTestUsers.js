@@ -5,6 +5,7 @@
  * - 5 users per role (guru, gunu, guest, angel, hero-guru) = 25 users total
  * - All users named "Testa [LastName]" for easy identification and cleanup
  * - All users located within 25 miles of Johnson City, TN (37604)
+ * - Uses REAL addresses (public buildings/businesses) searchable on Google Maps
  * - Complete activity including gigs, skills, sessions, exchanges
  * - Data suitable for map markers and search functionality
  *
@@ -37,39 +38,204 @@ try {
 const db = getFirestore();
 
 // ============================================================================
-// LOCATION DATA - All within 25 miles of Johnson City, TN (36.3134, -82.3535)
+// REAL ADDRESSES - Public buildings & businesses within 25 miles of Johnson City, TN
+// All addresses are Google Maps searchable
 // ============================================================================
-const LOCATIONS = [
-  // Johnson City proper and surrounding areas
-  { city: 'Johnson City', state: 'TN', zip: '37604', lat: 36.3134, lng: -82.3535 },
-  { city: 'Johnson City', state: 'TN', zip: '37601', lat: 36.3284, lng: -82.3735 },
-  { city: 'Johnson City', state: 'TN', zip: '37615', lat: 36.3034, lng: -82.3335 },
+const ADDRESSES = [
+  // Johnson City proper
+  {
+    street: '1276 Gilbreath Dr',
+    city: 'Johnson City',
+    state: 'TN',
+    zip: '37614',
+    landmark: 'East Tennessee State University'
+  },
+  {
+    street: '400 N State of Franklin Rd',
+    city: 'Johnson City',
+    state: 'TN',
+    zip: '37604',
+    landmark: 'Johnson City Medical Center'
+  },
+  {
+    street: '2011 N Roan St',
+    city: 'Johnson City',
+    state: 'TN',
+    zip: '37601',
+    landmark: 'The Mall at Johnson City'
+  },
+  {
+    street: '100 W Millard St',
+    city: 'Johnson City',
+    state: 'TN',
+    zip: '37604',
+    landmark: 'Johnson City Public Library'
+  },
+  {
+    street: '1509 John Exum Pkwy',
+    city: 'Johnson City',
+    state: 'TN',
+    zip: '37604',
+    landmark: 'Science Hill High School'
+  },
+  {
+    street: '1320 E Main St',
+    city: 'Johnson City',
+    state: 'TN',
+    zip: '37601',
+    landmark: 'Freedom Hall Civic Center'
+  },
+  {
+    street: '510 Bert St',
+    city: 'Johnson City',
+    state: 'TN',
+    zip: '37601',
+    landmark: 'Founders Park'
+  },
+  {
+    street: '2620 S Roan St',
+    city: 'Johnson City',
+    state: 'TN',
+    zip: '37601',
+    landmark: 'Tipton-Haynes State Historic Site'
+  },
 
-  // Nearby towns within 25 miles
-  { city: 'Kingsport', state: 'TN', zip: '37660', lat: 36.5484, lng: -82.5618 },
-  { city: 'Bristol', state: 'TN', zip: '37620', lat: 36.5951, lng: -82.1887 },
-  { city: 'Elizabethton', state: 'TN', zip: '37643', lat: 36.3487, lng: -82.2107 },
-  { city: 'Gray', state: 'TN', zip: '37615', lat: 36.4217, lng: -82.4767 },
-  { city: 'Jonesborough', state: 'TN', zip: '37659', lat: 36.2934, lng: -82.4734 },
-  { city: 'Piney Flats', state: 'TN', zip: '37686', lat: 36.4512, lng: -82.3456 },
-  { city: 'Bluff City', state: 'TN', zip: '37618', lat: 36.4734, lng: -82.2612 },
+  // Gray (near Johnson City)
+  {
+    street: '1212 Suncrest Dr',
+    city: 'Gray',
+    state: 'TN',
+    zip: '37615',
+    landmark: 'Gray Fossil Site'
+  },
 
-  // Additional variations
-  { city: 'Fall Branch', state: 'TN', zip: '37656', lat: 36.4234, lng: -82.6123 },
-  { city: 'Limestone', state: 'TN', zip: '37681', lat: 36.2134, lng: -82.6035 },
-  { city: 'Telford', state: 'TN', zip: '37690', lat: 36.2834, lng: -82.5435 },
-  { city: 'Erwin', state: 'TN', zip: '37650', lat: 36.1451, lng: -82.4168 },
-  { city: 'Unicoi', state: 'TN', zip: '37692', lat: 36.1934, lng: -82.3535 },
-  { city: 'Watauga', state: 'TN', zip: '37694', lat: 36.3634, lng: -82.2935 },
-  { city: 'Hampton', state: 'TN', zip: '37658', lat: 36.2834, lng: -82.1735 },
-  { city: 'Roan Mountain', state: 'TN', zip: '37687', lat: 36.1934, lng: -82.0835 },
-  { city: 'Mountain City', state: 'TN', zip: '37683', lat: 36.4734, lng: -81.8035 },
-  { city: 'Banner Elk', state: 'NC', zip: '28604', lat: 36.1634, lng: -81.8735 },
-  { city: 'Boone', state: 'NC', zip: '28607', lat: 36.2168, lng: -81.6746 },
-  { city: 'Abingdon', state: 'VA', zip: '24210', lat: 36.7098, lng: -81.9773 },
-  { city: 'Marion', state: 'VA', zip: '24354', lat: 36.8346, lng: -81.5148 },
-  { city: 'Greeneville', state: 'TN', zip: '37743', lat: 36.1631, lng: -82.8310 },
-  { city: 'Rogersville', state: 'TN', zip: '37857', lat: 36.4073, lng: -83.0054 },
+  // Kingsport
+  {
+    street: '225 W Center St',
+    city: 'Kingsport',
+    state: 'TN',
+    zip: '37660',
+    landmark: 'Kingsport City Hall'
+  },
+  {
+    street: '400 Broad St',
+    city: 'Kingsport',
+    state: 'TN',
+    zip: '37660',
+    landmark: 'Kingsport Public Library'
+  },
+  {
+    street: '1901 Meadowview Pkwy',
+    city: 'Kingsport',
+    state: 'TN',
+    zip: '37660',
+    landmark: 'MeadowView Conference Resort'
+  },
+
+  // Bristol
+  {
+    street: '151 Speedway Blvd',
+    city: 'Bristol',
+    state: 'TN',
+    zip: '37620',
+    landmark: 'Bristol Motor Speedway'
+  },
+  {
+    street: '101 Country Music Way',
+    city: 'Bristol',
+    state: 'VA',
+    zip: '24201',
+    landmark: 'Birthplace of Country Music Museum'
+  },
+  {
+    street: '701 Goode St',
+    city: 'Bristol',
+    state: 'VA',
+    zip: '24201',
+    landmark: 'Bristol Public Library'
+  },
+
+  // Jonesborough (oldest town in Tennessee)
+  {
+    street: '123 Boone St',
+    city: 'Jonesborough',
+    state: 'TN',
+    zip: '37659',
+    landmark: 'Jonesborough Town Hall'
+  },
+  {
+    street: '116 W Main St',
+    city: 'Jonesborough',
+    state: 'TN',
+    zip: '37659',
+    landmark: 'Chester Inn Museum'
+  },
+
+  // Elizabethton
+  {
+    street: '801 E Elk Ave',
+    city: 'Elizabethton',
+    state: 'TN',
+    zip: '37643',
+    landmark: 'Carter County Courthouse'
+  },
+  {
+    street: '1651 W Elk Ave',
+    city: 'Elizabethton',
+    state: 'TN',
+    zip: '37643',
+    landmark: 'Sycamore Shoals State Historic Park'
+  },
+  {
+    street: '907 Jason Witten Way',
+    city: 'Elizabethton',
+    state: 'TN',
+    zip: '37643',
+    landmark: 'Elizabethton High School'
+  },
+
+  // Erwin
+  {
+    street: '100 Main Ave',
+    city: 'Erwin',
+    state: 'TN',
+    zip: '37650',
+    landmark: 'Unicoi County Courthouse'
+  },
+  {
+    street: '520 Federal Hatchery Rd',
+    city: 'Erwin',
+    state: 'TN',
+    zip: '37650',
+    landmark: 'Erwin National Fish Hatchery'
+  },
+
+  // Bluff City
+  {
+    street: '567 Main St',
+    city: 'Bluff City',
+    state: 'TN',
+    zip: '37618',
+    landmark: 'Bluff City Town Hall'
+  },
+
+  // Roan Mountain
+  {
+    street: '1015 Hwy 143',
+    city: 'Roan Mountain',
+    state: 'TN',
+    zip: '37687',
+    landmark: 'Roan Mountain State Park'
+  },
+
+  // Greeneville
+  {
+    street: '101 N Main St',
+    city: 'Greeneville',
+    state: 'TN',
+    zip: '37743',
+    landmark: 'Greene County Courthouse'
+  }
 ];
 
 // ============================================================================
@@ -149,12 +315,19 @@ function getRandomCategory() {
   return getRandomElement(Object.keys(SKILL_CATEGORIES));
 }
 
-function generateUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
+/**
+ * Format address the way a user would enter it
+ * Returns: { address, city, state, zip, fullAddress }
+ */
+function formatUserAddress(addressData) {
+  return {
+    address: addressData.street,
+    city: addressData.city,
+    state: addressData.state,
+    zip: addressData.zip,
+    fullAddress: `${addressData.street}, ${addressData.city}, ${addressData.state} ${addressData.zip}`,
+    landmark: addressData.landmark // For reference only, not part of address
+  };
 }
 
 // ============================================================================
@@ -171,7 +344,8 @@ const GURU_USERS = [
     category: 'Technology',
     skills: ['JavaScript Programming', 'Web Development', 'Python Development'],
     certifications: ['AWS Certified Developer', 'Google Cloud Professional'],
-    experience: 'Senior Software Engineer with 10+ years in web development'
+    experience: 'Senior Software Engineer with 10+ years in web development',
+    addressIndex: 0 // ETSU
   },
   {
     firstName: 'Testa',
@@ -181,7 +355,8 @@ const GURU_USERS = [
     category: 'Fitness & Wellness',
     skills: ['Personal Training', 'Nutrition Coaching', 'Weight Training'],
     certifications: ['NASM-CPT', 'Precision Nutrition Level 2'],
-    experience: 'Certified Personal Trainer with 8 years experience'
+    experience: 'Certified Personal Trainer with 8 years experience',
+    addressIndex: 6 // Founders Park
   },
   {
     firstName: 'Testa',
@@ -191,7 +366,8 @@ const GURU_USERS = [
     category: 'Music & Performance',
     skills: ['Piano Instruction', 'Music Theory', 'Vocal Training'],
     certifications: ['Berklee College of Music Graduate', 'ABRSM Grade 8'],
-    experience: 'Professional jazz pianist and music educator for 15 years'
+    experience: 'Professional jazz pianist and music educator for 15 years',
+    addressIndex: 5 // Freedom Hall Civic Center
   },
   {
     firstName: 'Testa',
@@ -201,7 +377,8 @@ const GURU_USERS = [
     category: 'Languages',
     skills: ['Spanish Tutoring', 'French Lessons', 'ESL Teaching'],
     certifications: ['DELE C2 Spanish', 'DALF C1 French', 'CELTA Certified'],
-    experience: 'Language instructor with 12 years of teaching experience'
+    experience: 'Language instructor with 12 years of teaching experience',
+    addressIndex: 3 // Johnson City Public Library
   },
   {
     firstName: 'Testa',
@@ -211,7 +388,8 @@ const GURU_USERS = [
     category: 'Creative Arts',
     skills: ['Graphic Design', 'UI/UX Design', 'Digital Art'],
     certifications: ['Adobe Certified Expert', 'Google UX Design Certificate'],
-    experience: 'Senior UI/UX Designer with 9 years at tech companies'
+    experience: 'Senior UI/UX Designer with 9 years at tech companies',
+    addressIndex: 2 // Mall at Johnson City
   }
 ];
 
@@ -223,7 +401,8 @@ const GUNU_USERS = [
     email: 'testa.learner@testmail.com',
     bio: 'Career changer eager to break into tech. Looking for guidance in web development and programming to land my first developer job.',
     skillsWanted: ['JavaScript Programming', 'Web Development', 'Python Development'],
-    budget: { min: 30, max: 60 }
+    budget: { min: 30, max: 60 },
+    addressIndex: 9 // Kingsport City Hall
   },
   {
     firstName: 'Testa',
@@ -231,7 +410,8 @@ const GUNU_USERS = [
     email: 'testa.newbie@testmail.com',
     bio: 'Recent college graduate looking to develop practical skills in business and finance to start my entrepreneurial journey.',
     skillsWanted: ['Financial Planning', 'Business Strategy', 'Marketing Strategy'],
-    budget: { min: 40, max: 80 }
+    budget: { min: 40, max: 80 },
+    addressIndex: 10 // Kingsport Public Library
   },
   {
     firstName: 'Testa',
@@ -239,7 +419,8 @@ const GUNU_USERS = [
     email: 'testa.student@testmail.com',
     bio: 'High school senior preparing for college, needs help with test prep and study skills to get into my dream school.',
     skillsWanted: ['Math Tutoring', 'Test Prep', 'Writing Coaching'],
-    budget: { min: 25, max: 50 }
+    budget: { min: 25, max: 50 },
+    addressIndex: 4 // Science Hill High School
   },
   {
     firstName: 'Testa',
@@ -247,7 +428,8 @@ const GUNU_USERS = [
     email: 'testa.apprentice@testmail.com',
     bio: 'Aspiring musician wanting to learn piano and music theory from the ground up. Always dreamed of playing jazz.',
     skillsWanted: ['Piano Instruction', 'Music Theory', 'Songwriting'],
-    budget: { min: 35, max: 70 }
+    budget: { min: 35, max: 70 },
+    addressIndex: 13 // Birthplace of Country Music Museum
   },
   {
     firstName: 'Testa',
@@ -255,7 +437,8 @@ const GUNU_USERS = [
     email: 'testa.trainee@testmail.com',
     bio: 'Office worker looking to get in shape and learn proper fitness techniques. Want to transform my health and lifestyle.',
     skillsWanted: ['Personal Training', 'Nutrition Coaching', 'Yoga Instruction'],
-    budget: { min: 30, max: 65 }
+    budget: { min: 30, max: 65 },
+    addressIndex: 18 // Sycamore Shoals State Historic Park
   }
 ];
 
@@ -266,35 +449,40 @@ const GUEST_USERS = [
     lastName: 'Poster',
     email: 'testa.poster@testmail.com',
     bio: 'Small business owner looking for help with various tasks and projects. I post gigs regularly for my growing business.',
-    gigTypes: ['website-development', 'social-media', 'content-writing']
+    gigTypes: ['website-development', 'social-media', 'content-writing'],
+    addressIndex: 11 // MeadowView Conference Resort
   },
   {
     firstName: 'Testa',
     lastName: 'Employer',
     email: 'testa.employer@testmail.com',
     bio: 'Homeowner with various home improvement projects needing skilled helpers. Fair pay for quality work.',
-    gigTypes: ['home-repair', 'landscaping', 'painting']
+    gigTypes: ['home-repair', 'landscaping', 'painting'],
+    addressIndex: 15 // Jonesborough Town Hall
   },
   {
     firstName: 'Testa',
     lastName: 'Client',
     email: 'testa.client@testmail.com',
     bio: 'Event coordinator seeking talented individuals for various event-related gigs and projects.',
-    gigTypes: ['event-planning', 'photography', 'catering-help']
+    gigTypes: ['event-planning', 'photography', 'catering-help'],
+    addressIndex: 12 // Bristol Motor Speedway
   },
   {
     firstName: 'Testa',
     lastName: 'Hirer',
     email: 'testa.hirer@testmail.com',
     bio: 'Startup founder looking for freelancers to help with technical and creative projects on a project basis.',
-    gigTypes: ['graphic-design', 'app-development', 'video-editing']
+    gigTypes: ['graphic-design', 'app-development', 'video-editing'],
+    addressIndex: 1 // Johnson City Medical Center
   },
   {
     firstName: 'Testa',
     lastName: 'Requester',
     email: 'testa.requester@testmail.com',
     bio: 'Parent looking for tutors and instructors for my children. Quality education is my priority.',
-    gigTypes: ['tutoring', 'music-lessons', 'sports-coaching']
+    gigTypes: ['tutoring', 'music-lessons', 'sports-coaching'],
+    addressIndex: 19 // Elizabethton High School
   }
 ];
 
@@ -308,7 +496,8 @@ const ANGEL_USERS = [
     category: 'Trades & Services',
     skills: ['Handyman Services', 'Moving Help', 'Assembly Services'],
     specialty: 'General help and handyman services',
-    hourlyRate: 35
+    hourlyRate: 35,
+    addressIndex: 17 // Carter County Courthouse
   },
   {
     firstName: 'Testa',
@@ -318,7 +507,8 @@ const ANGEL_USERS = [
     category: 'Home & Garden',
     skills: ['Home Repair', 'Plumbing Basics', 'Electrical Basics'],
     specialty: 'Home repair and maintenance',
-    hourlyRate: 45
+    hourlyRate: 45,
+    addressIndex: 20 // Unicoi County Courthouse
   },
   {
     firstName: 'Testa',
@@ -328,7 +518,8 @@ const ANGEL_USERS = [
     category: 'Creative Arts',
     skills: ['Graphic Design', 'Video Editing', 'Photography'],
     specialty: 'Creative design and media production',
-    hourlyRate: 50
+    hourlyRate: 50,
+    addressIndex: 16 // Chester Inn Museum
   },
   {
     firstName: 'Testa',
@@ -338,7 +529,8 @@ const ANGEL_USERS = [
     category: 'Technology',
     skills: ['Web Development', 'Mobile App Development', 'Database Management'],
     specialty: 'Web and app development',
-    hourlyRate: 65
+    hourlyRate: 65,
+    addressIndex: 8 // Gray Fossil Site
   },
   {
     firstName: 'Testa',
@@ -348,7 +540,8 @@ const ANGEL_USERS = [
     category: 'Personal Services',
     skills: ['Pet Care', 'House Cleaning', 'Personal Shopping'],
     specialty: 'Pet care and personal assistance',
-    hourlyRate: 30
+    hourlyRate: 30,
+    addressIndex: 22 // Bluff City Town Hall
   }
 ];
 
@@ -365,7 +558,8 @@ const HERO_GURU_USERS = [
       hearing: ['deaf', 'uses-sign-language'],
       communicationPrefs: ['visual-aids', 'text-based', 'video-captions']
     },
-    coachingStyles: ['visual-demos', 'step-by-step', 'slow-pace']
+    coachingStyles: ['visual-demos', 'step-by-step', 'slow-pace'],
+    addressIndex: 7 // Tipton-Haynes State Historic Site
   },
   {
     firstName: 'Testa',
@@ -378,7 +572,8 @@ const HERO_GURU_USERS = [
       mobility: ['wheelchair-user', 'adaptive-equipment'],
       communicationPrefs: ['in-person', 'video-calls']
     },
-    coachingStyles: ['hands-on', 'peer-mentoring', 'project-based']
+    coachingStyles: ['hands-on', 'peer-mentoring', 'project-based'],
+    addressIndex: 23 // Roan Mountain State Park
   },
   {
     firstName: 'Testa',
@@ -392,7 +587,8 @@ const HERO_GURU_USERS = [
       assistiveTech: ['jaws', 'braille-display'],
       communicationPrefs: ['audio-focused', 'voice-calls']
     },
-    coachingStyles: ['verbal-explainer', 'q-and-a', 'structured-curriculum']
+    coachingStyles: ['verbal-explainer', 'q-and-a', 'structured-curriculum'],
+    addressIndex: 14 // Bristol Public Library
   },
   {
     firstName: 'Testa',
@@ -405,7 +601,8 @@ const HERO_GURU_USERS = [
       neurodiversity: ['adhd', 'autism-spectrum'],
       communicationPrefs: ['structured-sessions', 'written-agendas', 'flexible-pacing']
     },
-    coachingStyles: ['structured-curriculum', 'step-by-step', 'slow-pace', 'visual-demos']
+    coachingStyles: ['structured-curriculum', 'step-by-step', 'slow-pace', 'visual-demos'],
+    addressIndex: 24 // Greene County Courthouse
   },
   {
     firstName: 'Testa',
@@ -418,7 +615,8 @@ const HERO_GURU_USERS = [
       mobility: ['limited-mobility', 'chronic-fatigue'],
       communicationPrefs: ['async-friendly', 'flexible-scheduling', 'video-calls']
     },
-    coachingStyles: ['project-based', 'visual-demos', 'slow-pace', 'peer-mentoring']
+    coachingStyles: ['project-based', 'visual-demos', 'slow-pace', 'peer-mentoring'],
+    addressIndex: 21 // Erwin National Fish Hatchery
   }
 ];
 
@@ -427,7 +625,10 @@ const HERO_GURU_USERS = [
 // ============================================================================
 
 async function createTestUser(userData, role, index) {
-  const location = LOCATIONS[index % LOCATIONS.length];
+  // Get address from the predefined list using the user's addressIndex
+  const addressData = ADDRESSES[userData.addressIndex];
+  const location = formatUserAddress(addressData);
+
   const now = new Date();
   const joinDate = new Date(now.getTime() - getRandomInt(30, 365) * 24 * 60 * 60 * 1000);
   const lastLogin = new Date(now.getTime() - getRandomInt(1, 14) * 24 * 60 * 60 * 1000);
@@ -446,14 +647,20 @@ async function createTestUser(userData, role, index) {
     bio: userData.bio,
     phone: generatePhoneNumber(),
 
-    // Location data for map markers
+    // Address entered the way a user would input it (NOT lat/lng)
+    address: location.address,
+    city: location.city,
+    state: location.state,
+    zip: location.zip,
+    fullAddress: location.fullAddress,
+
+    // Also store in location object for compatibility
     location: {
-      lat: location.lat + getRandomFloat(-0.05, 0.05),
-      lng: location.lng + getRandomFloat(-0.05, 0.05),
+      address: location.address,
       city: location.city,
       state: location.state,
       zip: location.zip,
-      full: `${location.city}, ${location.state} ${location.zip}`,
+      fullAddress: location.fullAddress,
       lastUpdated: now.toISOString()
     },
 
@@ -692,13 +899,13 @@ async function createGigForGuest(user, index) {
     description: `I'm looking for someone skilled in ${skills.slice(0, 2).join(' and ')}. ${user.bio} This is a great opportunity for the right person!`,
     category: category.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-'),
 
-    // Location for map markers - crucial for search
+    // Location as address (the way a user would enter it)
     location: {
-      lat: user.location.lat,
-      lng: user.location.lng,
-      city: user.location.city,
-      state: user.location.state,
-      full: user.location.full
+      address: user.address,
+      city: user.city,
+      state: user.state,
+      zip: user.zip,
+      fullAddress: user.fullAddress
     },
 
     skills: skills,
@@ -766,12 +973,13 @@ async function createSkillForGuru(user, skillName, index) {
     status: 'published',
     tags: [skillName.toLowerCase().replace(/ /g, '-'), user.category.toLowerCase()],
 
-    // Location for searchability and map markers
+    // Location as address for searchability
     location: {
-      lat: user.location.lat,
-      lng: user.location.lng,
-      city: user.location.city,
-      state: user.location.state
+      address: user.address,
+      city: user.city,
+      state: user.state,
+      zip: user.zip,
+      fullAddress: user.fullAddress
     },
 
     hourlyRate: user.hourlyRate || 0,
@@ -799,13 +1007,13 @@ async function createAngelProfile(user, index) {
     skills: user.skillsOffered,
     category: user.category,
 
-    // Location for map and search
+    // Location as address for search
     location: {
-      lat: user.location.lat,
-      lng: user.location.lng,
-      city: user.location.city,
-      state: user.location.state,
-      full: user.location.full
+      address: user.address,
+      city: user.city,
+      state: user.state,
+      zip: user.zip,
+      fullAddress: user.fullAddress
     },
     serviceRadius: getRandomInt(10, 50), // miles they'll travel
 
@@ -864,10 +1072,11 @@ async function createSession(teacher, learner, skillId, index) {
     status: status,
     price: teacher.hourlyRate || getRandomInt(30, 70),
 
-    // Location for reference
+    // Location for reference (teacher's location)
     location: {
-      city: teacher.location.city,
-      state: teacher.location.state
+      city: teacher.city,
+      state: teacher.state,
+      fullAddress: teacher.fullAddress
     },
 
     createdAt: new Date(sessionDate.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString(),
@@ -934,10 +1143,15 @@ async function createGuruLocation(user, index) {
 
   const location = {
     id: locationId,
-    lat: user.location.lat,
-    lng: user.location.lng,
+    // Address-based location (what user would enter)
+    address: user.address,
+    city: user.city,
+    state: user.state,
+    zip: user.zip,
+    fullAddress: user.fullAddress,
+
     title: `${user.displayName}'s ${user.category} Services`,
-    description: `Available for ${user.skillsOffered.join(', ')} in ${user.location.city}`,
+    description: `Available for ${user.skillsOffered.join(', ')} in ${user.city}`,
     category: user.category.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-'),
     type: user.role === 'hero-guru' ? 'hero-guru' : 'guru',
     createdBy: user.id,
@@ -956,10 +1170,15 @@ async function createAngelLocation(user, index) {
 
   const location = {
     id: locationId,
-    lat: user.location.lat,
-    lng: user.location.lng,
+    // Address-based location
+    address: user.address,
+    city: user.city,
+    state: user.state,
+    zip: user.zip,
+    fullAddress: user.fullAddress,
+
     title: `${user.displayName} - ${user.specialty}`,
-    description: `${user.skillsOffered.join(', ')} available in ${user.location.city}. ${user.bio}`,
+    description: `${user.skillsOffered.join(', ')} available in ${user.city}. ${user.bio}`,
     category: user.category.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-'),
     type: 'angel',
     specialty: user.specialty,
@@ -979,7 +1198,8 @@ async function createAngelLocation(user, index) {
 
 async function seedTestDatabase() {
   console.log('🌱 Starting Test User Database Seeding...');
-  console.log('📍 All users will be within 25 miles of Johnson City, TN (37604)');
+  console.log('📍 All users have REAL addresses within 25 miles of Johnson City, TN');
+  console.log('🏢 Addresses are from public buildings/businesses (Google Maps searchable)');
   console.log('👤 All users will have first name "Testa" for easy cleanup\n');
 
   const allUsers = [];
@@ -992,12 +1212,10 @@ async function seedTestDatabase() {
   const allAngelLocations = [];
   const allAngelProfiles = [];
 
-  let locationIndex = 0;
-
   // Create Guru Users (Teachers)
   console.log('👨‍🏫 Creating Guru users (Teachers)...');
   for (let i = 0; i < GURU_USERS.length; i++) {
-    const user = await createTestUser(GURU_USERS[i], 'guru', locationIndex++);
+    const user = await createTestUser(GURU_USERS[i], 'guru', i);
     allUsers.push(user);
 
     // Create skills for gurus
@@ -1015,7 +1233,7 @@ async function seedTestDatabase() {
   // Create Gunu Users (Learners)
   console.log('🎓 Creating Gunu users (Learners)...');
   for (let i = 0; i < GUNU_USERS.length; i++) {
-    const user = await createTestUser(GUNU_USERS[i], 'gunu', locationIndex++);
+    const user = await createTestUser(GUNU_USERS[i], 'gunu', i);
     allUsers.push(user);
   }
   console.log(`   ✓ Created ${GUNU_USERS.length} gunu users`);
@@ -1023,7 +1241,7 @@ async function seedTestDatabase() {
   // Create Guest Users (Gig Posters)
   console.log('📋 Creating Guest users (Gig Posters)...');
   for (let i = 0; i < GUEST_USERS.length; i++) {
-    const user = await createTestUser(GUEST_USERS[i], 'guest', locationIndex++);
+    const user = await createTestUser(GUEST_USERS[i], 'guest', i);
     allUsers.push(user);
 
     // Create multiple gigs for each guest
@@ -1037,7 +1255,7 @@ async function seedTestDatabase() {
   // Create Angel Users (Gig Workers with searchable profiles)
   console.log('👼 Creating Angel users (Gig Workers)...');
   for (let i = 0; i < ANGEL_USERS.length; i++) {
-    const user = await createTestUser(ANGEL_USERS[i], 'angel', locationIndex++);
+    const user = await createTestUser(ANGEL_USERS[i], 'angel', i);
     allUsers.push(user);
 
     // Create angel profile for searchability
@@ -1053,7 +1271,7 @@ async function seedTestDatabase() {
   // Create Hero-Guru Users (Volunteer teachers for disabled gunus)
   console.log('🦸 Creating Hero-Guru users (Volunteer Teachers)...');
   for (let i = 0; i < HERO_GURU_USERS.length; i++) {
-    const user = await createTestUser(HERO_GURU_USERS[i], 'hero-guru', locationIndex++);
+    const user = await createTestUser(HERO_GURU_USERS[i], 'hero-guru', i);
     allUsers.push(user);
 
     // Create skills for hero-gurus
@@ -1198,41 +1416,46 @@ async function seedTestDatabase() {
   console.log(`   📍 Angel Locations (map): ${allAngelLocations.length}`);
   console.log(`   👼 Angel Profiles (search): ${allAngelProfiles.length}`);
 
-  console.log('\n🔍 Test Users (all start with "Testa"):');
+  console.log('\n🔍 Test Users with REAL Addresses (all start with "Testa"):');
 
   console.log('\n   GURUS (Teachers):');
   allUsers.filter(u => u.role === 'guru').forEach(u => {
     console.log(`      - ${u.displayName} (${u.email})`);
-    console.log(`        📍 ${u.location.city}, ${u.location.state} | Skills: ${u.skillsOffered.join(', ')}`);
+    console.log(`        📍 ${u.fullAddress}`);
+    console.log(`        🎯 Skills: ${u.skillsOffered.join(', ')}`);
   });
 
   console.log('\n   GUNUS (Learners):');
   allUsers.filter(u => u.role === 'gunu').forEach(u => {
     console.log(`      - ${u.displayName} (${u.email})`);
-    console.log(`        📍 ${u.location.city}, ${u.location.state} | Wants: ${u.skillsWanted.join(', ')}`);
+    console.log(`        📍 ${u.fullAddress}`);
+    console.log(`        📚 Wants: ${u.skillsWanted.join(', ')}`);
   });
 
   console.log('\n   GUESTS (Gig Posters):');
   allUsers.filter(u => u.role === 'guest').forEach(u => {
     console.log(`      - ${u.displayName} (${u.email})`);
-    console.log(`        📍 ${u.location.city}, ${u.location.state} | Gig Types: ${u.gigTypes.join(', ')}`);
+    console.log(`        📍 ${u.fullAddress}`);
+    console.log(`        💼 Gig Types: ${u.gigTypes.join(', ')}`);
   });
 
   console.log('\n   ANGELS (Gig Workers - Searchable):');
   allUsers.filter(u => u.role === 'angel').forEach(u => {
     console.log(`      - ${u.displayName} (${u.email})`);
-    console.log(`        📍 ${u.location.city}, ${u.location.state} | Specialty: ${u.specialty}`);
+    console.log(`        📍 ${u.fullAddress}`);
+    console.log(`        🔧 Specialty: ${u.specialty}`);
     console.log(`        💰 $${u.hourlyRate}/hr | Skills: ${u.skillsOffered.join(', ')}`);
   });
 
   console.log('\n   HERO-GURUS (Volunteer Teachers for Disabled Gunus):');
   allUsers.filter(u => u.role === 'hero-guru').forEach(u => {
     console.log(`      - ${u.displayName} (${u.email})`);
-    console.log(`        📍 ${u.location.city}, ${u.location.state} | Skills: ${u.skillsOffered.join(', ')}`);
+    console.log(`        📍 ${u.fullAddress}`);
+    console.log(`        🎯 Skills: ${u.skillsOffered.join(', ')}`);
     console.log(`        ♿ Accessibility: ${Object.values(u.accessibility).flat().filter(Boolean).join(', ')}`);
   });
 
-  console.log('\n📍 Location: All users are within 25 miles of Johnson City, TN 37604');
+  console.log('\n📍 All addresses are REAL locations searchable on Google Maps');
   console.log('🗑️  Cleanup: Search for users with firstName "Testa" to remove test data');
   console.log('\n🎯 Ready for testing!');
 
