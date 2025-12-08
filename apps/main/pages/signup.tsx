@@ -97,9 +97,9 @@ export default function Signup() {
         });
 
         if (signInResult?.ok) {
-          // Successfully registered and signed in - redirect to dashboard (client-side only)
+          // Successfully registered and signed in - guide them through onboarding (client-side only)
           if (mounted) {
-            router.push('/dashboard');
+            router.push('/onboarding');
           }
         } else {
           setError('Registration succeeded but automatic login failed. Please try logging in manually.');
@@ -121,7 +121,7 @@ export default function Signup() {
 
     try {
       await signIn('google', {
-        callbackUrl: '/dashboard',
+        callbackUrl: '/onboarding',
       });
     } catch {
       setError('Google sign-up failed. Please try again.');
