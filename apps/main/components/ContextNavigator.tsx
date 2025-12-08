@@ -78,7 +78,8 @@ export default function ContextNavigator() {
         }
       ]);
     }
-  }, [router.pathname]); // Re-run when pathname changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.pathname]); // Only re-run when pathname changes
 
   const handleSendMessage = async (messageText?: string) => {
     const text = messageText || inputValue.trim();

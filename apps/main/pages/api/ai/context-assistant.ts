@@ -7,6 +7,7 @@ interface Message {
   content: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface NavigationAction {
   type: 'navigate';
   route: string;
@@ -164,7 +165,7 @@ Guidelines:
           usage: data.usage
         });
       }
-    } catch (e) {
+    } catch {
       // Not JSON, treat as plain text response
     }
 
