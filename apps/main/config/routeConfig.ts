@@ -29,7 +29,7 @@ export interface RouteConfig {
  */
 export const coreNavigationActions: QuickAction[] = [
   { label: 'Main Menu', route: '/', icon: '🏠', alwaysShow: true },
-  { label: 'Back', route: 'javascript:history.back()', icon: '◀️', alwaysShow: true }
+  { label: 'Back', route: '__BACK__', icon: '◀️', alwaysShow: true }
 ];
 
 /**

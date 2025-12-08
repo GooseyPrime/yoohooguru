@@ -163,7 +163,7 @@ export default function ContextNavigator() {
 
   const handleQuickAction = (action: QuickAction) => {
     // Handle special case for browser back navigation
-    if (action.route === 'javascript:history.back()') {
+    if (action.route === '__BACK__') {
       router.back();
     } else {
       router.push(action.route);

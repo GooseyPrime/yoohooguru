@@ -168,8 +168,8 @@ Guidelines:
           model: data.model,
           usage: data.usage
         });
-      } else if (typeof parsed === 'object' && parsed.message) {
-        // JSON response without action
+      } else if (typeof parsed === 'object' && parsed !== null && parsed.message) {
+        // JSON response without action (add null check to avoid runtime errors)
         return res.status(200).json({
           message: parsed.message,
           model: data.model,
