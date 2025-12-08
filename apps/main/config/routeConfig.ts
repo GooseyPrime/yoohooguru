@@ -14,6 +14,7 @@ export interface QuickAction {
   icon: string; // Emoji or icon identifier
   requiresAuth?: boolean;
   allowedRoles?: string[]; // If specified, only show for these roles
+  alwaysShow?: boolean; // If true, always show this action regardless of other filters
 }
 
 export interface RouteConfig {
@@ -22,6 +23,14 @@ export interface RouteConfig {
   systemPrompt: string;
   matchPattern?: (pathname: string) => boolean; // Custom matching logic
 }
+
+/**
+ * Core navigation actions that should always be available
+ */
+export const coreNavigationActions: QuickAction[] = [
+  { label: 'Main Menu', route: '/', icon: '🏠', alwaysShow: true },
+  { label: 'Back', route: 'javascript:history.back()', icon: '◀️', alwaysShow: true }
+];
 
 /**
  * Route configurations organized by section
@@ -437,13 +446,19 @@ export function getRouteConfig(pathname: string): RouteConfig {
 
 /**
  * Filter quick actions based on user authentication and role
+ * Adds core navigation actions (Back, Main Menu) to every page
  */
 export function filterQuickActions(
   actions: QuickAction[],
   isAuthenticated: boolean,
   userRole?: string
 ): QuickAction[] {
-  return actions.filter(action => {
+  const filtered = actions.filter(action => {
+    // Always show actions with alwaysShow flag
+    if (action.alwaysShow) {
+      return true;
+    }
+
     // Check authentication requirement
     if (action.requiresAuth && !isAuthenticated) {
       return false;
@@ -458,4 +473,7 @@ export function filterQuickActions(
 
     return true;
   });
+
+  // Prepend core navigation actions to ensure they're always at the top
+  return [...coreNavigationActions, ...filtered];
 }

@@ -162,7 +162,12 @@ export default function ContextNavigator() {
   };
 
   const handleQuickAction = (action: QuickAction) => {
-    router.push(action.route);
+    // Handle special case for browser back navigation
+    if (action.route === 'javascript:history.back()') {
+      router.back();
+    } else {
+      router.push(action.route);
+    }
     // No need to add message to chat - the route change effect will reset messages
   };
 

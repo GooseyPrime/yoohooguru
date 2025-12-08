@@ -168,6 +168,13 @@ Guidelines:
           model: data.model,
           usage: data.usage
         });
+      } else if (typeof parsed === 'object' && parsed.message) {
+        // JSON response without action
+        return res.status(200).json({
+          message: parsed.message,
+          model: data.model,
+          usage: data.usage
+        });
       }
     } catch {
       // Not JSON, treat as plain text response
@@ -181,9 +188,28 @@ Guidelines:
 
   } catch (error) {
     console.error('Context assistant error:', error);
+    
+    // Provide more specific error messages based on the error type
+    let userMessage = 'I apologize, but I encountered an error. Please try again or use the quick action buttons above to navigate.';
+    
+    if (error instanceof Error) {
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      });
+      
+      // Check for common error types
+      if (error.message.includes('API request failed')) {
+        userMessage = 'The AI service is temporarily unavailable. Please use the quick action buttons above to navigate.';
+      } else if (error.message.includes('not configured')) {
+        userMessage = 'The AI assistant is not configured. Please use the quick action buttons above to navigate.';
+      }
+    }
+    
     return res.status(500).json({
       error: 'Failed to get AI response',
-      message: 'I apologize, but I encountered an error. Please try again or use the quick action buttons above to navigate.'
+      message: userMessage
     });
   }
 }
