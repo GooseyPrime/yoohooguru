@@ -235,25 +235,48 @@ npm run build
 > Always use this command for production builds rather than building individual packages.
 
 ### Environment Setup
+
+**📋 For complete configuration details, see:**
+- [Environment Configuration Guide](./docs/ENVIRONMENT_CONFIGURATION_GUIDE.md) - **START HERE**
+- [Environment Variables Reference](./docs/ENVIRONMENT_VARIABLES.md) - Detailed variable list
+- [Environment Setup Guide](./docs/ENVIRONMENT_SETUP.md) - Setup instructions
+
+**Quick Start (Development):**
 ```bash
-# Frontend (apps/main/.env.local)
+# 1. Copy shared configuration for Next.js apps
+cp .env.shared.example .env.shared
+
+# 2. Copy backend configuration
+cp .env.example .env
+
+# 3. Edit both files with your development credentials
+# See .env.production.example for production deployment
+```
+
+**Example configuration:**
+```bash
+# Frontend (Shared - .env.shared)
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
 NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
 NEXTAUTH_SECRET=your_secret_key
-NEXTAUTH_URL=http://localhost:3000
 
-# Backend (backend/.env)
+# Backend (.env)
 NODE_ENV=development
 PORT=3001
 FIREBASE_PROJECT_ID=your_project_id
 FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----..."
 JWT_SECRET=your_jwt_secret
+SESSION_SECRET=your_session_secret
 STRIPE_SECRET_KEY=sk_test_...
 OPENROUTER_API_KEY=your_openrouter_key
+NEWS_API_KEY=your_newsapi_key
 ```
 
-See [docs/ENVIRONMENT_VARIABLES.md](./docs/ENVIRONMENT_VARIABLES.md) for complete environment variable documentation.
+**Production Deployment:**
+- Use `.env.production.example` as your reference
+- Set variables in Vercel dashboard (frontend) and Railway dashboard (backend)
+- See [Environment Configuration Guide](./docs/ENVIRONMENT_CONFIGURATION_GUIDE.md) for details
 
 ## Implementation Status
 
