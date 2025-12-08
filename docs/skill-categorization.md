@@ -153,6 +153,11 @@ The categorization utility is integrated with:
 - **Session Booking**: Determines waiver requirements
 - **Admin Dashboard**: Risk assessment reporting
 
+### AI-backed Categorization for Unknown Skills
+- **Location**: `backend/src/lib/aiSkillCategorizationService.js`
+- **Behavior**: When keyword matching returns `Other`, the service asks the multi-provider AI client to pick the closest existing category. No new categories are ever created.
+- **Data**: Stored on skill records as `category`, `categorySource`, and optional `categoryConfidence`/`categoryReasoning` fields.
+
 ## Future Considerations
 
 ### Potential Enhancements
