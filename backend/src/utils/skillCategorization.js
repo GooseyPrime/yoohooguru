@@ -140,6 +140,31 @@ function getSkillCategories() {
 }
 
 /**
+ * Normalize a skill's category using stored metadata when present
+ * and falling back to keyword categorization.
+ *
+ * @param {Object|string} skill - Skill document or raw title
+ * @returns {string} Category name
+ */
+function normalizeSkillCategory(skill) {
+  if (typeof skill === 'string') {
+    return categorizeSkill(skill);
+  }
+
+  if (!skill || typeof skill !== 'object') {
+    return 'Other';
+  }
+
+  const storedCategory = skill.category;
+  if (storedCategory && SKILL_CATEGORIES[storedCategory]) {
+    return storedCategory;
+  }
+
+  const fallbackTitle = skill.title || skill.name;
+  return categorizeSkill(fallbackTitle);
+}
+
+/**
  * Get categories filtered by risk level
  * @param {string} riskLevel - Filter by risk level ('low', 'medium', 'high', 'extreme')
  * @returns {string[]} Array of category names matching the risk level
@@ -178,5 +203,6 @@ module.exports = {
   requiresLiabilityWaiver,
   getHighRiskCategories,
   RISK_LEVELS,
-  SKILL_CATEGORIES
+  SKILL_CATEGORIES,
+  normalizeSkillCategory
 };
