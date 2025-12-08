@@ -324,7 +324,9 @@ class NewsCurationAgent {
       logger.error('Error in fetchNewsArticles:', error.message);
       throw error; // Always throw error - NO fallback to mock content
     }
-  }  /**
+  }
+
+  /**
    * Search for real news articles from multiple sources
    * Uses NewsAPI.org and RSS feeds to find actual recent news articles
    * @param {string} category - The subdomain category
