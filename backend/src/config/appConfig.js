@@ -121,7 +121,7 @@ function getConfig() {
     firebaseProjectId: process.env.FIREBASE_PROJECT_ID,
     firebaseApiKey: process.env.FIREBASE_API_KEY,
     firebaseAuthDomain: process.env.FIREBASE_AUTH_DOMAIN,
-    firebaseDatabaseUrl: process.env.FIREBASE_DATABASE_URL,
+    // Note: FIREBASE_DATABASE_URL removed - application uses Firestore exclusively
     firebaseStorageBucket: process.env.FIREBASE_STORAGE_BUCKET,
     firebaseMessagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
     firebaseAppId: process.env.FIREBASE_APP_ID,
