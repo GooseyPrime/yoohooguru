@@ -158,6 +158,23 @@ const SuccessMessage = styled.div`
   border: 1px solid #51cf66;
 `;
 
+const AudienceTag = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #b0b0b0;
+  font-size: 0.85rem;
+  width: fit-content;
+`;
+
+const HelperText = styled.p`
+  color: #b0b0b0;
+  line-height: 1.5;
+`;
+
 interface ProfileData {
   name: string;
   email: string;
@@ -165,6 +182,8 @@ interface ProfileData {
   role: string;
   skills: string[];
   specializations?: string[]; // For Hero Gurus
+  photoUrl?: string;
+  location?: string;
   pricing?: {
     hourlyRate: number;
     currency: string;
@@ -186,6 +205,8 @@ export default function ProfileManager() {
     bio: '',
     role: 'gunu',
     skills: [],
+    photoUrl: '',
+    location: '',
     pricing: {
       hourlyRate: 0,
       currency: 'USD'
@@ -312,10 +333,20 @@ export default function ProfileManager() {
 
   return (
     <ProfileContainer>
-      <ProfileHeader>Manage Your Profile</ProfileHeader>
-      
+      <ProfileHeader>System Profile (Private)</ProfileHeader>
+
+      <AudienceTag>
+        <span aria-hidden>🔒</span>
+        Visible only to you and YooHoo.Guru for account support
+      </AudienceTag>
+
+      <HelperText style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+        Keep this information up to date to power notifications, account recovery, and onboarding. Your public Guru or Angel
+        pages pull friendly defaults from here, but nothing is published until you curate it in the Public Profiles area.
+      </HelperText>
+
       {message && (
-        message.type === 'error' 
+        message.type === 'error'
           ? <ErrorMessage>{message.text}</ErrorMessage>
           : <SuccessMessage>{message.text}</SuccessMessage>
       )}
@@ -344,7 +375,32 @@ export default function ProfileManager() {
             required
           />
         </FormGroup>
-        
+
+        <FormGroup>
+          <Label htmlFor="location">City / Region (general location)</Label>
+          <Input
+            id="location"
+            name="location"
+            type="text"
+            value={profileData.location}
+            onChange={handleChange}
+            placeholder="Example: Austin, TX"
+          />
+          <HelperText>This stays private but helps us prefill your public profile without storing your exact address.</HelperText>
+        </FormGroup>
+
+        <FormGroup>
+          <Label htmlFor="photoUrl">Profile photo (optional)</Label>
+          <Input
+            id="photoUrl"
+            name="photoUrl"
+            type="url"
+            value={profileData.photoUrl}
+            onChange={handleChange}
+            placeholder="https://..."
+          />
+        </FormGroup>
+
         <FormGroup>
           <Label htmlFor="bio">Bio</Label>
           <TextArea
