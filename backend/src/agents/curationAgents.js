@@ -293,7 +293,7 @@ class NewsCurationAgent {
    */
   async fetchNewsArticles(category, skills, limit = 2) {
     try {
-      logger.info(`� Searching for ${limit} real news articles for category: ${category}`);
+      logger.info(`🔍 Searching for ${limit} real news articles for category: ${category}`);
 
       // Try multiple news search methods
       const searchResult = await this.searchRealNewsArticles(category, skills, limit);
@@ -338,31 +338,47 @@ class NewsCurationAgent {
 
     try {
       logger.info(`🔍 Searching real news sources for ${category} articles...`);
+      const errors = [];
 
       // Try NewsAPI.org first if available
       if (config.newsApiKey) {
+        logger.info('📰 Attempting NewsAPI.org...');
         const newsApiResult = await this.searchNewsAPI(category, skills, limit);
         if (newsApiResult.success && newsApiResult.articles.length > 0) {
+          logger.info(`✅ Found ${newsApiResult.articles.length} articles from NewsAPI`);
           return newsApiResult;
+        } else {
+          errors.push(`NewsAPI: ${newsApiResult.error}`);
+          logger.warn(`⚠️ NewsAPI did not return articles: ${newsApiResult.error}`);
         }
+      } else {
+        logger.info('ℹ️ NewsAPI key not configured, skipping NewsAPI.org');
+        errors.push('NewsAPI: Not configured (missing NEWS_API_KEY)');
       }
 
       // Try RSS feeds as fallback
+      logger.info('📡 Attempting RSS feeds as fallback...');
       const rssResult = await this.searchRSSFeeds(category, skills, limit);
       if (rssResult.success && rssResult.articles.length > 0) {
+        logger.info(`✅ Found ${rssResult.articles.length} articles from RSS feeds`);
         return rssResult;
+      } else {
+        errors.push(`RSS: ${rssResult.error}`);
+        logger.warn(`⚠️ RSS feeds did not return articles: ${rssResult.error}`);
       }
 
       // If no real news sources work, fail in production
+      const errorSummary = errors.join('; ');
+      logger.error(`❌ All real news sources failed: ${errorSummary}`);
+      
       if (process.env.NODE_ENV === 'production') {
-        throw new Error('All real news sources failed - no articles available');
+        throw new Error(`All real news sources failed - ${errorSummary}`);
       }
 
-      logger.error('All real news sources failed');
       return {
         success: false,
         articles: [],
-        error: 'No real news sources available'
+        error: `All sources failed: ${errorSummary}`
       };
 
     } catch (error) {
@@ -407,7 +423,8 @@ class NewsCurationAgent {
         },
         headers: {
           'X-API-Key': config.newsApiKey
-        }
+        },
+        timeout: 10000 // 10 second timeout
       });
 
       const articles = response.data.articles
@@ -441,11 +458,21 @@ class NewsCurationAgent {
       };
 
     } catch (error) {
-      logger.error('NewsAPI search failed:', error.message);
+      const errorContext = error.code === 'ENOTFOUND' 
+        ? 'Network connectivity issue - unable to reach NewsAPI.org'
+        : error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED'
+        ? 'Request timeout - NewsAPI.org took too long to respond'
+        : error.response?.status === 401
+        ? 'Invalid NewsAPI key - check NEWS_API_KEY environment variable'
+        : error.response?.status === 429
+        ? 'NewsAPI rate limit exceeded - try again later'
+        : error.message;
+      
+      logger.error('NewsAPI search failed:', errorContext);
       return {
         success: false,
         articles: [],
-        error: error.message
+        error: errorContext
       };
     }
   }
@@ -456,7 +483,12 @@ class NewsCurationAgent {
   async searchRSSFeeds(category, skills, limit = 2) {
     try {
       const Parser = require('rss-parser');
-      const parser = new Parser();
+      const parser = new Parser({
+        timeout: 10000, // 10 second timeout
+        headers: {
+          'User-Agent': 'YooHoo.guru News Curator/1.0'
+        }
+      });
 
       // Popular RSS feeds by category
       const rssFeedsByCategory = {
@@ -466,26 +498,27 @@ class NewsCurationAgent {
           'https://feeds.arstechnica.com/arstechnica/index'
         ],
         business: [
-          'https://feeds.bloomberg.com/markets/news.rss',
-          'https://www.reuters.com/business/rss',
-          'https://www.forbes.com/real-time/feed2/'
+          'https://www.forbes.com/real-time/feed2/',
+          'https://www.businessinsider.com/rss'
         ],
         art: [
-          'https://www.artforum.com/news.rss',
           'https://www.artnews.com/feed/'
         ],
         default: [
-          'https://feeds.reuters.com/reuters/topNews',
+          'https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml',
           'https://feeds.npr.org/1001/rss.xml'
         ]
       };
 
       const feeds = rssFeedsByCategory[category] || rssFeedsByCategory.default;
       let allArticles = [];
+      let successfulFeeds = 0;
+      let failedFeeds = [];
 
       // Search each RSS feed
       for (const feedUrl of feeds.slice(0, 2)) {
         try {
+          logger.info(`📡 Attempting to fetch RSS feed: ${feedUrl}`);
           const feed = await parser.parseURL(feedUrl);
 
           const feedArticles = feed.items
@@ -502,7 +535,7 @@ class NewsCurationAgent {
             })
             .slice(0, limit)
             .map(item => ({
-              id: `rss-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+              id: `rss-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
               title: item.title,
               summary: item.contentSnippet || item.content?.substring(0, 200) + '...',
               url: item.link,
@@ -513,10 +546,26 @@ class NewsCurationAgent {
             }));
 
           allArticles = allArticles.concat(feedArticles);
+          successfulFeeds++;
+          logger.info(`✅ Successfully fetched ${feedArticles.length} articles from ${feedUrl}`);
 
         } catch (feedError) {
-          logger.warn(`RSS feed failed: ${feedUrl} - ${feedError.message}`);
+          const errorContext = feedError.code === 'ENOTFOUND' 
+            ? `Network connectivity issue - unable to reach ${new URL(feedUrl).hostname}`
+            : feedError.code === 'ETIMEDOUT' || feedError.code === 'ECONNABORTED'
+            ? `Request timeout - ${feedUrl} took too long to respond`
+            : feedError.message;
+          
+          logger.warn(`❌ RSS feed failed: ${feedUrl} - ${errorContext}`);
+          failedFeeds.push({ url: feedUrl, error: errorContext });
         }
+      }
+
+      // Log summary of feed fetching
+      if (successfulFeeds > 0) {
+        logger.info(`📊 RSS feed summary: ${successfulFeeds} succeeded, ${failedFeeds.length} failed`);
+      } else {
+        logger.error(`❌ All RSS feeds failed. Errors: ${JSON.stringify(failedFeeds)}`);
       }
 
       // Sort by date and take the most recent
@@ -588,7 +637,8 @@ Return the complete articles with improved summaries in this JSON format:
           'Content-Type': 'application/json',
           'HTTP-Referer': 'https://yoohoo.guru',
           'X-Title': 'YooHoo.guru News Summary Generation'
-        }
+        },
+        timeout: 30000 // 30 second timeout for AI requests
       });
 
       const content = response.data.choices[0].message.content;
@@ -597,17 +647,32 @@ Return the complete articles with improved summaries in this JSON format:
         const jsonMatch = content.match(/\[[\s\S]*\]/);
         if (jsonMatch) {
           const summarizedArticles = JSON.parse(jsonMatch[0]);
+          logger.info(`✅ Successfully generated AI summaries for ${summarizedArticles.length} articles`);
           return summarizedArticles;
+        } else {
+          logger.warn('⚠️ AI response did not contain valid JSON array, using original articles');
         }
       } catch {
-        logger.warn('Failed to parse summarized articles, using originals');
+        logger.warn('⚠️ Failed to parse AI-generated summaries as JSON, using original articles');
       }
 
       // Fallback: return original articles if summary generation fails
       return articles;
 
     } catch (error) {
-      logger.warn('Summary generation failed, using original articles:', error.message);
+      const errorContext = error.code === 'ENOTFOUND' 
+        ? 'Network connectivity issue - unable to reach OpenRouter AI service'
+        : error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED'
+        ? 'Request timeout - AI service took too long to respond'
+        : error.response?.status === 401
+        ? 'Invalid OpenRouter API key - check OPENROUTER_API_KEY environment variable'
+        : error.response?.status === 429
+        ? 'OpenRouter rate limit exceeded - try again later'
+        : error.response?.status === 402
+        ? 'OpenRouter payment required - check account balance'
+        : error.message;
+      
+      logger.warn(`⚠️ Summary generation failed (${errorContext}), using original articles`);
       return articles;
     }
   }
@@ -767,7 +832,8 @@ Make each article unique, informative, and from credible U.S. sources.`
         'Content-Type': 'application/json',
         'HTTP-Referer': 'https://yoohoo.guru',
         'X-Title': 'YooHoo.guru AI News Generation'
-      }
+      },
+      timeout: 30000 // 30 second timeout for AI requests
     });
 
     const content = response.data.choices[0].message.content;
@@ -813,7 +879,8 @@ Return as JSON array.`
       headers: {
         'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
         'Content-Type': 'application/json'
-      }
+      },
+      timeout: 30000 // 30 second timeout for AI requests
     });
 
     const content = response.data.choices[0].message.content;
