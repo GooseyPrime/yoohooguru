@@ -47,7 +47,7 @@ export default function ContextNavigator() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Initial greeting when chat opens or route changes
+  // Initial greeting when chat opens
   useEffect(() => {
     if (isOpen && messages.length === 0) {
       const userName = session?.user?.name ? ` ${session.user.name}` : '';
@@ -62,6 +62,23 @@ export default function ContextNavigator() {
       ]);
     }
   }, [isOpen, messages.length, session]);
+
+  // Reset messages when route changes to keep context fresh
+  useEffect(() => {
+    if (isOpen && messages.length > 1) {
+      // Clear messages when navigating to new page
+      const userName = session?.user?.name ? ` ${session.user.name}` : '';
+      const greeting = `Hi${userName}! 👋 I'm here to help you navigate this page. What would you like to do?`;
+      
+      setMessages([
+        {
+          role: 'assistant',
+          content: greeting,
+          timestamp: new Date()
+        }
+      ]);
+    }
+  }, [router.pathname]); // Re-run when pathname changes
 
   const handleSendMessage = async (messageText?: string) => {
     const text = messageText || inputValue.trim();
@@ -102,14 +119,31 @@ export default function ContextNavigator() {
 
       const data = await response.json();
 
-      // Add assistant message
-      const assistantMessage: Message = {
-        role: 'assistant',
-        content: data.message,
-        timestamp: new Date()
-      };
+      // Check if AI returned a navigation action
+      if (data.action && data.action.type === 'navigate') {
+        // Add assistant message with navigation info
+        const assistantMessage: Message = {
+          role: 'assistant',
+          content: data.message,
+          timestamp: new Date()
+        };
 
-      setMessages(prev => [...prev, assistantMessage]);
+        setMessages(prev => [...prev, assistantMessage]);
+
+        // Perform navigation after a brief delay so user sees the message
+        setTimeout(() => {
+          router.push(data.action.route);
+        }, 500);
+      } else {
+        // Add regular assistant message
+        const assistantMessage: Message = {
+          role: 'assistant',
+          content: data.message,
+          timestamp: new Date()
+        };
+
+        setMessages(prev => [...prev, assistantMessage]);
+      }
 
     } catch (error) {
       console.error('Error sending message:', error);
@@ -128,15 +162,7 @@ export default function ContextNavigator() {
 
   const handleQuickAction = (action: QuickAction) => {
     router.push(action.route);
-    // Optionally add a message to chat history
-    setMessages(prev => [
-      ...prev,
-      {
-        role: 'user',
-        content: `Navigating to: ${action.label}`,
-        timestamp: new Date()
-      }
-    ]);
+    // No need to add message to chat - the route change effect will reset messages
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
