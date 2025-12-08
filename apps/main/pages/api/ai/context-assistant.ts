@@ -8,6 +8,17 @@ interface Message {
 }
 
 /**
+ * NavigationAction interface documents the expected JSON structure
+ * returned by the AI when suggesting navigation actions
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+interface NavigationAction {
+  type: 'navigate';
+  route: string;
+  label: string;
+}
+
+/**
  * Context-Aware AI Assistant API
  * 
  * This endpoint powers the ContextNavigator's AI chat zone.
@@ -54,11 +65,48 @@ Current context:
 - User name: ${userName}${userRoleText}
 - Authentication: ${session ? 'Logged in' : 'Guest'}
 
+## AVAILABLE ROUTES FOR NAVIGATION
+When users ask to find services, browse content, or navigate, you can suggest these routes:
+- /browse - Browse gurus/teachers by skill
+- /location/search - Find local gurus on map
+- /jobs - Browse jobs/gigs (for service requests like "mow my lawn", "landscaping", etc.)
+- /jobs/post - Post a job/gig
+- /ai/matchmaking - AI-powered guru matching
+- /dashboard - User dashboard
+- /settings - Account settings
+- /profile - User profile
+- /billing - Billing and payments
+- /privacy - Privacy settings
+- /help - Help center
+
+## RESPONSE FORMAT
+When suggesting navigation, respond in JSON format:
+{
+  "message": "Your helpful response here",
+  "action": {
+    "type": "navigate",
+    "route": "/path/to/navigate",
+    "label": "Description of where you're sending them"
+  }
+}
+
+If no navigation is needed, just respond with text (no JSON).
+
+## EXAMPLES
+User: "find someone to mow my lawn"
+Response: {"message": "I can help you with that! You can either browse landscapers directly or post a job listing. Let me take you to the jobs page where you can post your lawn mowing request.", "action": {"type": "navigate", "route": "/jobs/post", "label": "Post Lawn Mowing Job"}}
+
+User: "I want to change my password"
+Response: {"message": "I'll take you to your account settings where you can update your password.", "action": {"type": "navigate", "route": "/settings", "label": "Account Settings"}}
+
+User: "what can you help me with?"
+Response: I can help you navigate this page, find features, and answer questions about YooHoo.Guru. Just ask me anything!
+
 Guidelines:
 - Be concise and actionable
 - Reference the current page context
 - Suggest specific next steps
-- Use the quick actions when appropriate
+- Use navigation actions when users express intent to go somewhere or do something
 - Be friendly and helpful`;
 
     // Prepare messages for OpenRouter
@@ -67,7 +115,16 @@ Guidelines:
       ...messages
     ];
 
-    // Call OpenRouter API
+    // Preferred models with conversational skills - OpenRouter will select first available
+    const preferredModels = [
+      'anthropic/claude-3.5-sonnet',
+      'openai/gpt-4o-mini',
+      'google/gemini-flash-1.5',
+      'meta-llama/llama-3.1-8b-instruct',
+      'mistralai/mistral-7b-instruct'
+    ];
+
+    // Call OpenRouter API with model fallback
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -77,13 +134,10 @@ Guidelines:
         'X-Title': 'YooHoo.Guru Context Navigator'
       },
       body: JSON.stringify({
-        model: 'anthropic/claude-3.5-sonnet', // High-quality model for better responses
+        models: preferredModels, // Use model routing to select from preferred models
         messages: apiMessages,
         max_tokens: 500, // Keep responses concise
-        temperature: 0.7,
-        top_p: 1,
-        frequency_penalty: 0,
-        presence_penalty: 0
+        temperature: 0.7
       })
     });
 
@@ -102,6 +156,22 @@ Guidelines:
     }
 
     const assistantMessage = data.choices[0].message.content;
+
+    // Try to parse as JSON to detect navigation actions
+    try {
+      const parsed = JSON.parse(assistantMessage);
+      if (parsed.message && parsed.action) {
+        // Structured response with navigation action
+        return res.status(200).json({
+          message: parsed.message,
+          action: parsed.action,
+          model: data.model,
+          usage: data.usage
+        });
+      }
+    } catch {
+      // Not JSON, treat as plain text response
+    }
 
     return res.status(200).json({
       message: assistantMessage,
