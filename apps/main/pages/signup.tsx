@@ -38,6 +38,13 @@ export default function Signup() {
     setMounted(true);
   }, []);
 
+  // Sync userType with query parameter when it changes
+  useEffect(() => {
+    if (mounted && type && typeof type === 'string') {
+      setFormData(prev => ({ ...prev, userType: type }));
+    }
+  }, [mounted, type]);
+
   // Detect OAuth errors from URL query parameters (client-side only)
   useEffect(() => {
     if (!mounted) return;

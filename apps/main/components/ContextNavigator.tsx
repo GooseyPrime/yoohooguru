@@ -114,11 +114,13 @@ export default function ContextNavigator() {
         })
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to get response');
-      }
-
       const data = await response.json();
+
+      if (!response.ok) {
+        // Use the error message from the API if available
+        const errorMessage = data.message || data.error || 'Failed to get response from AI assistant';
+        throw new Error(errorMessage);
+      }
 
       // Check if AI returned a navigation action
       if (data.action && data.action.type === 'navigate') {
@@ -148,11 +150,17 @@ export default function ContextNavigator() {
 
     } catch (error) {
       console.error('Error sending message:', error);
+      
+      // Extract error message from Error object
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : "I'm sorry, I encountered an error. Please try again or use the quick navigation buttons above.";
+      
       setMessages(prev => [
         ...prev,
         {
           role: 'assistant',
-          content: "I'm sorry, I encountered an error. Please try again or use the quick navigation buttons above.",
+          content: errorMessage,
           timestamp: new Date()
         }
       ]);
@@ -162,7 +170,12 @@ export default function ContextNavigator() {
   };
 
   const handleQuickAction = (action: QuickAction) => {
-    router.push(action.route);
+    // Handle special case for browser back navigation
+    if (action.route === '__BACK__') {
+      router.back();
+    } else {
+      router.push(action.route);
+    }
     // No need to add message to chat - the route change effect will reset messages
   };
 
