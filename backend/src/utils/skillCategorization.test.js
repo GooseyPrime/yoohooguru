@@ -6,7 +6,8 @@ const {
   getCategoriesByRiskLevel,
   requiresLiabilityWaiver,
   getHighRiskCategories,
-  RISK_LEVELS
+  RISK_LEVELS,
+  normalizeSkillCategory
 } = require('./skillCategorization');
 
 describe('Skill Categorization and Risk Assessment', () => {
@@ -163,6 +164,24 @@ describe('Skill Categorization and Risk Assessment', () => {
       expect(highRiskCategories).toContain('Martial Arts');
       expect(highRiskCategories).toContain('Electrical');
       expect(highRiskCategories).toContain('Woodworking');
+    });
+  });
+
+  describe('normalizeSkillCategory', () => {
+    test('should use stored category when valid', () => {
+      const skill = { title: 'Underwater basket weaving', category: 'Creative' };
+      expect(categorizeSkill(skill.title)).toBe('Other');
+      expect(normalizeSkillCategory(skill)).toBe('Creative');
+    });
+
+    test('should fall back to keyword categorization when category missing', () => {
+      const skill = { title: 'programming bots' };
+      expect(normalizeSkillCategory(skill)).toBe('Technical');
+    });
+
+    test('should handle invalid inputs', () => {
+      expect(normalizeSkillCategory(null)).toBe('Other');
+      expect(normalizeSkillCategory(123)).toBe('Other');
     });
   });
 

@@ -72,13 +72,22 @@ export default function Dashboard() {
     return null // Will redirect to login
   }
 
+  const publicProfilesCard = {
+    icon: '🪪',
+    title: 'Public Profiles',
+    description: 'Publish and manage the Guru or Angel profile people see when booking you.',
+    action: 'Manage Profiles',
+    path: '/profiles/public'
+  };
+
   // Different dashboard cards based on user role
   const getDashboardCards = () => {
     const userRole = session.user?.role || 'gunu';
-    
+
     switch (userRole) {
       case 'guru':
         return [
+          publicProfilesCard,
           {
             icon: '📚',
             title: 'My Teaching',
@@ -108,9 +117,10 @@ export default function Dashboard() {
             path: '/guru/ratings'
           }
         ];
-      
+
       case 'hero-guru':
         return [
+          publicProfilesCard,
           {
             icon: '❤️',
             title: 'Hero Teaching',
@@ -140,9 +150,10 @@ export default function Dashboard() {
             path: '/heroes/ratings'
           }
         ];
-      
+
       case 'angel':
         return [
+          publicProfilesCard,
           {
             icon: '🛠️',
             title: 'My Services',
@@ -172,9 +183,10 @@ export default function Dashboard() {
             path: '/angel/ratings'
           }
         ];
-      
+
       case 'admin':
         return [
+          publicProfilesCard,
           {
             icon: '📊',
             title: 'Platform Analytics',
@@ -204,9 +216,10 @@ export default function Dashboard() {
             path: '/admin/content'
           }
         ];
-      
+
       default: // gunu (default learner role)
         return [
+          publicProfilesCard,
           {
             icon: '🎯',
             title: 'Find Skills',

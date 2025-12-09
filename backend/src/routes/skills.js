@@ -2,9 +2,11 @@ const express = require('express');
 const skillsDB = require('../db/skills');
 const { optionalAuth } = require('../middleware/auth');
 const { logger } = require('../utils/logger');
-const { categorizeSkill, getSkillCategories } = require('../utils/skillCategorization');
+const { categorizeSkill, getSkillCategories, normalizeSkillCategory } = require('../utils/skillCategorization');
+const AISkillCategorizationService = require('../lib/aiSkillCategorizationService');
 
 const router = express.Router();
+const aiSkillCategorizer = new AISkillCategorizationService();
 
 // AI Skill Matching Algorithm - kept for future use when implementing legacy features
 // eslint-disable-next-line no-unused-vars
@@ -91,13 +93,15 @@ router.get('/', optionalAuth, async (req, res) => {
       status
     });
 
+    const skillsWithCategory = skills.map(skill => ({
+      ...skill,
+      category: normalizeSkillCategory(skill)
+    }));
+
     // Apply category filter (client-side for now, can be moved to DB later)
-    let filteredSkills = skills;
+    let filteredSkills = skillsWithCategory;
     if (category) {
-      filteredSkills = skills.filter(skill => {
-        const skillCategory = categorizeSkill(skill.title);
-        return skillCategory === category;
-      });
+      filteredSkills = skillsWithCategory.filter(skill => skill.category === category);
     }
 
     // Apply popularity filter (for now, just check if skill has been used in sessions)
@@ -155,6 +159,24 @@ router.post('/', optionalAuth, async (req, res) => {
       });
     }
 
+    const keywordCategory = categorizeSkill(title);
+    let category = keywordCategory;
+    let categorySource = 'keyword';
+    let categoryConfidence = keywordCategory === 'Other' ? 0 : 1;
+    let categoryReasoning;
+
+    if (keywordCategory === 'Other') {
+      const aiCategory = await aiSkillCategorizer.categorizeSkill({ title, summary });
+      if (aiCategory && aiCategory.category) {
+        category = aiCategory.category;
+        categorySource = `ai-${aiCategory.provider}`;
+        categoryConfidence = aiCategory.confidence ?? null;
+        categoryReasoning = aiCategory.reasoning;
+      } else {
+        categorySource = 'keyword-fallback-other';
+      }
+    }
+
     const skillData = {
       title,
       summary,
@@ -163,8 +185,18 @@ router.post('/', optionalAuth, async (req, res) => {
       accessibilityTags,
       coachingStyles,
       resources: [],
-      status: 'published' // For now, auto-publish. Can add moderation later.
+      status: 'published', // For now, auto-publish. Can add moderation later.
+      category,
+      categorySource
     };
+
+    if (categoryConfidence !== null && categoryConfidence !== undefined) {
+      skillData.categoryConfidence = categoryConfidence;
+    }
+
+    if (categoryReasoning) {
+      skillData.categoryReasoning = categoryReasoning;
+    }
 
     const skill = await skillsDB.create(skillData);
 
@@ -196,9 +228,11 @@ router.get('/:id', async (req, res) => {
       });
     }
 
+    const normalizedSkill = { ...skill, category: normalizeSkillCategory(skill) };
+
     res.json({
       success: true,
-      data: { skill }
+      data: { skill: normalizedSkill }
     });
 
   } catch (error) {
@@ -307,12 +341,13 @@ router.post('/:id/resources', optionalAuth, async (req, res) => {
 router.get('/user/:userId', async (req, res) => {
   try {
     const skills = await skillsDB.getByCreator(req.params.userId);
+    const normalizedSkills = skills.map(skill => ({ ...skill, category: normalizeSkillCategory(skill) }));
 
     res.json({
       success: true,
       data: {
-        skills,
-        total: skills.length
+        skills: normalizedSkills,
+        total: normalizedSkills.length
       }
     });
 
