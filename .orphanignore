@@ -79,6 +79,9 @@ show-content-summary.js
 ai-content-migration.js
 test-*.js
 tests/seed-test-data.js
+# NOTE: Two different script directories exist in backend:
+#   - src/scripts/*  -> Backend utility scripts (seedTestUsers.js, etc.)
+#   - scripts/*      -> CI/build scripts (trigger-blog-curation.js, etc.)
 src/scripts/*
 scripts/*
 scripts/trigger-blog-curation.js

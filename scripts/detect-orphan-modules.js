@@ -20,6 +20,10 @@ class OrphanModuleDetector {
       ...options
     };
     
+    // Supported JavaScript/TypeScript file extensions
+    this.JS_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx', '.mjs'];
+    this.JS_INDEX_FILES = ['/index.js', '/index.jsx', '/index.ts', '/index.tsx'];
+    
     this.results = {
       timestamp: new Date().toISOString(),
       summary: {
@@ -242,8 +246,7 @@ class OrphanModuleDetector {
   }
 
   isJavaScriptFile(filename) {
-    const jsExtensions = ['.js', '.jsx', '.ts', '.tsx', '.mjs'];
-    return jsExtensions.some(ext => filename.endsWith(ext));
+    return this.JS_EXTENSIONS.some(ext => filename.endsWith(ext));
   }
 
   async analyzeUnreachableModules() {
@@ -356,17 +359,18 @@ class OrphanModuleDetector {
     for (const pattern of ignorePatterns) {
       // Convert glob pattern to regex
       // First, handle ** and * BEFORE escaping other characters
+      // Use unique placeholders to avoid conflicts with actual file content
       let regexPattern = pattern
-        .replace(/\*\*/g, '<!DOUBLESTAR!>')  // Placeholder for **
-        .replace(/\*/g, '<!STAR!>');  // Placeholder for *
+        .replace(/\*\*/g, '__GLOB_DOUBLESTAR_PLACEHOLDER__')  // Placeholder for **
+        .replace(/\*/g, '__GLOB_STAR_PLACEHOLDER__');  // Placeholder for *
       
       // Now escape special regex characters
       regexPattern = regexPattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
       
       // Replace placeholders with regex patterns
       regexPattern = regexPattern
-        .replace(/<!DOUBLESTAR!>/g, '.*')  // ** matches any path including /
-        .replace(/<!STAR!>/g, '[^/]*');  // * matches anything except /
+        .replace(/__GLOB_DOUBLESTAR_PLACEHOLDER__/g, '.*')  // ** matches any path including /
+        .replace(/__GLOB_STAR_PLACEHOLDER__/g, '[^/]*');  // * matches anything except /
       
       const regex = new RegExp(`^${regexPattern}$`);
       if (regex.test(relativePath)) {
@@ -440,8 +444,8 @@ class OrphanModuleDetector {
         return null; // External dependency
       }
       
-      // Try common extensions
-      const extensions = ['', '.js', '.jsx', '.ts', '.tsx', '/index.js', '/index.jsx', '/index.ts', '/index.tsx'];
+      // Try common extensions using shared constants
+      const extensions = ['', ...this.JS_EXTENSIONS, ...this.JS_INDEX_FILES];
       for (const ext of extensions) {
         const testPath = resolvedPath + ext;
         if (fs.existsSync(testPath) && fs.statSync(testPath).isFile()) {
