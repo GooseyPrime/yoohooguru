@@ -2,6 +2,8 @@
 
 This guide provides step-by-step instructions for deploying yoohoo.guru backend to Railway when the frontend is deployed separately (e.g., to Vercel).
 
+> **⚠️ Important:** If you've merged a PR and files aren't showing up in Railway, see [PR #560 Deployment Fix](./PR_560_DEPLOYMENT_FIX.md) for troubleshooting steps.
+
 ## Configuration Overview
 
 The backend can operate in two modes:
@@ -235,6 +237,12 @@ Access metrics in the Railway dashboard:
    - Ensure `/health` endpoint returns 200 status
    - Check server startup logs
 
+5. **Files Not Appearing After PR Merge**
+   - Verify Railway auto-deploy is enabled for `main` branch
+   - Check `railway.json` configuration is correct
+   - Manually trigger redeploy: `railway up`
+   - See [PR #560 Deployment Fix](./PR_560_DEPLOYMENT_FIX.md) for detailed troubleshooting
+
 ### Getting Help
 
 1. **Railway Logs**
@@ -247,7 +255,12 @@ Access metrics in the Railway dashboard:
    railway status
    ```
 
-3. **Railway Documentation**
+3. **Verify Deployment**
+   ```bash
+   ./scripts/verify-railway-deployment.sh https://your-backend.up.railway.app
+   ```
+
+4. **Railway Documentation**
    Visit [docs.railway.app](https://docs.railway.app)
 
 ## Advanced Configuration
