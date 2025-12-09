@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Navigation from '../../../components/ui/Navigation';
 import { NewsSection } from '../../../components/NewsSection';
 import { BlogList } from '../../../components/BlogList';
+import { Footer } from '@yoohooguru/shared';
 
 export default function TechHome() {
   return (
@@ -65,7 +66,7 @@ export default function TechHome() {
               </div>
               <div className="text-center">
                 <div className="text-4xl md:text-5xl font-bold gradient-text-cyan mb-2">10K+</div>
-                <div className="text-sm md:text-base text-white-60 font-medium">Students</div>
+                <div className="text-sm md:text-base text-white-60 font-medium">Gunus</div>
               </div>
             </div>
           </div>
@@ -102,6 +103,8 @@ export default function TechHome() {
           </div>
         </section>
       </main>
+
+      <Footer currentDomain="tech" />
     </>
   );
 }

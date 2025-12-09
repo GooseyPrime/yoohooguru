@@ -2,12 +2,10 @@ import { Header, Footer } from '@yoohooguru/shared';
 import Seo from '../../../components/Seo';
 import Link from 'next/link';
 import { OrbitronContainer, OrbitronCard } from '../../../components/orbitron';
-import HeroGurusAccessGate from '../../../components/HeroGurusAccessGate';
 
 export default function HeroGurusHome() {
   return (
-    <HeroGurusAccessGate>
-      <OrbitronContainer gradient="primary">
+    <OrbitronContainer gradient="primary">
         <Seo
         title="Hero Gurus | Elite Expert Network | YooHoo.Guru"
         description="Connect with top-tier experts and thought leaders in various fields."
@@ -108,6 +106,5 @@ export default function HeroGurusHome() {
 
         <Footer />
       </OrbitronContainer>
-    </HeroGurusAccessGate>
   );
 }

@@ -28,7 +28,7 @@ export default function CoachGuru() {
       reviews: 93,
       hourlyRate: 60,
       skills: ["SEO", "Content Marketing", "Analytics", "Social Media"],
-      href: "/experts/marcus-rodriguez",
+      href: "https://www.yoohoo.guru/experts/marcus-rodriguez",
     },
     {
       name: "Emily Watson",
@@ -38,7 +38,7 @@ export default function CoachGuru() {
       reviews: 201,
       hourlyRate: 55,
       skills: ["UI/UX", "Brand Design", "Illustration", "Figma"],
-      href: "/experts/emily-watson",
+      href: "https://www.yoohoo.guru/experts/emily-watson",
     },
     {
       name: "David Kim",
@@ -48,7 +48,7 @@ export default function CoachGuru() {
       reviews: 87,
       hourlyRate: 85,
       skills: ["Python", "Machine Learning", "Statistics", "TensorFlow"],
-      href: "/experts/david-kim",
+      href: "https://www.yoohoo.guru/experts/david-kim",
     },
     {
       name: "Lisa Anderson",
@@ -58,7 +58,7 @@ export default function CoachGuru() {
       reviews: 156,
       hourlyRate: 70,
       skills: ["Strategy", "Business Planning", "Leadership", "Growth Hacking"],
-      href: "/experts/lisa-anderson",
+      href: "https://www.yoohoo.guru/experts/lisa-anderson",
     },
     {
       name: "James Miller",
@@ -68,7 +68,7 @@ export default function CoachGuru() {
       reviews: 112,
       hourlyRate: 50,
       skills: ["Photography", "Video Editing", "Adobe Suite", "Lightroom"],
-      href: "/experts/james-miller",
+      href: "https://www.yoohoo.guru/experts/james-miller",
     }
   ];
 
@@ -252,7 +252,7 @@ export default function CoachGuru() {
                 <div className="text-left">
                   <h4 className="font-semibold text-white mb-2">Benefits</h4>
                   <ul className="space-y-1 text-gray-400">
-                    <li>• Student acquisition</li>
+                    <li>• Gunu acquisition</li>
                     <li>• Scheduling tools</li>
                     <li>• Quality verification</li>
                   </ul>

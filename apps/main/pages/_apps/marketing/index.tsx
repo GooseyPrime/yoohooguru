@@ -3,6 +3,7 @@ import Seo from '../../../components/Seo';
 import Link from 'next/link';
 
 import Navigation from '../../../components/ui/Navigation';
+import { Footer } from '@yoohooguru/shared';
 import { NewsSection } from '../../../components/NewsSection';
 import { BlogList } from '../../../components/BlogList';
 
@@ -65,7 +66,7 @@ export default function MarketingHome() {
               </div>
               <div className="text-center">
                 <div className="text-4xl md:text-5xl font-bold gradient-text-purple mb-2">6K+</div>
-                <div className="text-sm md:text-base text-white-60 font-medium">Students</div>
+                <div className="text-sm md:text-base text-white-60 font-medium">Gunus</div>
               </div>
             </div>
           </div>
@@ -102,6 +103,7 @@ export default function MarketingHome() {
           </div>
         </section>
       </main>
+      <Footer currentDomain="marketing" />
     </>
   );
 }
