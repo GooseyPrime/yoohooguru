@@ -1,6 +1,7 @@
 import React from 'react';
 import Seo from '../../../components/Seo';
 import Link from 'next/link';
+import { Footer } from '@yoohooguru/shared';
 
 import Navigation from '../../../components/ui/Navigation';
 import { NewsSection } from '../../../components/NewsSection';
@@ -102,6 +103,8 @@ export default function TechHome() {
           </div>
         </section>
       </main>
+
+      <Footer currentDomain="tech" />
     </>
   );
 }

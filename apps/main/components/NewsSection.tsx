@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchWithRetry, buildAPIUrl } from '../utils/apiHelpers';
+import { fetchWithRetry } from '../utils/apiHelpers';
 
 interface NewsArticle {
   id: string;
@@ -49,7 +49,7 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ subdomain, limit = 5 }
 
         // Use fetchWithRetry for automatic retry logic
         const response = await fetchWithRetry(
-          buildAPIUrl(`/api/news/${subdomain}`),
+          `/api/news/${subdomain}`,
           {},
           {
             maxRetries: 3,

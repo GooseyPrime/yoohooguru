@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { fetchWithRetry, buildAPIUrl } from '../utils/apiHelpers';
+import { fetchWithRetry } from '../utils/apiHelpers';
 
 interface BlogPost {
   id: string;
@@ -57,7 +57,7 @@ export const BlogList: React.FC<BlogListProps> = ({
 
         // Use fetchWithRetry for automatic retry logic
         const response = await fetchWithRetry(
-          buildAPIUrl(`/api/${subdomain}/posts?limit=${limit}&page=1`),
+          `/api/${subdomain}/posts?limit=${limit}&page=1`,
           {},
           {
             maxRetries: 3,

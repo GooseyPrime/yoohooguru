@@ -2,6 +2,7 @@ import React from 'react';
 import Seo from '../../../components/Seo';
 import Link from 'next/link';
 import Navigation from '../../../components/ui/Navigation';
+import { Footer } from '@yoohooguru/shared';
 import { NewsSection } from '../../../components/NewsSection';
 import { BlogList } from '../../../components/BlogList';
 
@@ -101,6 +102,7 @@ export default function ArtHome() {
           </div>
         </section>
       </main>
+      <Footer currentDomain="art" />
     </>
   );
 }
