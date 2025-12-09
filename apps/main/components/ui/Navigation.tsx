@@ -33,11 +33,11 @@ export default function Navigation() {
   }, []);
 
   const navLinks: Array<{ href: string; label: string; highlight?: boolean }> = [
-      { href: '/browse', label: 'Find Gurus', highlight: true },
-      { href: '/about', label: 'About' },
-      { href: '/how-it-works', label: 'How It Works' },
-      { href: '/pricing', label: 'Pricing' },
-      { href: '/help', label: 'Help' },
+      { href: 'https://www.yoohoo.guru/browse', label: 'Find Gurus', highlight: true },
+      { href: 'https://www.yoohoo.guru/about', label: 'About' },
+      { href: 'https://www.yoohoo.guru/how-it-works', label: 'How It Works' },
+      { href: 'https://www.yoohoo.guru/pricing', label: 'Pricing' },
+      { href: 'https://www.yoohoo.guru/help', label: 'Help' },
     ];
 
   return (
@@ -52,7 +52,7 @@ export default function Navigation() {
         <div className="container-custom">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <Link href="/" className="flex items-center space-x-3 group">
+            <Link href="https://www.yoohoo.guru" className="flex items-center space-x-3 group">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center shadow-glow-emerald group-hover:shadow-glow-emerald-lg transition-all duration-300">
                 <span className="text-2xl font-bold text-white font-display">YG</span>
               </div>
