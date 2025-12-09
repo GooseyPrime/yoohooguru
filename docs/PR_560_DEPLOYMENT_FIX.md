@@ -217,9 +217,9 @@ node src/scripts/seedTestUsers.js
 
 ## Related Documentation
 
-- [Railway Deployment Guide](./docs/RAILWAY_DEPLOYMENT.md)
-- [Environment Configuration Guide](./docs/ENVIRONMENT_CONFIGURATION_GUIDE.md)
-- [Production Deployment Fix](./docs/PRODUCTION_DEPLOYMENT_FIX.md)
+- [Railway Deployment Guide](RAILWAY_DEPLOYMENT.md)
+- [Environment Configuration Guide](ENVIRONMENT_CONFIGURATION_GUIDE.md)
+- [Production Deployment Fix](PRODUCTION_DEPLOYMENT_FIX.md)
 
 ## Summary
 
