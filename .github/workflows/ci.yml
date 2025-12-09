@@ -124,7 +124,7 @@ jobs:
           chmod +x scripts/ci-orphan-detection.sh
           scripts/ci-orphan-detection.sh
         env:
-          ORPHAN_ERROR_THRESHOLD: 50
+          ORPHAN_ERROR_THRESHOLD: 10
         continue-on-error: true
 
       - name: Handle runtime log artifacts

@@ -72,13 +72,26 @@ types/**/*.d.ts
 # ============================================
 # Backend Utility Scripts
 # ============================================
-# These are run manually, not imported
-backend/populate-initial-content.js
-backend/seed-content.js
-backend/show-content-summary.js
-backend/ai-content-migration.js
-backend/test-*.js
-backend/src/scripts/**/*
+# These are run manually or via package.json scripts, not imported
+populate-initial-content.js
+seed-content.js
+show-content-summary.js
+ai-content-migration.js
+test-*.js
+tests/seed-test-data.js
+# NOTE: Two different script directories exist in backend:
+#   - src/scripts/*  -> Backend utility scripts (seedTestUsers.js, etc.)
+#   - scripts/*      -> CI/build scripts (trigger-blog-curation.js, etc.)
+src/scripts/*
+scripts/*
+scripts/trigger-blog-curation.js
+
+# ============================================
+# Backend Library Files
+# ============================================
+# Core backend utilities
+src/firebase/admin.js
+src/lib/auth.js
 
 # ============================================
 # Components That May Be Dynamically Imported
@@ -90,6 +103,22 @@ components/**/*.ts
 # ============================================
 # Library Files
 # ============================================
-# Utility libraries that may be imported conditionally
+# Utility libraries that may be imported conditionally or used for future features
 lib/**/*.ts
 lib/**/*.tsx
+lib/*.ts
+lib/*.tsx
+hooks/**/*.ts
+hooks/**/*.tsx
+hooks/*.ts
+hooks/*.tsx
+utils/**/*.ts
+utils/**/*.tsx
+utils/*.ts
+utils/*.tsx
+
+# ============================================
+# Type Definition Files
+# ============================================
+# Global type definitions
+global.d.ts

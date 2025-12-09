@@ -20,6 +20,10 @@ class OrphanModuleDetector {
       ...options
     };
     
+    // Supported JavaScript/TypeScript file extensions
+    this.JS_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx', '.mjs'];
+    this.JS_INDEX_FILES = ['/index.js', '/index.jsx', '/index.ts', '/index.tsx'];
+    
     this.results = {
       timestamp: new Date().toISOString(),
       summary: {
@@ -66,6 +70,9 @@ class OrphanModuleDetector {
   async analyzeUnusedDependencies() {
     console.log('📦 Analyzing unused dependencies...');
     
+    // Load depcheck ignore list
+    const depcheckIgnores = this.loadDepcheckIgnores();
+    
     const packageAreas = [
       { name: 'root', path: this.options.rootDir },
       { name: 'apps/main', path: path.join(this.options.rootDir, 'apps', 'main') },
@@ -78,17 +85,33 @@ class OrphanModuleDetector {
 
       try {
         const unusedDeps = await this.checkDependenciesInArea(area);
-        if (unusedDeps.length > 0) {
+        // Filter out dependencies that are in the depcheck ignore list
+        const filteredDeps = unusedDeps.filter(dep => !depcheckIgnores.includes(dep));
+        
+        if (filteredDeps.length > 0) {
           this.results.details.unusedDependencies.push({
             area: area.name,
             path: area.path,
-            unused: unusedDeps
+            unused: filteredDeps
           });
-          this.results.summary.unusedDependencies += unusedDeps.length;
+          this.results.summary.unusedDependencies += filteredDeps.length;
         }
       } catch (error) {
         console.warn(`⚠️ Could not analyze dependencies in ${area.name}:`, error.message);
       }
+    }
+  }
+
+  loadDepcheckIgnores() {
+    const depcheckrcPath = path.join(this.options.rootDir, '.depcheckrc.json');
+    if (!fs.existsSync(depcheckrcPath)) return [];
+    
+    try {
+      const config = JSON.parse(fs.readFileSync(depcheckrcPath, 'utf8'));
+      return config.ignores || [];
+    } catch (error) {
+      console.warn('⚠️ Could not load .depcheckrc.json:', error.message);
+      return [];
     }
   }
 
@@ -223,17 +246,29 @@ class OrphanModuleDetector {
   }
 
   isJavaScriptFile(filename) {
-    const jsExtensions = ['.js', '.jsx', '.ts', '.tsx', '.mjs'];
-    return jsExtensions.some(ext => filename.endsWith(ext));
+    return this.JS_EXTENSIONS.some(ext => filename.endsWith(ext));
   }
 
   async analyzeUnreachableModules() {
     console.log('🔗 Analyzing unreachable modules...');
     
+    // Load orphan ignore patterns
+    const ignorePatterns = this.loadOrphanIgnorePatterns();
+    
     // Find all JavaScript modules and check reachability from entry points
     const areas = [
-      { name: 'apps/main', path: path.join(this.options.rootDir, 'apps', 'main'), entryPoints: ['pages/_app.tsx', 'pages/index.tsx', 'middleware.ts'] },
-      { name: 'backend', path: path.join(this.options.rootDir, 'backend'), entryPoints: ['src/server.js', 'src/index.js', 'src/app.js'] }
+      { 
+        name: 'apps/main', 
+        path: path.join(this.options.rootDir, 'apps', 'main'), 
+        entryPoints: this.getNextJsEntryPoints(path.join(this.options.rootDir, 'apps', 'main')),
+        isNextJs: true
+      },
+      { 
+        name: 'backend', 
+        path: path.join(this.options.rootDir, 'backend'), 
+        entryPoints: ['src/server.js', 'src/index.js', 'src/app.js'],
+        isNextJs: false
+      }
     ];
 
     for (const area of areas) {
@@ -250,8 +285,13 @@ class OrphanModuleDetector {
         }
       }
 
-      // Find unreachable modules
-      const unreachable = allModules.filter(module => !reachableModules.has(module));
+      // Find unreachable modules, applying ignore patterns
+      const unreachable = allModules.filter(module => {
+        if (reachableModules.has(module)) return false;
+        
+        const relativePath = path.relative(area.path, module);
+        return !this.shouldIgnoreModule(relativePath, ignorePatterns);
+      });
       
       if (unreachable.length > 0) {
         this.results.details.unreachableModules.push({
@@ -262,6 +302,82 @@ class OrphanModuleDetector {
         this.results.summary.unreachableModules += unreachable.length;
       }
     }
+  }
+
+  getNextJsEntryPoints(appPath) {
+    // In Next.js, ALL pages are entry points because they're auto-routed
+    const entryPoints = ['pages/_app.tsx', 'middleware.ts'];
+    const pagesDir = path.join(appPath, 'pages');
+    
+    if (fs.existsSync(pagesDir)) {
+      const pageFiles = this.findPageFiles(pagesDir);
+      entryPoints.push(...pageFiles.map(p => path.relative(appPath, p)));
+    }
+    
+    return entryPoints;
+  }
+
+  findPageFiles(dir) {
+    const pageFiles = [];
+    
+    try {
+      const entries = fs.readdirSync(dir, { withFileTypes: true });
+      
+      for (const entry of entries) {
+        const fullPath = path.join(dir, entry.name);
+        
+        if (entry.isDirectory()) {
+          // Include ALL directories (including api, _apps, etc) - they're all valid Next.js routes
+          pageFiles.push(...this.findPageFiles(fullPath));
+        } else if (entry.isFile() && this.isJavaScriptFile(entry.name)) {
+          pageFiles.push(fullPath);
+        }
+      }
+    } catch (error) {
+      // Skip directories we can't read
+    }
+    
+    return pageFiles;
+  }
+
+  loadOrphanIgnorePatterns() {
+    const ignoreFile = path.join(this.options.rootDir, '.orphanignore');
+    if (!fs.existsSync(ignoreFile)) return [];
+    
+    try {
+      const content = fs.readFileSync(ignoreFile, 'utf8');
+      return content
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line && !line.startsWith('#'));
+    } catch {
+      return [];
+    }
+  }
+
+  shouldIgnoreModule(relativePath, ignorePatterns) {
+    for (const pattern of ignorePatterns) {
+      // Convert glob pattern to regex
+      // First, handle ** and * BEFORE escaping other characters
+      // Use unique placeholders to avoid conflicts with actual file content
+      let regexPattern = pattern
+        .replace(/\*\*/g, '__GLOB_DOUBLESTAR_PLACEHOLDER__')  // Placeholder for **
+        .replace(/\*/g, '__GLOB_STAR_PLACEHOLDER__');  // Placeholder for *
+      
+      // Now escape special regex characters
+      regexPattern = regexPattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
+      
+      // Replace placeholders with regex patterns
+      regexPattern = regexPattern
+        .replace(/__GLOB_DOUBLESTAR_PLACEHOLDER__/g, '.*')  // ** matches any path including /
+        .replace(/__GLOB_STAR_PLACEHOLDER__/g, '[^/]*');  // * matches anything except /
+      
+      const regex = new RegExp(`^${regexPattern}$`);
+      if (regex.test(relativePath)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   traverseModuleDependencies(filePath, visited, rootPath) {
@@ -300,6 +416,18 @@ class OrphanModuleDetector {
       imports.push(match[1]);
     }
     
+    // Match dynamic imports: import('...') 
+    const dynamicImportRegex = /import\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
+    while ((match = dynamicImportRegex.exec(content)) !== null) {
+      imports.push(match[1]);
+    }
+    
+    // Match re-exports: export { ... } from '...'
+    const reExportRegex = /export\s+(?:\{[^}]*\}|\*)\s+from\s+['"]([^'"]+)['"]/g;
+    while ((match = reExportRegex.exec(content)) !== null) {
+      imports.push(match[1]);
+    }
+    
     return imports.filter(imp => imp.startsWith('.') || imp.startsWith('/'));
   }
 
@@ -316,8 +444,8 @@ class OrphanModuleDetector {
         return null; // External dependency
       }
       
-      // Try common extensions
-      const extensions = ['', '.js', '.jsx', '.ts', '.tsx', '/index.js', '/index.jsx'];
+      // Try common extensions using shared constants
+      const extensions = ['', ...this.JS_EXTENSIONS, ...this.JS_INDEX_FILES];
       for (const ext of extensions) {
         const testPath = resolvedPath + ext;
         if (fs.existsSync(testPath) && fs.statSync(testPath).isFile()) {
