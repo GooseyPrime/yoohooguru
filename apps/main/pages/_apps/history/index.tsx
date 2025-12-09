@@ -65,7 +65,7 @@ export default function HistoryHome() {
               </div>
               <div className="text-center">
                 <div className="text-4xl md:text-5xl font-bold gradient-text-amber mb-2">2.5K+</div>
-                <div className="text-sm md:text-base text-white-60 font-medium">Students</div>
+                <div className="text-sm md:text-base text-white-60 font-medium">Gunus</div>
               </div>
             </div>
           </div>

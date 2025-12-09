@@ -99,7 +99,7 @@ export const WhyYooHooSection: React.FC = () => {
 
   const stats = [
     { value: "4.9/5", label: "Average Rating", sublabel: "From 10,000+ reviews" },
-    { value: "98%", label: "Success Rate", sublabel: "Students achieve their goals" },
+    { value: "98%", label: "Success Rate", sublabel: "Gunus achieve their goals" },
     { value: "24/7", label: "Support", sublabel: "We&apos;re here when you need us" },
     { value: "$2M+", label: "Earned by Gurus", sublabel: "And growing every month" }
   ];

@@ -66,7 +66,7 @@ export default function WritingHome() {
               </div>
               <div className="text-center">
                 <div className="text-4xl md:text-5xl font-bold gradient-text-indigo mb-2">4.5K+</div>
-                <div className="text-sm md:text-base text-white-60 font-medium">Students</div>
+                <div className="text-sm md:text-base text-white-60 font-medium">Gunus</div>
               </div>
             </div>
           </div>

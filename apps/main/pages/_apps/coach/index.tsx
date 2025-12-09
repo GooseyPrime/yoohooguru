@@ -252,7 +252,7 @@ export default function CoachGuru() {
                 <div className="text-left">
                   <h4 className="font-semibold text-white mb-2">Benefits</h4>
                   <ul className="space-y-1 text-gray-400">
-                    <li>• Student acquisition</li>
+                    <li>• Gunu acquisition</li>
                     <li>• Scheduling tools</li>
                     <li>• Quality verification</li>
                   </ul>

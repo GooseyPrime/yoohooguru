@@ -94,7 +94,7 @@ export const TestimonialCarousel: React.FC<TestimonialCarouselProps> = ({ testim
     },
     {
       name: "Sarah Thompson",
-      role: "College Student",
+      role: "College Gunu",
       content: "The Hero Gurus program gave me access to free tutoring when I needed it most. My volunteer tutor helped me ace my calculus exam and restored my confidence. This platform truly changes lives.",
       rating: 5,
       date: "3 weeks ago"

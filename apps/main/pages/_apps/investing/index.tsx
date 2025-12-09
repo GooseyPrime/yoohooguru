@@ -65,7 +65,7 @@ export default function InvestingHome() {
               </div>
               <div className="text-center">
                 <div className="text-4xl md:text-5xl font-bold gradient-text-emerald mb-2">7K+</div>
-                <div className="text-sm md:text-base text-white-60 font-medium">Students</div>
+                <div className="text-sm md:text-base text-white-60 font-medium">Gunus</div>
               </div>
             </div>
           </div>
