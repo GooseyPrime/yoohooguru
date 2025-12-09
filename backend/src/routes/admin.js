@@ -8,8 +8,195 @@ const {
   listBackups,
   restoreFromBackup
 } = require('../agents/backupAgent');
+const { getFirestore } = require('../config/firebase');
+const { getAllSubdomains } = require('../config/subdomains');
 
 const router = express.Router();
+
+const requireAdmin = (req, res) => {
+  const adminCookie = req.cookies?.yoohoo_admin;
+
+  if (adminCookie !== '1') {
+    res.status(401).json({
+      success: false,
+      error: { message: 'Admin authentication required' }
+    });
+    return false;
+  }
+
+  return true;
+};
+
+const buildUserRecord = (doc) => {
+  const data = doc.data() || {};
+
+  return {
+    id: doc.id,
+    name: data.name || data.displayName || data.fullName || '',
+    email: data.email || '',
+    role: data.role || data.userRole || 'unknown',
+    status: data.status || data.accountStatus || 'unknown',
+    lastActive: data.lastActive || data.updatedAt || data.lastActivity || null,
+    signUp: data.createdAt || data.signUp || null,
+    entries: data.entries || data.totalEntries || 0,
+    region: data.region || data.country || data.locale || '',
+    heroGuru: Boolean(data.heroGuru || (data.heroGuruPrefs && data.heroGuruPrefs.visible))
+  };
+};
+
+const safeCount = async (collectionRef) => {
+  try {
+    if (typeof collectionRef.count === 'function') {
+      const countSnap = await collectionRef.count().get();
+      return countSnap.data().count || 0;
+    }
+
+    const snap = await collectionRef.limit(500).get();
+    return snap.size;
+  } catch (error) {
+    logger.error('Failed to perform count query', { error: error.message });
+    return 0;
+  }
+};
+
+const fetchUsers = async () => {
+  const db = getDb();
+
+  // Prefer lower-case collection; fall back to capitalized variant for legacy data
+  const collectionsToCheck = ['users', 'Users'];
+  for (const name of collectionsToCheck) {
+    const col = db.collection(name);
+    const snap = await col.limit(200).get();
+
+    if (!snap.empty) {
+      const total = await safeCount(col);
+      return {
+        total,
+        heroGuruUsers: await safeCount(col.where('heroGuruPrefs.visible', '==', true)),
+        active: await safeCount(col.where('status', '==', 'active')),
+        suspended: await safeCount(col.where('status', '==', 'suspended')),
+        items: snap.docs.map(buildUserRecord)
+      };
+    }
+  }
+
+  return {
+    total: 0,
+    heroGuruUsers: 0,
+    active: 0,
+    suspended: 0,
+    items: []
+  };
+};
+
+const fetchContent = async () => {
+  const db = getDb();
+  const subdomains = getAllSubdomains();
+  const content = [];
+  const subdomainTotals = new Set();
+
+  for (const subdomain of subdomains) {
+    try {
+      const newsCollection = db.collection('gurus').doc(subdomain).collection('news');
+      const postsCollection = db.collection('gurus').doc(subdomain).collection('posts');
+
+      const [newsSnap, postsSnap] = await Promise.all([
+        newsCollection.orderBy('publishedAt', 'desc').limit(50).get().catch(() => newsCollection.limit(50).get()),
+        postsCollection.orderBy('publishedAt', 'desc').limit(50).get().catch(() => postsCollection.limit(50).get())
+      ]);
+
+      if (!newsSnap.empty || !postsSnap.empty) {
+        subdomainTotals.add(subdomain);
+      }
+
+      newsSnap.forEach((doc) => {
+        const data = doc.data() || {};
+        content.push({
+          id: doc.id,
+          title: data.title || '',
+          category: data.category || 'news',
+          subdomain,
+          status: data.status || 'published',
+          type: 'news',
+          createdAt: data.createdAt || data.curatedAt || data.publishedAt || null,
+          updatedAt: data.updatedAt || data.publishedAt || data.curatedAt || null
+        });
+      });
+
+      postsSnap.forEach((doc) => {
+        const data = doc.data() || {};
+        content.push({
+          id: doc.id,
+          title: data.title || '',
+          category: data.category || 'blog',
+          subdomain,
+          status: data.status || data.visibility || 'published',
+          type: 'posts',
+          createdAt: data.createdAt || data.publishedAt || null,
+          updatedAt: data.updatedAt || data.publishedAt || null
+        });
+      });
+    } catch (error) {
+      logger.error('Failed to fetch content for subdomain', { subdomain, error: error.message });
+    }
+  }
+
+  return {
+    content,
+    subdomains: Array.from(subdomainTotals)
+  };
+};
+
+const fetchFinancials = async () => {
+  const db = getDb();
+
+  const heroGuruDoc = await db.collection('financials').doc('hero-gurus').get();
+  const commercialDoc = await db.collection('financials').doc('commercial').get();
+  const transactionsSnap = await db.collection('financial_transactions').orderBy('createdAt', 'desc').limit(100).get().catch(() => null);
+
+  const ledger = transactionsSnap ? transactionsSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })) : [];
+
+  const heroGuru = heroGuruDoc.exists ? heroGuruDoc.data() : {};
+  const commercial = commercialDoc.exists ? commercialDoc.data() : {};
+
+  const heroGuruIncome = Number(heroGuru.donations || 0) + Number(heroGuru.grants || 0);
+  const heroGuruOutflow = Number(heroGuru.expenses || 0) + Number(heroGuru.reserved || 0);
+  const commercialIncome = Number(commercial.revenue || 0);
+  const commercialOutflow = Number(commercial.refunds || 0) + Number(commercial.expenses || 0) + Number(commercial.deferred || 0);
+
+  return {
+    currency: heroGuru.currency || commercial.currency || 'USD',
+    heroGuru: {
+      type: heroGuru.type || 'non-profit',
+      donations: Number(heroGuru.donations || 0),
+      grants: Number(heroGuru.grants || 0),
+      expenses: Number(heroGuru.expenses || 0),
+      reserved: Number(heroGuru.reserved || 0)
+    },
+    commercial: {
+      type: commercial.type || 'for-profit',
+      revenue: Number(commercial.revenue || 0),
+      refunds: Number(commercial.refunds || 0),
+      expenses: Number(commercial.expenses || 0),
+      deferred: Number(commercial.deferred || 0)
+    },
+    ledger,
+    summary: {
+      netPosition: heroGuruIncome - heroGuruOutflow,
+      commercialNet: commercialIncome - commercialOutflow
+    }
+  };
+};
+
+const getDb = () => {
+  const db = getFirestore();
+
+  if (!db) {
+    throw new Error('Firestore not initialized');
+  }
+
+  return db;
+};
 
 /**
  * Admin Login - Validate ADMIN_KEY and set session cookie
@@ -36,12 +223,20 @@ router.post('/login', async (req, res) => {
     }
 
     // Set httpOnly cookie for simple admin session (4 hours)
-    res.cookie('yoohoo_admin', '1', { 
-      httpOnly: true, 
-      sameSite: 'lax', 
-      secure: process.env.NODE_ENV === 'production', 
-      path: '/', 
+    res.cookie('yoohoo_admin', '1', {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
       maxAge: 60 * 60 * 4 * 1000 // 4 hours
+    });
+
+    res.cookie('yoohoo_admin_login', new Date().toISOString(), {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+      maxAge: 60 * 60 * 4 * 1000
     });
 
     logger.info('Successful admin login', { ip: req.ip });
@@ -60,7 +255,7 @@ router.post('/login', async (req, res) => {
  */
 router.get('/ping', (req, res) => {
   const adminCookie = req.cookies?.yoohoo_admin;
-  
+
   if (adminCookie === '1') {
     res.json({ success: true, authenticated: true });
   } else {
@@ -73,7 +268,161 @@ router.get('/ping', (req, res) => {
  */
 router.post('/logout', (req, res) => {
   res.clearCookie('yoohoo_admin', { path: '/' });
+  res.clearCookie('yoohoo_admin_login', { path: '/' });
   res.json({ success: true, message: 'Admin logout successful' });
+});
+
+router.get('/console/overview', (req, res) => {
+  if (!requireAdmin(req, res)) return;
+
+  (async () => {
+    try {
+      const db = getDb();
+      const [userSummary, contentSummary] = await Promise.all([
+        fetchUsers(),
+        fetchContent()
+      ]);
+
+      const collections = await db.listCollections();
+      const backupStatus = getBackupAgentStatus();
+
+      res.json({
+        success: true,
+        data: {
+          users: userSummary,
+          content: {
+            totalEntries: contentSummary.content.length,
+            published: contentSummary.content.filter((item) => item.status === 'published').length,
+            draft: contentSummary.content.filter((item) => item.status === 'draft').length,
+            subdomains: contentSummary.subdomains
+          },
+          security: {
+            lastAdminLogin: req.cookies?.yoohoo_admin_login || null,
+            sessionValid: true,
+            csrf: true,
+            rateLimiting: true
+          },
+          databases: {
+            collections: collections.map((col) => col.id),
+            backupEnabled: backupStatus.status !== 'disabled',
+            lastBackup: backupStatus.lastBackup || null
+          }
+        }
+      });
+    } catch (error) {
+      logger.error('Failed to build admin overview', { error: error.message });
+      res.status(500).json({ success: false, error: { message: 'Failed to load admin overview' } });
+    }
+  })();
+});
+
+router.get('/console/users', (req, res) => {
+  if (!requireAdmin(req, res)) return;
+
+  (async () => {
+    try {
+      const userSummary = await fetchUsers();
+      res.json({ success: true, data: userSummary.items });
+    } catch (error) {
+      logger.error('Failed to fetch users for admin console', { error: error.message });
+      res.status(500).json({ success: false, error: { message: 'Unable to load users' } });
+    }
+  })();
+});
+
+router.get('/console/content', (req, res) => {
+  if (!requireAdmin(req, res)) return;
+
+  (async () => {
+    try {
+      const { content } = await fetchContent();
+      res.json({ success: true, data: content });
+    } catch (error) {
+      logger.error('Failed to fetch content for admin console', { error: error.message });
+      res.status(500).json({ success: false, error: { message: 'Unable to load content' } });
+    }
+  })();
+});
+
+router.post('/console/content/:id/remove', (req, res) => {
+  if (!requireAdmin(req, res)) return;
+
+  (async () => {
+    const { id } = req.params;
+    const { subdomain, type } = req.body || {};
+
+    if (!subdomain || !type) {
+      return res.status(400).json({ success: false, error: { message: 'subdomain and type are required to remove content' } });
+    }
+
+    try {
+      const db = getDb();
+      const collectionRef = db.collection('gurus').doc(subdomain).collection(type);
+      const doc = await collectionRef.doc(id).get();
+
+      if (!doc.exists) {
+        return res.status(404).json({ success: false, error: { message: 'Content not found' } });
+      }
+
+      await collectionRef.doc(id).delete();
+      logger.warn('Admin removed content entry', { id, subdomain, type });
+
+      res.json({
+        success: true,
+        message: 'Content removed from publication pipeline',
+        id
+      });
+    } catch (error) {
+      logger.error('Failed to remove content entry', { id, subdomain, type, error: error.message });
+      res.status(500).json({ success: false, error: { message: 'Failed to remove content' } });
+    }
+  })();
+});
+
+router.get('/console/financials', (req, res) => {
+  if (!requireAdmin(req, res)) return;
+
+  (async () => {
+    try {
+      const data = await fetchFinancials();
+      res.json({ success: true, data });
+    } catch (error) {
+      logger.error('Failed to fetch financials', { error: error.message });
+      res.status(500).json({ success: false, error: { message: 'Unable to load financials' } });
+    }
+  })();
+});
+
+router.get('/console/export', (req, res) => {
+  if (!requireAdmin(req, res)) return;
+
+  (async () => {
+    try {
+      const userSummary = await fetchUsers();
+      const csvRows = [
+        'id,name,email,role,status,lastActive,signUp,entries,region,heroGuru',
+        ...userSummary.items.map(user => [
+          user.id,
+          user.name,
+          user.email,
+          user.role,
+          user.status,
+          user.lastActive ? new Date(user.lastActive).toISOString() : '',
+          user.signUp ? new Date(user.signUp).toISOString() : '',
+          user.entries,
+          user.region,
+          user.heroGuru
+        ].join(','))
+      ];
+
+      res.header('Content-Type', 'text/csv');
+      res.attachment(`admin-users-export-${Date.now()}.csv`);
+      res.send(csvRows.join('\n'));
+    } catch (error) {
+      logger.error('Failed to export users', { error: error.message });
+      res.status(500).json({ success: false, error: { message: 'Unable to export users' } });
+    }
+  })();
 });
 
 /**
@@ -81,50 +430,63 @@ router.post('/logout', (req, res) => {
  */
 router.get('/dashboard', (req, res) => {
   const adminCookie = req.cookies?.yoohoo_admin;
-  
+
   if (adminCookie !== '1') {
-    return res.status(401).json({ 
-      success: false, 
-      error: { message: 'Admin authentication required' } 
+    return res.status(401).json({
+      success: false,
+      error: { message: 'Admin authentication required' }
     });
   }
 
-  // Return mock dashboard data for now
-  // In a real implementation, this would query your database
-  res.json({
-    success: true,
-    data: {
-      users: {
-        total: 0,
-        active: 0,
-        newThisWeek: 0
-      },
-      listings: {
-        total: 0,
-        active: 0,
-        categories: {}
-      },
-      sessions: {
-        total: 0,
-        completed: 0,
-        pending: 0
-      },
-      reports: {
-        total: 0,
-        pending: 0,
-        resolved: 0
-      },
-      featureFlags: {
-        booking: true,
-        messaging: true,
-        reviews: true,
-        communityEvents: false,
-        certifications: false,
-        orgTools: false,
-        dataProducts: false
-      }
+  (async () => {
+    try {
+      const db = getDb();
+      const [userSummary, sessionTotals, skillTotals] = await Promise.all([
+        fetchUsers(),
+        (async () => {
+          const sessionsCol = db.collection('sessions');
+          return {
+            total: await safeCount(sessionsCol),
+            completed: await safeCount(sessionsCol.where('status', '==', 'completed')),
+            pending: await safeCount(sessionsCol.where('status', '==', 'requested'))
+          };
+        })(),
+        (async () => {
+          const skillsCol = db.collection('skills');
+          return {
+            total: await safeCount(skillsCol),
+            active: await safeCount(skillsCol.where('status', '==', 'active'))
+          };
+        })()
+      ]);
+
+      res.json({
+        success: true,
+        data: {
+          users: {
+            total: userSummary.total,
+            active: userSummary.active,
+            newThisWeek: 0
+          },
+          listings: {
+            total: skillTotals.total,
+            active: skillTotals.active,
+            categories: {}
+          },
+          sessions: sessionTotals,
+          reports: {
+            total: await safeCount(db.collection('reports')),
+            pending: await safeCount(db.collection('reports').where('status', '==', 'open')),
+            resolved: await safeCount(db.collection('reports').where('status', '==', 'resolved'))
+          },
+          featureFlags: {}
+        }
+      });
+    } catch (error) {
+      logger.error('Failed to load dashboard data', { error: error.message });
+      res.status(500).json({ success: false, error: { message: 'Failed to load dashboard data' } });
     }
-  });
+  })();
 });
 
 /**
@@ -132,70 +494,58 @@ router.get('/dashboard', (req, res) => {
  */
 router.get('/action-history', (req, res) => {
   const adminCookie = req.cookies?.yoohoo_admin;
-  
+
   if (adminCookie !== '1') {
-    return res.status(401).json({ 
-      success: false, 
-      error: { message: 'Admin authentication required' } 
+    return res.status(401).json({
+      success: false,
+      error: { message: 'Admin authentication required' }
     });
   }
 
-  // In a real implementation, this would query your database/git logs
-  res.json({
-    success: true,
-    data: {
-      recentActions: [
-        {
-          id: 1,
-          timestamp: Date.now() - (1000 * 60 * 30), // 30 minutes ago
-          type: 'deployment',
-          action: 'Frontend deployed to production',
-          user: 'system',
-          branch: 'main',
-          commit: '3da64fb',
-          details: 'Deployed new dashboard features'
-        },
-        {
-          id: 2,
-          timestamp: Date.now() - (1000 * 60 * 60 * 2), // 2 hours ago
-          type: 'upload',
-          action: 'User uploaded profile document',
-          user: 'user_123',
-          branch: null,
-          commit: null,
-          details: 'insurance_verification.pdf'
-        },
-        {
-          id: 3,
-          timestamp: Date.now() - (1000 * 60 * 60 * 6), // 6 hours ago
-          type: 'git_push',
-          action: 'Code pushed to repository',
-          user: 'developer',
-          branch: 'feature/video-chat',
-          commit: 'abc1234',
-          details: 'Added video chat functionality'
-        },
-        {
-          id: 4,
-          timestamp: Date.now() - (1000 * 60 * 60 * 12), // 12 hours ago
-          type: 'system',
-          action: 'Database backup completed',
-          user: 'system',
-          branch: null,
-          commit: null,
-          details: 'Daily automated backup'
-        }
-      ],
-      totalActions: 150,
-      actionsToday: 8,
-      actionsByType: {
-        deployment: 12,
-        upload: 45,
-        git_push: 78,
-        system: 15
+  (async () => {
+    try {
+      const db = getDb();
+
+      const backupsSnap = await db.collection('backups')
+        .orderBy('timestamp', 'desc')
+        .limit(10)
+        .get()
+        .catch(() => null);
+
+      const actions = [];
+      if (backupsSnap && !backupsSnap.empty) {
+        backupsSnap.forEach((doc) => {
+          const data = doc.data() || {};
+          actions.push({
+            id: doc.id,
+            timestamp: data.timestamp || null,
+            type: 'backup',
+            action: 'Content backup completed',
+            user: 'system',
+            branch: null,
+            commit: null,
+            details: data.metadata ? JSON.stringify(data.metadata) : ''
+          });
+        });
       }
+
+      res.json({
+        success: true,
+        data: {
+          recentActions: actions,
+          totalActions: actions.length,
+          actionsToday: actions.filter((action) => action.timestamp && action.timestamp > Date.now() - (24 * 60 * 60 * 1000)).length,
+          actionsByType: actions.reduce((acc, action) => {
+            acc[action.type] = (acc[action.type] || 0) + 1;
+            return acc;
+          }, {})
+        }
+      });
+    } catch (error) {
+      logger.error('Failed to load action history', { error: error.message });
+      res.status(500).json({ success: false, error: { message: 'Failed to load action history' } });
     }
-  });
+  })();
 });
 
 /**
@@ -203,53 +553,53 @@ router.get('/action-history', (req, res) => {
  */
 router.get('/live-stats', (req, res) => {
   const adminCookie = req.cookies?.yoohoo_admin;
-  
+
   if (adminCookie !== '1') {
-    return res.status(401).json({ 
-      success: false, 
-      error: { message: 'Admin authentication required' } 
+    return res.status(401).json({
+      success: false,
+      error: { message: 'Admin authentication required' }
     });
   }
 
-  // In a real implementation, this would query your analytics database
-  res.json({
-    success: true,
-    data: {
-      realTimeVisitors: Math.floor(Math.random() * 25) + 5, // 5-30 active users
-      todayVisitors: Math.floor(Math.random() * 500) + 200,
-      pageStats: {
-        '/': { visits: 1250, avgTime: '2:30' },
-        '/skills': { visits: 890, avgTime: '3:45' },
-        '/modified': { visits: 345, avgTime: '4:12' },
-        '/dashboard': { visits: 678, avgTime: '5:20' },
-        '/admin': { visits: 12, avgTime: '8:45' }
-      },
-      subdomainStats: {
-        'tech.yoohoo.guru': { visits: 234, visitors: 189 },
-        'design.yoohoo.guru': { visits: 178, visitors: 134 },
-        'business.yoohoo.guru': { visits: 156, visitors: 98 },
-        'fitness.yoohoo.guru': { visits: 89, visitors: 67 },
-        'home.yoohoo.guru': { visits: 67, visitors: 45 }
-      },
-      trafficSources: {
-        direct: 45.2,
-        search: 32.1,
-        social: 15.3,
-        referral: 7.4
-      },
-      topLocations: [
-        { country: 'United States', visitors: 45.2, flag: '🇺🇸' },
-        { country: 'Canada', visitors: 12.8, flag: '🇨🇦' },
-        { country: 'United Kingdom', visitors: 8.9, flag: '🇬🇧' },
-        { country: 'Germany', visitors: 6.7, flag: '🇩🇪' },
-        { country: 'Australia', visitors: 5.1, flag: '🇦🇺' }
-      ],
-      hourlyTraffic: Array.from({ length: 24 }, (_, i) => ({
-        hour: i,
-        visitors: Math.floor(Math.random() * 50) + 10
-      }))
+  (async () => {
+    try {
+      const db = getDb();
+      const now = Date.now();
+      const tenMinutesAgo = now - (10 * 60 * 1000);
+      const dayAgo = now - (24 * 60 * 60 * 1000);
+
+      const sessionsCol = db.collection('sessions');
+      const [recentSessionsSnap, todaySessionsSnap] = await Promise.all([
+        sessionsCol.where('updatedAt', '>', tenMinutesAgo).get().catch(() => sessionsCol.where('createdAt', '>', tenMinutesAgo).get()),
+        sessionsCol.where('createdAt', '>', dayAgo).get()
+      ]);
+
+      const { content } = await fetchContent();
+      const subdomainStats = content.reduce((acc, item) => {
+        const key = `${item.subdomain}.yoohoo.guru`;
+        acc[key] = acc[key] || { visits: 0, visitors: 0 };
+        acc[key].visits += 1;
+        acc[key].visitors += 1;
+        return acc;
+      }, {});
+
+      res.json({
+        success: true,
+        data: {
+          realTimeVisitors: recentSessionsSnap ? recentSessionsSnap.size : 0,
+          todayVisitors: todaySessionsSnap ? todaySessionsSnap.size : 0,
+          pageStats: {},
+          subdomainStats,
+          trafficSources: {},
+          topLocations: [],
+          hourlyTraffic: []
+        }
+      });
+    } catch (error) {
+      logger.error('Failed to load live stats', { error: error.message });
+      res.status(500).json({ success: false, error: { message: 'Failed to load live statistics' } });
     }
-  });
+  })();
 });
 
 /**
@@ -360,19 +710,22 @@ router.post('/curate', async (req, res) => {
  */
 router.get('/agents-status', (req, res) => {
   const adminCookie = req.cookies?.yoohoo_admin;
-  
+
   if (adminCookie !== '1') {
-    return res.status(401).json({ 
-      success: false, 
-      error: { message: 'Admin authentication required' } 
+    return res.status(401).json({
+      success: false,
+      error: { message: 'Admin authentication required' }
     });
   }
-  
+
+  const curationStatus = getCurationAgentStatus();
+  const backupStatus = getBackupAgentStatus();
+
   res.json({
     success: true,
     agents: {
-      news: 'Running - Daily at 6 AM',
-      blog: 'Running - Bi-weekly on Mondays at 8 AM'
+      curation: curationStatus,
+      backup: backupStatus
     },
     environment: process.env.NODE_ENV || 'development',
     timestamp: new Date().toISOString()
