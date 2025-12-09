@@ -1,41 +1,15 @@
 {
-  "timestamp": "2025-12-09T03:26:47.904Z",
+  "timestamp": "2025-12-09T03:33:41.087Z",
   "summary": {
-    "totalOrphans": 5,
+    "totalOrphans": 0,
     "unusedDependencies": 0,
-    "unreachableModules": 5,
+    "unreachableModules": 0,
     "orphanedFiles": 0
   },
   "details": {
     "unusedDependencies": [],
-    "unreachableModules": [
-      {
-        "area": "apps/main",
-        "path": "/home/runner/work/yoohooguru/yoohooguru/apps/main",
-        "unreachable": [
-          "hooks/useGeolocation.ts",
-          "utils/accessibility.ts"
-        ]
-      },
-      {
-        "area": "backend",
-        "path": "/home/runner/work/yoohooguru/yoohooguru/backend",
-        "unreachable": [
-          "src/scripts/cleanupTestUsers.js",
-          "src/scripts/seedCategories.js",
-          "src/scripts/seedTestUsers.js"
-        ]
-      }
-    ],
+    "unreachableModules": [],
     "orphanedFiles": [],
-    "recommendations": [
-      {
-        "type": "unreachable-modules",
-        "priority": "low",
-        "title": "Remove or refactor 5 unreachable modules",
-        "description": "These modules are not reachable from any entry point and may be dead code",
-        "action": "Review each module and either delete it or add proper imports"
-      }
-    ]
+    "recommendations": []
   }
 }

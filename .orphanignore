@@ -79,8 +79,8 @@ show-content-summary.js
 ai-content-migration.js
 test-*.js
 tests/seed-test-data.js
-src/scripts/**/*
-scripts/**/*
+src/scripts/*
+scripts/*
 scripts/trigger-blog-curation.js
 
 # ============================================
@@ -100,13 +100,19 @@ components/**/*.ts
 # ============================================
 # Library Files
 # ============================================
-# Utility libraries that may be imported conditionally
+# Utility libraries that may be imported conditionally or used for future features
 lib/**/*.ts
 lib/**/*.tsx
+lib/*.ts
+lib/*.tsx
 hooks/**/*.ts
 hooks/**/*.tsx
+hooks/*.ts
+hooks/*.tsx
 utils/**/*.ts
 utils/**/*.tsx
+utils/*.ts
+utils/*.tsx
 
 # ============================================
 # Type Definition Files
