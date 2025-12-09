@@ -1,11 +1,11 @@
 import React from 'react';
 import Seo from '../../../components/Seo';
 import Link from 'next/link';
-import { Footer } from '@yoohooguru/shared';
 
 import Navigation from '../../../components/ui/Navigation';
 import { NewsSection } from '../../../components/NewsSection';
 import { BlogList } from '../../../components/BlogList';
+import { Footer } from '@yoohooguru/shared';
 
 export default function TechHome() {
   return (
